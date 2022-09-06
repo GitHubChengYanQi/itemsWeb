@@ -253,12 +253,13 @@ export const PHYSICALDETAIL = (
     <Radio.Group style={{width: '100%'}} value={button} onChange={(value) => {
       setButton(value.target.value);
     }}>
-      <Radio.Button style={style} value="name">物料名称</Radio.Button>
-      <Radio.Button style={style} value="brand">供应商(品牌)</Radio.Button>
-      <Radio.Button style={style} value="number">数量</Radio.Button>
+      <Radio.Button style={style} value="物料编码">物料编码</Radio.Button>
+      <Radio.Button style={style} value="产品名称">产品名称</Radio.Button>
+      <Radio.Button style={style} value="型号">型号</Radio.Button>
+      <Radio.Button style={style} value="规格">规格</Radio.Button>
+      <Radio.Button style={style} value="品牌">品牌</Radio.Button>
+      <Radio.Button style={style} value="供应商">供应商</Radio.Button>
       <Radio.Button style={style} value="qrCode">二维码</Radio.Button>
-      <Radio.Button style={style} value="coding">实物编码</Radio.Button>
-      <Radio.Button style={style} value="skuCoding">物料编码</Radio.Button>
     </Radio.Group>
   </>;
 };
