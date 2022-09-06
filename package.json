@@ -72,6 +72,7 @@
     "react-dom": "^16.14.0",
     "react-eva": "^1.1.12",
     "react-json-view": "^1.19.1",
+    "styled-components": "^5.3.5",
     "tinymce": "^5.10.3",
     "wangeditor": "4.7.12",
     "wangeditor-for-react": "1.5.3"
