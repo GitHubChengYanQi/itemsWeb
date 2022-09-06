@@ -32,7 +32,6 @@ const TemplateEdit = ({...props}, ref) => {
   const [tables, setTables] = useState([]);
 
   const [replaceRules, setReplaceRules] = useState([]);
-  console.log(replaceRules);
 
   useImperativeHandle(ref, () => ({
     submit: formRef.current.submit,
@@ -47,14 +46,8 @@ const TemplateEdit = ({...props}, ref) => {
 
   const getType = (tableIndex, trIndex) => {
     const rule = replaceRules.filter((item) => {
-      if (trIndex === undefined) {
-        return item.tableIndex === tableIndex;
-      }
       return item.tableIndex === tableIndex && item.trIndex === trIndex;
     });
-    if (trIndex === undefined) {
-      return rule[0] && rule[0].tableType;
-    }
     return rule[0] && rule[0].type;
   };
 
@@ -86,11 +79,7 @@ const TemplateEdit = ({...props}, ref) => {
       >
         <Row>
           <Col span={12} style={{paddingRight: 24}}>
-            <ProCard
-              headerBordered
-              className="h2Card"
-              title="基本信息"
-              bodyStyle={{maxHeight: 'calc(100vh - 181px)', overflow: 'auto'}}>
+            <ProCard headerBordered className="h2Card" title="基本信息" bodyStyle={{maxHeight:'calc(100vh - 181px)',overflow:'auto'}}>
               <FormItem label="合同名" name="name" component={SysField.Name} required />
               <FormItem label="合同分类" name="contractClassId" component={SysField.ContractClassId} required />
               <FormItem
@@ -98,7 +87,7 @@ const TemplateEdit = ({...props}, ref) => {
                 name="fileId"
                 component={SysField.UploadWord}
                 required
-                onChange={async (value) => {
+                onChange={async (value)=>{
                   if (value) {
                     const res = await run({params: {fileId: value}});
                     const values = [];
@@ -108,7 +97,6 @@ const TemplateEdit = ({...props}, ref) => {
                           tableIndex,
                           trIndex,
                           type: 'none',
-                          tableType: 'none',
                         });
                       });
                     });
@@ -126,34 +114,7 @@ const TemplateEdit = ({...props}, ref) => {
               {
                 tables.map((tableItem, tableIndex) => {
                   return <div key={tableIndex}>
-                    <ProCard
-                      headerBordered
-                      className="h3Card"
-                      title={<Space align="center">
-                        第{tableIndex + 1}个表格
-                        <Select
-                          value={getType(tableIndex)}
-                          style={{width: 150}}
-                          bordered={false}
-                          placeholder="选择替换表格"
-                          onChange={(tableType) => {
-                            const newValue = replaceRules.map((item) => {
-                              if (item.tableIndex === tableIndex) {
-                                return {...item, tableType};
-                              }
-                              return item;
-                            });
-                            setReplaceRules(newValue);
-                          }}
-                          options={[
-                            {label: '普通替换', value: 'none'},
-                            {label: '标的物替换', value: 'sku'},
-                            {label: '供应商替换', value: 'supply'},
-                            {label: '客户替换', value: 'customer'},
-                          ]} />
-                      </Space>}
-                      bodyStyle={{padding: 0}}
-                    >
+                    <ProCard headerBordered className="h3Card" title={`第${tableIndex + 1}个表格`} bodyStyle={{padding: 0}}>
                       <div className="ant-table">
                         <table
                           key={tableIndex}
@@ -205,7 +166,7 @@ const TemplateEdit = ({...props}, ref) => {
         </Row>
       </Form>
     </div>
-  );
+  )
 };
 
 export default React.forwardRef(TemplateEdit);
