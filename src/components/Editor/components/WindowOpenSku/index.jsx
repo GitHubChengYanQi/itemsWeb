@@ -37,7 +37,7 @@ const WindowOpenSku = () => {
         if (!button) {
           return message.warn('请选择变量！');
         }
-        insertContent(`$\{${button}}`);
+        insertContent(`$\{{${button}}}`);
         refresh();
       }}
       onCancel={() => {

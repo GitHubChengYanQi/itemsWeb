@@ -50,7 +50,7 @@ const PrintTemplateList = () => {
     <>
       <Table
         contentHeight
-        title={<Breadcrumb title='模板' />}
+        title={<Breadcrumb title="模板" />}
         api={printTemplateList}
         rowKey="printTemplateId"
         listHeader={false}
@@ -60,7 +60,16 @@ const PrintTemplateList = () => {
         actions={actions()}
         ref={tableRef}
       >
-        <Column title="类型" dataIndex="type" />
+        <Column title="类型" dataIndex="type" render={(value) => {
+          switch (value) {
+            case 'POSITIONS':
+              return '库位详情';
+            case 'PHYSICALDETAIL':
+              return '实物详情';
+            default:
+              return '';
+          }
+        }} />
         <Column title="名称" dataIndex="name" />
         <Column />
         <Column title="操作" align="right" render={(value, record) => {

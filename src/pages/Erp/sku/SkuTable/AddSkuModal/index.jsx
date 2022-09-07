@@ -1,10 +1,10 @@
 import React, {useImperativeHandle, useRef, useState} from 'react';
-import {Button, Modal as AntModal, Space} from 'antd';
+import {Button, Checkbox, Modal as AntModal, Space} from 'antd';
+import {ExclamationCircleOutlined} from '@ant-design/icons';
 import Modal from '@/components/Modal';
 import SkuEdit from '@/pages/Erp/sku/skuEdit';
 import {useRequest} from '@/util/Request';
 import Message from '@/components/Message';
-import {ExclamationCircleOutlined} from '@ant-design/icons';
 
 const AddSkuModal = ({
   tableRef,
@@ -21,18 +21,24 @@ const AddSkuModal = ({
 
   const [visible, setVisible] = useState();
 
+  const [nextCopy, setNextCopy] = useState(false);
+
   const {loading: batchLoading, run: batchRun} = useRequest({url: '/sku/batchAdd', method: 'POST'}, {
     manual: true,
     onSuccess: () => {
       onSuccess();
-      addRef.current.close();
+      setVisible(null);
       Message.success('保存成功！');
       if (tableRef) {
         tableRef.current.submit();
       }
+      if (copy && nextCopy){
+        return;
+      }
+      addRef.current.close();
     },
     onError: () => {
-      Message.error('导入失败!');
+      Message.error('保存失败!');
     }
   });
 
@@ -56,10 +62,14 @@ const AddSkuModal = ({
         } else {
           tableRef.current.submit();
         }
+        if (copy && nextCopy){
+          return;
+        }
         addRef.current.close();
       }}
       ref={addRef}
       footer={<>
+        {copy && <Checkbox checked={nextCopy} onChange={e => setNextCopy(e.target.checked)}>继续复制</Checkbox>}
         {copy && <Button
           loading={loading}
           type="primary"
@@ -96,10 +106,10 @@ const AddSkuModal = ({
       </Space>}
       centered
       footer={[
-        <Button onClick={() => {
+        <Button key="0" onClick={() => {
           setVisible(null);
         }}>取消</Button>,
-        <Button type="primary" ghost onClick={() => {
+        <Button key="1" type="primary" ghost onClick={() => {
           const {newData} = visible;
           batchRun({
             data: {
@@ -107,7 +117,7 @@ const AddSkuModal = ({
             }
           });
         }}>继续保存</Button>,
-        <Button type="primary" ghost onClick={() => {
+        <Button key="2" type="primary" ghost onClick={() => {
           const {newData, oldData} = visible;
 
           const describe = [];
@@ -138,6 +148,7 @@ const AddSkuModal = ({
               sku: describe,
             }
           });
+          setVisible(null);
         }}>合并物料</Button>,
       ]}
       visible={visible}
