@@ -69,7 +69,7 @@ const AddSkuModal = ({
       }}
       ref={addRef}
       footer={<>
-        <Checkbox checked={nextCopy} onChange={e => setNextCopy(e.target.checked)}>继续复制</Checkbox>
+        {copy && <Checkbox checked={nextCopy} onChange={e => setNextCopy(e.target.checked)}>继续复制</Checkbox>}
         {copy && <Button
           loading={loading}
           type="primary"
