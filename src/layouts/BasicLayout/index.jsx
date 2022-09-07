@@ -8,7 +8,8 @@ import store from '@/store';
 import WindowOpenImg from '@/components/Editor/components/WindowOpenImg';
 import WindowOpenSku from '@/components/Editor/components/WindowOpenSku';
 import WindowOpenPosition from '@/components/Editor/components/WindowOpenPosition';
-import {request} from '@/util/Request';
+import GetUserInfo from '@/util/GetUserInfo';
+import {request as requestProivde} from '@/util/Service';
 
 const {Content} = Layout;
 
@@ -29,9 +30,13 @@ export default function BasicLayout({children}) {
       if (jwt.length !== 3) {
         throw new Error('本地登录信息错误');
       }
-      const res = await request({url: '/rest/refreshToken', method: 'GET'});
-      if (res) {
-        cookie.set('tianpeng-token', res);
+      if (GetUserInfo().tokenMinute >= 10) {
+        const res = await requestProivde({url: '/rest/refreshToken', method: 'GET'});
+        if (res.errCode === 0 && GetUserInfo(res.data).token) {
+          cookie.set('tianpeng-token', res.data);
+        }
+      }else {
+        cookie.set('tianpeng-token',token);
       }
       dispatchers.getUserInfo();
       dataDispatchers.getSkuClass();

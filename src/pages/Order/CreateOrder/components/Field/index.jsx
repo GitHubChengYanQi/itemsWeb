@@ -365,8 +365,13 @@ export const TemplateId = (props) => {
 };
 
 export const Freight = (props) => {
-  return (<Radio.Group {...props}><Radio value={1}>是</Radio><Radio value={0}>否</Radio></Radio.Group>);
+  return (<Radio.Group {...props}>
+    <Radio value={1}>生成合同</Radio>
+    <Radio value={0}>无合同</Radio>
+    <Radio value={2}>上传合同</Radio>
+  </Radio.Group>);
 };
+
 export const PayMethod = (props) => {
   return (<Input placeholder="请输入 现金/承兑/电汇" {...props} />);
 };
