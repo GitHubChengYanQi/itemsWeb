@@ -35,6 +35,8 @@ const CustomerSelect = (props) => {
     api = {...supplierList, params};
   } else if (supply === 0) {
     api = {...customerList, params};
+  }else {
+    api = {...supplierList, params};
   }
 
   let detailApi = {};
@@ -44,6 +46,8 @@ const CustomerSelect = (props) => {
     detailApi = supplierDetail;
   } else if (supply === 0) {
     detailApi = customerDetail;
+  }else {
+    detailApi = supplierDetail;
   }
 
   const {loading, data, run} = useRequest({
@@ -60,7 +64,6 @@ const CustomerSelect = (props) => {
       id: value.customerId,
     };
   }) : [];
-
   const defaultValue = async () => {
     const res = await request({
       ...detailApi,
@@ -84,6 +87,8 @@ const CustomerSelect = (props) => {
   return (
     <div id="select" style={style}>
       <Select
+        options={options}
+        style={{width:'100%'}}
         value={name}
         notFoundContent={loading && <div style={{textAlign: 'center', padding: 16}}><Spin /></div>}
         placeholder={placeholder}
@@ -91,8 +96,8 @@ const CustomerSelect = (props) => {
         getPopupContainer={() => document.getElementById('select')}
         allowClear
         onChange={(value, option) => {
-          onSuccess(option && option.key);
-          onChange(option && option.key);
+          onSuccess(option && option.id);
+          onChange(option && option.id);
           setName(value);
         }}
         onSearch={(value) => {
@@ -106,18 +111,7 @@ const CustomerSelect = (props) => {
             }
           });
         }}
-      >
-        {options && options.map((items) => {
-          return (
-            <Select.Option
-              key={items.id}
-              title={items.label}
-              value={items.value}>
-              {items.label}
-            </Select.Option>
-          );
-        })}
-      </Select>
+      />
     </div>
   );
 };

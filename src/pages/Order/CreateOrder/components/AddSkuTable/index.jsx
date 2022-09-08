@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Table, Select as AntSelect, Space, Spin} from 'antd';
+import {Button, Table, Select as AntSelect, Space, Spin, Input} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
 import {useRequest} from '@/util/Request';
 import {brandIdSelect} from '@/pages/Erp/stock/StockUrl';
@@ -296,6 +296,20 @@ const AddSkuTable = ({
             value={value}
             onChange={(value) => {
               setValue({deliveryDate: value}, index);
+            }}
+          />;
+        }} />
+      <Table.Column
+        title="备注"
+        width={100}
+        onCell={sharedOnCell}
+        dataIndex="note"
+        render={(value, record, index) => {
+          return <Input
+            placeholder="请输入备注"
+            value={value}
+            onChange={(value) => {
+              setValue({note: value}, index);
             }}
           />;
         }} />

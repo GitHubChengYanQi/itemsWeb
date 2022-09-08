@@ -192,7 +192,7 @@ const Description = (props) => {
                 });
               }} />
           </Descriptions.Item>
-          <Descriptions.Item span={2} label="统一社会信用代码"><InputEdit value={data.utscc} onChange={async (value) => {
+          <Descriptions.Item label="统一社会信用代码"><InputEdit value={data.utscc} onChange={async (value) => {
             await run({
               data: {
                 customerId: data.customerId,

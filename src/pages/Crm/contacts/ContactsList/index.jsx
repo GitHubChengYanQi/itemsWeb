@@ -6,7 +6,7 @@
  */
 
 import React, {useRef, useState} from 'react';
-import {Button, Divider, Input, Modal as AntModal, Space, Table as AntTable, Tag} from 'antd';
+import {Button, Divider, Modal as AntModal, Space, Table as AntTable, Tag} from 'antd';
 import {createFormActions, FormButtonGroup, Submit} from '@formily/antd';
 import {ExclamationCircleOutlined, SearchOutlined} from '@ant-design/icons';
 import Table from '@/components/Table';
@@ -21,6 +21,7 @@ import ContactsEdit from '@/pages/Crm/contacts/ContactsEdit';
 import * as SysField from '@/pages/Crm/contacts/ContactsField';
 import {useRequest} from '@/util/Request';
 import {customerEdit} from '@/pages/Crm/customer/CustomerUrl';
+import SelectCustomer from '@/pages/Crm/customer/components/SelectCustomer';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -29,9 +30,10 @@ const formActionsPublic = createFormActions();
 
 const ContactsTable = (props) => {
 
-  const {customer, refresh} = props;
+  const {customer = {}, refresh} = props;
 
   const [newCustomerId, setNewCustomerId] = useState();
+  const [record, setRecord] = useState();
 
   const ref = useRef(null);
   const tableRef = useRef(null);
@@ -40,6 +42,7 @@ const ContactsTable = (props) => {
   const {run} = useRequest(contactsBind, {
     manual: true, onSuccess: () => {
       tableRef.current.submit();
+      setRecord();
     }
   });
 
@@ -113,7 +116,7 @@ const ContactsTable = (props) => {
             }
           }}>
             <Icon type={search ? 'icon-shouqi' : 'icon-gaojisousuo'} />{search ? '收起' : '高级'}</Button>
-          {customer && <FormItem
+          {customer.customerId && <FormItem
             hidden
             value={customer.customerId || ' '}
             name="customerId"
@@ -123,165 +126,162 @@ const ContactsTable = (props) => {
     );
   };
 
-  const confirmOutStock = (record) => {
-    AntModal.confirm({
-      title: '联系人离职',
-      centered: true,
-      content: <>
-        请确认离职操作
-        <Input onChange={(value) => {
-          setNewCustomerId(value.target.value);
-        }} />
-      </>,
-      cancelText: '取消',
-      onOk: async () => {
-        console.log(newCustomerId);
-        // await run({
-        //   data: {
-        //     customerId: record.customerResults && record.customerResults.length > 0 && record.customerResults[0].customerId,
-        //     contactsId: record.contactsId,
-        //     display: 0,
-        //   }
-        // });
-        // tableRef.current.submit();
-      },
-      onCancel: () => {
-        tableRef.current.submit();
-      }
-    });
-  };
 
+  return <>
+    {customer.customerId && <Divider orientation="right">
+      <AddButton ghost onClick={() => {
+        ref.current.open(false);
+      }} />
+    </Divider>}
+    <Table
+      headStyle={{display: customer.customerId && 'none'}}
+      bodyStyle={{padding: customer.customerId && 0}}
+      bordered={!customer.customerId}
+      title={<Breadcrumb />}
+      formActions={formActionsPublic}
+      api={contactsList}
+      rowKey="contactsId"
+      searchForm={searchForm}
+      SearchButton={Search()}
+      tableKey="contacts"
+      isModal={false}
+      layout={search}
+      actions={actions()}
+      ref={tableRef}
+    >
+      <Column key={1} title="联系人姓名" fixed align="center" width={120} dataIndex="contactsName" />
+      <Column key={2} title="部门" align="center" dataIndex="deptResult" width={200} render={(value) => {
+        return (
+          <>
+            {value && value.fullName}
+          </>
+        );
+      }} />
+      <Column key={3} title="职务" align="center" width={200} render={(value, record) => {
+        return (
+          <>
+            {record.companyRoleResult && record.companyRoleResult.position}
+          </>
+        );
+      }} />
+      {!customer.customerId &&
+      <Column key={4} title="关联客户" width={300} dataIndex="clientId" render={(value, record) => {
+        return (
+          record.customerResults && record.customerResults.map((item) => {
+            return item.customerName;
+          }).toString()
+        );
+      }} />}
 
-  return (
-    <>
-      {customer && <Divider orientation="right">
-        <AddButton ghost onClick={() => {
-          ref.current.open(false);
-        }} />
-      </Divider>}
-      <Table
-        headStyle={{display: customer && 'none'}}
-        bodyStyle={{padding: customer && 0}}
-        bordered={!customer}
-        title={<Breadcrumb />}
-        formActions={formActionsPublic}
-        api={contactsList}
-        rowKey="contactsId"
-        searchForm={searchForm}
-        SearchButton={Search()}
-        tableKey="contacts"
-        isModal={false}
-        layout={search}
-        actions={actions()}
-        ref={tableRef}
-      >
-        <Column key={1} title="联系人姓名" fixed align="center" width={120} dataIndex="contactsName" />
-        <Column key={2} title="部门" align="center" dataIndex="deptResult" width={200} render={(value) => {
+      <Column key={5} title="联系电话" width={300} dataIndex="phone" render={(value, record) => {
+        return (
+          <>
+            {
+              record.phoneParams && record.phoneParams.length > 0 ? record.phoneParams.map((value, index) => {
+                return (
+                  <Tag
+                    key={index}
+                    color="blue"
+                    style={{marginRight: 3}}
+                  >
+                    {value.phoneNumber}
+                  </Tag>
+                );
+              }) : null
+            }
+          </>
+        );
+
+      }}
+      />
+      <Column key={5} title="固定电话" width={300} dataIndex="phone" render={(value, record) => {
+        return (
+          <>
+            {
+              record.phoneParams && record.phoneParams.length > 0 ? record.phoneParams.map((value, index) => {
+                return (
+                  <Tag
+                    key={index}
+                    color="blue"
+                    style={{marginRight: 3}}
+                  >
+                    {value.telephone}
+                  </Tag>
+                );
+              }) : null
+            }
+          </>
+        );
+
+      }} />
+      <Column />
+      <Column
+        key={6}
+        title="操作"
+        fixed="right"
+        width={customer.customerId ? 260 : 150}
+        align="right"
+        render={(value, record) => {
+          const isDefaultContacts = record.contactsId === customer.defaultContacts;
           return (
             <>
-              {value && value.fullName}
-            </>
-          );
-        }} />
-        <Column key={3} title="职务" align="center" width={200} render={(value, record) => {
-          return (
-            <>
-              {record.companyRoleResult && record.companyRoleResult.position}
-            </>
-          );
-        }} />
-        {!customer && <Column key={4} title="关联客户" width={300} dataIndex="clientId" render={(value, record) => {
-          return (
-            record.customerResults && record.customerResults.map((item) => {
-              return item.customerName;
-            }).toString()
-          );
-        }} />}
-
-        <Column key={5} title="联系电话" width={300} dataIndex="phone" render={(value, record) => {
-          return (
-            <>
-              {
-                record.phoneParams && record.phoneParams.length > 0 ? record.phoneParams.map((value, index) => {
-                  return (
-                    <Tag
-                      key={index}
-                      color="blue"
-                      style={{marginRight: 3}}
-                    >
-                      {value.phoneNumber}
-                    </Tag>
-                  );
-                }) : null
-              }
-            </>
-          );
-
-        }} />
-        <Column key={5} title="固定电话" width={300} dataIndex="phone" render={(value, record) => {
-          return (
-            <>
-              {
-                record.phoneParams && record.phoneParams.length > 0 ? record.phoneParams.map((value, index) => {
-                  return (
-                    <Tag
-                      key={index}
-                      color="blue"
-                      style={{marginRight: 3}}
-                    >
-                      {value.telephone}
-                    </Tag>
-                  );
-                }) : null
-              }
-            </>
-          );
-
-        }} />
-        <Column />
-        <Column key={6} title="操作" fixed="right" width={customer ? 260 : 150} align="right" render={(value, record) => {
-          const isDefaultContacts = customer && record.contactsId === customer.defaultContacts;
-          return (
-            <>
-              {customer && <Button disabled={isDefaultContacts} type="link" onClick={() => {
+              {customer.customerId && <Button disabled={isDefaultContacts} type="link" onClick={() => {
                 defaultContacts(record.contactsName, record.contactsId);
               }}>{isDefaultContacts ? '已设为默认联系人' : '设为默认联系人'}</Button>}
               <EditButton onClick={() => {
                 ref.current.open(record);
               }} />
               <Button size="small" type="link" danger onClick={() => {
-                confirmOutStock(record);
+                setRecord(record);
               }}>离职</Button>
             </>
           );
         }} />
-      </Table>
-      <Modal
-        width={800}
-        title="联系人"
-        component={ContactsEdit}
-        customerId={customer && customer.customerId}
-        onSuccess={() => {
-          tableRef.current.refresh();
-          ref.current.close();
-        }} ref={ref}
-        compoentRef={submitRef}
-        footer={
-          <>
-            <Button type="primary" onClick={() => {
-              submitRef.current.submit();
-            }}>
-              保存
-            </Button>
-            <Button onClick={() => {
-              ref.current.close();
-            }}>
-              取消
-            </Button>
-          </>}
-      />
-    </>
-  );
+    </Table>
+    <Modal
+      width={800}
+      title="联系人"
+      component={ContactsEdit}
+      customerId={customer && customer.customerId}
+      onSuccess={() => {
+        tableRef.current.refresh();
+        ref.current.close();
+      }} ref={ref}
+      compoentRef={submitRef}
+      footer={
+        <>
+          <Button type="primary" onClick={() => {
+            submitRef.current.submit();
+          }}>
+            保存
+          </Button>
+          <Button onClick={() => {
+            ref.current.close();
+          }}>
+            取消
+          </Button>
+        </>}
+    />
+
+
+    <AntModal visible={record} centered title="联系人离职" onCancel={() => setRecord()} onOk={() => {
+      const customers = customer.customerId ? [customer] : (record.customerResults || []);
+      run({
+        data: {
+          contactsId: record.contactsId,
+          customerIds: customers.map(item => item.customerId),
+          newCustomerId,
+        }
+      });
+    }}>
+      <Space direction="vertical" style={{width: '100%'}}>
+        请确认离职操作,选择转职单位
+        <SelectCustomer supply={null} placeholder="请选择转职单位" value={newCustomerId} width="100%" noAdd onChange={(value) => {
+          setNewCustomerId(value);
+        }} />
+      </Space>
+    </AntModal>
+  </>;
 };
 
 export default ContactsTable;
