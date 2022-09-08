@@ -6,7 +6,7 @@ import {customerDetail} from '@/pages/Crm/customer/CustomerUrl';
 import {contactsDetail} from '@/pages/Crm/contacts/contactsUrl';
 import {templateGetLabel} from '@/pages/Crm/template/TemplateUrl';
 import {invoiceDetail} from '@/pages/Crm/invoice/invoiceUrl';
-import {selfEnterpriseDetail, supplierDetail} from '@/pages/Purshase/Supply/SupplyUrl';
+import {selfEnterpriseDetail} from '@/pages/Purshase/Supply/SupplyUrl';
 
 export const customerAAction = (setFieldState) => {
 
@@ -23,7 +23,7 @@ export const customerAAction = (setFieldState) => {
     if (value) {
       const customer = await request({...api, data: {customerId: value}});
       if (!customer) {
-        return message.warn('请检查供应商！');
+        return;
       }
 
       setFieldState('partyAAdressId', (state) => {
@@ -132,6 +132,9 @@ export const customerAAction = (setFieldState) => {
   FormEffectHooks.onFieldValueChange$('partyABankAccount').subscribe(async ({value}) => {
     if (value) {
       const res = await request({...invoiceDetail, data: {invoiceId: value}});
+      if (!res) {
+        return;
+      }
       setFieldState('partyABankNo', (state) => {
         state.value = res.bankNo;
       });
@@ -141,10 +144,13 @@ export const customerAAction = (setFieldState) => {
   FormEffectHooks.onFieldValueChange$('partyAContactsId').subscribe(async ({value, pristine}) => {
     if (value) {
       const res = await request({...contactsDetail, data: {contactsId: value}});
+      if (!res) {
+        return;
+      }
       setFieldState('partyAPhone', (state) => {
         state.props.contactsId = value;
         if (!pristine) {
-          state.props.defaultValue = res.phoneParams && res.phoneParams[0].phoneId;
+          state.props.defaultValue = res.phoneParams[0] && res.phoneParams[0].phoneId;
         }
         state.props.options = res.phoneParams && res.phoneParams.map((item) => {
           return {
@@ -176,7 +182,7 @@ export const customerBAction = (setFieldState) => {
     if (value) {
       const customer = await request({...api, data: {customerId: value}});
       if (!customer) {
-        return message.warn('请检查供应商！');
+        return;
       }
       setFieldState('partyBAdressId', (state) => {
         state.props.customerId = value;
@@ -253,6 +259,9 @@ export const customerBAction = (setFieldState) => {
   FormEffectHooks.onFieldValueChange$('partyBContactsId').subscribe(async ({value, pristine}) => {
     if (value) {
       const res = await request({...contactsDetail, data: {contactsId: value}});
+      if (!res) {
+        return;
+      }
       setFieldState('partyBPhone', (state) => {
         state.props.contactsId = value;
         if (!pristine) {
@@ -277,6 +286,9 @@ export const customerBAction = (setFieldState) => {
   FormEffectHooks.onFieldValueChange$('partyBBankAccount').subscribe(async ({value}) => {
     if (value) {
       const res = await request({...invoiceDetail, data: {invoiceId: value}});
+      if (!res) {
+        return;
+      }
       setFieldState('partyBBankNo', (state) => {
         state.value = res.bankNo;
       });
@@ -470,6 +482,9 @@ const contractAction = (setFieldState) => {
         state.props.array = null;
       });
       const res = await request({...templateGetLabel, params: {templateId: value}});
+      if (!res) {
+        return;
+      }
       setFieldState('labelResults', (state) => {
         state.props.array = res;
       });

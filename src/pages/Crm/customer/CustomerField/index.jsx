@@ -88,15 +88,20 @@ export const CompanyRoleId = (props) => {
 
   const {value, onChange, disabled, placeholder} = props;
 
-  const {loading, data, run} = useRequest(companyRoleList, {
+  const params = {tableName: 'sys_role'};
+
+  const {loading, data, run} = useRequest({
+    url: '/generalFormData/list',
+    method: 'POST',
+    data: params,
+  }, {
     debounceInterval: 300,
-    manual: true,
   });
 
   const options = (!loading && data) ? data.map((value) => {
     return {
-      label: value.position,
-      value: value.position,
+      label: value.value,
+      value: value.value,
     };
   }) : [];
 
@@ -117,7 +122,8 @@ export const CompanyRoleId = (props) => {
           onChange(value.target.value);
           run({
             data: {
-              position: value.target.value,
+              ...params,
+              value: value.target.value,
             }
           });
         }}
@@ -130,18 +136,20 @@ export const DeptName = (props) => {
 
   const {value, onChange, disabled, placeholder} = props;
 
+  const params = {tableName: 'sys_dept'};
+
   const {loading, data, run} = useRequest({
-    url: '/daoxinDept/list',
-    method: 'POST'
+    url: '/generalFormData/list',
+    method: 'POST',
+    data: params
   }, {
     debounceInterval: 300,
-    manual: true,
   });
 
   const options = (!loading && data) ? data.map((value) => {
     return {
-      label: value.fullName,
-      value: value.fullName,
+      label: value.value,
+      value: value.value,
     };
   }) : [];
 
@@ -163,7 +171,8 @@ export const DeptName = (props) => {
           onChange(value.target.value);
           run({
             data: {
-              fullName: value.target.value,
+              ...params,
+              value: value.target.value,
             }
           });
         }}
@@ -235,7 +244,7 @@ export const AddSku = ({value = [], onChange, title}) => {
     </ProCard>
 
     <Modal
-      headTitle='添加物料'
+      headTitle="添加物料"
       ref={ref}
       width={1000}
       footer={<Space>
