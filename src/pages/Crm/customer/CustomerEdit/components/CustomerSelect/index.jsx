@@ -85,7 +85,7 @@ const CustomerSelect = (props) => {
 
 
   return (
-    <div id="select" style={style}>
+    <div style={style}>
       <Select
         options={options}
         style={{width:'100%'}}
@@ -93,7 +93,7 @@ const CustomerSelect = (props) => {
         notFoundContent={loading && <div style={{textAlign: 'center', padding: 16}}><Spin /></div>}
         placeholder={placeholder}
         showSearch
-        getPopupContainer={() => document.getElementById('select')}
+        // getPopupContainer={() => document.getElementById('select')}
         allowClear
         onChange={(value, option) => {
           onSuccess(option && option.id);

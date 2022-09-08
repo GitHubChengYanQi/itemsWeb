@@ -5,7 +5,7 @@
  * @Date 2021-07-23 10:06:12
  */
 
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, Divider, Modal as AntModal, Space, Table as AntTable, Tag} from 'antd';
 import {createFormActions, FormButtonGroup, Submit} from '@formily/antd';
 import {ExclamationCircleOutlined, SearchOutlined} from '@ant-design/icons';
@@ -22,6 +22,7 @@ import * as SysField from '@/pages/Crm/contacts/ContactsField';
 import {useRequest} from '@/util/Request';
 import {customerEdit} from '@/pages/Crm/customer/CustomerUrl';
 import SelectCustomer from '@/pages/Crm/customer/components/SelectCustomer';
+import ProSkeleton from '@ant-design/pro-skeleton';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -34,6 +35,8 @@ const ContactsTable = (props) => {
 
   const [newCustomerId, setNewCustomerId] = useState();
   const [record, setRecord] = useState();
+
+  const [loading, setLoading] = useState(false);
 
   const ref = useRef(null);
   const tableRef = useRef(null);
@@ -50,10 +53,20 @@ const ContactsTable = (props) => {
     {
       manual: true,
       onSuccess: () => {
-        if (typeof refresh === 'function')
+        if (typeof refresh === 'function') {
           refresh();
+        }
       }
     });
+
+  useEffect(() => {
+    if (customer.defaultContacts) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1);
+    }
+  }, [customer.defaultContacts]);
 
   const defaultContacts = (name, contactsId) => {
     AntModal.confirm({
@@ -126,6 +139,9 @@ const ContactsTable = (props) => {
     );
   };
 
+  if (loading) {
+    return <ProSkeleton />;
+  }
 
   return <>
     {customer.customerId && <Divider orientation="right">
@@ -144,7 +160,7 @@ const ContactsTable = (props) => {
       searchForm={searchForm}
       SearchButton={Search()}
       tableKey="contacts"
-      isModal={false}
+      isModal={customer.customerId}
       layout={search}
       actions={actions()}
       ref={tableRef}
@@ -215,13 +231,14 @@ const ContactsTable = (props) => {
 
       }} />
       <Column />
-      <Column
+      {!loading && <Column
         key={6}
         title="操作"
         fixed="right"
         width={customer.customerId ? 260 : 150}
         align="right"
         render={(value, record) => {
+          const customers = (record.customerResults || []);
           const isDefaultContacts = record.contactsId === customer.defaultContacts;
           return (
             <>
@@ -231,12 +248,12 @@ const ContactsTable = (props) => {
               <EditButton onClick={() => {
                 ref.current.open(record);
               }} />
-              <Button size="small" type="link" danger onClick={() => {
+              <Button size="small" type="link" danger={customers.length > 0} onClick={() => {
                 setRecord(record);
-              }}>离职</Button>
+              }}>{customers.length > 0 ? '离职' : '转职'}</Button>
             </>
           );
-        }} />
+        }} />}
     </Table>
     <Modal
       width={800}
@@ -276,9 +293,16 @@ const ContactsTable = (props) => {
     }}>
       <Space direction="vertical" style={{width: '100%'}}>
         请确认离职操作,选择转职单位
-        <SelectCustomer supply={null} placeholder="请选择转职单位" value={newCustomerId} width="100%" noAdd onChange={(value) => {
-          setNewCustomerId(value);
-        }} />
+        <SelectCustomer
+          supply={null}
+          placeholder="请选择转职单位"
+          value={newCustomerId}
+          width="100%"
+          noAdd
+          onChange={(value) => {
+            setNewCustomerId(value);
+          }}
+        />
       </Space>
     </AntModal>
   </>;
