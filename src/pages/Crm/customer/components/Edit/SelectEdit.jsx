@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {Popover, Select} from 'antd';
+import Cascader from '@/components/Cascader';
 
 
-const SelectEdit = ({value: values, val, onChange,data}) => {
+const SelectEdit = ({value: values, val, onChange, data, tree, api}) => {
 
   const [value, setValue] = useState(values);
   const [change, setChange] = useState(val);
@@ -13,9 +14,14 @@ const SelectEdit = ({value: values, val, onChange,data}) => {
       <Popover placement="bottom" visible={visiable} onVisibleChange={(valuhe) => {
         setVisiable(valuhe);
       }} trigger="click" content={
-        <Select
+        tree ? <Cascader value={value} api={api} onChange={(value, option = []) => {
+          setVisiable(false);
+          setValue(value);
+          setChange(option[option.length - 1] && option[option.length - 1].label);
+          typeof onChange === 'function' && onChange(value);
+        }} /> : <Select
           value={value}
-          style={{width:200}}
+          style={{width: 200}}
           options={data}
           onSelect={(value, option) => {
             setVisiable(false);

@@ -9,6 +9,7 @@ const AvatarEdit = ({value, onChange, name}) => {
   return (
     <div style={{cursor: 'pointer'}}>
       <UpLoadImg
+        value={change}
         button={<Avatar size={72} src={change}>{name.substring(0, 1)}</Avatar>}
         type="picture"
         onChange={(value) => {

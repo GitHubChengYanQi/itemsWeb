@@ -103,6 +103,7 @@ const CustomerTable = (props) => {
           }}>
             <Icon type={search ? 'icon-shouqi' : 'icon-gaojisousuo'} />{search ? '收起' : '高级'}</Button>
           <FormItem hidden name="status" component={SysField.Name} />
+          <FormItem hidden name="supply" value={0} component={SysField.Name} />
           <FormItem hidden name="classification" component={SysField.Name} />
           <FormItem hidden name="customerLevelId" component={SysField.Name} />
         </FormButtonGroup>

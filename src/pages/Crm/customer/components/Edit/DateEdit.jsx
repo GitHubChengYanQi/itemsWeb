@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import {Popover, Select} from 'antd';
+import {Popover} from 'antd';
 import DatePicker from '@/components/DatePicker';
-import moment from 'moment';
 
 const DateEdit = ({value,onChange,disabledDate}) => {
 
@@ -12,10 +11,10 @@ const DateEdit = ({value,onChange,disabledDate}) => {
     <div style={{display: 'inline-block', cursor: 'pointer'}}>
       <Popover placement="bottom" visible={visiable} onVisibleChange={(value) => {
         setVisiable(value);
-      }} trigger="click" content={<DatePicker disabledDate={disabledDate} onChange={(value,dateString)=>{
-        setChange(dateString);
+      }} trigger="click" content={<DatePicker value={change} disabledDate={disabledDate} onChange={(value,dateString)=>{
+        setChange(value);
         setVisiable(false);
-        typeof onChange === 'function' && onChange(dateString);
+        typeof onChange === 'function' && onChange(value);
       }} />} >
         {change || '未填写'}
       </Popover>

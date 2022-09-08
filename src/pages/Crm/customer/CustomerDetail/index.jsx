@@ -31,7 +31,7 @@ import {supplierDetail} from '@/pages/Purshase/Supply/SupplyUrl';
 
 const {TabPane} = Tabs;
 
-const CustomerDetail = ({id,supply = 0, status, ...props}) => {
+const CustomerDetail = ({id, supply = 0, status, ...props}) => {
 
   const params = useParams();
   const addRef = useRef(null);
@@ -52,7 +52,7 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
     }
   });
 
-  const {loading: editLoading, run: runCustomer} = useRequest(
+  const {run: runCustomer} = useRequest(
     customerEdit,
     {
       manual: true,
@@ -63,12 +63,12 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
 
   const [width, setWidth] = useState();
 
-  if (loading || editLoading) {
-    return (<ProSkeleton type="descriptions"/>);
+  if (loading && !data) {
+    return (<ProSkeleton type="descriptions" />);
   }
 
   if (!data) {
-    return <Empty/>;
+    return <Empty />;
   }
 
   const enterprise = data.status === 99;
@@ -76,14 +76,13 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
   return (
     <div className={styles.detail}>
       <Card>
-        <Breadcrumb title="供应商详情"/>
+        <Breadcrumb title="供应商详情" />
       </Card>
       <Card>
         <div className={styles.title}>
           <Row gutter={24}>
             <Col>
               <AvatarEdit
-                data={data}
                 name={data.customerName && data.customerName.substring(0, 1)}
                 onChange={async (value) => {
                   await runCustomer({
@@ -123,7 +122,7 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
                         abbreviation: value
                       }
                     });
-                  }}/>
+                  }} />
                 </Tag>
               </Space>
               <div>
@@ -139,7 +138,7 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
                 <div>
                   <em>联系地址：<TreeSelectSee
                     data={areaData.area}
-                    value={data.address.region}/>&nbsp;&nbsp;{data.address && data.address.detailLocation || '--'}
+                    value={data.address.region} />&nbsp;&nbsp;{data.address && data.address.detailLocation || '--'}
                   </em>
                 </div>
               </div>
@@ -155,13 +154,13 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
             url={id ? '/purchase/supply' : '/CRM/customer'}
             refresh={() => {
               refresh();
-            }}/>
+            }} />
           {props.hidden && <>
             <Button
               style={params.state === 'false' ? {'display': 'none'} : null}
               onClick={() => {
                 addRef.current.open(false);
-              }} icon={<EditOutlined/>}>创建商机</Button>
+              }} icon={<EditOutlined />}>创建商机</Button>
             <BusinessAdd
               ref={addRef}
               customerId={data.customerId}
@@ -177,7 +176,7 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
               style={params.state === 'false' ? {'display': 'none'} : null}
               onClick={() => {
                 refTrack.current.open(false);
-              }} icon={<EditOutlined/>}>添加跟进</Button>
+              }} icon={<EditOutlined />}>添加跟进</Button>
           </>}
 
           <Modal
@@ -205,16 +204,16 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
             onSuccess={() => {
               refTrack.current.close();
               refresh();
-            }} val={data.customerId} number={0}/>
+            }} val={data.customerId} number={0} />
           <Button onClick={() => {
             history.push(id ? '/purchase/supply' : '/CRM/customer');
-          }}><Icon type="icon-huifu"/>返回</Button>
+          }}><Icon type="icon-huifu" />返回</Button>
         </div>}
       </Card>
       <div
         className={styles.main}>
         <Card>
-          <Desc data={data} enterprise={enterprise} supply={id}/>
+          <Desc data={data} enterprise={enterprise} supply={id} />
         </Card>
       </div>
       <div
@@ -224,37 +223,37 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
             <Card>
               <Tabs defaultActiveKey="9">
                 <TabPane tab="可供物料" key="9">
-                  <SupplyList customer={data}/>
+                  <SupplyList customer={data} />
                 </TabPane>
                 <TabPane tab="联系信息" key="2">
                   <ContactsTable customer={data} refresh={() => {
                     refresh();
-                  }}/>
+                  }} />
                 </TabPane>
                 <TabPane tab="合同记录" key="4">
-                  <ContractTable customerId={data && data.customerId}/>
+                  <ContractTable customerId={data && data.customerId} />
                 </TabPane>
                 <TabPane tab="财务信息" key="8">
                   <InvoiceList customer={data} refresh={() => {
                     refresh();
-                  }}/>
+                  }} />
                 </TabPane>
                 <TabPane tab="地址" key="3">
                   <AdressList customer={data} refresh={() => {
                     refresh();
-                  }}/>
+                  }} />
                 </TabPane>
                 <TabPane tab="货单" key="5">
-                  <Empty/>
+                  <Empty />
                 </TabPane>
                 <TabPane tab="回款" key="6">
                   Content of Tab Pane 3
                 </TabPane>
                 <TabPane tab="附件" key="7">
-                  <Upload customerId={data && data.customerId}/>
+                  <Upload customerId={data && data.customerId} />
                 </TabPane>
                 <TabPane tab="企业信息" key="1">
-                  <Description data={data}/>
+                  <Description data={data} />
                 </TabPane>
               </Tabs>
             </Card>
@@ -263,12 +262,12 @@ const CustomerDetail = ({id,supply = 0, status, ...props}) => {
             <Card>
               <Tabs defaultActiveKey="1">
                 {props.hidden && <TabPane tab="跟进" key="1">
-                  <Track value={null} number={null} trackMessageId={data.customerId}/>
+                  <Track value={null} number={null} trackMessageId={data.customerId} />
                 </TabPane>}
                 <TabPane tab="动态" key="2">
                   <Dynamic value={data} api={{
                     url: '/customerDynamic/list', method: 'POST'
-                  }}/>
+                  }} />
                 </TabPane>
               </Tabs>
             </Card>

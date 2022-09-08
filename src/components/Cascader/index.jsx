@@ -20,8 +20,8 @@ const getParentValue = (value, data) => {
   return [];
 };
 
-const Cascader = (props) => {
-  const {
+const Cascader = (
+  {
     value,
     width,
     changeOnSelect = true,
@@ -33,7 +33,9 @@ const Cascader = (props) => {
     options,
     onChange = () => {
     }, ...other
-  } = props;
+  }
+) => {
+
   const {loading, data, run} = useRequest(api, {defaultParams, manual: !api});
 
   useEffect(() => {
@@ -73,9 +75,9 @@ const Cascader = (props) => {
     valueArray = '';
   }
 
-  const change = (value) => {
+  const change = (value,option) => {
     const result = value ? value[value.length - 1] : value;
-    onChange(result);
+    onChange(result,option);
   };
 
   const childrenData = (dataSources) => {

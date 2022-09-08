@@ -20,6 +20,9 @@ const TextEdit = ({
           setVisiable(true);
         }}>{change ? parse(change) : '未填写'}</div>
       <Modal
+        destroyOnClose
+        width={800}
+        title='编辑'
         visible={visiable}
         onCancel={() => {
           setVisiable(false);

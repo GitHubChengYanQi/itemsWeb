@@ -267,13 +267,13 @@ const CustomerEdit = (
           onSuccess={(res) => {
             onChange(res);
             notification.success({
-              message: '创建供应商成功！',
+              message: `创建${supply ? '供应商' : '客户'}成功！`,
             });
             if (add) {
               onClose();
               return;
             }
-            history.push('/purchase/supply');
+            history.push(supply ? '/purchase/supply' : '/CRM/customer');
           }}
           formActions={formActions}
         >
@@ -323,9 +323,8 @@ const CustomerEdit = (
               </Col>
             </Row>
             <Row className={style.formItem} gutter={24}>
-              <Col span={5}>
+              <Col span={5} className={style.label}>
                 <FormItem
-                  className={style.label}
                   label="联系人"
                   name="contactsName"
                   placeholder="请输入联系人姓名"
@@ -555,7 +554,6 @@ const CustomerEdit = (
                           </Col>
                           <Col span={5}>
                             <FormItem
-                              className={style.formItem}
                               label="手机"
                               placeholder="请输入手机号"
                               name={`contactsParams.${index}.phoneNumber`}
