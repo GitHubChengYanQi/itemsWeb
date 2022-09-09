@@ -480,6 +480,7 @@ const contractAction = (setFieldState) => {
     if (value) {
       setFieldState('labelResults', (state) => {
         state.props.array = null;
+        state.value = [];
       });
       const res = await request({...templateGetLabel, params: {templateId: value}});
       if (!res) {

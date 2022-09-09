@@ -42,8 +42,8 @@ export default {
   cheng: {
     logLevel: 'info',
     component: 'ant',
-    baseURI: 'http://192.168.0.100/',
-    // baseURI: 'http://10.147.20.68:8881/',
+    // baseURI: 'http://192.168.0.100/',
+    baseURI: 'http://10.147.20.68:8881/',
     projectName: '道昕云',
     AMAP_KEY: '',
     AMAP_VERSION: '2.0',

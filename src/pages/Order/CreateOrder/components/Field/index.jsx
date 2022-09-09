@@ -447,17 +447,17 @@ export const AllField = ({value: values = [], onChange, array}) => {
     onChange(newValues);
   };
 
-  const replaceDom = (item,index) => {
+  const replaceDom = (item) => {
 
     const detail = item.detail || [];
 
-    const defaultVal = detail.filter(detailItem => detailItem.isDefault === 1);
+    const defaultVal = detail.find(detailItem => detailItem.isDefault === 1) || {};
 
     switch (item.type) {
       case 'input':
         return <AutoComplete
           style={{width: '30vw'}}
-          defaultValue={defaultVal[0] && defaultVal[0].name}
+          defaultValue={defaultVal.name}
           onChange={(value) => {
             valuesChange(item.name, value);
           }}
@@ -513,7 +513,7 @@ export const AllField = ({value: values = [], onChange, array}) => {
   if (!array) {
     return <></>;
   }
-
+  console.log(values);
   return (<div>
     <Descriptions style={{width: '85vw'}} bordered column={2} labelStyle={{minWidth: 150}} title="合同模板中的其他字段">
       {
