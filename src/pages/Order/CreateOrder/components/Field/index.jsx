@@ -376,7 +376,7 @@ export const GenerateContract = (props) => {
   return (<Radio.Group {...props}>
     <Radio value={1}>生成合同</Radio>
     <Radio value={0}>无合同</Radio>
-    <Radio value={2}>上传合同</Radio>
+    {/* <Radio value={2}>上传合同</Radio> */}
   </Radio.Group>);
 };
 
