@@ -704,7 +704,7 @@ const CreateOrder = ({...props}) => {
               label="是否需要合同"
               required
               name="generateContract"
-              component={SysField.Freight}
+              component={SysField.GenerateContract}
             />
           </Col>
           <Col span={span}>
