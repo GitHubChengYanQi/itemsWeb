@@ -303,13 +303,13 @@ const AddSkuTable = ({
         title="备注"
         width={100}
         onCell={sharedOnCell}
-        dataIndex="note"
+        dataIndex="remark"
         render={(value, record, index) => {
           return <Input
             placeholder="请输入备注"
             value={value}
             onChange={(value) => {
-              setValue({note: value}, index);
+              setValue({remark: value}, index);
             }}
           />;
         }} />

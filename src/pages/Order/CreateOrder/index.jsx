@@ -689,9 +689,16 @@ const CreateOrder = ({...props}) => {
           </Col>
           <Col span={span}>
             <FormItem
-              label="交货人"
+              label="收货人"
               name="userId"
               component={CustomerSysField.Contacts}
+            />
+          </Col>
+          <Col span={span}>
+            <FormItem
+              label="交货期"
+              name="leadTime"
+              component={SysField.LeadTime}
             />
           </Col>
         </Row>
@@ -746,6 +753,7 @@ const CreateOrder = ({...props}) => {
 
       <ProCard bodyStyle={{padding: 16}} className="h2Card" title="其他约定项" headerBordered>
         <FormItem
+          wrapperCol={24}
           name="note"
           component={SysField.Note}
         />

@@ -413,6 +413,10 @@ export const DeliveryWay = (props) => {
   return (<Input placeholder="请输入交货方式" {...props} />);
 };
 
+export const LeadTime = (props) => {
+  return (<Input placeholder="请输入交货期" {...props} />);
+};
+
 export const Note = (props) => {
   return (<Editor {...props} />);
 };
