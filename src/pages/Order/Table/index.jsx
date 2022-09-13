@@ -120,7 +120,7 @@ const OrderTable = (props) => {
           align="right"
           render={(value, record) => {
             return <>
-              {!record.contractId && <Button type="link" onClick={() => {
+              {!record.contractId && !record.fileId && <Button type="link" onClick={() => {
                 createContractRef.current.open(false);
               }}>创建合同</Button>}
               <Button type="link" onClick={() => {

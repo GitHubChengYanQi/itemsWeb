@@ -20,12 +20,13 @@ const ApiConfig = {
 
 const SupplyEdit = ({...props}) => {
 
-  const {customerId, brandIds, ...other} = props;
+  const {customerId, brandIds, value, ...other} = props;
 
   const formRef = useRef();
 
   return (
     <Form
+      value={false}
       {...other}
       ref={formRef}
       api={ApiConfig}
@@ -35,8 +36,8 @@ const SupplyEdit = ({...props}) => {
         return {...value, customerId, brandIds: brandIds.length > 0 ? brandIds : [0]};
       }}
     >
-      <FormItem label="物料" name="skuId" component={SysField.SkuId} required />
-      <FormItem label="品牌" name="brandIds" component={SysField.BrandId} />
+      <FormItem initialValue={value && value.skuId} label="物料" name="skuId" component={SysField.SkuId} required />
+      <FormItem initialValue={(value && value.brandId) ? [value.brandId] : []} label="品牌" name="brandIds" component={SysField.BrandId} />
     </Form>
   );
 };

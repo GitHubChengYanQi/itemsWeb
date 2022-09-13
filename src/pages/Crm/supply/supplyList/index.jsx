@@ -6,7 +6,7 @@
  */
 
 import React, {useRef} from 'react';
-import {Button, Divider, Table as AntTable} from 'antd';
+import {Button, Divider, Space, Table as AntTable} from 'antd';
 import {createFormActions} from '@formily/antd';
 import {SearchOutlined} from '@ant-design/icons';
 import Table from '@/components/Table';
@@ -19,6 +19,7 @@ import SupplyEdit from '../supplyEdit';
 import * as SysField from '../supplyField';
 import Modal from '@/components/Modal';
 import SkuDetail from '@/pages/Erp/sku/SkuDetail';
+import EditButton from '@/components/EditButton';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -81,14 +82,15 @@ const SupplyList = ({customer}) => {
         <Column />
         <Column title="操作" align="right" render={(value, record) => {
           return (
-            <>
-              <Button type='link' onClick={() => {
+            <Space>
+              <EditButton onClick={() => ref.current.open(record)} />
+              <Button type="link" onClick={() => {
                 detailRef.current.open(record.skuId);
               }}><SearchOutlined /></Button>
               <DelButton api={supplyDelete} value={record.supplyId} onSuccess={() => {
                 tableRef.current.refresh();
               }} />
-            </>
+            </Space>
           );
         }} width={120} />
       </Table>

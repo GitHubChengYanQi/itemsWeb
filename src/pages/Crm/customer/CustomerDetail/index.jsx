@@ -76,7 +76,7 @@ const CustomerDetail = ({id, supply = 0, status, ...props}) => {
   return (
     <div className={styles.detail}>
       <Card>
-        <Breadcrumb title="供应商详情" />
+        <Breadcrumb title={supply ? '供应商详情' : '客户详情'} />
       </Card>
       <Card>
         <div className={styles.title}>

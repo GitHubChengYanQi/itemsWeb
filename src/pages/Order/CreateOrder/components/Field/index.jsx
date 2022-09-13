@@ -39,6 +39,7 @@ import {taxRateListSelect} from '@/pages/Purshase/taxRate/taxRateUrl';
 import CheckBrand from '@/pages/Erp/brand/components/CheckBrand';
 import Message from '@/components/Message';
 import SelectCreate from '@/components/SelectCreate';
+import FileUpload from '@/components/FileUpload';
 
 
 export const AddSku = ({value = [], customerId, onChange, module, currency}) => {
@@ -364,6 +365,10 @@ export const TemplateId = (props) => {
   />;
 };
 
+export const Upload = (props) => {
+  return <FileUpload {...props} title='上传合同' />;
+};
+
 export const Freight = (props) => {
   return (<Radio.Group {...props}>
     <Radio value={1}>是</Radio>
@@ -376,7 +381,7 @@ export const GenerateContract = (props) => {
   return (<Radio.Group {...props}>
     <Radio value={1}>生成合同</Radio>
     <Radio value={0}>无合同</Radio>
-    {/* <Radio value={2}>上传合同</Radio> */}
+    <Radio value={2}>上传合同</Radio>
   </Radio.Group>);
 };
 

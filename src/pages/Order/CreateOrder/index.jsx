@@ -707,6 +707,13 @@ const CreateOrder = ({...props}) => {
               component={SysField.GenerateContract}
             />
           </Col>
+          <FormItem
+            visible={false}
+            label="上传合同"
+            name="fileId"
+            component={SysField.Upload}
+            required
+          />
           <Col span={span}>
             <FormItem
               visible={false}

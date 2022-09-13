@@ -465,13 +465,16 @@ const paymentAction = (setFieldState, getFieldState) => {
 const contractAction = (setFieldState) => {
   FormEffectHooks.onFieldValueChange$('generateContract').subscribe(({value}) => {
     setFieldState('templateId', (state) => {
-      state.visible = value;
+      state.visible = value === 1;
     });
     setFieldState('contractCoding', (state) => {
-      state.visible = value;
+      state.visible =  value === 1;
     });
     setFieldState('labelResults', (state) => {
-      state.visible = value;
+      state.visible =  value === 1;
+    });
+    setFieldState('fileId', (state) => {
+      state.visible =  value === 2;
     });
   });
 
