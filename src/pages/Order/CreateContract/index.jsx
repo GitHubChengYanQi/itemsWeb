@@ -31,7 +31,7 @@ const CreateContract = ({
 
   const [allField, setAllField] = useState([]);
 
-  return <div style={{padding: 24}}>
+  return <div style={{padding: 24,minWidth:500}}>
     <Form
       NoButton={false}
       value={false}
@@ -59,7 +59,7 @@ const CreateContract = ({
       }}
       onSuccess={onSuccess}
     >
-      <FormItem label="合同编码" name="contractCoding" component={Coding} required />
+      <FormItem label="合同编码" name="contractCoding" component={Coding} />
       <FormItem label="合同模板" name="templateId" component={TemplateId} required />
       <Spin spinning={loading} tip="正在加载合同变量，请稍后...">
         <AllField array={loading ? [] : data} onChange={setAllField} value={allField} />
