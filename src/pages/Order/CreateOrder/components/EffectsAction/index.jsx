@@ -7,6 +7,7 @@ import {contactsDetail} from '@/pages/Crm/contacts/contactsUrl';
 import {templateGetLabel} from '@/pages/Crm/template/TemplateUrl';
 import {invoiceDetail} from '@/pages/Crm/invoice/invoiceUrl';
 import {selfEnterpriseDetail} from '@/pages/Purshase/Supply/SupplyUrl';
+import {isObject} from '@/util/Tools';
 
 export const customerAAction = (setFieldState) => {
 
@@ -19,108 +20,107 @@ export const customerAAction = (setFieldState) => {
     api = customerDetail;
   }
 
-  FormEffectHooks.onFieldValueChange$('buyerId').subscribe(async ({value, pristine}) => {
+  FormEffectHooks.onFieldValueChange$('buyerId').subscribe(async ({value}) => {
+    let customer = {};
     if (value) {
-      const customer = await request({...api, data: {customerId: value}});
-      if (!customer) {
-        return;
-      }
-
-      setFieldState('partyAAdressId', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.props.defaultValue = customer.defaultAddress;
-        }
-        state.props.options = customer.adressParams && customer.adressParams.map((item) => {
-          return {
-            label: item.detailLocation || item.location,
-            value: item.adressId,
-          };
-        });
-      });
-
-      setFieldState('adressId', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.props.defaultValue = customer.defaultAddress;
-        }
-        state.props.options = customer.adressParams && customer.adressParams.map((item) => {
-          return {
-            label: item.detailLocation || item.location,
-            value: item.adressId,
-          };
-        });
-      });
-
-      setFieldState('partyAContactsId', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.props.defaultValue = customer.defaultContacts;
-        }
-        state.props.options = customer.contactsParams && customer.contactsParams.map((item) => {
-          return {
-            label: item.contactsName,
-            value: item.contactsId,
-          };
-        });
-      });
-
-      setFieldState('userId', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.props.defaultValue = customer.defaultContacts;
-        }
-        state.props.options = customer.contactsParams && customer.contactsParams.map((item) => {
-          return {
-            label: item.contactsName,
-            value: item.contactsId,
-          };
-        });
-      });
-
-      setFieldState('partyABankId', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.value = customer.invoiceResult && customer.invoiceResult.bankId;
-        }
-      });
-
-      setFieldState('partyABankAccount', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.props.defaultValue = customer.invoiceId;
-        }
-        state.props.options = customer.invoiceResults && customer.invoiceResults.map((item) => {
-          return {
-            label: item.bankAccount,
-            value: item.invoiceId,
-            id: item.bankId,
-          };
-        });
-      });
-
-      setFieldState('partyALegalPerson', (state) => {
-        state.value = customer.legal;
-      });
-      setFieldState('partyACompanyPhone', (state) => {
-        state.value = customer.telephone;
-      });
-      setFieldState('partyAFax', (state) => {
-        state.value = customer.fax;
-      });
-      setFieldState('partyAZipCode', (state) => {
-        state.value = customer.zipCode;
-      });
-
-    } else {
-      setFieldState('partyABankId', (state) => {
-        state.props.customerId = value;
-        state.value = null;
-      });
+      customer = await request({...api, data: {customerId: value}});
     }
+    if (!customer) {
+      return;
+    }
+
+    setFieldState('partyAAdressId', (state) => {
+      if (!value) {
+        state.value = value;
+      }
+      state.props.customerId = value;
+      state.props.defaultValue = customer.defaultAddress;
+      state.props.options = customer.adressParams && customer.adressParams.map((item) => {
+        return {
+          label: item.detailLocation || item.location,
+          value: item.adressId,
+        };
+      });
+    });
+
+    setFieldState('adressId', (state) => {
+      if (!value) {
+        state.value = value;
+      }
+      state.props.customerId = value;
+      state.props.defaultValue = customer.defaultAddress;
+      state.props.options = customer.adressParams && customer.adressParams.map((item) => {
+        return {
+          label: item.detailLocation || item.location,
+          value: item.adressId,
+        };
+      });
+    });
+
+    setFieldState('partyAContactsId', (state) => {
+      if (!value) {
+        state.value = value;
+      }
+      state.props.customerId = value;
+      state.props.defaultValue = customer.defaultContacts;
+      state.props.options = customer.contactsParams && customer.contactsParams.map((item) => {
+        return {
+          label: item.contactsName,
+          value: item.contactsId,
+        };
+      });
+    });
+
+    setFieldState('userId', (state) => {
+      if (!value) {
+        state.value = value;
+      }
+      state.props.customerId = value;
+      state.props.defaultValue = customer.defaultContacts;
+      state.props.options = customer.contactsParams && customer.contactsParams.map((item) => {
+        return {
+          label: item.contactsName,
+          value: item.contactsId,
+        };
+      });
+    });
+
+    setFieldState('partyABankId', (state) => {
+      state.props.customerId = value;
+      state.value = customer.invoiceResult && customer.invoiceResult.bankId;
+    });
+
+    setFieldState('partyABankAccount', (state) => {
+      if (!value) {
+        state.value = value;
+      }
+      state.props.customerId = value;
+      state.props.defaultValue = customer.invoiceId;
+      state.props.options = customer.invoiceResults && customer.invoiceResults.map((item) => {
+        return {
+          label: item.bankAccount,
+          value: item.invoiceId,
+          id: item.bankId,
+        };
+      });
+    });
+
+    setFieldState('partyALegalPerson', (state) => {
+      state.value = customer.legal;
+    });
+    setFieldState('partyACompanyPhone', (state) => {
+      state.value = customer.telephone;
+    });
+    setFieldState('partyAFax', (state) => {
+      state.value = customer.fax;
+    });
+    setFieldState('partyAZipCode', (state) => {
+      state.value = customer.zipCode;
+    });
+
   });
 
-  FormEffectHooks.onFieldValueChange$('partyABankId').subscribe(async ({value, pristine}) => {
+  FormEffectHooks.onFieldValueChange$('partyABankId').subscribe(async ({value}) => {
     if (value) {
       setFieldState('partyABankAccount', (state) => {
         state.props.bankId = value;
@@ -141,7 +141,7 @@ export const customerAAction = (setFieldState) => {
     }
   });
 
-  FormEffectHooks.onFieldValueChange$('partyAContactsId').subscribe(async ({value, pristine}) => {
+  FormEffectHooks.onFieldValueChange$('partyAContactsId').subscribe(async ({value}) => {
     if (value) {
       const res = await request({...contactsDetail, data: {contactsId: value}});
       if (!res) {
@@ -149,9 +149,7 @@ export const customerAAction = (setFieldState) => {
       }
       setFieldState('partyAPhone', (state) => {
         state.props.contactsId = value;
-        if (!pristine) {
-          state.props.defaultValue = res.phoneParams[0] && res.phoneParams[0].phoneId;
-        }
+        state.props.defaultValue = isObject(res.phoneParams[0]).phoneId;
         state.props.options = res.phoneParams && res.phoneParams.map((item) => {
           return {
             label: item.phone,
@@ -178,85 +176,81 @@ export const customerBAction = (setFieldState) => {
     api = customerDetail;
   }
 
-  FormEffectHooks.onFieldValueChange$('sellerId').subscribe(async ({value, pristine}) => {
+  FormEffectHooks.onFieldValueChange$('sellerId').subscribe(async ({value}) => {
+    let customer = {};
     if (value) {
-      const customer = await request({...api, data: {customerId: value}});
-      if (!customer) {
-        return;
-      }
-      setFieldState('partyBAdressId', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.props.defaultValue = customer.defaultAddress;
-        }
-        state.props.options = customer.adressParams && customer.adressParams.map((item) => {
-          return {
-            label: item.detailLocation || item.location,
-            value: item.adressId,
-          };
-        });
-      });
-
-      setFieldState('partyBContactsId', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.props.defaultValue = customer.defaultContacts;
-        }
-        state.props.options = customer.contactsParams && customer.contactsParams.map((item) => {
-          return {
-            label: item.contactsName,
-            value: item.contactsId,
-          };
-        });
-      });
-
-      setFieldState('partyBBankId', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.value = customer.invoiceResult && customer.invoiceResult.bankId;
-        }
-      });
-
-      setFieldState('partyBBankAccount', (state) => {
-        state.props.customerId = value;
-        if (!pristine) {
-          state.props.defaultValue = customer.invoiceId;
-        }
-        state.props.options = customer.invoiceResults && customer.invoiceResults.map((item) => {
-          return {
-            label: item.bankAccount,
-            value: item.invoiceId,
-            id: item.bankId,
-          };
-        });
-      });
-
-      setFieldState('partyBLegalPerson', (state) => {
-        state.value = customer.legal;
-      });
-      setFieldState('partyBCompanyPhone', (state) => {
-        state.value = customer.telephone;
-      });
-      setFieldState('partyBFax', (state) => {
-        state.value = customer.fax;
-      });
-      setFieldState('partyBZipCode', (state) => {
-        state.value = customer.zipCode;
-      });
-
-      setFieldState('detailParams', (state) => {
-        state.props.customerId = value;
-      });
-
-    } else {
-      setFieldState('partyBBankId', (state) => {
-        state.props.customerId = value;
-        state.value = null;
-      });
+      customer = await request({...api, data: {customerId: value}});
     }
+    if (!customer) {
+      return;
+    }
+    setFieldState('partyBAdressId', (state) => {
+      if (!value) {
+        state.value = value;
+      }
+      state.props.customerId = value;
+      state.props.defaultValue = customer.defaultAddress;
+      state.props.options = customer.adressParams && customer.adressParams.map((item) => {
+        return {
+          label: item.detailLocation || item.location,
+          value: item.adressId,
+        };
+      });
+    });
+
+    setFieldState('partyBContactsId', (state) => {
+      if (!value) {
+        state.value = null;
+      }
+      state.props.customerId = value;
+      state.props.defaultValue = customer.defaultContacts;
+      state.props.options = customer.contactsParams && customer.contactsParams.map((item) => {
+        return {
+          label: item.contactsName,
+          value: item.contactsId,
+        };
+      });
+    });
+
+    setFieldState('partyBBankId', (state) => {
+      state.props.customerId = value;
+      state.value = customer.invoiceResult && customer.invoiceResult.bankId;
+    });
+
+    setFieldState('partyBBankAccount', (state) => {
+      if (!value) {
+        state.value = null;
+      }
+      state.props.customerId = value;
+      state.props.defaultValue = customer.invoiceId;
+      state.props.options = customer.invoiceResults && customer.invoiceResults.map((item) => {
+        return {
+          label: item.bankAccount,
+          value: item.invoiceId,
+          id: item.bankId,
+        };
+      });
+    });
+
+    setFieldState('partyBLegalPerson', (state) => {
+      state.value = customer.legal;
+    });
+    setFieldState('partyBCompanyPhone', (state) => {
+      state.value = customer.telephone;
+    });
+    setFieldState('partyBFax', (state) => {
+      state.value = customer.fax;
+    });
+    setFieldState('partyBZipCode', (state) => {
+      state.value = customer.zipCode;
+    });
+
+    setFieldState('detailParams', (state) => {
+      state.props.customerId = value;
+    });
   });
 
-  FormEffectHooks.onFieldValueChange$('partyBContactsId').subscribe(async ({value, pristine}) => {
+  FormEffectHooks.onFieldValueChange$('partyBContactsId').subscribe(async ({value}) => {
     if (value) {
       const res = await request({...contactsDetail, data: {contactsId: value}});
       if (!res) {
@@ -264,9 +258,7 @@ export const customerBAction = (setFieldState) => {
       }
       setFieldState('partyBPhone', (state) => {
         state.props.contactsId = value;
-        if (!pristine) {
-          state.props.defaultValue = res.phoneParams && res.phoneParams[0].phoneId;
-        }
+        state.props.defaultValue = isObject(res.phoneParams[0]).phoneId;
         state.props.options = res.phoneParams && res.phoneParams.map((item) => {
           return {
             label: item.phone,
@@ -295,7 +287,7 @@ export const customerBAction = (setFieldState) => {
     }
   });
 
-  FormEffectHooks.onFieldValueChange$('partyBBankId').subscribe(({value, pristine}) => {
+  FormEffectHooks.onFieldValueChange$('partyBBankId').subscribe(({value}) => {
     if (value) {
       setFieldState('partyBBankAccount', (state) => {
         state.props.bankId = value;
@@ -322,7 +314,7 @@ const paymentAction = (setFieldState, getFieldState) => {
     }
   });
 
-  FormEffectHooks.onFieldValueChange$('money').subscribe(async ({value, pristine, inputed}) => {
+  FormEffectHooks.onFieldValueChange$('money').subscribe(async ({value}) => {
     if (value) {
       const paymentDetail = await new Promise((resolve) => {
         resolve(getFieldState('paymentDetail'));
@@ -468,13 +460,13 @@ const contractAction = (setFieldState) => {
       state.visible = value === 1;
     });
     setFieldState('contractCoding', (state) => {
-      state.visible =  value === 1;
+      state.visible = value === 1;
     });
     setFieldState('labelResults', (state) => {
-      state.visible =  value === 1;
+      state.visible = value === 1;
     });
     setFieldState('fileId', (state) => {
-      state.visible =  value === 2;
+      state.visible = value === 2;
     });
   });
 
