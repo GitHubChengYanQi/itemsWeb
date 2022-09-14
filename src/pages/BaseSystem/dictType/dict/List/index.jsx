@@ -10,7 +10,7 @@ import AddButton from '@/components/AddButton';
 import {RollbackOutlined} from '@ant-design/icons';
 import Form from '@/components/Form';
 import Breadcrumb from '@/components/Breadcrumb';
-import MinWidthDiv from '@/components/MinWidthDiv';
+import Render from '@/components/Render';
 import Note from '@/components/Note';
 
 const {Column} = Table;

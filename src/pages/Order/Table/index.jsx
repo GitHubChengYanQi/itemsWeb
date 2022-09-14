@@ -5,8 +5,8 @@
  * @Date 2022-01-13 13:09:54
  */
 
-import React, {useRef} from 'react';
-import {Button, Space, Table as AntTable} from 'antd';
+import React, {useRef, useState} from 'react';
+import {Button, message, Space, Table as AntTable} from 'antd';
 import {useHistory} from 'ice';
 import Table from '@/components/Table';
 import Form from '@/components/Form';
@@ -27,6 +27,8 @@ const OrderTable = (props) => {
   const createContractRef = useRef();
 
   const compoentRef = useRef();
+
+  const [loading,setLoading] = useState(false);
 
   const module = () => {
     switch (props.location.pathname) {
@@ -121,7 +123,7 @@ const OrderTable = (props) => {
           render={(value, record) => {
             return <>
               {!record.contractId && !record.fileId && <Button type="link" onClick={() => {
-                createContractRef.current.open(false);
+                createContractRef.current.open(record.orderId);
               }}>创建合同</Button>}
               <Button type="link" onClick={() => {
                 switch (props.location.pathname) {
@@ -141,15 +143,18 @@ const OrderTable = (props) => {
 
       <Modal
         headTitle="创建合同"
-        width="auto"
+        width='auto'
+        loading={setLoading}
         ref={createContractRef}
         compoentRef={compoentRef}
         component={CreateContract}
         onSuccess={() => {
+          message.success('创建合同成功！');
           createContractRef.current.close();
+          tableRef.current.submit();
         }}
         footer={<Space>
-          <Button type="primary" onClick={() => {
+          <Button loading={loading} type="primary" onClick={() => {
             compoentRef.current.submit();
           }}>保存</Button>
           <Button onClick={() => {

@@ -5,7 +5,7 @@ import { BrandId, Date, Note, Time} from '@/pages/Purshase/purchaseAsk/purchaseA
 import {useRequest} from '@/util/Request';
 import {brandIdSelect} from '@/pages/Erp/stock/StockUrl';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-import MinWidthDiv from '@/components/MinWidthDiv';
+import Render from '@/components/Render';
 import MyNote from '@/components/Note';
 import InputNumber from '@/components/InputNumber';
 
@@ -87,10 +87,10 @@ const AddSkuTable = (
       }}
     >
       <Table.Column title="序号" align="center" dataIndex="key" render={(value) => {
-        return <MinWidthDiv width={50}>{value + 1}</MinWidthDiv>;
+        return <Render width={50}>{value + 1}</Render>;
       }}/>
       <Table.Column title="物料编号" dataIndex="skuResult" render={(value) => {
-        return <MinWidthDiv width={100}>{value && value.standard}</MinWidthDiv>;
+        return <Render width={100}>{value && value.standard}</Render>;
       }}/>
       <Table.Column title="物料" dataIndex="skuResult" width={200} render={(value) => {
         return <MyNote maxWidth={200}>
@@ -98,54 +98,54 @@ const AddSkuTable = (
         </MyNote>;
       }}/>
       <Table.Column title="品牌" dataIndex="skuId" render={(skuId, record, index) => {
-        return <MinWidthDiv width={100}>
+        return <Render width={100}>
           <BrandId
             data={data}
             value={getValue(index).brandId || 0}
             onChange={(value) => {
               setValue({brandId: value}, index);
             }}/>
-        </MinWidthDiv>;
+        </Render>;
       }}/>
       <Table.Column title="申请数量" dataIndex="applyNumber" render={(value, record, index) => {
-        return <MinWidthDiv width={50}>
+        return <Render width={50}>
           <InputNumber
             value={value}
             onChange={(value) => {
               setValue({applyNumber: value}, index);
             }}
           />
-        </MinWidthDiv>;
+        </Render>;
       }}/>
       <Table.Column title="交付日期" dataIndex="deliveryDate" render={(value, record, index) => {
-        return <MinWidthDiv width={100}>
+        return <Render width={100}>
           <Date
             value={value}
             onChange={(value) => {
               setValue({deliveryDate: value}, index);
             }}
           />
-        </MinWidthDiv>;
+        </Render>;
       }}/>
       <Table.Column title="交付时间" dataIndex="deliveryTime" render={(value, record, index) => {
-        return <MinWidthDiv width={100}>
+        return <Render width={100}>
           <Time
             value={value}
             onChange={(value) => {
               setValue({deliveryTime: value}, index);
             }}
           />
-        </MinWidthDiv>;
+        </Render>;
       }}/>
       <Table.Column title="备注" dataIndex="note" render={(value, record, index) => {
-        return <MinWidthDiv width={200}>
+        return <Render width={200}>
           <Note
             value={getValue(index).note}
             onChange={(value) => {
               setValue({note: value.target.value}, index);
             }}
           />
-        </MinWidthDiv>;
+        </Render>;
       }}/>
 
       <Table.Column/>

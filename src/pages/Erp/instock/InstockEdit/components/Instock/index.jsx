@@ -6,7 +6,7 @@ import {instockOrderDetail} from '@/pages/Erp/instock/InstockUrl';
 import {useRequest} from '@/util/Request';
 import Code from '@/pages/Erp/spu/components/Code';
 import Empty from '@/components/Empty';
-import MinWidthDiv from '@/components/MinWidthDiv';
+import Render from '@/components/Render';
 import Note from '@/components/Note';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 
@@ -49,7 +49,7 @@ const Instock = (props) => {
           dataSource={data.instockListResults || []}
         >
           <Column title="物料编码" dataIndex="skuResult" render={(value) => {
-            return <MinWidthDiv width={70}>{value && value.standard}</MinWidthDiv>;
+            return <Render width={70}>{value && value.standard}</Render>;
           }} sorter />
           <Column title="物料名称" dataIndex="skuResult" render={(value, record) => {
             return <Note width={200}><SkuResultSkuJsons skuResult={{...value, spuResult: record.spuResult}} /></Note>;
@@ -58,10 +58,10 @@ const Instock = (props) => {
           <Column title="核实数量" width={120} align="center" dataIndex="number" sorter />
           <Column title="未入数量" width={120} align="center" dataIndex="realNumber" sorter />
           <Column title="供应商" dataIndex="brandResult" render={(value) => {
-            return <MinWidthDiv width={70}>{value && value.brandName}</MinWidthDiv>;
+            return <Render width={70}>{value && value.brandName}</Render>;
           }} sorter />
           <Column title="品牌" dataIndex="customerResult" render={(value) => {
-            return <MinWidthDiv width={70}>{value && value.customerName}</MinWidthDiv>;
+            return <Render width={70}>{value && value.customerName}</Render>;
           }} sorter />
         </Table>
       </ProCard>

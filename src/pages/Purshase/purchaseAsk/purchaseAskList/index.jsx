@@ -14,7 +14,7 @@ import Form from '@/components/Form';
 import {purchaseAskList} from '../purchaseAskUrl';
 import * as SysField from '../purchaseAskField';
 import Breadcrumb from '@/components/Breadcrumb';
-import MinWidthDiv from '@/components/MinWidthDiv';
+import Render from '@/components/Render';
 import Documents from '@/pages/Workflow/Documents';
 import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
 
@@ -83,15 +83,15 @@ const PurchaseAskList = ({status, ...props}) => {
           }
         }} />
         {!status && <Column key={3} title="申请状态" dataIndex="statusResult" render={(value) => {
-          return <MinWidthDiv width={70}>{value && value.name}</MinWidthDiv>;
+          return <Render width={70}>{value && value.name}</Render>;
         }} />}
         <Column key={4} title="申请品类" width={100} align="center" dataIndex="applyType" />
         <Column key={5} title="申请数量" width={100} align="center" dataIndex="applyNumber" />
         {!status && <Column key={6} title="最后审批人" dataIndex="viewUpdate" render={(value) => {
-          return <MinWidthDiv width={100}>{value && value.updateUser && value.updateUser.name}</MinWidthDiv>;
+          return <Render width={100}>{value && value.updateUser && value.updateUser.name}</Render>;
         }} />}
         {!status && <Column key={7} title="最后审批时间" dataIndex="viewUpdate" render={(value) => {
-          return <MinWidthDiv width={100}>{value && value.updateTime}</MinWidthDiv>;
+          return <Render width={100}>{value && value.updateTime}</Render>;
         }} />}
         <Column key={8} title="申请人" render={(value, record) => {
           return <>

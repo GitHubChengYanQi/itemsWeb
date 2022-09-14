@@ -1,8 +1,7 @@
-import React, {useImperativeHandle, useRef} from 'react';
-import {Alert, Spin} from 'antd';
+import React, {useImperativeHandle, useRef, useState} from 'react';
+import {Spin} from 'antd';
 import {FormEffectHooks} from '@formily/antd';
 import Form from '@/components/Form';
-import {deliveryAdd} from '@/pages/Erp/delivery/deliveryUrl';
 import Coding from '@/pages/Erp/tool/components/Coding';
 import {AllField, TemplateId} from '@/pages/Order/CreateOrder/components/Field';
 import {useRequest} from '@/util/Request';
@@ -10,13 +9,17 @@ import {templateGetLabel} from '@/pages/Crm/template/TemplateUrl';
 
 const ApiConfig = {
   view: {},
-  add: deliveryAdd,
+  add: {url: '/order/updateContract', method: 'POST'},
   save: {}
 };
 
 const {FormItem} = Form;
 
-const CreateContract = ({...props}, ref) => {
+const CreateContract = ({
+  value,
+  onSuccess = () => {
+  }
+}, ref) => {
 
   const formRef = useRef();
 
@@ -25,6 +28,8 @@ const CreateContract = ({...props}, ref) => {
   }));
 
   const {loading, data, run} = useRequest(templateGetLabel, {manual: true});
+
+  const [allField, setAllField] = useState([]);
 
   return <div style={{padding: 24}}>
     <Form
@@ -42,16 +47,23 @@ const CreateContract = ({...props}, ref) => {
           }
         });
       }}
+      onSubmit={(values) => {
+        return {
+          orderId: value,
+          contractParam: {
+            templateId: values.templateId,
+            coding: values.contractCoding,
+            labelResults: allField,
+          }
+        };
+      }}
+      onSuccess={onSuccess}
     >
       <FormItem label="合同编码" name="contractCoding" component={Coding} required />
       <FormItem label="合同模板" name="templateId" component={TemplateId} required />
-      {loading ? <Spin>
-        <Alert
-          style={{padding: 32}}
-          message="正在加载合同变量，请稍后..."
-          type="info"
-        />
-      </Spin> : <AllField array={data} />}
+      <Spin spinning={loading} tip="正在加载合同变量，请稍后...">
+        <AllField array={loading ? [] : data} onChange={setAllField} value={allField} />
+      </Spin>
     </Form>
   </div>;
 };

@@ -9,12 +9,15 @@ export const typeObject = ({type, status = []}) => {
     }).length > 0;
   };
 
+  const publicType = [{label: '撤销', value: 'revoke', disabled: disabled('revoke')},];
+
   switch (type) {
     case DocumentEnums.purchaseAsk:
       return {
         title: '采购申请单',
         types: [
           {label: '执行申请', value: 'perform', disabled: disabled('perform')},
+          ...publicType,
         ]
       };
     case DocumentEnums.purchaseOrder:
@@ -27,6 +30,7 @@ export const typeObject = ({type, status = []}) => {
         types: [
           // {label: '核实数量', value: 'verify', disabled: disabled('verify')},
           {label: '执行入库', value: 'performInstock', disabled: disabled('performInstock')},
+          ...publicType,
         ],
       };
     case DocumentEnums.instockError:
@@ -34,6 +38,7 @@ export const typeObject = ({type, status = []}) => {
         title: '异常单',
         types: [
           {label: '核实', value: 'verify', disabled: disabled('verify')},
+          ...publicType,
         ]
       };
     case DocumentEnums.outstockOrder:
@@ -41,6 +46,7 @@ export const typeObject = ({type, status = []}) => {
         title: '出库单',
         types: [
           {label: '出库', value: 'outStock', disabled: disabled('outStock')},
+          ...publicType,
         ]
       };
     case DocumentEnums.stocktaking:
@@ -48,6 +54,7 @@ export const typeObject = ({type, status = []}) => {
         title: '盘点单',
         types: [
           {label: '盘点', value: 'check', disabled: disabled('check')},
+          ...publicType,
         ]
       };
     case DocumentEnums.maintenance:
@@ -55,6 +62,7 @@ export const typeObject = ({type, status = []}) => {
         title: '养护单',
         types: [
           {label: '开始养护', value: 'maintenanceing', disabled: disabled('maintenanceing')},
+          ...publicType,
         ]
       };
     case DocumentEnums.quality:
@@ -64,6 +72,7 @@ export const typeObject = ({type, status = []}) => {
           {label: '分派', value: '1', disabled: disabled('1')},
           {label: '执行质检', value: '2', disabled: disabled('2')},
           {label: '质检入库', value: '3', disabled: disabled('3')},
+          ...publicType,
         ]
       };
     case DocumentEnums.allocation:
@@ -72,6 +81,7 @@ export const typeObject = ({type, status = []}) => {
         types: [
           {label: '分派', value: 'assign', disabled: disabled('assign')},
           {label: '执行', value: 'carryAllocation', disabled: disabled('carryAllocation')},
+          ...publicType,
         ]
       };
     default:

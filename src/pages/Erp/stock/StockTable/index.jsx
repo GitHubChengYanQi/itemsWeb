@@ -22,7 +22,7 @@ import {BomSelect, Position, SelectBom, StockNumbers} from '@/pages/Erp/stock/St
 import Analysis from '@/pages/Erp/Analysis';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
 import {skuList} from '@/pages/Erp/sku/skuUrl';
-import MinWidthDiv from '@/components/MinWidthDiv';
+import Render from '@/components/Render';
 import Note from '@/components/Note';
 import {useRequest} from '@/util/Request';
 
@@ -161,16 +161,16 @@ const StockTable = (props) => {
       {...props}
     >
       <Table.Column key={1} title="物料编码" dataIndex="standard" render={(value) => {
-        return <MinWidthDiv width={60}>{value}</MinWidthDiv>;
+        return <Render width={60}>{value}</Render>;
       }} />
       <Table.Column key={2} title="物料名称" dataIndex="spuName" render={(value) => {
-        return <MinWidthDiv width={60}>{value}</MinWidthDiv>;
+        return <Render width={60}>{value}</Render>;
       }} />
       <Table.Column key={3} title="物料型号" dataIndex="skuName" render={(value) => {
-        return <MinWidthDiv width={60}>{value}</MinWidthDiv>;
+        return <Render width={60}>{value}</Render>;
       }} />
       <Table.Column key={4} title="物料规格" dataIndex="specifications" render={(value) => {
-        return <MinWidthDiv width={60}>{value}</MinWidthDiv>;
+        return <Render width={60}>{value}</Render>;
       }} />
       <Table.Column title="物料描述" key={5} render={(value, record) => {
         return <div style={{minWidth: 100, maxWidth: 300}}>
@@ -178,10 +178,10 @@ const StockTable = (props) => {
         </div>;
       }} />
       <Table.Column key={6} title="库存数量" dataIndex="stockNumber" render={(value) => {
-        return <MinWidthDiv width={60}>{value || 0}</MinWidthDiv>;
+        return <Render width={60}>{value || 0}</Render>;
       }} />
       <Table.Column key={6} title="预购数量" dataIndex="purchaseNumber" render={(value) => {
-        return <MinWidthDiv width={60}>{value || 0}</MinWidthDiv>;
+        return <Render width={60}>{value || 0}</Render>;
       }} />
       <Table.Column key={7} title="库位" dataIndex="positionsResult" render={(value) => {
         if (Array.isArray(value) && value.length > 0) {

@@ -19,7 +19,7 @@ import {instockOrderList} from '../InstockUrl';
 import * as SysField from '../InstockField';
 import Code from '@/pages/Erp/spu/components/Code';
 import Documents from '@/pages/Workflow/Documents';
-import MinWidthDiv from '@/components/MinWidthDiv';
+import Render from '@/components/Render';
 import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 const {Column} = AntTable;
@@ -121,11 +121,11 @@ const InstockList = () => {
         <Column key={3} title="创建时间" width={200} dataIndex="createTime" />
         <Column key={3} title="入库类型" width={150} dataIndex="type" />
         <Column key={5} title="送料人员" dataIndex="userResult" render={(value) => {
-          return <MinWidthDiv width={70}>{value && value.name}</MinWidthDiv>;
+          return <Render width={70}>{value && value.name}</Render>;
         }} />
         <Column key={5} title="送料时间" width={200} dataIndex="registerTime" />
         <Column key={5} title="库管人员" dataIndex="registerTime" render={(value) => {
-          return <MinWidthDiv width={70}>{value && value.name}</MinWidthDiv>;
+          return <Render width={70}>{value && value.name}</Render>;
         }} />
         <Column key={5} title="入库物料" align="center" width={100} dataIndex="enoughNumber" />
         <Column key={5} title="已入库" align="center" width={100} dataIndex="notNumber" />

@@ -10,6 +10,15 @@ export const Rule = (props) => {
   return (<Originator hidden {...props} />);
 };
 
+export const Actions = (props) => {
+
+
+  return <>
+    <Checkbox checked={true}>或签</Checkbox>
+    <Checkbox checked={false} disabled>并签</Checkbox>
+  </>;
+};
+
 export const StautsId = (props) => {
 
   const {type, actionType, value, onChange} = props;

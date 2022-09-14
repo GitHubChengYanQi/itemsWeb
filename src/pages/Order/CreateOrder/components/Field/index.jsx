@@ -518,7 +518,6 @@ export const AllField = ({value: values = [], onChange=()=>{}, array}) => {
         return <></>;
     }
   };
-
   if (!array) {
     return <></>;
   }

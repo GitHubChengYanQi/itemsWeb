@@ -8,7 +8,7 @@ import {
   FormButtonGroup,
 } from '@formily/antd';
 import {Button, Radio} from 'antd';
-import {ActionIds, Rule, StautsId} from '@/pages/Workflow/Nodes/Setps/components/SetpsField';
+import {ActionIds, Actions, Rule, StautsId} from '@/pages/Workflow/Nodes/Setps/components/SetpsField';
 
 const actions = createFormActions();
 
@@ -103,6 +103,12 @@ const Setps = ({
         required
         name="auditRule"
         component={Rule}
+      />
+      <FormItem
+        label="审批操作"
+        required
+        name="action"
+        component={Actions}
       />
 
       <div style={{marginTop: 16}}>
