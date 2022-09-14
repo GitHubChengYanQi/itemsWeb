@@ -37,7 +37,6 @@ export const Contacts = () => {
         <ProCard className="h3Card" title="合同关联变量" headerBordered bodyStyle={{padding: 0}}>
           <Space wrap>
             {grid('采购合同编号')}
-            {grid('合同签订地点')}
             {grid('合同签订时间')}
             {grid('需方公司名称')}
             {grid('供方公司名称')}
@@ -61,7 +60,6 @@ export const Contacts = () => {
             {grid('需方邮政编码')}
             {grid('需方公司电邮')}
             {grid('需方税号')}
-            {grid('交货地址')}
             {grid('供货人及电话')}
           </Space>
         </ProCard>
