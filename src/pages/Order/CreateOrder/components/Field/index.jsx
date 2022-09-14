@@ -421,7 +421,7 @@ export const Note = (props) => {
   return (<Editor {...props} />);
 };
 
-export const AllField = ({value: values = [], onChange, array}) => {
+export const AllField = ({value: values = [], onChange=()=>{}, array}) => {
 
   useEffect(() => {
     if (array && Array.isArray(array)) {
@@ -522,7 +522,7 @@ export const AllField = ({value: values = [], onChange, array}) => {
   if (!array) {
     return <></>;
   }
-  console.log(values);
+
   return (<div>
     <Descriptions style={{width: '85vw'}} bordered column={2} labelStyle={{minWidth: 150}} title="合同模板中的其他字段">
       {
