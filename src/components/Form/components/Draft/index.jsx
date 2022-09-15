@@ -135,7 +135,7 @@ const Draft = (
   return <>
     <Dropdown.Button
       placement="topRight"
-      visible={visible}
+      open={visible}
       trigger="click"
       buttonsRender={() => {
         return [
@@ -161,7 +161,7 @@ const Draft = (
           <Button type="primary" ghost><EllipsisOutlined /></Button>
         ];
       }}
-      onVisibleChange={setVisible}
+      onOpenChange={setVisible}
       overlay={menu}
     />
   </>;

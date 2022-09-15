@@ -74,7 +74,7 @@ const DbSourceConfig = (
       {renderButton()}
       <Modal
         title="配置数据"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
         }}

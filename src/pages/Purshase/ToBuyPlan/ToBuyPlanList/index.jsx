@@ -408,7 +408,7 @@ const ToBuyPlanList = (props) => {
           </Table>
 
           <AntModal
-            visible={visible}
+            open={visible}
             title="创建采购计划"
             onCancel={() => {
               setVisible(false);

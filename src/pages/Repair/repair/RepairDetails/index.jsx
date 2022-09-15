@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {Avatar, Button, Card, Col, Row, Tabs, Statistic} from 'antd';
+import React, {useRef} from 'react';
+import {Avatar, Button, Card, Col, Row, Tabs} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Icon from '@/components/Icon';
 import {useRequest} from '@/util/Request';
@@ -14,8 +14,6 @@ import StepList from '@/pages/Repair/repair/RepairDetails/components/StepList';
 import DispatchingList from '@/pages/Portal/dispatching/dispatchingList';
 import RepairEdit from '@/pages/Repair/repair/repairEdit';
 import Dynamic from '@/pages/Repair/repair/RepairDetails/components/Dynamic';
-
-const {TabPane} = Tabs;
 
 const RepairDetails = () => {
   const params = useParams();
@@ -100,11 +98,9 @@ const RepairDetails = () => {
         <Col span={8}>
           <div className={styles.main} style={{height: '100%'}}>
             <Card>
-              <Tabs defaultActiveKey="1">
-                <TabPane tab="动态" key="1">
-                  <Dynamic value={data} />
-                </TabPane>
-              </Tabs>
+              <Tabs defaultActiveKey="1" items={[
+                {key: '1', label: '"', children: <Dynamic value={data} />},
+              ]} />
             </Card>
           </div>
         </Col>

@@ -337,7 +337,7 @@ const Setting = ({
     </div>
 
     <Modal
-      visible={visible}
+      open={visible}
       title="状态名称"
       onCancel={() => {
         setVisible(false);

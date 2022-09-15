@@ -12,7 +12,7 @@ export const supplyAdd = {
 };
 
 export const supplyEdit = {
-  url: '/supply/edit',
+  url: '/supply/updateBind',
   method: 'POST',
   rowKey:'supplyId'
 };

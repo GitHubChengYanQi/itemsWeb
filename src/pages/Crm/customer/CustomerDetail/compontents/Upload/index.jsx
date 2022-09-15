@@ -60,8 +60,6 @@ const Upload = (props) => {
     }
   });
 
-  console.log(data);
-
   useEffect(() => {
     runListFile({
       params: {

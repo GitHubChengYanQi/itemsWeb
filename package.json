@@ -52,7 +52,7 @@
     "@tinymce/tinymce-react": "^3.13.0",
     "ac-barcode": "^1.0.0",
     "ahooks": "^2.9.1",
-    "antd": "^4.17.4",
+    "antd": "^4.23.1",
     "braft-editor": "^2.3.9",
     "braft-utils": "^3.0.12",
     "crypto-js": "^4.1.1",

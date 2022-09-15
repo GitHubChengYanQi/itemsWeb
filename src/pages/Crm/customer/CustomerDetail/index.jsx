@@ -221,55 +221,51 @@ const CustomerDetail = ({id, supply = 0, status, ...props}) => {
         <Row gutter={24}>
           <Col span={!enterprise ? 18 : 24}>
             <Card>
-              <Tabs defaultActiveKey="9">
-                <TabPane tab="可供物料" key="9">
-                  <SupplyList customer={data} />
-                </TabPane>
-                <TabPane tab="联系信息" key="2">
-                  <ContactsTable customer={data} refresh={() => {
-                    refresh();
-                  }} />
-                </TabPane>
-                <TabPane tab="合同记录" key="4">
-                  <ContractTable customerId={data && data.customerId} />
-                </TabPane>
-                <TabPane tab="财务信息" key="8">
-                  <InvoiceList customer={data} refresh={() => {
-                    refresh();
-                  }} />
-                </TabPane>
-                <TabPane tab="地址" key="3">
-                  <AdressList customer={data} refresh={() => {
-                    refresh();
-                  }} />
-                </TabPane>
-                <TabPane tab="货单" key="5">
-                  <Empty />
-                </TabPane>
-                <TabPane tab="回款" key="6">
-                  Content of Tab Pane 3
-                </TabPane>
-                <TabPane tab="附件" key="7">
-                  <Upload customerId={data && data.customerId} />
-                </TabPane>
-                <TabPane tab="企业信息" key="1">
-                  <Description data={data} />
-                </TabPane>
-              </Tabs>
+              <Tabs
+                destroyInactiveTabPane
+                defaultActiveKey="1"
+                items={[
+                  {key: '1', label: '可供物料', children: <SupplyList customer={data} />},
+                  {
+                    key: '2', label: '联系信息', children: <ContactsTable customer={data} refresh={() => {
+                      refresh();
+                    }} />
+                  },
+                  {key: '3', label: '合同记录', children: <ContractTable customerId={data && data.customerId} />},
+                  {
+                    key: '4', label: '财务信息', children: <InvoiceList customer={data} refresh={() => {
+                      refresh();
+                    }} />
+                  },
+                  {
+                    key: '5', label: '地址', children: <AdressList customer={data} refresh={() => {
+                      refresh();
+                    }} />
+                  },
+                  {key: '6', label: '货单', children: <Empty />},
+                  {key: '7', label: '回款', children: <Empty />},
+                  {key: '8', label: '附件', children: <Upload customerId={data && data.customerId} />},
+                  {key: '9', label: '企业信息', children: <Description data={data} />},
+                ]}
+              />
             </Card>
           </Col>
           {!enterprise && <Col span={6}>
             <Card>
-              <Tabs defaultActiveKey="1">
-                {props.hidden && <TabPane tab="跟进" key="1">
-                  <Track value={null} number={null} trackMessageId={data.customerId} />
-                </TabPane>}
-                <TabPane tab="动态" key="2">
-                  <Dynamic value={data} api={{
-                    url: '/customerDynamic/list', method: 'POST'
-                  }} />
-                </TabPane>
-              </Tabs>
+              <Tabs
+                defaultActiveKey="1"
+                items={[
+                  // {
+                  //   key: '1',
+                  //   label: '跟进',
+                  //   children: <Track value={null} number={null} trackMessageId={data.customerId} />
+                  // },
+                  {
+                    key: '1', label: '动态', children: <Dynamic value={data} api={{
+                      url: '/customerDynamic/list', method: 'POST'
+                    }} />
+                  }
+                ]} />
             </Card>
           </Col>}
         </Row>

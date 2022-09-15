@@ -20,6 +20,7 @@ import * as SysField from '../supplyField';
 import Modal from '@/components/Modal';
 import SkuDetail from '@/pages/Erp/sku/SkuDetail';
 import EditButton from '@/components/EditButton';
+import Render from '@/components/Render';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -71,15 +72,17 @@ const SupplyList = ({customer}) => {
         ref={tableRef}
       >
         <Column title="物资编码 / 物资名称" dataIndex="skuId" render={(value, record) => {
-          return record.skuResult && (`${record.skuResult.standard} / ${record.skuResult.spuResult.name}`);
+          return <Render width={200}>{record.skuResult && (`${record.skuResult.standard} / ${record.skuResult.spuResult.name}`)}</Render>;
         }} />
         <Column title="型号 / 规格" dataIndex="skuId" render={(value, record) => {
-          return record.skuResult && (`${record.skuResult.skuName} / ${record.skuResult.specifications || '无'}`);
+          return <Render>{record.skuResult && (`${record.skuResult.skuName} / ${record.skuResult.specifications || '无'}`)}</Render>;
+        }} />
+        <Column title="供应商型号" dataIndex="supplierModel" render={(value) => {
+          return <Render>{value}</Render>;
         }} />
         <Column title="品牌" dataIndex="brandResult" render={(value) => {
-          return <>{value && value.brandName || '无品牌'}</>;
+          return <Render>{value && value.brandName || '无品牌'}</Render>;
         }} />
-        <Column />
         <Column title="操作" align="right" render={(value, record) => {
           return (
             <Space>

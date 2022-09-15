@@ -140,7 +140,7 @@ const CreatePurchaseOrder = ({data, palnId, onChange}) => {
 
     <Modal
       width={1100}
-      visible={visible}
+      open={visible}
       destroyOnClose
       keyboard={false}
       onCancel={() => {

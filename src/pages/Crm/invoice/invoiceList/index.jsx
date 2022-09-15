@@ -5,9 +5,10 @@
  * @Date 2021-12-20 11:29:00
  */
 
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, Divider, Modal as AntModal, Table as AntTable} from 'antd';
 import {ExclamationCircleOutlined} from '@ant-design/icons';
+import ProSkeleton from '@ant-design/pro-skeleton';
 import Table from '@/components/Table';
 import DelButton from '@/components/DelButton';
 import Drawer from '@/components/Drawer';
@@ -24,6 +25,9 @@ const {FormItem} = Form;
 const {Column} = AntTable;
 
 const InvoiceList = ({customer, refresh}) => {
+
+  const [loading, setLoading] = useState(false);
+
   const ref = useRef(null);
   const tableRef = useRef(null);
   const actions = () => {
@@ -71,6 +75,19 @@ const InvoiceList = ({customer, refresh}) => {
       },
     });
   };
+
+  useEffect(() => {
+    if (customer.invoiceId) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1);
+    }
+  }, [customer.invoiceId]);
+
+  if (loading) {
+    return <ProSkeleton />;
+  }
 
   return (
     <>

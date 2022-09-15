@@ -228,7 +228,8 @@ const CheckSku = ({
           dataIndex="skuResult"
           render={(value, record) => {
             return module(record).skuResult;
-          }} />
+          }}
+        />
         <Column
           title="品牌 / 厂家"
           dataIndex="brandResult"

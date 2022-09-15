@@ -68,7 +68,7 @@ const Model = ({modelObj, data: apiData}) => {
                 }}>{path}</Button>
                 <Modal
                   title={path}
-                  visible={visible}
+                  open={visible}
                   onOk={() => {
                     setVisible(false);
                   }}

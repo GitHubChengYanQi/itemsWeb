@@ -10,7 +10,7 @@ import {
   Row,
   Space,
   Spin,
-  Modal as AntModal, Alert
+  Modal as AntModal, Alert, Select
 } from 'antd';
 import {FormEffectHooks, InternalFieldList as FieldList} from '@formily/antd';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
@@ -31,6 +31,7 @@ import Empty from '@/components/Empty';
 import {skuResults} from '@/pages/Erp/sku/skuUrl';
 import Draft from '@/components/Form/components/Draft';
 import style from './index.module.less';
+import {taxRateListSelect} from '@/pages/Purshase/taxRate/taxRateUrl';
 
 const {FormItem} = Form;
 
@@ -53,6 +54,8 @@ const CreateOrder = ({...props}) => {
   const formRef = useRef();
 
   const skus = params.skus && Array.isArray(JSON.parse(params.skus)) && JSON.parse(params.skus);
+
+  const {data: taxData} = useRequest(taxRateListSelect);
 
   const {run: getSkus} = useRequest(skuResults, {
     manual: true,
@@ -203,6 +206,10 @@ const CreateOrder = ({...props}) => {
             adressId: value.adressId,
             payPlan: value.payPlan,
             remark: value.remark,
+            floatingAmount: value.floatingAmount,
+            totalAmount: value.totalAmount,
+            paperType: value.paperType,
+            rate: value.rate,
           },
           contractParam: {
             templateId: value.templateId,
@@ -265,7 +272,7 @@ const CreateOrder = ({...props}) => {
           <Col span={span}>
             <FormItem
               label={module().dateTitle}
-              name="deliveryDate"
+              name="date"
               component={SysField.Date}
             />
           </Col>
@@ -528,14 +535,54 @@ const CreateOrder = ({...props}) => {
       </ProCard>
 
       <ProCard bodyStyle={{padding: 16}} className="h2Card" title="财务信息" headerBordered>
+        <Row>
+          <Col span={span}>
+            <FormItem
+              label="票据类型"
+              placeholder="请选择票据类型"
+              name="paperType"
+              options={[{label: '普票', value: 0}, {label: '专票', value: 1}]}
+              component={Select}
+            />
+          </Col>
+          <Col span={span}>
+            <FormItem
+              label="税率(%)"
+              placeholder="请选择税率"
+              name="rate"
+              options={taxData || []}
+              component={Select}
+            />
+          </Col>
+        </Row>
         <Row gutter={24}>
           <Col span={span}>
             <FormItem
               label={module().moneyTitle}
+              placeholder="请输入总价"
+              disabled
               name="money"
               component={SysField.Money}
             />
           </Col>
+          <Col span={span}>
+            <FormItem
+              label="浮动金额"
+              placeholder="请输入浮动金额"
+              name="floatingAmount"
+              component={SysField.Float}
+            />
+          </Col>
+          <Col span={span}>
+            <FormItem
+              label="总金额"
+              placeholder="请输入总金额"
+              name="totalAmount"
+              component={SysField.Money}
+            />
+          </Col>
+        </Row>
+        <Row gutter={24}>
           <Col span={span}>
             <FormItem
               label="是否含运费"
@@ -696,9 +743,18 @@ const CreateOrder = ({...props}) => {
           </Col>
           <Col span={span}>
             <FormItem
-              label="交货期"
+              label="交货期(天)"
               name="leadTime"
               component={SysField.LeadTime}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col span={span}>
+            <FormItem
+              label="交货日期"
+              name="deliveryDate"
+              component={SysField.Time}
             />
           </Col>
         </Row>
@@ -729,7 +785,7 @@ const CreateOrder = ({...props}) => {
               component={SysField.TemplateId}
             />
           </Col>
-          <Col span={span}>
+          <Col span={12}>
             <FormItem
               label="合同编码"
               visible={false}
@@ -770,7 +826,7 @@ const CreateOrder = ({...props}) => {
         setVisible(false);
       }}>关闭</Button>}
       height="100%"
-      visible={visible}
+      open={visible}
       onClose={() => {
         setVisible(false);
       }}
@@ -792,7 +848,7 @@ const CreateOrder = ({...props}) => {
       }}
     />
 
-    <AntModal centered maskClosable={false} visible={resultVisible} closable={false} footer={null}>
+    <AntModal centered maskClosable={false} open={resultVisible} closable={false} footer={null}>
       {
         loading
           ?

@@ -19,8 +19,8 @@ const AddNode = (props) => {
   return (<div className={styles.addNodeBtnBox}>
     <div className="add-node-btn">
       <Popover
-        visible={visible}
-        onVisibleChange={setVisible}
+        open={visible}
+        onOpenChange={setVisible}
         placement="bottom"
         content={<AddNodeList onOptionClick={(type) => {
           setVisible(false);

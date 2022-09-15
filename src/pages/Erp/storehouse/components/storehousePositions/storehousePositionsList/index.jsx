@@ -185,7 +185,7 @@ const StorehousePositionsList = (props) => {
       }} ref={bindRef}/>
 
       <AntDrawer
-        visible={deptVisible}
+        open={deptVisible}
         width={800}
         title="设置权限"
         destroyOnClose

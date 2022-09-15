@@ -10,7 +10,7 @@ export const EditName = ({value: values, onChange}) => {
   const [show, setShow] = useState();
 
   return (
-    <Popover placement="rightBottom" visible={show} onVisibleChange={(visible) => {
+    <Popover placement="rightBottom" open={show} onOpenChange={(visible) => {
       setShow(visible);
     }} trigger="hover" content={<>
       <Button type="link" title="编辑名称" icon={<EditOutlined />} onClick={() => {

@@ -16,12 +16,6 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
 
   const RenderComponent = () => {
     switch (type) {
-      case 'hmd':
-        return <SupplierBlacklistList />;
-      case 'slgl':
-        return <TaxRateList />;
-      case 'ppgl':
-        return <BrandList />;
       default:
         return null;
     }

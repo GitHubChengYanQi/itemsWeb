@@ -32,7 +32,7 @@ const WindowOpenSku = () => {
       title="插入变量"
       destroyOnClose
       width={800}
-      visible={visible}
+      open={visible}
       onOk={() => {
         if (!button) {
           return message.warn('请选择变量！');

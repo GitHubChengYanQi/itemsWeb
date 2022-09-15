@@ -31,7 +31,7 @@ const SelectIcon = ({onChange, value}) => {
       <Button icon={renderIcon()} onClick={() => {
         setVisible(true);
       }}> 选择图标</Button>
-      <Drawer visible={visible} width={600} onClose={() => {
+      <Drawer open={visible} width={600} onClose={() => {
         setVisible(false);
       }}>
         <div className={style.selectIconWarp}>

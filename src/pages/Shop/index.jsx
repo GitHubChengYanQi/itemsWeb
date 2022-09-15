@@ -34,7 +34,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
         >
           <Menu.Divider />
         </Menu>} />
-      <Modal centered destroyOnClose maskClosable={false} width={860} visible={visible} onCancel={() => {
+      <Modal centered destroyOnClose maskClosable={false} width={860} open={visible} onCancel={() => {
         showModel(false);
       }} footer={null}>{RenderComponent()}</Modal>
     </>

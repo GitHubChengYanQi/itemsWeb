@@ -2,8 +2,8 @@ import React, {useEffect} from 'react';
 import {Select as AntSelect, Spin} from 'antd';
 import {useRequest} from '@/util/Request';
 
-const Select = (props) => {
-  const {
+const Select = (
+  {
     value,
     api,
     border,
@@ -20,7 +20,8 @@ const Select = (props) => {
     },
     width: wid,
     ...other
-  } = props;
+  }
+) => {
 
   const {loading, data, refresh} = useRequest({...api, data: param}, {manual: !api});
 

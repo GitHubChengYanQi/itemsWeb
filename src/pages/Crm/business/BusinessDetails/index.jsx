@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Anchor, Avatar, Button, Card, Col, Row, Tabs} from 'antd';
+import React, {useRef, useState} from 'react';
+import {Avatar, Button, Card, Col, Row, Tabs} from 'antd';
 import {useHistory, useParams} from 'ice';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {EditOutlined} from '@ant-design/icons';
@@ -19,8 +19,6 @@ import TableDetail from '@/pages/Crm/business/BusinessEdit/components/TableDetai
 import DetailMenu from '@/pages/Crm/customer/CustomerDetail/compontents/DetailMenu';
 import styles from './index.module.scss';
 import Dynamic from '@/pages/Crm/customer/CustomerDetail/compontents/Dynamic';
-
-const {TabPane} = Tabs;
 
 const CustomerDetail = () => {
   const params = useParams();
@@ -62,7 +60,7 @@ const CustomerDetail = () => {
           </Row>
         </div>
         <div className={styles.titleButton}>
-          <DetailMenu data={data} deletaApi={businessDelete} type='bussiness'  url="/CRM/business" />
+          <DetailMenu data={data} deletaApi={businessDelete} type="bussiness" url="/CRM/business" />
           <Button
             type="primary"
             style={params.state === 'false' ? {'display': 'none'} : null}
@@ -141,51 +139,34 @@ const CustomerDetail = () => {
               id="page"
               className={styles.main}>
               <Card>
-                {params.state === 'true' ? <Tabs defaultActiveKey="4">
-                  <TabPane tab="详细信息" key="1">
-                    <Description data={data} />
-                  </TabPane>
-                  <TabPane tab="竞争对手" key="2">
-                    <CompetitorList businessId={data.businessId} />
-                  </TabPane>
-                  <TabPane tab="报价" key="3">
-                    <CompetitorTable businessId={data.businessId} />
-                  </TabPane>
-                  <TabPane tab="商机明细" key="4">
-                    <TableDetail value={data.businessId} onSuccess={() => {
-                    }} />
-                  </TabPane>
-                </Tabs> : <Tabs defaultActiveKey="1">
-                  <TabPane tab="详细信息" key="1">
-                    <Description data={data} />
-                  </TabPane>
-                  <TabPane tab="竞争对手" key="2">
-                    <CompetitorList businessId={data.businessId} />
-                  </TabPane>
-                  <TabPane tab="报价" key="3">
-                    <CompetitorTable businessId={data.businessId} />
-                  </TabPane>
-                  <TabPane tab="商机明细" key="4">
-                    <TableDetail value={data.businessId} onSuccess={() => {
-                    }} />
-                  </TabPane>
-                </Tabs>}
+                <Tabs
+                  defaultActiveKey="4"
+                  items={[
+                    {key: '1', label: '详细信息', children: <Description data={data} />},
+                    {key: '2', label: '竞争对手', children: <CompetitorList businessId={data.businessId} />},
+                    {key: '3', label: '报价', children: <CompetitorTable businessId={data.businessId} />},
+                    {key: '4', label: '商机明细', children: <TableDetail value={data.businessId} />},
+                  ]}
+                />
               </Card>
             </div>
           </Col>
           <Col span={8}>
             <div className={styles.main} style={{height: '100%'}}>
               <Card>
-                <Tabs defaultActiveKey="1">
-                  <TabPane tab="动态" key="1">
-                    <Dynamic value={data} api={{
-                      url: '/businessDynamic/list', method: 'POST'
-                    }} />
-                  </TabPane>
-                  <TabPane tab="跟进" key="2">
-                    <Track value={data.businessId} number={1} />
-                  </TabPane>
-                </Tabs>
+                <Tabs
+                  defaultActiveKey="1"
+                  items={[
+                    {
+                      key: '1',
+                      label: '动态',
+                      children: <Dynamic value={data} api={{
+                        url: '/businessDynamic/list', method: 'POST'
+                      }} />
+                    },
+                    {key: '2', label: '跟进', children: <Track value={data.businessId} number={1} />},
+                  ]}
+                />
               </Card>
             </div>
           </Col>

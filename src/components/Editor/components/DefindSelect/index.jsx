@@ -6,7 +6,7 @@ import {useRequest} from '@/util/Request';
 import Modal from '@/components/Modal';
 import Defined from '@/components/Editor/components/Defined';
 
-const DefindSelect = ({style,buttonStyle}) => {
+const DefindSelect = ({style, buttonStyle}) => {
 
   const definedRef = useRef();
 
@@ -28,18 +28,17 @@ const DefindSelect = ({style,buttonStyle}) => {
   });
 
   const menu = (item) => {
-    return <Menu>
-      <Menu.Item key="update">
-        <Button type="link" style={{padding: 0, width: '100%'}} onClick={() => {
-          definedRef.current.open(item);
-        }}>修改</Button>
-      </Menu.Item>
-      <Menu.Item key="delete">
-        <Button type="link" style={{padding: 0, width: '100%'}} danger onClick={() => {
-          deleteRun({data: {contractTemplateId: item.contractTemplateId}});
-        }}>删除</Button>
-      </Menu.Item>
-    </Menu>;
+    return <Menu items={[{
+      key: 'update',
+      label: <Button type="link" style={{padding: 0, width: '100%'}} onClick={() => {
+        definedRef.current.open(item);
+      }}>修改</Button>
+    }, {
+      key: 'delete',
+      label: <Button type="link" style={{padding: 0, width: '100%'}} danger onClick={() => {
+        deleteRun({data: {contractTemplateId: item.contractTemplateId}});
+      }}>删除</Button>
+    }]} />;
   };
 
   const grid = (item, idnex) => {
@@ -48,7 +47,8 @@ const DefindSelect = ({style,buttonStyle}) => {
         <div style={{display: 'flex', alignItems: 'center'}}>
           <Typography.Text
             copyable={{
-              icon: [<div style={{...buttonStyle,color:'#000'}}>{item.name}</div>, <div style={buttonStyle}><Space>已复制 <CheckOutlined /></Space></div>],
+              icon: [<div style={{...buttonStyle, color: '#000'}}>{item.name}</div>,
+                <div style={buttonStyle}><Space>已复制 <CheckOutlined /></Space></div>],
               text: `\${${item.name}}`,
               tooltips: false,
             }}

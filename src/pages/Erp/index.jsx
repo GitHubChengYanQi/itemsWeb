@@ -38,13 +38,11 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             ref.current.open(false);
             setType(item.key);
           }}
+          items={[
+            {key:'仓库管理',label:'仓库管理'},
+            {key:'注意事项',label:'注意事项'}
+          ]}
         >
-          <Menu.Item key="仓库管理">
-            <span>仓库管理</span>
-          </Menu.Item>
-          <Menu.Item key="注意事项">
-            <span>注意事项</span>
-          </Menu.Item>
           <Menu.Divider />
         </Menu>} />
       <Modal width={1200} headTitle={type} footer={[]} ref={ref}>{RenderComponent()}</Modal>

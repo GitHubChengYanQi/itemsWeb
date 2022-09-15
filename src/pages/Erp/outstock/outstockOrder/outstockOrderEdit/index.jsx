@@ -122,7 +122,7 @@ const OutstockOrderEdit = ({...props}) => {
         zIndex={9999}
         centered
         title="出库BOM套数"
-        visible={visible}
+        open={visible}
         onCancel={() => {
           setNumber(1);
           setVisible(false);

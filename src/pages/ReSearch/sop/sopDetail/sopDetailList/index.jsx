@@ -49,12 +49,10 @@ const SopDetailList = ({id, value}) => {
     <div className={styles.detail}>
       {!(id || value) && <Card title={<Breadcrumb title="SOP详情" />} extra={
         <Space>
-          <Dropdown trigger="click" placement="bottomCenter" overlay={
-            <Menu>
-              <Menu.Item key="edit" onClick={() => {
-                ref.current.open(data.sopId);
-              }}>编辑</Menu.Item>
-            </Menu>
+          <Dropdown trigger="click" placement="bottom" overlay={
+            <Menu items={[
+              {key: 'edit', label: '编辑', onClick: () => ref.current.open(data.sopId)}
+            ]} />
           }>
             <Button type="text">
               管理

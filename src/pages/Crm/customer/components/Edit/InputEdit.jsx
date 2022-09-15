@@ -10,7 +10,7 @@ const InputEdit = ({value: values, onChange, patter, message, num}) => {
 
   return (
     <div style={{display: 'inline-block', cursor: 'pointer'}}>
-      <Popover visible={visiable} onVisibleChange={(visible) => {
+      <Popover open={visiable} onOpenChange={(visible) => {
         setVisiable(visible);
       }} placement="bottom" title={
         num ? <InputNumber value={value} onChange={(value) => {

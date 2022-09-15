@@ -151,7 +151,7 @@ const AddSkuModal = ({
           setVisible(null);
         }}>合并物料</Button>,
       ]}
-      visible={visible}
+      open={visible}
     >
       发现重复物料,请选择操作方式
     </AntModal>

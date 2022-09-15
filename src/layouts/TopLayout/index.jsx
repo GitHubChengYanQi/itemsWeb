@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {Layout, Menu, Space} from 'antd';
 import {useHistory, useLocation, useRouteMatch} from 'ice';
-import {RightOutlined} from '@ant-design/icons';
 import store from '@/store';
 import Icon from '@/components/Icon';
 import styles from './index.module.less';
@@ -26,30 +25,32 @@ const TopLayout = ({children, rightMenu: RightMenu}) => {
     return `/${item.id}` === match.path;
   });
 
+  const renderItem = (item) => {
+    if (item.children) {
+      return {
+        key: item.id,
+        title: item.name,
+        label: loopMenu(item.children)
+      };
+    }
+    return {
+      style: {borderBottom: '#435067 dotted 1px', margin: 0},
+      key: item.url,
+      icon: item.icon && <Icon style={{fontSize: 16, color: mode === 'vertical' ? '#fff' : '#000'}} type={item.icon} />,
+      title: item.name,
+      label: <>{item.name}
+        <div style={{float: 'right'}}><Icon type="icon-next" /></div>
+      </>
+    };
+  };
+
   const loopMenu = (subMenus) => {
     if (!Array.isArray(subMenus)) {
-      return null;
+      return [];
     }
     return subMenus.map((item) => {
       return renderItem(item);
     });
-  };
-
-  const renderItem = (item) => {
-    if (item.children) {
-      return (<Menu.SubMenu key={item.id} title={item.name}>{loopMenu(item.children)}</Menu.SubMenu>);
-    }
-    return (
-      <Menu.Item
-        style={{borderBottom: '#435067 dotted 1px',margin:0}}
-        key={item.url}
-        icon={item.icon &&
-        <Icon
-          style={{fontSize: 16, color: mode === 'vertical' ? '#fff' : '#000'}}
-          type={item.icon} />}>{item.name}
-        <div style={{float: 'right'}}><Icon type='icon-next' /></div>
-      </Menu.Item>
-    );
   };
 
   const renderLeftMenu = () => {
@@ -59,6 +60,7 @@ const TopLayout = ({children, rightMenu: RightMenu}) => {
       const key = `/${pathArray[1]}/${pathArray[2]}`;
       return (
         <Menu
+          items={loopMenu(subMenu.subMenus)}
           selectable
           selectedKeys={[key]}
           onClick={(obj) => {
@@ -68,7 +70,7 @@ const TopLayout = ({children, rightMenu: RightMenu}) => {
           defaultSelectedKeys={[]}
           style={{backgroundColor: '#2e3c56'}}
           theme={mode === 'vertical' ? 'dark' : 'light'}
-        >{loopMenu(subMenu.subMenus)}</Menu>
+        />
       );
     }
     return null;
@@ -79,21 +81,20 @@ const TopLayout = ({children, rightMenu: RightMenu}) => {
       <RightMenu
         mode={mode}
         theme={mode === 'vertical' ? 'dark' : 'light'}
-        buttons={[
-          <MenuItem
-            disabled
-            style={{
-              width: '50%',
-              textAlign: 'center',
-              backgroundColor: '#2e3c56',
-            }}
-            key="layout"
-            onClick={() => {
-              localStorage.setItem('tianPeng-layout', mode === 'vertical' ? 'horizontal' : 'vertical');
-              setMode(mode === 'vertical' ? 'horizontal' : 'vertical');
-            }}>
-            <Icon type={mode === 'vertical' ? 'icon-layout-top-line' : 'icon-layout-left-line'} />
-          </MenuItem>
+        buttons={[{
+          key: 'layout',
+          label: <Icon type={mode === 'vertical' ? 'icon-layout-top-line' : 'icon-layout-left-line'} />,
+          onClick: () => {
+            localStorage.setItem('tianPeng-layout', mode === 'vertical' ? 'horizontal' : 'vertical');
+            setMode(mode === 'vertical' ? 'horizontal' : 'vertical');
+          },
+          style: {
+            width: '50%',
+            textAlign: 'center',
+            backgroundColor: '#2e3c56',
+          },
+          disabled: true,
+        }
         ]}
       />
     );

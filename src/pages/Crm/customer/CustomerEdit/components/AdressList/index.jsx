@@ -5,10 +5,11 @@
  * @Date 2021-07-23 10:06:11
  */
 
-import React, { useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, Divider, Modal as AntModal, Table as AntTable} from 'antd';
 import {createFormActions} from '@formily/antd';
 import {ExclamationCircleOutlined} from '@ant-design/icons';
+import ProSkeleton from '@ant-design/pro-skeleton';
 import DelButton from '@/components/DelButton';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
@@ -20,6 +21,7 @@ import AdressEdit from '@/pages/Crm/adress/AdressEdit';
 import Table from '@/components/Table';
 import {useRequest} from '@/util/Request';
 import {customerEdit} from '@/pages/Crm/customer/CustomerUrl';
+import Render from '@/components/Render';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -27,16 +29,19 @@ const {FormItem} = Form;
 const formActionsPublic = createFormActions();
 
 const AdressList = (props) => {
-  const {customer,refresh} = props;
+  const {customer, refresh} = props;
   const ref = useRef(null);
   const tableRef = useRef(null);
+
+  const [loading, setLoading] = useState(false);
 
   const {run: editCustomer} = useRequest(customerEdit,
     {
       manual: true,
       onSuccess: () => {
-        if (typeof refresh === 'function')
+        if (typeof refresh === 'function'){
           refresh();
+        }
       }
     });
 
@@ -55,10 +60,28 @@ const AdressList = (props) => {
     });
   };
 
+  useEffect(() => {
+    if (customer.defaultAddress) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1);
+    }
+  }, [customer.defaultAddress]);
+
+  if (loading) {
+    return <ProSkeleton />;
+  }
+
   const searchForm = () => {
     return (
       <>
-        <FormItem style={{display: 'none'}} value={customer && customer.customerId || ' '} name="customerId" component={SysField.SalesId} />
+        <FormItem
+          style={{display: 'none'}}
+          value={customer && customer.customerId || ' '}
+          name="customerId"
+          component={SysField.SalesId}
+        />
       </>
     );
   };
@@ -88,9 +111,9 @@ const AdressList = (props) => {
             </>
           );
         }} />
-        <Column title="详细地址" dataIndex="detailLocation" />
-        <Column title="定位地址" dataIndex="location" />
-        <Column title="地址名称" dataIndex="addressName" />
+        <Column title="详细地址" dataIndex="detailLocation" render={(text) => <Render>{text}</Render>} />
+        <Column title="定位地址" dataIndex="location" render={(text) => <Render>{text}</Render>} />
+        <Column title="地址名称" dataIndex="addressName" render={(text) => <Render>{text}</Render>} />
         <Column />
         <Column title="操作" align="right" render={(value, record) => {
           const isDefaultAddress = customer && record.adressId === customer.defaultAddress;
@@ -109,10 +132,17 @@ const AdressList = (props) => {
           );
         }} width={300} />
       </Table>
-      <Drawer width={800} title="编辑" component={AdressEdit} customer={customer && customer.customerId} onSuccess={() => {
-        tableRef.current.refresh();
-        ref.current.close();
-      }} ref={ref} />
+      <Drawer
+        width={800}
+        title="编辑"
+        component={AdressEdit}
+        customer={customer && customer.customerId}
+        onSuccess={() => {
+          tableRef.current.refresh();
+          ref.current.close();
+        }}
+        ref={ref}
+      />
     </>
   );
 };

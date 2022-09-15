@@ -23,7 +23,7 @@ const TextEdit = ({
         destroyOnClose
         width={800}
         title='编辑'
-        visible={visiable}
+        open={visiable}
         onCancel={() => {
           setVisiable(false);
         }}

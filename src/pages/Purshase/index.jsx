@@ -60,35 +60,18 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             setType(item.key);
             ref.current.open(true);
           }}
-        >
-          <Menu.Item key="品牌管理">
-            <span>品牌管理</span>
-          </Menu.Item>
-          <Menu.Item key="税率管理">
-            <span>税率管理</span>
-          </Menu.Item>
-          <Menu.Item key="黑名单管理">
-            <span>黑名单管理</span>
-          </Menu.Item>
-          <Menu.Item key="合同分类管理">
-            <span>合同分类管理</span>
-          </Menu.Item>
-          <Menu.Item key="合同模板管理">
-            <span>合同模板管理</span>
-          </Menu.Item>
-          <Menu.Item key="供应商级别管理">
-            <span>供应商级别管理</span>
-          </Menu.Item>
-          <Menu.Item key="行业管理">
-            <span>行业管理</span>
-          </Menu.Item>
-          <Menu.Item key="付款计划模板">
-            <span>付款计划模板</span>
-          </Menu.Item>
-          <Menu.Item key="银行管理">
-            <span>银行管理</span>
-          </Menu.Item>
-        </Menu>} />
+          items={[
+            {key: '品牌管理', label: '品牌管理'},
+            {key: '税率管理', label: '税率管理'},
+            {key: '黑名单管理', label: '黑名单管理'},
+            {key: '合同分类管理', label: '合同分类管理'},
+            {key: '合同模板管理', label: '合同模板管理'},
+            {key: '供应商级别管理', label: '供应商级别管理'},
+            {key: '行业管理', label: '行业管理'},
+            {key: '付款计划模板', label: '付款计划模板'},
+            {key: '银行管理', label: '银行管理'},
+          ]}
+        />} />
       <Modal headTitle={type} footer={[]} width={1200} ref={ref}>{RenderComponent()}</Modal>
     </>
   );

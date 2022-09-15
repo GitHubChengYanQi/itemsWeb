@@ -99,9 +99,9 @@ const TaskList = () => {
 
   return <>
     <Popover
-      visible={state.showTaskList}
+      open={state.showTaskList}
       placement="bottomRight"
-      onVisibleChange={dataDispatchers.opentaskList}
+      onOpenChange={dataDispatchers.opentaskList}
       title="任务列表"
       content={taskList}
       trigger="click"

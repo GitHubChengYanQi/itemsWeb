@@ -15,7 +15,7 @@ const TreeEdit = ({value:values, onChange,val}) => {
 
   return (
     <div style={{display:'inline-block',cursor:'pointer'}}>
-      <Popover visible={visiable} onVisibleChange={(visible)=>{
+      <Popover open={visiable} onOpenChange={(visible)=>{
         setVisiable(visible);
       }} placement="bottom" title={
         <Cascader api={crmIndustryTreeView} value={value} onChange={(value) => {

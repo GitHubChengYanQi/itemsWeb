@@ -153,8 +153,8 @@ const StepList = (props) => {
                 value.state :
                 <Popover
                   placement="bottom"
-                  visible={visiable}
-                  onVisibleChange={(visible) => {
+                  open={visiable}
+                  onOpenChange={(visible) => {
                     setVisiable(visible);
                   }}
                   content={

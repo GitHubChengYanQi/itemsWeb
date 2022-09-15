@@ -199,11 +199,11 @@ const SkuImport = ({...props}, ref) => {
           disabled={addDisabled && meargeDisabled && nextDisabled}
           key={1}
           overlay={
-            <Menu>
-              <Menu.Item
-                key="0"
-                disabled={addDisabled}
-                onClick={() => {
+            <Menu items={[
+              {
+                key: '0',
+                label: '处理',
+                onClick: () => {
                   const row = selectedRows[0];
                   const skuResult = row.simpleResult || {};
                   const spuResult = skuResult.spuResult || {};
@@ -226,14 +226,12 @@ const SkuImport = ({...props}, ref) => {
                       }),
                     }
                   });
-                }}
-              >
-                处理
-              </Menu.Item>
-              <Menu.Item
-                key="1"
-                disabled={meargeDisabled}
-                onClick={() => {
+                }
+              }, {
+                key: '1',
+                label: '合并',
+                disabled: meargeDisabled,
+                onClick: () => {
                   const row = selectedRows[0];
                   const skuData = row.simpleResult || {};
 
@@ -263,14 +261,12 @@ const SkuImport = ({...props}, ref) => {
                       sku: describe
                     }
                   });
-                }}
-              >
-                合并
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                disabled={nextDisabled}
-                onClick={() => {
+                }
+              }, {
+                key: '2',
+                label: '直接导入',
+                disabled: nextDisabled,
+                onClick: () => {
                   setErrKeys(selectedRows.map(item => item.detailId));
                   addSkuRef.current.batchRun({
                     data: {
@@ -297,10 +293,9 @@ const SkuImport = ({...props}, ref) => {
                       })
                     }
                   });
-                }}
-              >
-                直接导入
-              </Menu.Item>
+                }
+              }
+            ]}>
             </Menu>
           }
           trigger={['click']}

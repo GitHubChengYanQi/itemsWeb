@@ -9,7 +9,7 @@ const DateEdit = ({value,onChange,disabledDate}) => {
 
   return (
     <div style={{display: 'inline-block', cursor: 'pointer'}}>
-      <Popover placement="bottom" visible={visiable} onVisibleChange={(value) => {
+      <Popover placement="bottom" open={visiable} onOpenChange={(value) => {
         setVisiable(value);
       }} trigger="click" content={<DatePicker value={change} disabledDate={disabledDate} onChange={(value,dateString)=>{
         setChange(value);

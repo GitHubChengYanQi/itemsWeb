@@ -188,10 +188,10 @@ const AmapSearch = ({
             }
           });
         }} />}</span>
-      <Popover onVisibleChange={(visible) => {
+      <Popover onOpenChange={(visible) => {
         setVisiable(visible);
       }} placement="bottom" content={reslut && reslut.count > 0 &&
-      <Card style={{maxHeight: 500, minWidth: 500, overflowY: 'auto', marginTop: 16}}>
+      <Card style={{maxHeight: '50vh', minWidth: 500, overflowY: 'auto', marginTop: 16}}>
         <List>
           {reslut.pois.map((item, index) => {
             return (<List.Item key={index} style={{cursor: 'pointer'}} onClick={() => {
@@ -225,8 +225,9 @@ const AmapSearch = ({
             </List.Item>);
           })}
         </List>
-      </Card>} visible={visiable}>
+      </Card>} open={visiable}>
         <Input.Search
+          placeholder='搜索地点'
           onChange={(value) => {
             MSearch.search(value.target.value);
             setValue(value.target.value);
@@ -244,7 +245,7 @@ const AmapSearch = ({
               setData(reslut.pois[0]);
             }
           }}
-          style={{width: 500, marginRight: 20}}
+          style={{width: 'auto', marginRight: 20}}
         />
       </Popover>
       <Button

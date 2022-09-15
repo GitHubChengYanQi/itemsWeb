@@ -1,6 +1,6 @@
 import {Drawer, Menu} from 'antd';
-import Icon from '@/components/Icon';
 import React, {useState} from 'react';
+import Icon from '@/components/Icon';
 import styles from './index.module.scss';
 
 const SetView = ({mode = 'horizontal', theme, width = '50%', buttons = [], SetMenu}) => {
@@ -14,17 +14,16 @@ const SetView = ({mode = 'horizontal', theme, width = '50%', buttons = [], SetMe
         mode="horizontal"
         theme={theme}
         style={{backgroundColor: '#2e3c56'}}
-      >
-        <Menu.Item
-          style={{width, textAlign: 'center'}}
-          key="setting"
-          onClick={() => {
-            showDrawer(true);
-          }}><Icon type="icon-xitongpeizhi" /></Menu.Item>
-        {buttons.map((Item) => {
-          return Item;
-        })}
-      </Menu>
+        items={[
+          {
+            key: 'setting',
+            label: <Icon type="icon-xitongpeizhi" />,
+            onClick: () => showDrawer(true),
+            style: {width, textAlign: 'center'}
+          },
+          ...buttons
+        ]}
+      />
       <Drawer
         destroyOnClose
         title={<span>设置</span>}
@@ -32,7 +31,7 @@ const SetView = ({mode = 'horizontal', theme, width = '50%', buttons = [], SetMe
           height: mode === 'vertical' ? 'calc(100vh - 63px)' : 'calc(100vh - 112px)',
           top: mode === 'vertical' ? 62 : 112
         }}
-        visible={drawerIsShow}
+        open={drawerIsShow}
         bodyStyle={{padding: 0}}
         placement={mode === 'vertical' ? 'left' : 'right'}
         onClose={() => {

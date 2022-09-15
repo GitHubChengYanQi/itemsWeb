@@ -98,13 +98,15 @@ export const Contacts = () => {
             {grid('合计数量')}
             {grid('交货日期')}
             {grid('产品备注')}
-            {grid('发票类型')}
             {grid('交货周期')}
           </Space>
         </ProCard>
         <ProCard className="h3Card" title="付款计划变量" headerBordered bodyStyle={{padding: 0}}>
           <Space wrap>
-            {grid('付款金额')}
+            {grid('票据类型')}
+            {grid('税率')}
+            {grid('总金额')}
+            {grid('浮动金额')}
             {grid('付款金额')}
             {grid('日期方式')}
             {grid('付款比例')}

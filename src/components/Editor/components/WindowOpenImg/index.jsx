@@ -23,7 +23,7 @@ const WindowOpenImg = () => {
       title="插入图片"
       destroyOnClose
       width={630}
-      visible={visible}
+      open={visible}
       footer={null}
       onOk={() => {
         setVisible(false);

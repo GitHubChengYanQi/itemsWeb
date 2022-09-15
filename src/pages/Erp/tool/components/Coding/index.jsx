@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Input, Select as AntdSelect} from 'antd';
 import cookie from 'js-cookie';
 
 
-const Coding = ({value, onChange, module, placeholder}) => {
+const Coding = ({value, onChange, placeholder}) => {
 
   const [state, setState] = useState(value ? 'defined' : (cookie.get('codingType') || 'defined'));
 

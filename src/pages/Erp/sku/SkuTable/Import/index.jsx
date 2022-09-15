@@ -234,7 +234,7 @@ const Import = (
       maskClosable={false}
       destroyOnClose
       title={title}
-      visible={visible}
+      open={visible}
       onCancel={() => {
         cancel();
         setVisible(false);
@@ -313,7 +313,7 @@ const Import = (
     <Modal
       title={modalTitle()}
       width={1700}
-      visible={table.visible}
+      open={table.visible}
       destroyOnClose
       maskClosable={false}
       footer={footer()}

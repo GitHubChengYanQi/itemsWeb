@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {Drawer, Menu, Modal} from 'antd';
+import React, { useState} from 'react';
+import {Menu, Modal} from 'antd';
 import TopLayout from '@/layouts/TopLayout';
 import RemindList from '@/pages/Portal/remind/remindList';
 import SetView from '@/layouts/SetView';
@@ -12,7 +12,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
 
   const RenderComponent = () => {
     switch (type) {
-      case 'shtx':
+      case '售后提醒管理':
         return <RemindList />;
       default:
         return null;
@@ -34,13 +34,11 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             setType(item.key);
             showModel(true);
           }}
-        >
-          <Menu.Item key="shtx">
-            <span>售后提醒管理</span>
-          </Menu.Item>
-          <Menu.Divider />
-        </Menu>} />
-      <Modal centered destroyOnClose maskClosable={false} width={860} visible={visible} onCancel={() => {
+          items={[
+            {key: '售后提醒管理', label: '售后提醒管理'},
+          ]}
+        />} />
+      <Modal centered destroyOnClose maskClosable={false} width={860} open={visible} onCancel={() => {
         showModel(false);
       }} footer={null}>{RenderComponent()}</Modal>
     </>

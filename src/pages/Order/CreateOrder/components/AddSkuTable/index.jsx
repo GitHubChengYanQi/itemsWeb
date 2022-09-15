@@ -24,8 +24,6 @@ const AddSkuTable = ({
 
   const [keys, setKeys] = useState([]);
 
-  const {data: taxData} = useRequest(taxRateListSelect);
-
   const {data: unitData} = useRequest(unitListSelect);
 
   const dataSources = value.map((item, index) => {
@@ -222,65 +220,6 @@ const AddSkuTable = ({
               setValue({
                 totalPrice: value,
               }, index);
-            }}
-          />;
-        }} />
-      <Table.Column
-        title={<Space style={{minWidth: 120}}>
-          <AntSelect
-            bordered={false}
-            style={{width: 100}}
-            placeholder="批量操作"
-            value="票据类型"
-            allowClear
-            options={[{label: '普票', value: 0}, {label: '专票', value: 1}]}
-            onChange={(value) => {
-              onChange(dataSources.map((item) => {
-                return {...item, paperType: value};
-              }));
-            }}
-          />
-        </Space>}
-        width={120}
-        dataIndex="paperType"
-        onCell={sharedOnCell}
-        render={(value, record, index) => {
-          return <AntSelect
-            style={{width:100}}
-            placeholder="请选择票据类型"
-            value={value}
-            options={[{label: '普票', value: 0}, {label: '专票', value: 1}]}
-            onChange={(value) => {
-              setValue({paperType: value,}, index);
-            }}
-          />;
-        }} />
-      <Table.Column
-        title={<Space>
-          <AntSelect
-            bordered={false}
-            placeholder="请选择税率"
-            value="税率(%)"
-            allowClear
-            options={taxData || []}
-            onChange={(value) => {
-              onChange(dataSources.map((item) => {
-                return {...item, rate: value};
-              }));
-            }}
-          />
-        </Space>}
-        width={120}
-        dataIndex="rate"
-        onCell={sharedOnCell}
-        render={(value, record, index) => {
-          return <AntSelect
-            style={{width:100}}
-            placeholder="请选择税率"
-            value={value}
-            options={taxData || []}
-            onChange={(value) => {
-              setValue({rate: value}, index);
             }}
           />;
         }} />

@@ -146,8 +146,8 @@ const Supply = ({
                           level: item.level.level
                         }
                       },
-                      supplySku:config.isSupplySku === '是',
-                      level:config.level,
+                      supplySku: config.isSupplySku === '是',
+                      level: config.level,
                     });
                   }}><EditOutlined key="edit" title="添加报价" /></Button>,
                 <Button
@@ -162,14 +162,12 @@ const Supply = ({
                     });
                   }}>查看报价</Button>,
 
-                <Dropdown placement="bottomCenter" overlay={
-                  <Menu>
-                    <Menu.Item key="1" onClick={() => {
-                      history.push(`/purchase/supply/${item.customerId}`);
-                    }}>
-                      详细信息
-                    </Menu.Item>
-                  </Menu>
+                <Dropdown placement="bottom" overlay={
+                  <Menu items={[{
+                    key: '1',
+                    label: '详细信息',
+                    onClick: () => history.push(`/purchase/supply/${item.customerId}`)
+                  }]} />
                 }>
                   <EllipsisOutlined key="ellipsis" title="详细信息" />
                 </Dropdown>,
@@ -221,7 +219,7 @@ const Supply = ({
             skus: skus.map((item) => {
               return {
                 skuId: item.skuId,
-                brandId:item.brandId,
+                brandId: item.brandId,
                 brandResult: item.brandResult,
                 skuResult: item.skuResult,
                 number: item.total,
@@ -229,8 +227,8 @@ const Supply = ({
             }),
             sourceId: id,
             source,
-            supplySku:config.isSupplySku === '是',
-            level:config.level,
+            supplySku: config.isSupplySku === '是',
+            level: config.level,
           });
         }}
       >

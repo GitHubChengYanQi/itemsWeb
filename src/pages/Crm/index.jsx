@@ -6,7 +6,6 @@ import TemplateList from '@/pages/Crm/template/TemplateList';
 import CrmCustomerLevelList from '@/pages/Crm/customer/crmCustomerLevel/crmCustomerLevelList';
 import CrmIndustryList from '@/pages/Crm/crmIndustry/crmIndustryList';
 import CrmBusinessSalesList from '@/pages/Crm/business/crmBusinessSales/crmBusinessSalesList';
-import CompanyRoleList from '@/pages/Crm/companyRole/companyRoleList';
 import SetView from '@/layouts/SetView';
 import DataClassificationList from '@/pages/Crm/data/dataClassification/dataClassificationList';
 import SpeechcraftTypeList from '@/pages/Crm/speechcraft/speechcraftType/speechcraftTypeList';
@@ -22,21 +21,21 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
 
   const RenderComponent = () => {
     switch (type) {
-      case 'sjly':
+      case '项目来源管理':
         return <OriginList />;
-      case 'sslc':
+      case '销售分类管理':
         return <CrmBusinessSalesList />;
-      case 'htfl':
+      case '合同分类管理':
         return <ContractClassList />;
-      case 'htmb':
+      case '合同模板管理':
         return <TemplateList />;
-      case 'khjb':
+      case '客户级别管理':
         return <CrmCustomerLevelList />;
-      case 'hygl':
+      case '行业管理':
         return <CrmIndustryList />;
-      case 'cpzl':
+      case '产品资料分类管理':
         return <DataClassificationList />;
-      case 'hsfl':
+      case '话术分类管理':
         return <SpeechcraftTypeList />;
       default:
         return null;
@@ -58,34 +57,18 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             setType(item.key);
             ref.current.open(false);
           }}
-        >
-          <Menu.Item key="sjly">
-            <span>项目来源管理</span>
-          </Menu.Item>
-          <Menu.Item key="sslc">
-            <span>销售分类管理</span>
-          </Menu.Item>
-          <Menu.Item key="htfl">
-            <span>合同分类管理</span>
-          </Menu.Item>
-          <Menu.Item key="htmb">
-            <span>合同模板管理</span>
-          </Menu.Item>
-          <Menu.Item key="khjb">
-            <span>客户级别管理</span>
-          </Menu.Item>
-          <Menu.Item key="hygl">
-            <span>行业管理</span>
-          </Menu.Item>
-          <Menu.Item key="cpzl">
-            <span>产品资料分类管理</span>
-          </Menu.Item>
-          <Menu.Item key="hsfl">
-            <span>话术分类管理</span>
-          </Menu.Item>
-          <Menu.Divider />
-        </Menu>} />
-      <Modal width={860} title="设置" footer={[]} ref={ref}>{RenderComponent()}</Modal>
+          items={[
+            {key: '项目来源管理', label: '项目来源管理'},
+            {key: '销售分类管理', label: '销售分类管理'},
+            {key: '合同分类管理', label: '合同分类管理'},
+            {key: '合同模板管理', label: '合同模板管理'},
+            {key: '客户级别管理', label: '客户级别管理'},
+            {key: '行业管理', label: '行业管理'},
+            {key: '产品资料分类管理', label: '产品资料分类管理'},
+            {key: '话术分类管理', label: '话术分类管理'},
+          ]}
+        />} />
+      <Modal width={860} headTitle={type} title="设置" footer={[]} ref={ref}>{RenderComponent()}</Modal>
     </>
   );
 };

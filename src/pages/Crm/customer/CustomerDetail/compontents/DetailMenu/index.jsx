@@ -69,28 +69,17 @@ const DetailMenu = ({data, deletaApi, url, refresh, type, supply,}) => {
   };
 
   const module = () => {
+    const menuItems = [];
     switch (type) {
       case 'customer':
-        return <>
-          {supply && <Menu.Item key="2" onClick={() => {
-            setVisible(true);
-          }}>加入黑名单</Menu.Item>}
-          <Menu.Item danger key="delete" onClick={() => {
-            deleteCustomer();
-          }}>删除</Menu.Item>
-        </>;
+        if (supply) {
+          menuItems.push({key: '2', label: '加入黑名单', onClick: () => setVisible(true)});
+        }
+        return [...menuItems, {key: 'delete', label: '删除', onClick: () => deleteCustomer()}];
       case 'bussiness':
-        return <>
-          <Menu.Item danger key="delete" onClick={() => {
-            deleteCustomer();
-          }}>删除</Menu.Item>
-        </>;
+        return [{key: 'delete', label: '删除', onClick: () => deleteCustomer()}];
       case 'sop':
-        return <>
-          <Menu.Item danger key="edit" onClick={() => {
-
-          }}>编辑</Menu.Item>
-        </>;
+        return [{key: 'edit', label: '编辑'}];
       default:
         break;
     }
@@ -98,10 +87,8 @@ const DetailMenu = ({data, deletaApi, url, refresh, type, supply,}) => {
 
   return (
     <>
-      <Dropdown trigger="click" placement="bottomCenter" overlay={
-        <Menu>
-          {module()}
-        </Menu>
+      <Dropdown trigger="click" placement="bottom" overlay={
+        <Menu items={module()} />
       }>
         <Button type="text">
           管理
@@ -111,7 +98,7 @@ const DetailMenu = ({data, deletaApi, url, refresh, type, supply,}) => {
 
       <Modal
         title={`确定要将【 ${data.customerName} 】拉入黑名单吗？`}
-        visible={visible}
+        open={visible}
         footer={[
           <Button
             type="primary"

@@ -45,7 +45,7 @@ const Drawer = (
       bodyStyle={bodyStyle}
       push={push}
       height={height}
-      visible={visible}
+      open={visible}
       extra={extra && <Button type='link' onClick={() => {
         show(null);
       }}>关闭</Button>}
@@ -56,7 +56,7 @@ const Drawer = (
       destroyOnClose
       width={width}
       title={headTitle || (title && (value ? `编辑${title}` : `添加${title}`))}
-      afterVisibleChange={(v) => {
+      afterOpenChange={(v) => {
         // setShow(v);
       }}
       placement={placement}

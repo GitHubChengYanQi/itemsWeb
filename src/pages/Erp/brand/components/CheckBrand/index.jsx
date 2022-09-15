@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {Button, Spin} from 'antd';
+import {Spin} from 'antd';
 import {brandIdSelect} from '@/pages/Erp/stock/StockUrl';
 import Select from '@/components/Select';
 import {useRequest} from '@/util/Request';
@@ -10,12 +10,14 @@ const CheckBrand = ({
   value,
   onChange = () => {
   },
+  getBrands = () => {
+  },
   ...props
 }) => {
 
   const ref = useRef();
 
-  const {loading, data, refresh} = useRequest(brandIdSelect);
+  const {loading, data, refresh} = useRequest(brandIdSelect, {onSuccess: getBrands});
 
   if (loading) {
     return <Spin />;
@@ -29,7 +31,7 @@ const CheckBrand = ({
     <Select
       {...props}
       options={[
-        {label:<a>新增品牌</a>, value: 'add'},
+        {label: <a>新增品牌</a>, value: 'add'},
         ...data
       ]}
       value={value}

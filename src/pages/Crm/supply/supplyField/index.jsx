@@ -15,9 +15,17 @@ import SelectSku from '@/pages/Erp/sku/components/SelectSku';
 import {useRequest} from '@/util/Request';
 import {brandListSelect} from '@/pages/Erp/brand/BrandUrl';
 
-export const SkuId = (props) => {
+export const SkuId = ({
+  value,
+  onChange,
+  skuDetail = () => {
+  }
+}) => {
 
-  return (<SelectSku {...props} width='100%' />);
+  return (<SelectSku value={value} onChange={(skuId, sku) => {
+    onChange(skuId);
+    skuDetail(sku);
+  }} width="100%" />);
 };
 export const CustomerId = (props) => {
   return (<Input {...props} />);
@@ -26,29 +34,33 @@ export const Display = (props) => {
   return (<Input {...props} />);
 };
 
+export const Model = (props) => {
+  return (<Input placeholder="请输入供应商型号" {...props} />);
+};
+
 export const BrandId = (props) => {
 
-  const {value,displays} = props;
+  const {value, displays} = props;
 
   const brandBindResults = [];
 
-  if (value && value.length > 0){
-    if (typeof value[0] === 'object'){
-      value.forEach((items)=>{
+  if (value && value.length > 0) {
+    if (typeof value[0] === 'object') {
+      value.forEach((items) => {
         brandBindResults.push(items && `${items.brandId}`);
       });
-    }else {
-      value.forEach((items)=>{
+    } else {
+      value.forEach((items) => {
         brandBindResults.push(items);
       });
     }
   }
 
-  useEffect(()=>{
-    if (brandBindResults.length > 0){
+  useEffect(() => {
+    if (brandBindResults.length > 0) {
       props.onChange(brandBindResults);
     }
-  },[]);
+  }, []);
 
 
   const {data} = useRequest(brandListSelect);
@@ -84,8 +96,8 @@ export const BrandId = (props) => {
       filterOption={(input, option) => option.label && option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
       value={brandBindResults}
       tagRender={tagRender}
-      style={{width: '100%',display:displays || null}}
-      options={[{value:0,label:'无品牌'},...options]}
+      style={{width: '100%', display: displays || null}}
+      options={[{value: 0, label: '无品牌'}, ...options]}
       onChange={(value) => {
         props.onChange(value);
       }}

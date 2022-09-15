@@ -24,9 +24,9 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
 
   const RenderComponent = () => {
     switch (type) {
-      case 'lbtfl':
+      case '轮播图分类管理':
         return <BannerDifferenceList />;
-      case 'dhfl':
+      case '导航分类管理':
         return <NavigationDifferenceList />;
       case 'shtx':
         return <RemindList />;
@@ -50,16 +50,12 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             setType(item.key);
             showModel(true);
           }}
-        >
-          <Menu.Item key="lbtfl">
-            <span>轮播图分类管理</span>
-          </Menu.Item>
-          <Menu.Item key="dhfl">
-            <span>导航分类管理</span>
-          </Menu.Item>
-          <Menu.Divider />
-        </Menu>} />
-      <Modal centered destroyOnClose maskClosable={false} width={860} visible={visible} onCancel={() => {
+          items={[
+            {key:'轮播图分类管理',label:'轮播图分类管理'},
+            {key:'导航分类管理',label:'导航分类管理'}
+          ]}
+        />} />
+      <Modal centered destroyOnClose maskClosable={false} width={860} open={visible} onCancel={() => {
         showModel(false);
       }} footer={null}>{RenderComponent()}</Modal>
     </>

@@ -230,14 +230,15 @@ const useTableSet = (column, tableKey) => {
           cover();
         }
       }}
-    >
-      <Menu.Item key={0}>
-        另存为新视图
-      </Menu.Item>
-      <Menu.Item key={1} disabled={!detail}>
-        覆盖当前视图
-      </Menu.Item>
-    </Menu>
+      items={[{
+        key: '0',
+        label: '另存为新视图',
+      }, {
+        key: '1',
+        label: '覆盖当前视图',
+        disabled: !detail
+      },]}
+    />
   );
 
   useEffect(() => {
@@ -287,10 +288,10 @@ const useTableSet = (column, tableKey) => {
         <Dropdown
           overlay={menu}
           overlayStyle={{backgroundColor: '#fff', zIndex: 99}}
-          onVisibleChange={(value) => {
+          onOpenChange={(value) => {
             setVisible(value);
           }}
-          visible={visible}
+          open={visible}
           placement="bottomRight"
           trigger={['click']}>
           <Button
@@ -302,7 +303,7 @@ const useTableSet = (column, tableKey) => {
 
         <Modal
           title="保存视图"
-          visible={showModal}
+          open={showModal}
           footer={[
             <Button
               type="primary"

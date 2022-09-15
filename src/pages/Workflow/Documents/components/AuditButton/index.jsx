@@ -57,7 +57,7 @@ const AuditButton = ({
 
     <Modal
       title={`是否${visible === 'agree' ? '同意' : '拒绝'}审批`}
-      visible={visible}
+      open={visible}
       confirmLoading={actionLoading}
       okButtonProps={{danger: visible !== 'agree'}}
       okText={visible === 'agree' ? '同意审批' : '拒绝审批'}

@@ -12,12 +12,14 @@ const InputNumber = (
     },
     min,
     addonAfter,
+    status,
     ...props
   }) => {
 
   const [number, setNumber] = useState(value);
 
   return <AntInputNumber
+    status={status}
     addonAfter={addonAfter}
     controls={false}
     min={min === undefined ? 1 : min}

@@ -56,7 +56,7 @@ const GenDataBaseInfo = ({ onChange, dataSourceId }) => {
       </Table>
       <Modal
         title="字段配置"
-        visible={visible}
+        open={visible}
         onOk={() => {
           fieldRef.current.submit();
         }}

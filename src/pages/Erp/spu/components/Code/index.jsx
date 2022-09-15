@@ -77,7 +77,7 @@ const Code = ({source, id, style, value, image,codeWidth}) => {
       </Space>}
       <Modal
         title="查看二维码"
-        visible={show}
+        open={show}
         destroyOnClose
         keyboard
         centered

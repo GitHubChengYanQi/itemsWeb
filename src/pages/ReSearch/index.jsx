@@ -12,7 +12,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
 
   const RenderComponent = () => {
     switch (type) {
-      case 'gxfl':
+      case '工序分类':
         return <ShipSetpClassList />;
       default:
         return null;
@@ -34,13 +34,11 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             setType(item.key);
             showModel(true);
           }}
-        >
-          <Menu.Item key="gxfl">
-            <span>工序分类</span>
-          </Menu.Item>
-          <Menu.Divider />
-        </Menu>} />
-      <Modal centered destroyOnClose maskClosable={false} width={860} visible={visible} onCancel={() => {
+          items={[
+            {key: '工序分类', label: '工序分类'},
+          ]}
+        />} />
+      <Modal centered destroyOnClose maskClosable={false} width={860} open={visible} onCancel={() => {
         showModel(false);
       }} footer={null}>{RenderComponent()}</Modal>
     </>

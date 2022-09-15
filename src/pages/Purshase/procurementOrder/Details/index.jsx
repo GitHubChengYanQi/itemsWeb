@@ -119,7 +119,7 @@ const Detail = () => {
 
       <Modal
         title={<div style={{textAlign: 'center'}}>选择合同</div>}
-        visible={contracts}
+        open={contracts}
         footer={null}
         closable={false}
         centered

@@ -207,7 +207,7 @@ export const ItemImgUrl = (props) => {
         {state.fileList && state.fileList.length >= 3 ? null : uploadButton}
       </Upload>
       <Modal
-        visible={previewVisible}
+        open={previewVisible}
         title={previewTitle}
         footer={null}
         onCancel={handleCancel}

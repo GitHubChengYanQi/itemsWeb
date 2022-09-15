@@ -68,7 +68,7 @@ const Message = () => {
       <Drawer
         closable={false}
         destroyOnClose
-        afterVisibleChange={() => {
+        afterOpenChange={() => {
           run();
         }}
         style={{marginTop: 60}}
@@ -76,7 +76,7 @@ const Message = () => {
         onClose={() => {
           setVisible(false);
         }}
-        visible={visible}
+        open={visible}
         title={title()}
       >
         {

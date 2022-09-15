@@ -117,7 +117,7 @@ const Modal = (
 
   return (
     <AntdModal
-      visible={visible}
+      open={visible}
       footer={footer || null}
       centered
       maskClosable={false}

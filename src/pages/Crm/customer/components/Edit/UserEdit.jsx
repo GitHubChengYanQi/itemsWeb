@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {AutoComplete, Avatar, Input, Popover, Select} from 'antd';
+import {Popover, Select} from 'antd';
 import {UserOutlined} from '@ant-design/icons';
 import {useRequest} from '@/util/Request';
 import {UserIdSelect} from '@/pages/Crm/customer/CustomerUrl';
@@ -23,7 +23,7 @@ const UserEdit = ({value, onChange,userId}) => {
   const options = [
     {
       label: '执行者',
-      options:[value ? {label:<><UserOutlined style={{marginRight:8}} />{change}</>,value:null} : {label: <><UserOutlined style={{marginRight:8}} />待认领</>,value: null}],
+      options:[value ? {label:<><UserOutlined style={{marginRight:8}} />{change}</>,value: 'null'} : {label: <><UserOutlined style={{marginRight:8}} />待认领</>,value: 'null'}],
     },
     {
       label: '推荐',
@@ -34,7 +34,7 @@ const UserEdit = ({value, onChange,userId}) => {
 
   return (
     <div style={{cursor: 'pointer'}}>
-      <Popover placement='bottom' visible={visiable} onVisibleChange={(valuhe)=>{
+      <Popover placement='bottom' open={visiable} onOpenChange={(valuhe)=>{
         setVisiable(valuhe);
       }} trigger='click' content={
         <Select
@@ -46,8 +46,8 @@ const UserEdit = ({value, onChange,userId}) => {
           style={{ width: 250 }}
           options={options}
           onSelect={(value, option)=>{
-            onChange(value);
-            setVal(value);
+            onChange(value === 'null' ? null : value);
+            setVal(value === 'null' ? null : value);
             setChange(option.label.props.children[1]);
             setVisiable(false);
           }}

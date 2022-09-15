@@ -98,7 +98,7 @@ const Comments = ({
 
     <Modal
       title="添加评论"
-      visible={visible}
+      open={visible}
       okButtonProps={{loading: commentsLoading}}
       okText="发表"
       onOk={() => {

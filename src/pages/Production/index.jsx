@@ -14,9 +14,9 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
 
   const RenderComponent = () => {
     switch (type) {
-      case 'gjflgl':
+      case '工具分类管理':
         return <ToolClassificationList />;
-      case 'zjflgl':
+      case '质检分类管理':
         return <QualityCheckClassificationList />;
       default:
         return null;
@@ -38,15 +38,11 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             ref.current.open(false);
             setType(item.key);
           }}
-        >
-          <Menu.Item key="gjflgl">
-            <span>工具分类管理</span>
-          </Menu.Item>
-          <Menu.Item key="zjflgl">
-            <span>质检分类管理</span>
-          </Menu.Item>
-          <Menu.Divider />
-        </Menu>} />
+          items={[
+            {key:'工具分类管理',label:'工具分类管理'},
+            {key:'质检分类管理',label:'质检分类管理'}
+          ]}
+        />} />
       <Modal width={860} title="设置" footer={[]} ref={ref}>{RenderComponent()}</Modal>
     </>
   );

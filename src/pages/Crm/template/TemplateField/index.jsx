@@ -23,6 +23,16 @@ export const ContractClassId = (props) => {
   return (<Select api={contractClassListSelect} {...props} />);
 };
 
+export const Module = (props) => {
+  return (<Select options={[
+    {label:'入库模板',value:'inStock'},
+    {label:'出库模板',value:'outStock'},
+    {label:'盘点模板',value:'stocktaking'},
+    {label:'养护模板',value:'curing'},
+    {label:'调拨模板',value:'allocation'},
+  ]} {...props} />);
+};
+
 export const UploadWord = (props) => {
   return (<FileUpload
     fileUpload

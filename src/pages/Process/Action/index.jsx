@@ -225,7 +225,7 @@ const Action = () => {
 
     <Modal
       title={comments ? '添加评论' : `是否${visible === 'agree' ? '同意' : '拒绝'}审批`}
-      visible={visible || comments}
+      open={visible || comments}
       confirmLoading={actionLoading || commentsLoading}
       okText={comments ? '发表' : '确定'}
       onOk={() => {

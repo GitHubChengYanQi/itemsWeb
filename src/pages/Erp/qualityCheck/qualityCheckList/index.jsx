@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Divider, Menu, Tree} from 'antd';
+import {Divider, Menu} from 'antd';
 import ListLayout from '@/layouts/ListLayout';
 import QualityTable from '@/pages/Erp/qualityCheck/components/QualityTable';
 import QualityPlanList from '@/pages/Erp/qualityCheck/components/qualityPlan/qualityPlanList';
@@ -19,17 +19,17 @@ const QualityCheckList = () => {
           onSelect={(value) => {
             setState(value.key);
           }}
-        >
-          <Menu.Item key="1">
-            质检项
-          </Menu.Item>
-          <Menu.Item key="2">
-            质检方案
-          </Menu.Item>
-          <Menu.Item key="3">
-            质检任务
-          </Menu.Item>
-        </Menu>
+          items={[{
+            key: '1',
+            label: '质检项',
+          }, {
+            key: '2',
+            label: '质检方案',
+          }, {
+            key: '3',
+            label: '质检任务',
+          },]}
+        />
         <Divider />
       </>);
   };

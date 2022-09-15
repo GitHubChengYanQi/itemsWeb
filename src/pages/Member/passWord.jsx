@@ -29,7 +29,7 @@ const PassWord = (
   return (
     <Modal
       title="修改密码"
-      visible={visible}
+      open={visible}
       onOk={async () => {
         await actions.submit();
       }}

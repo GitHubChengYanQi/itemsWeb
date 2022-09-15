@@ -50,27 +50,15 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             ref.current.open(false);
             setType(item.key);
           }}
-        >
-          <Menu.Item key="配置管理">
-            <span>配置管理</span>
-          </Menu.Item>
-          <Menu.Item key="品牌管理">
-            <span>品牌管理</span>
-          </Menu.Item>
-          <Menu.Item key="材质管理">
-            <span>材质管理</span>
-          </Menu.Item>
-          <Menu.Item key="单位管理">
-            <span>单位管理</span>
-          </Menu.Item>
-          <Menu.Item key="物料分类管理">
-            <span>物料分类管理</span>
-          </Menu.Item>
-          <Menu.Item key="打印模板">
-            <span>打印模板</span>
-          </Menu.Item>
-          <Menu.Divider />
-        </Menu>} />
+          items={[
+            {key: '配置管理', label: '配置管理'},
+            {key: '品牌管理', label: '品牌管理'},
+            {key: '材质管理', label: '材质管理'},
+            {key: '单位管理', label: '单位管理'},
+            {key: '物料分类管理', label: '物料分类管理'},
+            {key: '打印模板', label: '打印模板'},
+          ]}
+        />} />
       <Modal width={1000} headTitle={type} footer={[]} ref={ref}>{RenderComponent()}</Modal>
     </>
   );

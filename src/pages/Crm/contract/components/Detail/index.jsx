@@ -101,20 +101,11 @@ const Detail = ({id}) => {
       className={styles.main}
     >
       <Card>
-        <Tabs defaultActiveKey="1">
-          {contract && <TabPane tab="合同内容" key="1">
-            <Empty description="开发中..." />
-            {/*{*/}
-            {/*  parse(contract.content)*/}
-            {/*}*/}
-          </TabPane>}
-          <TabPane tab="产品明细" key="2">
-            <OrderDetailTable orderId={data.orderId} />
-          </TabPane>;
-          <TabPane tab="付款信息" key="3">
-            <PayTable payment={data.paymentResult} />
-          </TabPane>;
-        </Tabs>
+        <Tabs defaultActiveKey="1" items={[
+          ...(contract ? [{key: '1', label: '合同内容', children: <Empty description="开发中..." />}] : []),
+          {key: '2', label: '产品明细', children: <OrderDetailTable orderId={data.orderId} />},
+          {key: '3', label: '付款信息', children: <PayTable payment={data.paymentResult} />},
+        ]} />
       </Card>
     </div>
   </div>;

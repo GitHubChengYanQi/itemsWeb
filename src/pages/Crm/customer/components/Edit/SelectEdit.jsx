@@ -11,7 +11,7 @@ const SelectEdit = ({value: values, val, onChange, data, tree, api}) => {
 
   return (
     <div style={{display: 'inline-block', cursor: 'pointer'}}>
-      <Popover placement="bottom" visible={visiable} onVisibleChange={(valuhe) => {
+      <Popover placement="bottom" open={visiable} onOpenChange={(valuhe) => {
         setVisiable(valuhe);
       }} trigger="click" content={
         tree ? <Cascader value={value} api={api} onChange={(value, option = []) => {

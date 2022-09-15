@@ -9,6 +9,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, Divider, Modal as AntModal, Space, Table as AntTable, Tag} from 'antd';
 import {createFormActions, FormButtonGroup, Submit} from '@formily/antd';
 import {ExclamationCircleOutlined, SearchOutlined} from '@ant-design/icons';
+import ProSkeleton from '@ant-design/pro-skeleton';
 import Table from '@/components/Table';
 import AddButton from '@/components/AddButton';
 import EditButton from '@/components/EditButton';
@@ -22,7 +23,6 @@ import * as SysField from '@/pages/Crm/contacts/ContactsField';
 import {useRequest} from '@/util/Request';
 import {customerEdit} from '@/pages/Crm/customer/CustomerUrl';
 import SelectCustomer from '@/pages/Crm/customer/components/SelectCustomer';
-import ProSkeleton from '@ant-design/pro-skeleton';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -281,7 +281,7 @@ const ContactsTable = (props) => {
     />
 
 
-    <AntModal visible={record} centered title="联系人离职" onCancel={() => setRecord()} onOk={() => {
+    <AntModal open={record} centered title="联系人离职" onCancel={() => setRecord()} onOk={() => {
       const customers = customer.customerId ? [customer] : (record.customerResults || []);
       run({
         data: {

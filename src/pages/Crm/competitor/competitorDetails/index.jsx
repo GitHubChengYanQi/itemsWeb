@@ -11,6 +11,9 @@ import CompetitorEdit from '@/pages/Crm/competitor/competitorEdit';
 import Modal from '@/components/Modal';
 import styles from './index.module.scss';
 import Description from '@/pages/Crm/competitor/competitorDetails/components/Description';
+import Dynamic from '@/pages/Crm/customer/CustomerDetail/compontents/Dynamic';
+import Empty from '@/components/Empty';
+
 const {TabPane} = Tabs;
 
 const CompetitorDetails = () => {
@@ -21,7 +24,7 @@ const CompetitorDetails = () => {
 
   const ref = useRef(null);
 
-  const {loading, data, run,refresh} = useRequest(competitorDetail, {
+  const {loading, data, run, refresh} = useRequest(competitorDetail, {
     defaultParams: {
       data: {
         competitorId: params.cid
@@ -30,12 +33,11 @@ const CompetitorDetails = () => {
   });
 
 
-
   if (loading) {
     return (<ProSkeleton type="descriptions" />);
   }
 
-  if (data){
+  if (data) {
     return (
       <div className={styles.detail}>
         <Card>
@@ -80,20 +82,20 @@ const CompetitorDetails = () => {
           <Row gutter={12}>
             <Col span={16}>
               <Card>
-                <Tabs defaultActiveKey="1">
-                  <TabPane tab="详细信息" key="1">
-                    <Description data={data} />
-                  </TabPane>
-                </Tabs>
+                <Tabs defaultActiveKey="1" items={[
+                  {
+                    key: '2', label: '详细信息', children: <Description data={data} />
+                  }
+                ]} />
               </Card>
             </Col>
             <Col span={8}>
               <Card>
-                <Tabs defaultActiveKey="1">
-                  <TabPane tab="动态" key="1">
-                    {/*<Dynamic value={data} />*/}
-                  </TabPane>
-                </Tabs>
+                <Tabs defaultActiveKey="1" items={[
+                  {
+                    key: '2', label: '动态', children: <Empty />
+                  }
+                ]} />
               </Card>
             </Col>
           </Row>
@@ -104,7 +106,7 @@ const CompetitorDetails = () => {
       </div>
 
     );
-  }else {
+  } else {
     return null;
   }
 

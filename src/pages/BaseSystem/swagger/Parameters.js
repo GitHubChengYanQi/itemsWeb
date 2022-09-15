@@ -50,7 +50,7 @@ const Parameters = (props) => {
                 }}>{path}</Button>
                 <Modal
                   title={path}
-                  visible={visible}
+                  open={visible}
                   onOk={() => {
                     setVisible(false);
                   }}
