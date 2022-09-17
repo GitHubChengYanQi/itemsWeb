@@ -18,17 +18,19 @@ const Test = () => {
         type: 'object',
         properties: {
           select: {
-            required:true,
+            required: true,
             'x-linkages': [
               {
-                type: 'value:state',
+                type: 'value:visible',
                 target: 'string',
-                condition: '{{ $value == "11"}}',
-                schema: {
+                condition: '{{ $self.value == "11"}}',
+                state: {
+                  visible:true,
                   title:'123',
                   value:'{{$value}}'
                 },
                 otherwise: {
+                  visible:true,
                   title:'{{$value}}',
                   value:'{{$value}}'
                 }
@@ -37,10 +39,12 @@ const Test = () => {
             title: 'Select',
             'x-component': 'select',
             'x-component-props': {
-              options: [{label: '11', value: '11'},{label: '22', value: '22'}]
+              options: [{label: '11', value: '11'}, {label: '22', value: '22'}]
             }
           },
           string: {
+            visible:false,
+            default: '111',
             title: 'String',
             'x-component': 'input',
           },

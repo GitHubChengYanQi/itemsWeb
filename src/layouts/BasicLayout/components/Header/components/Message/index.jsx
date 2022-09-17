@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {AlertOutlined, BellOutlined,  MessageOutlined} from '@ant-design/icons';
+import {AlertOutlined, BellOutlined, MessageOutlined} from '@ant-design/icons';
 import {Badge, Button, Drawer, Tabs} from 'antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {useRequest} from '@/util/Request';
@@ -46,11 +46,24 @@ const Message = () => {
             break;
         }
       }}
-    >
-      <Tabs.TabPane tab={<Badge count={0} size="small"><div style={{padding:3}}><MessageOutlined style={{marginRight:4}} />消息</div></Badge>} key="0" />
-      <Tabs.TabPane tab={<Badge count={1} size="small"><div style={{padding:3}}><BellOutlined style={{marginRight:4}} />通知</div></Badge>} key="1" />
-      <Tabs.TabPane tab={<Badge count={5} size="small"><div style={{padding:3}}><AlertOutlined style={{marginRight:4}} />待办</div></Badge>} key="2" />
-    </Tabs>;
+      items={[
+        {key: '0',
+          label: <Badge count={0} size="small">
+            <div style={{padding: 3}}><MessageOutlined style={{marginRight: 4}} />消息</div>
+          </Badge>
+        },
+        {key: '1',
+          label: <Badge count={1} size="small">
+            <div style={{padding: 3}}><BellOutlined style={{marginRight: 4}} />通知</div>
+          </Badge>
+        },
+        {key: '2',
+          label: <Badge count={5} size="small">
+            <div style={{padding: 3}}><AlertOutlined style={{marginRight: 4}} />待办</div>
+          </Badge>
+        },
+      ]}
+    />;
   };
 
   return (

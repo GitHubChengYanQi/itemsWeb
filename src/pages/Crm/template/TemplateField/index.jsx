@@ -30,6 +30,7 @@ export const Module = (props) => {
     {label:'盘点模板',value:'stocktaking'},
     {label:'养护模板',value:'curing'},
     {label:'调拨模板',value:'allocation'},
+    {label:'异常模板',value:'error'},
   ]} {...props} />);
 };
 

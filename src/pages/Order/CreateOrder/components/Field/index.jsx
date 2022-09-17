@@ -418,7 +418,7 @@ export const LeadTime = (props) => {
 };
 
 export const Note = (props) => {
-  return (<Editor {...props} />);
+  return (<Editor width='100%' {...props} />);
 };
 
 export const AllField = ({

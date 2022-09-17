@@ -799,7 +799,6 @@ const CreateOrder = ({...props}) => {
           <Col span={24}>
             <FormItem
               visible={false}
-              // label="合同模板中的其他字段"
               name="labelResults"
               component={SysField.AllField}
             />
