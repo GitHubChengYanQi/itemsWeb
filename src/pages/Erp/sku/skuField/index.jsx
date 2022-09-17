@@ -54,21 +54,22 @@ export const SpuId = (props) => {
   const {loading, data, run} = useRequest(spuListSelect, {manual: true});
 
   const action = (name) => {
-    if (name || classId) {
-      run({
-        data: {
-          name, spuClassificationId: classId,
-        }
-      });
-    }
+    run({
+      data: {
+        name, spuClassificationId: classId,
+      }
+    });
   };
 
   useEffect(() => {
     action(value && value.name);
+    if (classId) {
+      onChange(null);
+    }
   }, [classId]);
 
 
-  const options = (!classId || loading) ? [] : data && data.map((items) => {
+  const options = loading ? [] : data && data.map((items) => {
     return {
       label: items.label, value: items.label, id: items.value,
     };

@@ -56,6 +56,7 @@ const SkuDetail = ({value}) => {
           title="基本信息"
           bordered={false}
           headStyle={{border: 'none'}}
+          bodyStyle={{padding: '0px 24px'}}
           extra={<Space>
             <Button type="link">申请采购</Button>
             <Dropdown trigger="click" placement="bottom" overlay={
@@ -116,18 +117,31 @@ const SkuDetail = ({value}) => {
         </Card>
       </div>
       <div className={styles.info}>
-        <Card title="详细信息">
+        <Card
+          title="详细信息"
+          headStyle={{border: 'none'}}
+          bodyStyle={{padding: '0px 24px'}}
+        >
           <Descriptions column={4}>
             <Descriptions.Item label="材质">-</Descriptions.Item>
             <Descriptions.Item label="养护周期">{data.maintenancePeriod || 0} 天</Descriptions.Item>
-            <Descriptions.Item label="总量">0</Descriptions.Item>
+            <Descriptions.Item label="重量">0</Descriptions.Item>
             <Descriptions.Item label="品牌">
               {isArray(data.brandResults).map(item => item.brandName).join('、')}
             </Descriptions.Item>
-            <Descriptions.Item label="物料描述" span={4}>
-              ({data.list && data.list.length > 0 && data.list[0].attributeValues ? <em>{data.list.map((items) => {
-              return `${items.itemAttributeResult.attribute}: ${items.attributeValues}`;
-            }).toString()}</em> : '无'})
+            <Descriptions.Item
+              label="物料描述"
+              span={4}
+            >
+              (
+              {
+                data.list &&
+                data.list.length > 0 &&
+                data.list[0].attributeValues ? <em>{data.list.map((items) => {
+                  return `${items.itemAttributeResult.attribute}: ${items.attributeValues}`;
+                }).toString()}</em> : '无'
+              }
+              )
             </Descriptions.Item>
             <Descriptions.Item
               label="图片"

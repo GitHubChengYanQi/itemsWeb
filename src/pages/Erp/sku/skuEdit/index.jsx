@@ -123,7 +123,7 @@ const SkuEdit = ({...props}, ref) => {
         }}
         effects={async () => {
 
-          const {setFieldState, getFieldState} = createFormActions();
+          const {setFieldState} = createFormActions();
 
           FormEffectHooks.onFieldValueChange$('spu').subscribe(async ({value}) => {
             if (value && value.spuId) {
@@ -133,6 +133,21 @@ const SkuEdit = ({...props}, ref) => {
                 'unitId',
                 state => {
                   state.value = spu.unitId;
+                }
+              );
+
+
+              setFieldState(
+                'specifications',
+                state => {
+                  state.value = spu.specifications;
+                }
+              );
+
+              setFieldState(
+                'spuClass',
+                state => {
+                  state.value = spu.spuClassificationId;
                 }
               );
 
@@ -154,16 +169,12 @@ const SkuEdit = ({...props}, ref) => {
           });
 
 
-          FormEffectHooks.onFieldValueChange$('spuClass').subscribe(({value: spuClassId}) => {
-            const spu = getFieldState('spu');
-            if (spuClassId) {
+          FormEffectHooks.onFieldValueChange$('spuClass').subscribe(({value: spuClassId,inputed}) => {
+            if (inputed){
               setFieldState(
                 'spu',
                 state => {
                   state.props.classId = spuClassId;
-                  if (!value && spu && spu.value && spu.value.spuId) {
-                    state.value = {name: spu.value.name};
-                  }
                 }
               );
             }
