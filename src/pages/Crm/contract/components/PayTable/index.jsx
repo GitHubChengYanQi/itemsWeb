@@ -5,6 +5,8 @@ import Form from '@/components/Form';
 import * as SysField from '@/pages/Crm/business/crmBusinessSalesProcess/crmBusinessSalesProcessField';
 import Table from '@/components/Table';
 import Empty from '@/components/Empty';
+import Render from '@/components/Render';
+import ThousandsSeparator from '@/components/ThousandsSeparator';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -27,9 +29,64 @@ const PayTable = ({payment}) => {
     );
   };
 
+  const columns = payment.payPlan === 2 ? [
+    {title: '日期', dataIndex: 'payTime'},
+  ] : [
+    {
+      title: '付款类型', dataIndex: 'payType', render: (value) => {
+        let text = '';
+        switch (value) {
+          case 0:
+            text = '订单创建后';
+            break;
+          case 1:
+            text = '合同签订后';
+            break;
+          case 2:
+            text = '订单发货前';
+            break;
+          case 3:
+            text = '订单发货后';
+            break;
+          case 4:
+            text = '入库后';
+            break;
+          default:
+            break;
+        }
+        return <Render text={text} />;
+      }
+    },
+    {title: '日期', dataIndex: 'dateNumber'},
+    {
+      title: '日期方式', dataIndex: 'dateWay', render: (value) => {
+        let text = '';
+        switch (value) {
+          case 0:
+            text = '天';
+            break;
+          case 1:
+            text = '月';
+            break;
+          case 2:
+            text = '年';
+            break;
+          default:
+            return '';
+        }
+        return <Render text={text} />;
+      }
+    }
+  ];
+
   return (
     <>
       <Table
+        columns={[
+          ...columns,
+          {title: '百分比', dataIndex: 'percentum',render:(value)=><Render text={`${value}%`} />},
+          {title: '付款金额', dataIndex: 'money',render:(value)=><ThousandsSeparator value={value} /> }
+        ]}
         bordered={false}
         noRowSelection
         bodyStyle={{padding: 0}}
@@ -43,43 +100,7 @@ const PayTable = ({payment}) => {
         showSearchButton={false}
         searchForm={searchForm}
         ref={tableRef}
-      >
-        {
-          payment.payPlan === 2 && <Column title="日期" dataIndex="payTime" />
-        }
-        {payment.payPlan !== 2 && <Column title="付款类型" dataIndex="payType" render={(value) => {
-          switch (value) {
-            case 0:
-              return '订单创建后';
-            case 1:
-              return '合同签订后';
-            case 2:
-              return '订单发货前';
-            case 3:
-              return '订单发货后';
-            case 4:
-              return '入库后';
-            default:
-              return '';
-          }
-        }} />}
-        {payment.payPlan !== 2 && <Column title="日期" dataIndex="dateNumber" />}
-        {payment.payPlan !== 2 && <Column title="日期方式" dataIndex="dateWay" render={(value) => {
-          switch (value) {
-            case 0:
-              return '天';
-            case 1:
-              return '月';
-            case 2:
-              return '年';
-            default:
-              return '';
-          }
-        }} />}
-        <Column title="百分比" dataIndex="percentum" />
-        <Column title="付款金额" dataIndex="money" />
-        <Column />
-      </Table>
+      />
     </>
   );
 };

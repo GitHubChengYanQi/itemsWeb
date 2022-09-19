@@ -204,14 +204,14 @@ const SkuTable = ({...props}, ref) => {
           return (
             <Space align='center'>
               <Code source="sku" id={record.skuId} />
+              <Typography.Text copyable={{
+                text: value
+              }} />
               <Button type="link" onClick={() => {
                 history.push(`/SPU/sku/${record.skuId}`);
               }}>
                 {value}
               </Button>
-              <Typography.Text copyable={{
-                text: value
-              }} />
             </Space>
           );
         }} />

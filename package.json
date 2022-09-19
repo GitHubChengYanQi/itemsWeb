@@ -70,6 +70,7 @@
     "react-amap-plugin-geolocation": "0.0.2",
     "react-custom-scrollbars-2": "^4.2.3",
     "react-dom": "^16.14.0",
+    "react-error-overlay": "^6.0.9",
     "react-eva": "^1.1.12",
     "react-json-view": "^1.19.1",
     "styled-components": "4.1.1",

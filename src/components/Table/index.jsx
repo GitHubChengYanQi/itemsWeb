@@ -7,6 +7,7 @@ import Service from '@/util/Service';
 import style from './index.module.less';
 import useTableSet from '@/hook/useTableSet';
 import TableSort from '@/components/Table/components/TableSort';
+import Render from '@/components/Render';
 
 
 const {Column} = AntdTable;
@@ -16,55 +17,72 @@ const formActionsPublic = createFormActions();
 
 const TableWarp = (
   {
-    children,
-    columns,
+    // a
     actions,
-    NoChildren,
-    title,
-    sortAction,
-    maxHeight,
-    loading: getLoading,
-    showCard,
-    rowSelection,
-    selectedRowKeys,
     api,
-    tableData,
     actionButton,
-    pageSize,
-    noPagination,
-    isChildren,
-    contentHeight,
-    searchForm,
-    cardTitle,
-    rowKey,
-    headStyle,
-    tab,
-    formSubmit,
-    dataSource: dataSources,
-    noSort,
-    configPagination,
-    tableKey,
-    branch,
-    noRowSelection,
+    // b
     bodyStyle,
     bordered,
-    defaultSelectedRowKeys,
-    SearchButton,
-    selectionType,
-    onChange,
-    getCheckboxProps,
-    layout,
+    // c
+    children,
+    columns,
+    contentHeight,
+    cardTitle,
+    configPagination,
     cardHeaderStyle,
+    // d
+    dataSource: dataSources,
+    defaultSelectedRowKeys,
+    // e
     expandable,
+    // f
+    formSubmit,
+    format = (data) => data,
+    footer: parentFooter,
+    formActions = null,
+    // g
+    getCheckboxProps,
+    // h
+    headStyle,
+    // i
+    isChildren,
+    isModal = true,
+    // l
+    left,
+    layout,
     listHeader = true,
     labelAlign,
+    loading: getLoading,
+    // m
+    maxHeight,
+    // n
+    NoChildren,
+    noPagination,
+    noSort,
+    noRowSelection,
     noTableColumn,
+    // o
+    onChange,
+    // p
+    pageSize,
+    // r
+    rowSelection,
+    rowKey,
+    // s
+    sortAction,
+    showCard,
+    selectedRowKeys,
+    searchForm,
+    SearchButton,
+    selectionType,
     sortList,
     submitAction,
-    footer: parentFooter,
-    isModal = true,
-    formActions = null,
-    left,
+    // t
+    title,
+    tableData,
+    tab,
+    tableKey,
     ...props
   }, ref) => {
 
@@ -138,10 +156,7 @@ const TableWarp = (
           params: page
         });
       }
-
-      if (typeof branch === 'function') {
-        response.data = branch(response.data);
-      }
+      response.data = format(response.data);
       return new Promise((resolve) => {
         resolve({
           dataSource: Array.isArray(response.data) ? response.data.map((items) => {
@@ -201,7 +216,14 @@ const TableWarp = (
     );
   };
 
-  const {tableColumn, setButton} = useTableSet(children, tableKey);
+  const {tableColumn, setButton} = useTableSet(children || (columns.map((item, index) => ({
+    ...item,
+    key: `${index}`,
+    align: item.align || 'center',
+    render: (value, record, index) => {
+      return typeof item.render === 'function' ? item.render(value, record, index) : <Render text={value} />;
+    }
+  }))), tableKey);
 
   return (
     <div className={style.tableWarp} id="listLayout" style={{height: '100%', overflowX: 'hidden'}}>
@@ -275,7 +297,22 @@ const TableWarp = (
               loading={getLoading || loading}
               dataSource={dataSource || []}
               rowKey={rowKey}
-              columns={columns}
+              columns={children ? null : [
+                ...(noSort ? [] : [{
+                  title: '序号',
+                  align: 'center',
+                  fixed: 'left',
+                  dataIndex: '0',
+                  width: '70px',
+                  render: (value, record, index) => <Render text={index + 1} width={70} />
+                }]),
+                ...tableColumn.filter((items) => {
+                  if (items && items.props && items.props.visible === false) {
+                    return false;
+                  }
+                  return !(items && (items.checked === false));
+                }),
+              ]}
               pagination={
                 noPagination || {
                   ...pagination,

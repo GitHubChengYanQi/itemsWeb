@@ -2,10 +2,19 @@ import React, {useState} from 'react';
 import {Button, Input, message as AntMessage, Popover} from 'antd';
 import InputNumber from '@/components/InputNumber';
 
-const InputEdit = ({value: values, onChange, patter, message, num}) => {
+const InputEdit = ({
+  value: defaultValue,
+  onChange,
+  patter,
+  message,
+  num,
+  format = (value) => {
+    return value;
+  }
+}) => {
 
-  const [value, setValue] = useState(values);
-  const [change, setChange] = useState(values);
+  const [value, setValue] = useState(defaultValue);
+  const [change, setChange] = useState(defaultValue);
   const [visiable, setVisiable] = useState();
 
   return (
@@ -27,7 +36,7 @@ const InputEdit = ({value: values, onChange, patter, message, num}) => {
           onChange && typeof onChange === 'function' && onChange(value);
         }
       }}>保存</Button>} trigger="click">
-        {change || '未填写'}
+        {format(change) || '未填写'}
       </Popover>
     </div>
   );

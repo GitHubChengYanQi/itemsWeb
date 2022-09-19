@@ -158,7 +158,7 @@ const CheckSku = ({
         api={type === 'sku' ? module({}).api : supplyList}
         NoChildren
         contentHeight
-        branch={(data) => {
+        format={(data) => {
           return data && data.map((item) => {
             return {
               ...item,

@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import {useHistory, useParams} from 'ice';
 import ProSkeleton from '@ant-design/pro-skeleton';
-import {Button, Card, Col, Descriptions, Dropdown, Empty, Image, Menu, Row, Space, Tabs} from 'antd';
+import {Button, Card, Col, Descriptions, Dropdown, Empty, Image, Menu, Row, Space, Tabs, Typography} from 'antd';
 import {DeleteOutlined, FormOutlined} from '@ant-design/icons';
 import {useRequest} from '@/util/Request';
 import styles from './index.module.less';
@@ -18,8 +18,6 @@ import OutStock from '@/pages/Erp/sku/SkuDetail/components/OutStock';
 import Stocktaking from '@/pages/Erp/sku/SkuDetail/components/Stocktaking';
 import Maintenance from '@/pages/Erp/sku/SkuDetail/components/Maintenance';
 import Allocation from '@/pages/Erp/sku/SkuDetail/components/Allocation';
-
-const {TabPane} = Tabs;
 
 const SkuDetail = ({value}) => {
 
@@ -85,7 +83,7 @@ const SkuDetail = ({value}) => {
           <Row>
             <Col span={22}>
               <Descriptions column={4}>
-                <Descriptions.Item label="物料编码">{data.standard}</Descriptions.Item>
+                <Descriptions.Item label="物料编码"><Typography.Text copyable>{data.standard}</Typography.Text></Descriptions.Item>
                 <Descriptions.Item label="名称">{spuResult.name} </Descriptions.Item>
                 <Descriptions.Item label="型号">{data.skuName}</Descriptions.Item>
                 <Descriptions.Item label="规格">{data.specifications || '-'}</Descriptions.Item>
