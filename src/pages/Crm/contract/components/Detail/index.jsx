@@ -109,9 +109,9 @@ const Detail = ({id}) => {
     >
       <Card>
         <Tabs destroyInactiveTabPane defaultActiveKey="1" items={[
-          ...(contract ? [{key: '1', label: '合同内容', children: <Empty description="开发中..." />}] : []),
-          {key: '2', label: '产品明细', children: <OrderDetailTable orderId={data.orderId} />},
-          {key: '3', label: '付款信息', children: <PayTable payment={data.paymentResult} />},
+          {key: '1', label: '产品明细', children: <OrderDetailTable orderId={data.orderId} />},
+          {key: '2', label: '付款信息', children: <PayTable payment={data.paymentResult} />},
+          ...(contract ? [{key: '3', label: '合同内容', children: <Empty description="开发中..." />}] : []),
         ]} />
       </Card>
     </div>
