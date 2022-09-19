@@ -54,7 +54,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
         RenderComponent={RenderComponent}
         buttons={buttons}
         SetMenu={<Menu
-          selectable={false}
+
           style={{width: '100%'}}
           onClick={(item) => {
             setType(item.key);
