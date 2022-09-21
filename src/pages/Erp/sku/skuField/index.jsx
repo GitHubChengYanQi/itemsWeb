@@ -112,7 +112,7 @@ export const SkuName = (props) => {
 
 
 export const SpuCoding = (props) => {
-  return (<Input {...props} />);
+  return (<Input placeholder='请输入产品码' {...props} />);
 };
 
 export const Codings = (props) => {
@@ -149,7 +149,7 @@ export const Codings = (props) => {
   </div>);
 };
 export const UnitId = (props) => {
-  return (<SetSelectOrCascader api={unitListSelect} width={200} title="设置单位" component={UnitEdit} {...props} />);
+  return (<SetSelectOrCascader placeholder='请选择单位' api={unitListSelect} width={200} title="设置单位" component={UnitEdit} {...props} />);
 };
 
 export const Standard = (props) => {

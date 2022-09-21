@@ -28,6 +28,7 @@ import Note from '@/components/Note';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
+import Render from '@/components/Render';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -200,9 +201,9 @@ const SkuTable = ({...props}, ref) => {
         {...other}
       >
 
-        <Column title="物料编码" key={1} dataIndex="standard" render={(value, record) => {
+        <Column title="物料编码" key={0} dataIndex="standard" render={(value, record) => {
           return (
-            <Space align='center'>
+            <Space align="center">
               <Code source="sku" id={record.skuId} />
               <Typography.Text copyable={{
                 text: value
@@ -216,64 +217,76 @@ const SkuTable = ({...props}, ref) => {
           );
         }} />
 
-        <Column title="名称 / 型号" key={2} dataIndex="skuName" render={(value, record) => {
+        <Column hidden title="名称 / 型号" key={1} dataIndex="skuName" render={(value, record) => {
           const spu = record.spuResult || {};
           return (
-            <>
+            <Render>
               {spu.name}
               &nbsp;/&nbsp;
               {record.skuName}
-            </>
+            </Render>
           );
         }} sorter />
 
-        <Column title="名称" key={3} dataIndex="spuResult" hidden render={(value) => {
-          return (
-            <div style={{minWidth: 70}}>
-              {value && value.name}
-            </div>
-          );
-        }} sorter />
+        <Column title="名称" key={2} dataIndex="spuResult" render={(value) => <Render text={value?.name} />} sorter />
 
-        <Column title="型号" key={4} dataIndex="skuName" hidden render={(value) => {
-          return (
-            <div style={{minWidth: 70}}>
-              {value}
-            </div>
-          );
-        }} sorter />
+        <Column title="型号" key={3} dataIndex="skuName" render={(value) => <Render text={value} />} sorter />
 
-        <Column title="物料描述" key={5} render={(value, record) => {
+        <Column title="物料描述" key={4} render={(value, record) => {
           return (
-            <div style={{minWidth: 100, maxWidth: 300}}>
-              <Note value={<SkuResultSkuJsons describe skuResult={record} />} />
-            </div>
+            <Render>
+              <Note width={300} value={<SkuResultSkuJsons describe skuResult={record} />} />
+            </Render>
           );
         }} />
 
-        <Column title="规格" key={6} dataIndex="specifications" render={(value) => {
-          return <div style={{minWidth: 50}}>{value}</div>;
-        }} />
+        <Column title="规格" key={5} dataIndex="specifications" render={(value) => <Render text={value} />} />
 
         <Column
-          key={7}
+          key={6}
+          hidden
           title="添加人 / 时间"
           sorter
           width={250}
           align="center"
-          dataIndex="createTime"
+          dataIndex="user"
           render={(value, record) => {
-            return <>
+            return <Render>
               {record.user && record.user.name || '-'} / {record.createTime}
-            </>;
-          }} />
+            </Render>;
+          }}
+        />
+
+        <Column
+          title="添加人"
+          key={7}
+          dataIndex="user"
+          render={(value) => <Render text={value?.name || '-'} />}
+          sorter
+        />
+
+        <Column
+          title="时间"
+          key={8}
+          dataIndex="createTime"
+          render={(value) => <Render text={value} />}
+          sorter
+        />
+
+        <Column
+          title="备注"
+          key={8}
+          dataIndex="remarks"
+          render={(value) => <Render text={value} />}
+          sorter
+        />
 
         <Column />
 
         <Column
           title="操作"
           fixed="right"
-          key={8}
+          key={9}
           dataIndex="skuId"
           width={300}
           align="center"

@@ -32,6 +32,7 @@ const BrandIds = ({value, onChange}) => {
 
   return (
     <AntSelect
+      placeholder="请选择品牌"
       mode="multiple"
       showArrow
       allowClear

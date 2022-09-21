@@ -98,10 +98,13 @@ const Cascader = (
   };
 
   return (<AntCascader
+    suffixIcon={null}
+    expandIcon={false}
     {...other}
     showSearch={{
       filter,
     }}
+    allowClear={false}
     loading={loading}
     style={{width}}
     changeOnSelect={changeOnSelect}

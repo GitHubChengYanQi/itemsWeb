@@ -15,6 +15,7 @@ import * as SysField from '../skuField';
 import {request} from '@/util/Request';
 import {spuDetail} from '@/pages/Erp/spu/spuUrl';
 import BrandIds from '@/pages/Erp/brand/components/BrandIds';
+import {isArray, isObject} from '@/util/Tools';
 
 const {FormItem} = Form;
 
@@ -23,7 +24,7 @@ const formActionsPublic = createFormActions();
 const SkuEdit = ({...props}, ref) => {
 
   const {
-    value,
+    value={},
     addUrl,
     onRepeat = () => {
     },
@@ -259,10 +260,10 @@ const SkuEdit = ({...props}, ref) => {
           label="物料描述"
           skuId={value.skuId}
           name="sku"
-          value={value && value.skuJsons && value.skuJsons.length > 0 ? value.skuJsons.map((items) => {
+          value={isArray(value.skuJsons).length > 0 ? value.skuJsons.map((items) => {
             return {
-              label: items.attribute.attribute,
-              value: items.values.attributeValues,
+              label: isObject(items.attribute).attribute,
+              value: isObject(items.values).attributeValues,
               disabled: true,
             };
           }) : []}
@@ -277,7 +278,9 @@ const SkuEdit = ({...props}, ref) => {
         <FormItem
           label="备注"
           name="remarks"
-          component={SysField.Note} />
+          placeholder="请输入备注"
+          component={SysField.Note}
+        />
         <FormItem
           label={<Space>
             附件
