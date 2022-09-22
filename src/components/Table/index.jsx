@@ -111,7 +111,7 @@ const TableWarp = (
   );
 
   const defaultTableQuery = state.params && JSON.parse(state.params) || {};
-
+  
   if (!formActions) {
     formActions = formActionsPublic;
   }
@@ -191,14 +191,19 @@ const TableWarp = (
     sorter: defaultTableQuery.sorter || {},
   });
 
+  const defaultPagination = {
+    'current': 1,
+    'pageSize': pageSize || defaultTableQuery.limit,
+  };
+
   const submit = () => {
-    setPagination({});
+    setPagination(defaultPagination);
     formActions.submit();
   };
 
   const reset = () => {
     onReset();
-    setPagination({});
+    setPagination(defaultPagination);
     formActions.reset();
   };
 

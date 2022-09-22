@@ -76,14 +76,15 @@ const SkuDetail = ({value}) => {
               </Button>
             </Dropdown>
             <Button onClick={() => {
-              history.push('/SPU/sku');
+              history.goBack();
             }}><Icon type="icon-huifu" />返回</Button>
           </Space>}
         >
           <Row>
             <Col span={22}>
               <Descriptions column={4}>
-                <Descriptions.Item label="物料编码"><Typography.Text copyable>{data.standard}</Typography.Text></Descriptions.Item>
+                <Descriptions.Item label="物料编码"><Typography.Text
+                  copyable>{data.standard}</Typography.Text></Descriptions.Item>
                 <Descriptions.Item label="名称">{spuResult.name} </Descriptions.Item>
                 <Descriptions.Item label="型号">{data.skuName}</Descriptions.Item>
                 <Descriptions.Item label="规格">{data.specifications || '-'}</Descriptions.Item>

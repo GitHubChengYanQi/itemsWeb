@@ -25,7 +25,7 @@ const SkuList = () => {
   const dataSource = dataResult(data && data.skuClass);
 
   const [spuClass, setSpuClass] = useState([]);
-  
+
   const Left = () => {
     return (
       <>
