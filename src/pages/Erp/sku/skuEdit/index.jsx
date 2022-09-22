@@ -137,14 +137,6 @@ const SkuEdit = ({...props}, ref) => {
                 }
               );
 
-
-              setFieldState(
-                'specifications',
-                state => {
-                  state.value = spu.specifications;
-                }
-              );
-
               setFieldState(
                 'spuClass',
                 state => {
@@ -169,21 +161,6 @@ const SkuEdit = ({...props}, ref) => {
             }
           });
 
-
-          FormEffectHooks.onFieldValueChange$('specifications').subscribe(({value,inputed}) => {
-            if (inputed){
-              // 主动输入查询对应的spu
-
-              // 如果存在对应的spu，联动到spu字段
-              setFieldState(
-                'spu',
-                state => {
-
-                }
-              );
-            }
-
-          });
 
           FormEffectHooks.onFieldValueChange$('spuClass').subscribe(({value: spuClassId,inputed}) => {
             if (inputed){
