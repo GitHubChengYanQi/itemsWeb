@@ -37,6 +37,7 @@ import Message from '@/components/Message';
 import SelectCreate from '@/components/SelectCreate';
 import FileUpload from '@/components/FileUpload';
 
+export const orderDetailRecord = {url: '/orderDetail/record', method: 'POST'};
 
 export const AddSku = ({value = [], customerId, brandName, onChange, module, currency}) => {
 
@@ -47,6 +48,15 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
   const [skuId, setSkuId] = useState();
 
   const [required, setRequired] = useState({});
+
+  const {loading, run: getRecord} = useRequest(orderDetailRecord, {
+    manual: true,
+    onSuccess: (res) => {
+      if (res){
+        setSku({...sku,...res});
+      }
+    }
+  });
 
   const requiredFiled = () => {
     if (!sku.purchaseNumber) {
@@ -104,6 +114,14 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
           customerId={customerId}
           onChange={(skuId, sku) => {
             setSkuId(skuId);
+            if (skuId && customerId){
+              getRecord({
+                data: {
+                  customerId,
+                  skuId,
+                }
+              });
+            }
             if (sku) {
               setSku({
                 skuId: sku.skuId,
@@ -121,13 +139,22 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
             <CheckBrand
               getBrands={(brands) => {
                 const brand = brands.find(item => item.label === brandName) || {};
-                setSku({...sku,brandId:brand.value});
+                setSku({...sku, brandId: brand.value});
               }}
               placeholder="请选择品牌/厂家"
               width={200}
               value={sku.brandId}
-              onChange={(value, option) => {
-                setSku({...sku, brandId: value, brandResult: option && option.label});
+              onChange={(brandId, option) => {
+                if (customerId){
+                  getRecord({
+                    data: {
+                      customerId,
+                      skuId,
+                      brandId
+                    }
+                  });
+                }
+                setSku({...sku, brandId, brandResult: option && option.label});
               }} />
           </Descriptions.Item>
           <Descriptions.Item label="单位" span={3}>
@@ -418,7 +445,7 @@ export const LeadTime = (props) => {
 };
 
 export const Note = (props) => {
-  return (<Editor width='100%' {...props} />);
+  return (<Editor width="100%" {...props} />);
 };
 
 export const AllField = ({

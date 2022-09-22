@@ -8,10 +8,10 @@
 import React, {useRef} from 'react';
 import {Popover, Space} from 'antd';
 import {QuestionCircleOutlined} from '@ant-design/icons';
+import {createFormActions} from '@formily/antd';
 import Form from '@/components/Form';
 import {spuClassificationDetail, spuClassificationAdd, spuClassificationEdit} from '../spuClassificationUrl';
 import * as SysField from '../spuClassificationField';
-import {createFormActions} from '@formily/antd';
 import store from '@/store';
 
 const {FormItem} = Form;
