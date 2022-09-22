@@ -111,7 +111,7 @@ const TableWarp = (
   );
 
   const defaultTableQuery = state.params && JSON.parse(state.params) || {};
-  
+
   if (!formActions) {
     formActions = formActionsPublic;
   }

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Card, Descriptions, Space, Tabs} from 'antd';
-import {config, useParams} from 'ice';
+import {config, useHistory, useParams} from 'ice';
 import cookie from 'js-cookie';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {useRequest} from '@/util/Request';
@@ -20,6 +20,8 @@ const Detail = ({id}) => {
   const token = cookie.get('tianpeng-token');
 
   const params = useParams();
+
+  const history = useHistory();
 
   const [loading, setLoading] = useState(true);
 
@@ -60,6 +62,22 @@ const Detail = ({id}) => {
     <Card title={<Breadcrumb />} bodyStyle={{padding: 0}} />
     <div className={styles.main}>
       <Card title="基本信息" extra={<Space>
+        <Button type="link" onClick={() => {
+          const paymentResult = data.paymentResult || {};
+          history.push({
+            pathname: '/purchase/order/createOrder',
+            search: `?module=${data.type === 1 ? 'PO' : 'SO'}`,
+            state: {
+              ...paymentResult,
+              ...data,
+              detailParams: data.detailResults,
+              paymentDetail: paymentResult.detailResults,
+              templateId:contract?.templateId,
+              contractCoding:contract?.coding,
+
+            }
+          });
+        }}>再来一单</Button>
         {contract &&
         <a
           href={`${baseURI}Excel/exportContractWord?id=${contract.contractId}&authorization=${token}`}
