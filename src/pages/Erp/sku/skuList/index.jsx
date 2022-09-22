@@ -24,13 +24,15 @@ const SkuList = () => {
 
   const dataSource = dataResult(data && data.skuClass);
 
-  const [spuClass, setSpuClass] = useState();
-
+  const [spuClass, setSpuClass] = useState([]);
+  
   const Left = () => {
     return (
       <>
         <Tree
           showLine
+          selectable
+          selectedKeys={spuClass}
           onSelect={(value) => {
             setSpuClass(value);
           }}
@@ -47,7 +49,7 @@ const SkuList = () => {
   };
   return (
     <ListLayout>
-      <SkuTable left={Left()} spuClass={spuClass} />
+      <SkuTable left={Left()} spuClass={spuClass[0] || null} setSpuClass={setSpuClass} />
     </ListLayout>
   );
 };

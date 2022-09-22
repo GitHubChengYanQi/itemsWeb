@@ -37,7 +37,9 @@ const TableWarp = (
     // e
     expandable,
     // f
-    formSubmit,
+    formSubmit = (values) => {
+      return values;
+    },
     format = (data) => data,
     footer: parentFooter,
     formActions = null,
@@ -63,13 +65,17 @@ const TableWarp = (
     noRowSelection,
     noTableColumn,
     // o
-    onChange,
+    onChange = () => {
+    },
+    onReset = () => {
+    },
     // p
     pageSize,
     // r
     rowSelection,
     rowKey,
     // s
+    submitValues = {},
     sortAction,
     showCard,
     selectedRowKeys,
@@ -131,7 +137,8 @@ const TableWarp = (
       field: sorter.field,
       order: sorter.order
     };
-    const newValues = typeof formSubmit === 'function' ? formSubmit(values) : values;
+
+    const newValues = formSubmit({...values, ...submitValues});
     if (!isModal) {
       setState({
         params: JSON.stringify({
@@ -190,6 +197,7 @@ const TableWarp = (
   };
 
   const reset = () => {
+    onReset();
     setPagination({});
     formActions.reset();
   };

@@ -40,7 +40,7 @@ const SkuTable = ({...props}, ref) => {
 
   const token = cookie.get('tianpeng-token');
 
-  const {spuClass, spuId, isModal, ...other} = props;
+  const {spuClass, spuId, isModal, setSpuClass, ...other} = props;
 
   const [loading, setLoading] = useState();
 
@@ -78,8 +78,8 @@ const SkuTable = ({...props}, ref) => {
   }));
 
   useEffect(() => {
-    if (spuClass) {
-      tableRef.current.formActions.setFieldValue('spuClass', spuClass[0]);
+    if (spuClass !== undefined) {
+      tableRef.current.formActions.setFieldValue('spuClass', spuClass);
       tableRef.current.submit();
     }
   }, [spuClass]);
@@ -154,10 +154,10 @@ const SkuTable = ({...props}, ref) => {
     );
   };
 
-
   return (
     <>
       <Table
+        onReset={() => setSpuClass([])}
         title={<Breadcrumb />}
         headStyle={spuId && {display: 'none'}}
         noRowSelection={spuId}
@@ -201,7 +201,7 @@ const SkuTable = ({...props}, ref) => {
         {...other}
       >
 
-        <Column title="物料编码" key={0} dataIndex="standard" render={(value, record) => {
+        <Column title="物料编码" key={0} sorter dataIndex="standard" render={(value, record) => {
           return (
             <Space align="center">
               <Code source="sku" id={record.skuId} />

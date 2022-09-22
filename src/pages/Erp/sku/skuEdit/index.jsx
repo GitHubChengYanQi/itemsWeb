@@ -229,7 +229,7 @@ const SkuEdit = ({...props}, ref) => {
           label="型号/规格"
           // label="型号"
           name="skuName"
-          placeholder="型号/规格"
+          placeholder="型号"
           component={SysField.SkuName}
           required />
         <FormItem
@@ -244,7 +244,7 @@ const SkuEdit = ({...props}, ref) => {
           required
         />
         <FormItem
-          label="执行标准"
+          label="规格"
           // label="规格"
           placeholder="请输入执行标准"
           name="specifications"
