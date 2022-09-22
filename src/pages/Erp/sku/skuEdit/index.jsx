@@ -226,7 +226,7 @@ const SkuEdit = ({...props}, ref) => {
           component={SysField.SpuCoding}
         />
         <FormItem
-          label="型号/规格"
+          label="型号"
           // label="型号"
           name="skuName"
           placeholder="型号"
@@ -246,7 +246,7 @@ const SkuEdit = ({...props}, ref) => {
         <FormItem
           label="规格"
           // label="规格"
-          placeholder="请输入执行标准"
+          placeholder="请输入规格"
           name="specifications"
           component={SysField.Specs}
         />
