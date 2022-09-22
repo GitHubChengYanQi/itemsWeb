@@ -52,8 +52,8 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
   const {loading, run: getRecord} = useRequest(orderDetailRecord, {
     manual: true,
     onSuccess: (res) => {
-      if (res){
-        setSku({...sku,...res});
+      if (res) {
+        setSku({...sku, ...res});
       }
     }
   });
@@ -108,126 +108,128 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
         }}>完成并添加下一个</Button>
       </Space>}
     >
-      <div style={{padding: '24px 10%'}}>
-        <AddSpu
-          supply={module === 'PO'}
-          customerId={customerId}
-          onChange={(skuId, sku) => {
-            setSkuId(skuId);
-            if (skuId && customerId){
-              getRecord({
-                data: {
-                  customerId,
-                  skuId,
-                }
-              });
-            }
-            if (sku) {
-              setSku({
-                skuId: sku.skuId,
-                coding: sku.standard,
-                skuResult: sku,
-                preordeNumber: 0,
-                unitId: sku.spuResult && sku.spuResult.unitId,
-              });
-            }
-          }}
-          value={skuId}
-        />
-        {sku && <Descriptions column={3} className="descriptionsCenter" labelStyle={{width: 100}}>
-          <Descriptions.Item label="品牌 / 厂家" span={3}>
-            <CheckBrand
-              getBrands={(brands) => {
-                const brand = brands.find(item => item.label === brandName) || {};
-                setSku({...sku, brandId: brand.value});
-              }}
-              placeholder="请选择品牌/厂家"
-              width={200}
-              value={sku.brandId}
-              onChange={(brandId, option) => {
-                if (customerId){
-                  getRecord({
-                    data: {
-                      customerId,
-                      skuId,
-                      brandId
-                    }
+      <Spin spinning={loading}>
+        <div style={{padding: '24px 10%'}}>
+          <AddSpu
+            supply={module === 'PO'}
+            customerId={customerId}
+            onChange={(skuId, sku) => {
+              setSkuId(skuId);
+              if (skuId && customerId) {
+                getRecord({
+                  data: {
+                    customerId,
+                    skuId,
+                  }
+                });
+              }
+              if (sku) {
+                setSku({
+                  skuId: sku.skuId,
+                  coding: sku.standard,
+                  skuResult: sku,
+                  preordeNumber: 0,
+                  unitId: sku.spuResult && sku.spuResult.unitId,
+                });
+              }
+            }}
+            value={skuId}
+          />
+          {sku && <Descriptions column={3} className="descriptionsCenter" labelStyle={{width: 100}}>
+            <Descriptions.Item label="品牌 / 厂家" span={3}>
+              <CheckBrand
+                getBrands={(brands) => {
+                  const brand = brands.find(item => item.label === brandName) || {};
+                  setSku({...sku, brandId: brand.value});
+                }}
+                placeholder="请选择品牌/厂家"
+                width={200}
+                value={sku.brandId}
+                onChange={(brandId, option) => {
+                  if (customerId) {
+                    getRecord({
+                      data: {
+                        customerId,
+                        skuId,
+                        brandId
+                      }
+                    });
+                  }
+                  setSku({...sku, brandId, brandResult: option && option.label});
+                }} />
+            </Descriptions.Item>
+            <Descriptions.Item label="单位" span={3}>
+              <Select
+                width={100}
+                placeholder="请选择单位"
+                api={unitListSelect}
+                value={sku.unitId}
+                onChange={(value) => {
+                  setSku({...sku, unitId: value});
+                }}
+              />
+            </Descriptions.Item>
+            <Descriptions.Item label={<div><span className="red">*</span>{module === 'SO' ? '销售数量' : '采购数量'}</div>}>
+              <InputNumber
+                width={100}
+                status={required.purchaseNumber}
+                placeholder="请输入数量"
+                value={sku.purchaseNumber}
+                min={0}
+                onChange={(value) => {
+                  setRequired({...required, purchaseNumber: ''});
+                  setSku({
+                    ...sku,
+                    purchaseNumber: value,
+                    totalPrice: (sku.onePrice || 0) * (value || 0),
                   });
-                }
-                setSku({...sku, brandId, brandResult: option && option.label});
-              }} />
-          </Descriptions.Item>
-          <Descriptions.Item label="单位" span={3}>
-            <Select
-              width={100}
-              placeholder="请选择单位"
-              api={unitListSelect}
-              value={sku.unitId}
-              onChange={(value) => {
-                setSku({...sku, unitId: value});
-              }}
-            />
-          </Descriptions.Item>
-          <Descriptions.Item label={<div><span className="red">*</span>{module === 'SO' ? '销售数量' : '采购数量'}</div>}>
-            <InputNumber
-              width={100}
-              status={required.purchaseNumber}
-              placeholder="请输入数量"
-              value={sku.purchaseNumber}
-              min={0}
-              onChange={(value) => {
-                setRequired({...required, purchaseNumber: ''});
-                setSku({
-                  ...sku,
-                  purchaseNumber: value,
-                  totalPrice: (sku.onePrice || 0) * (value || 0),
-                });
-              }}
-            />
-          </Descriptions.Item>
-          <Descriptions.Item label={<div><span className="red">*</span>{`单价(${currency})`}</div>}>
-            <InputNumber
-              width={100}
-              status={required.onePrice}
-              placeholder="请输入单价"
-              precision={2}
-              min={0}
-              value={sku.onePrice}
-              onChange={(value) => {
-                setRequired({...required, onePrice: ''});
-                setSku({
-                  ...sku,
-                  onePrice: value,
-                  totalPrice: (sku.purchaseNumber || 0) * (value || 0),
-                });
-              }}
-            />
-          </Descriptions.Item>
-          <Descriptions.Item label={`总价(${currency})`}>
-            <InputNumber
-              width={100}
-              placeholder="请输入总价"
-              precision={2}
-              min={1}
-              value={sku.totalPrice}
-              onChange={(value) => {
-                setSku({...sku, totalPrice: value});
-              }}
-            />
-          </Descriptions.Item>
-          <Descriptions.Item label="交货期(天)" span={3}>
-            <InputNumber
-              width={100}
-              placeholder="请输入交货期"
-              min={1}
-              value={sku.deliveryDate}
-              onChange={(value) => {
-                setSku({...sku, deliveryDate: value});
-              }}
-            />
-          </Descriptions.Item>
-        </Descriptions>}
-      </div>
+                }}
+              />
+            </Descriptions.Item>
+            <Descriptions.Item label={<div><span className="red">*</span>{`单价(${currency})`}</div>}>
+              <InputNumber
+                width={100}
+                status={required.onePrice}
+                placeholder="请输入单价"
+                precision={2}
+                min={0}
+                value={sku.onePrice}
+                onChange={(value) => {
+                  setRequired({...required, onePrice: ''});
+                  setSku({
+                    ...sku,
+                    onePrice: value,
+                    totalPrice: (sku.purchaseNumber || 0) * (value || 0),
+                  });
+                }}
+              />
+            </Descriptions.Item>
+            <Descriptions.Item label={`总价(${currency})`}>
+              <InputNumber
+                width={100}
+                placeholder="请输入总价"
+                precision={2}
+                min={1}
+                value={sku.totalPrice}
+                onChange={(value) => {
+                  setSku({...sku, totalPrice: value});
+                }}
+              />
+            </Descriptions.Item>
+            <Descriptions.Item label="交货期(天)" span={3}>
+              <InputNumber
+                width={100}
+                placeholder="请输入交货期"
+                min={1}
+                value={sku.deliveryDate}
+                onChange={(value) => {
+                  setSku({...sku, deliveryDate: value});
+                }}
+              />
+            </Descriptions.Item>
+          </Descriptions>}
+        </div>
+      </Spin>
     </Modal>
   </>);
 };
