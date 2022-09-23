@@ -116,6 +116,7 @@ const StockTable = (props) => {
 
   return (
     <Table
+      isModal={false}
       ref={tableRef}
       noRowSelection
       actionButton={actions()}
@@ -177,7 +178,11 @@ const StockTable = (props) => {
           <Note value={<SkuResultSkuJsons describe skuResult={record} />} />
         </div>;
       }} />
-      <Table.Column key={6} title="库存数量" dataIndex="stockNumber" render={(value) => {
+      <Table.Column key={6} title="库存数量" dataIndex="stockNumber" render={(value,record) => {
+        const stockNumber = (record.stockNumber || 0) - (record.lockStockDetailNumber || 0);
+        return <Render width={60}>{stockNumber || 0}</Render>;
+      }} />
+      <Table.Column key={6} title="备料数量" dataIndex="lockStockDetailNumber" render={(value) => {
         return <Render width={60}>{value || 0}</Render>;
       }} />
       <Table.Column key={6} title="预购数量" dataIndex="purchaseNumber" render={(value) => {
