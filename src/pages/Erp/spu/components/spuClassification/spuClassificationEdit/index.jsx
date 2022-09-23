@@ -6,7 +6,7 @@
  */
 
 import React, {useRef} from 'react';
-import {Col, Popover, Row, Space, Table} from 'antd';
+import {Col, Popover, Row, Space} from 'antd';
 import {QuestionCircleOutlined} from '@ant-design/icons';
 import {createFormActions} from '@formily/antd';
 import ProCard from '@ant-design/pro-card';
@@ -39,9 +39,13 @@ const SpuClassificationEdit = ({...props}) => {
       api={ApiConfig}
       formActions={formActionsPublic}
       fieldKey="spuClassificationId"
+      labelCol={8}
       onSuccess={() => {
         dispatchers.getSkuClass();
         props.onSuccess();
+      }}
+      formatDetail={(values) => {
+        return {...values, typeSetting: values.typeSetting && JSON.parse(values.typeSetting)};
       }}
       onSubmit={(value) => {
         return {...value, type: 1};
@@ -79,7 +83,7 @@ const SpuClassificationEdit = ({...props}) => {
         </Row>
       </ProCard>
       <ProCard className="h2Card" title="设置物料表单" headerBordered>
-        <FormItem wrapperCol={24} name="skuForm" component={SkuForm} />
+        <FormItem wrapperCol={24} name="typeSetting" component={SkuForm} />
       </ProCard>
     </Form>
   );

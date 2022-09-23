@@ -1,11 +1,11 @@
 import React from 'react';
-import SkuForm from '@/pages/Erp/spu/components/SkuForm';
+import styles from './index.module.less';
 
 const Test = () => {
 
 
   return <div style={{maxWidth: '50vw', margin: 'auto'}}>
-    <SkuForm />
+    <div className={styles.test} />
   </div>;
 };
 

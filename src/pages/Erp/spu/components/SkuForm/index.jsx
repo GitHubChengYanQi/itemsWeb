@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {message, Switch, Table, Typography} from 'antd';
-import {HighlightOutlined, MenuOutlined} from '@ant-design/icons';
+import {MenuOutlined} from '@ant-design/icons';
 import {arrayMoveImmutable} from 'array-move';
 import {SortableContainer, SortableElement, SortableHandle} from 'react-sortable-hoc';
 import styles from './index.less';
@@ -28,15 +28,15 @@ const data = [
   {key: 'images', filedName: '图片', show: true,},
   {key: 'drawing', filedName: '图纸', show: true,},
   {key: 'fileId', filedName: '附件', show: true,},
-  {key: '1', filedName: '国家标准', show: true,},
-  {key: '2', filedName: '型号', show: true,},
-  {key: '3', filedName: '零件号', show: true,},
-  {key: 'cz', filedName: '材质', show: true,},
+  {key: 'nationalStandard', filedName: '国家标准', show: false,},
+  {key: 'skuName', filedName: '型号', show: false,},
+  {key: 'partNo', filedName: '零件号', show: false,},
+  {key: 'materialId', filedName: '材质', show: true,},
   {key: 'weight', filedName: '重量', show: true,},
-  {key: 'cc', filedName: '尺寸', show: true,},
-  {key: 'bs', filedName: '表色', show: true,},
-  {key: 'jb', filedName: '级别', show: true,},
-  {key: 'rcl', filedName: '热处理', show: true,},
+  {key: 'skuSize', filedName: '尺寸', show: true,},
+  {key: 'color', filedName: '表色', show: true,},
+  {key: 'level', filedName: '级别', show: true,},
+  {key: 'heatTreatment', filedName: '热处理', show: true,},
   {key: 'remarks', filedName: '备注', show: true,},
 ];
 
@@ -45,16 +45,34 @@ const SortableItem = SortableElement((props) => <tr {...props} />);
 
 
 const SkuForm = ({
-  value,
+  value = [],
   onChange = () => {
   }
 }) => {
 
-  const [dataSource, setDataSource] = useState(value || data.map((item, index) => ({...item, index})));
+  const [dataSource, setDataSource] = useState([]);
+
+  useEffect(() => {
+    let defaultDataSource = data;
+    if (value.length > 0) {
+      const newDataSource = [];
+      value.forEach(item => {
+        if (data.some(dataItem => dataItem.key === item.key)) {
+          newDataSource.push(item);
+        }
+      });
+      const otherData = data.filter(item => !newDataSource.some(defaultItem => defaultItem.key === item.key));
+      defaultDataSource = [...newDataSource, ...otherData];
+    }
+    setDataSource(defaultDataSource.map((item, index) => ({
+      ...item,
+      index
+    })));
+  }, []);
 
   const dataSourceChange = (data = {}, key) => {
     const newDataSource = dataSource.map(item => {
-      if (item.index === key) {
+      if (item.key === key) {
         return {...item, ...data};
       }
       return item;
@@ -107,10 +125,10 @@ const SkuForm = ({
       className: 'drag-visible',
       render: (value, record) => <Typography.Paragraph
         style={{margin: 0}}
-        editable={{
+        editable={record.disabled ? false : {
           tooltip: '点击自定义字段名',
           onChange: (filedName) => {
-            dataSourceChange({filedName}, record.index);
+            dataSourceChange({filedName}, record.key);
           },
         }}
       >
@@ -128,13 +146,31 @@ const SkuForm = ({
         disabled={record.defaultShow}
         checked={value}
         onChange={(checked) => {
-          dataSourceChange({show: checked}, record.index);
+          const only = ['nationalStandard', 'skuName', 'partNo'];
+          const newDataSource = dataSource.map(item => {
+            if (only.includes(item.key)) {
+              if (only.includes(record.key)) {
+                return {...item, show: checked && record.key === item.key};
+              } else if (record.key === item.key) {
+                return {...item, show: checked};
+              } else {
+                return item;
+              }
+            } else if (record.key === item.key) {
+              return {...item, show: checked};
+            } else {
+              return item;
+            }
+          });
+          setDataSource(newDataSource);
+          onChange(newDataSource);
         }}
       />
     },
   ];
 
   return <Table
+    className={styles}
     scroll={{y: 500}}
     pagination={false}
     dataSource={dataSource}
