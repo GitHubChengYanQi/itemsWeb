@@ -15,7 +15,7 @@ const SkuResultSkuJsons = ({skuResult, describe}) => {
       &&
       skuResult.skuJsons.map((items) => {
         return `${items.attribute.attribute}:${items.values.attributeValues}`;
-      }).join(' , ') || '无';
+      }).join(' ; ') || '无';
   }
 
   return `${skuResult.spuResult.name} / ${skuResult.skuName}${skuResult.specifications ? ` / ${skuResult.specifications}` : ''}`;

@@ -1,12 +1,12 @@
 import React from 'react';
 import {Select as AntSelect, Tag} from 'antd';
 import {useRequest} from '@/util/Request';
-import {brandListSelect} from '@/pages/Erp/brand/BrandUrl';
+import {materialListSelect} from '@/pages/Erp/material/MaterialUrl';
 
 
-const BrandIds = ({value, onChange,placeholder}) => {
+const MaterialIds = ({value, onChange, placeholder}) => {
 
-  const {data} = useRequest(brandListSelect);
+  const {data} = useRequest(materialListSelect);
 
   const options = data || [];
 
@@ -32,7 +32,7 @@ const BrandIds = ({value, onChange,placeholder}) => {
 
   return (
     <AntSelect
-      placeholder={placeholder || '请选择品牌'}
+      placeholder={placeholder || '请选择材质'}
       mode="multiple"
       showArrow
       allowClear
@@ -49,4 +49,4 @@ const BrandIds = ({value, onChange,placeholder}) => {
   );
 };
 
-export default BrandIds;
+export default MaterialIds;
