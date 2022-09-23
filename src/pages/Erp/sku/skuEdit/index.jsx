@@ -229,7 +229,7 @@ const SkuEdit = ({...props}, ref) => {
           />
         </Spin> : typeSetting.map((item, index) => {
 
-          if (item.disabled) {
+          if (item.disabled || !item.show) {
             return <div key={index} />;
           }
           let formItemProps;
