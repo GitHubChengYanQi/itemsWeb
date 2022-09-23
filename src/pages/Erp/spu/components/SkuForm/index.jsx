@@ -37,6 +37,8 @@ const data = [
   {key: 'color', filedName: '表色', show: true,},
   {key: 'level', filedName: '级别', show: true,},
   {key: 'heatTreatment', filedName: '热处理', show: true,},
+  {key: 'packaging', filedName: '包装方式', show: true,},
+  {key: 'viewFrame', filedName: '图幅', show: true,},
   {key: 'remarks', filedName: '备注', show: true,},
 ];
 
