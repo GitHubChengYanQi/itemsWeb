@@ -15,6 +15,7 @@ import * as SysField from '../skuField';
 import {request} from '@/util/Request';
 import {spuDetail} from '@/pages/Erp/spu/spuUrl';
 import BrandIds from '@/pages/Erp/brand/components/BrandIds';
+import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
 
@@ -86,6 +87,7 @@ const SkuEdit = ({...props}, ref) => {
         formActions={formActionsPublic}
         defaultValue={{
           'spu': value.spuResult,
+          brandIds: isArray(value.brandResults).map(item => item.brandId),
           ...(value.defaultValue || {}),
         }}
         api={ApiConfig}
@@ -169,8 +171,8 @@ const SkuEdit = ({...props}, ref) => {
           });
 
 
-          FormEffectHooks.onFieldValueChange$('spuClass').subscribe(({value: spuClassId,inputed}) => {
-            if (inputed){
+          FormEffectHooks.onFieldValueChange$('spuClass').subscribe(({value: spuClassId, inputed}) => {
+            if (inputed) {
               setFieldState(
                 'spu',
                 state => {
