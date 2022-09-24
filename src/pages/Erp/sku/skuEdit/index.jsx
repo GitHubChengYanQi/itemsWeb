@@ -18,6 +18,7 @@ import BrandIds from '@/pages/Erp/brand/components/BrandIds';
 import {isArray, isObject} from '@/util/Tools';
 import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
 import MaterialIds from '@/pages/Erp/material/MaterialIds';
+import {Weight} from '../skuField';
 
 const {FormItem} = Form;
 
@@ -256,6 +257,11 @@ const SkuEdit = ({...props}, ref) => {
             case 'maintenancePeriod':
               formItemProps = {
                 component: SysField.MaintenancePeriod,
+              };
+              break;
+            case 'weight':
+              formItemProps = {
+                component: SysField.Weight,
               };
               break;
             case 'sku':

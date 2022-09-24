@@ -28,8 +28,8 @@ const data = [
   {key: 'images', filedName: '图片', show: true,},
   {key: 'drawing', filedName: '图纸', show: true,},
   {key: 'fileId', filedName: '附件', show: true,},
+  {key: 'skuName', filedName: '型号', show: true,},
   {key: 'nationalStandard', filedName: '国家标准', show: false,},
-  {key: 'skuName', filedName: '型号', show: false,},
   {key: 'partNo', filedName: '零件号', show: false,},
   {key: 'materialId', filedName: '材质', show: true,},
   {key: 'weight', filedName: '重量', show: true,},
@@ -89,7 +89,7 @@ const SkuForm = ({
         (el) => !!el,
       );
       if (dataSource.some((value, index) => value.disabled && (value.key !== newData[index].key))) {
-        message.error('不可拖拽固定字段！');
+        message.warn('不可拖拽固定字段！');
         return <></>;
       }
       setDataSource(newData);
@@ -164,6 +164,10 @@ const SkuForm = ({
               return item;
             }
           });
+          if (newDataSource.filter(item => only.includes(item.key) && item.show).length === 0) {
+            message.warn('国家标准、型号、零件号必须保留一项！');
+            return;
+          }
           setDataSource(newDataSource);
           onChange(newDataSource);
         }}

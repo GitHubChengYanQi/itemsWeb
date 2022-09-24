@@ -154,6 +154,8 @@ const SkuTable = ({...props}, ref) => {
     );
   };
 
+  const columns = [];
+
   return (
     <>
       <Table

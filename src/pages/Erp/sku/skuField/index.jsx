@@ -230,6 +230,11 @@ export const MaintenancePeriod = (props) => {
   return (<InputNumber addonAfter={<div>天</div>} {...props} />);
 };
 
+
+export const Weight = (props) => {
+  return (<InputNumber addonAfter={<div>kg</div>} {...props} />);
+};
+
 export const FileId = (props) => {
   return (<FileUpload {...props} maxCount={5} />);
 };
