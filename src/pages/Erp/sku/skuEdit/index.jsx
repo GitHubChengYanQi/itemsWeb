@@ -106,6 +106,7 @@ const SkuEdit = ({...props}, ref) => {
             ...res,
             materialId: res.materialIdList || [],
             spu: res.spuResult,
+            brandIds: isArray(res.brandResults).map(item => item.brandId)
           };
         }}
         onError={() => {
@@ -131,7 +132,7 @@ const SkuEdit = ({...props}, ref) => {
             skuId: value.copy ? null : value.skuId,
             oldSkuId: copy ? value.skuId : null,
             spu: {...submitValue.spu, coding: submitValue.spuCoding},
-            skuName: submitValue.nationalStandard || submitValue.skuName || submitValue.partNo
+            skuName: submitValue.nationalStandard || submitValue.model || submitValue.partNo
           };
           setSubmitValue(submitValue);
           return submitValue;

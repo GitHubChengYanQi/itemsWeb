@@ -234,7 +234,7 @@ const TableWarp = (
     key: `${index}`,
     align: item.align || 'center',
     render: (value, record, index) => {
-      return typeof item.render === 'function' ? item.render(value, record, index) : <Render text={value} />;
+      return typeof item.render === 'function' ? item.render(value, record, index) : <Render text={value || '-'} />;
     }
   }))), tableKey);
 

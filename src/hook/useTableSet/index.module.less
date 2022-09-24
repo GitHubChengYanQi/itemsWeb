@@ -1,7 +1,27 @@
-.cardTitle :global .ant-card-head-title {
-  padding: 0;
+.cardTitle {
+
+  :global {
+    .ant-card-head-title {
+      padding: 0;
+    }
+
+    .ant-card-head-wrapper {
+      height: 50px;
+    }
+  }
 }
 
-.cardTitle :global .ant-card-head-wrapper {
-  height: 50px;
+.item {
+  display: flex;
+  align-items: center;
+  padding: 5px 12px;
+  cursor: pointer;
+
+  .label {
+    flex-grow: 1;
+  }
+}
+
+.checked {
+  background-color: #e9f2f9;
 }
