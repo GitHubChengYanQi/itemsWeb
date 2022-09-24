@@ -93,9 +93,6 @@ const SkuTable = ({...props}, ref) => {
           setEdit(false);
           setCopy(false);
         }} />
-        <Button onClick={() => {
-          tableRef.current.refresh();
-        }}>refresh</Button>
       </Space>
     );
   };
