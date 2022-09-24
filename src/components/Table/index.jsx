@@ -208,6 +208,9 @@ const TableWarp = (
   };
 
   const refresh = () => {
+    const values = defaultTableQuery.values || {};
+    formActions.reset();
+    formActions.setFieldValue(Object.keys(values), ...Object.values(values));
     formActions.submit();
   };
 

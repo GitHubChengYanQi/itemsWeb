@@ -31,7 +31,6 @@ import Import from '@/pages/Erp/sku/SkuTable/Import';
 import Render from '@/components/Render';
 import {isArray} from '@/util/Tools';
 
-const {Column} = AntTable;
 const {FormItem} = Form;
 
 const {baseURI} = config;
@@ -94,6 +93,9 @@ const SkuTable = ({...props}, ref) => {
           setEdit(false);
           setCopy(false);
         }} />
+        <Button onClick={() => {
+          tableRef.current.refresh();
+        }}>refresh</Button>
       </Space>
     );
   };
@@ -201,7 +203,11 @@ const SkuTable = ({...props}, ref) => {
       render: (value) => <Render text={isArray(value).map(item => item.name).join('、') || '-'} />
     },
     {dataIndex: 'weight', title: '重量(kg)', sorter: true},
-    {dataIndex: 'skuSize', title: '尺寸', render: (value) => <Render text={value && value.split(',').join('×')} />},
+    {
+      dataIndex: 'skuSize',
+      title: '尺寸',
+      render: (value) => <Render text={value && value.split(',').join('×') || '-'} />
+    },
     {dataIndex: 'remarks', title: '备注',},
     {dataIndex: 'user', title: '添加人', render: (value) => <Render text={value?.name || '-'} />, sorter: true},
     {dataIndex: 'createTime', title: '添加时间', sorter: true},
