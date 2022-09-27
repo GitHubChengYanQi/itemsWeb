@@ -245,10 +245,11 @@ const AddSkuTable = ({
         dataIndex="remark"
         render={(value, record, index) => {
           return <Input
+            style={{minWidth:200}}
             placeholder="请输入备注"
             value={value}
             onChange={(value) => {
-              setValue({remark: value}, index);
+              setValue({remark: value.target.value}, index);
             }}
           />;
         }} />

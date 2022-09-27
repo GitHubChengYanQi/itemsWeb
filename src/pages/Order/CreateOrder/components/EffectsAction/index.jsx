@@ -7,10 +7,10 @@ import {customerDetail} from '@/pages/Crm/customer/CustomerUrl';
 import {contactsDetail} from '@/pages/Crm/contacts/contactsUrl';
 import {templateGetLabel} from '@/pages/Crm/template/TemplateUrl';
 import {invoiceDetail} from '@/pages/Crm/invoice/invoiceUrl';
-import {selfEnterpriseDetail} from '@/pages/Purshase/Supply/SupplyUrl';
+import {selfEnterpriseDetail, supplierDetail} from '@/pages/Purshase/Supply/SupplyUrl';
 import {isObject} from '@/util/Tools';
 
-const customerAAction = (setFieldState) => {
+const customerAAction = (setFieldState,getCustomer) => {
 
   const params = getSearchParams();
 
@@ -25,6 +25,9 @@ const customerAAction = (setFieldState) => {
     let customer = {};
     if (value) {
       customer = await request({...api, data: {customerId: value}});
+      if (params.module === 'SO'){
+        getCustomer(customer);
+      }
     }
     if (!customer) {
       return;
@@ -167,20 +170,23 @@ const customerAAction = (setFieldState) => {
   });
 };
 
-const customerBAction = (setFieldState) => {
+const customerBAction = (setFieldState,getCustomer) => {
 
   const params = getSearchParams();
   let api = {};
-  if (params.module === 'PO') {
+  if (params.module === 'SO') {
     api = selfEnterpriseDetail;
-  } else if (params.module === 'SO') {
-    api = customerDetail;
+  } else if (params.module === 'PO') {
+    api = supplierDetail;
   }
 
   FormEffectHooks.onFieldValueChange$('sellerId').subscribe(async ({value}) => {
     let customer = {};
     if (value) {
       customer = await request({...api, data: {customerId: value}});
+      if (params.module === 'PO'){
+        getCustomer(customer);
+      }
     }
     if (!customer) {
       return;
@@ -541,9 +547,9 @@ const ordedrAction = (setFieldState) => {
 
 };
 
-export const EffectsAction = (setFieldState, getFieldState) => {
-  customerAAction(setFieldState);
-  customerBAction(setFieldState);
+export const EffectsAction = (setFieldState, getFieldState,getCustomer) => {
+  customerAAction(setFieldState,getCustomer);
+  customerBAction(setFieldState,getCustomer);
   paymentAction(setFieldState, getFieldState);
   contractAction(setFieldState);
   ordedrAction(setFieldState);

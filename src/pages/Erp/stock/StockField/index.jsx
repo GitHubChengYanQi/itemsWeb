@@ -94,13 +94,13 @@ export const StockNumbers = ({value = {}, onChange}) => {
     <InputNumber
       min={0}
       className={style.between}
-      value={value.mixNum}
+      value={value?.mixNum}
       style={{width: 100, textAlign: 'center'}}
       placeholder="最小库存"
       onChange={(mixNum) => {
         onChange({
           mixNum,
-          maxNum: mixNum >= value.maxNum ? null : value.maxNum
+          maxNum: mixNum >= value?.maxNum ? null : value?.maxNum
         });
       }}
     />
@@ -121,12 +121,12 @@ export const StockNumbers = ({value = {}, onChange}) => {
         width: 100,
         textAlign: 'center',
       }}
-      value={value.maxNum}
-      min={value.mixNum + 1}
+      value={value?.maxNum}
+      min={value?.mixNum + 1}
       placeholder="最大库存"
       onChange={(maxNum) => {
         onChange({
-          ...value,
+          ...(value || {}),
           maxNum
         });
       }}

@@ -5,8 +5,16 @@ import {useRequest} from '@/util/Request';
 
 const DelButton = ({
   onSuccess = () => {
-  }, onCancel = () => {
-  }, api, rowKey, value,disabled, children, icon,...props
+  },
+  onCancel = () => {
+  },
+  api,
+  rowKey,
+  value,
+  disabled,
+  children,
+  icon,
+  ...props
 }) => {
 
 

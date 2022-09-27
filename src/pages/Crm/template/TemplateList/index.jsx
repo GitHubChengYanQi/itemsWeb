@@ -23,7 +23,7 @@ const {Column} = AntTable;
 const {FormItem} = Form;
 const formActions = createFormActions();
 
-const TemplateList = () => {
+const TemplateList = ({module}) => {
   const ref = useRef(null);
   const compoentRef = useRef(null);
   const tableRef = useRef(null);
@@ -63,6 +63,9 @@ const TemplateList = () => {
   return (
     <>
       <Table
+        formSubmit={(values) => {
+          return {...values, module};
+        }}
         footer={footer}
         contentHeight
         listHeader={false}
@@ -96,9 +99,10 @@ const TemplateList = () => {
         }} width={100} />
       </Table>
       <Modal
-        width='100vw'
+        width="100vw"
         title="合同模板"
         compoentRef={compoentRef}
+        module={module}
         component={TemplateEdit}
         footer={<Space>
           <Button type="primary" onClick={() => {

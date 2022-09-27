@@ -7,15 +7,18 @@
 
 import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions, FormEffectHooks} from '@formily/antd';
-import {notification, Popover, Space} from 'antd';
+import {Alert, notification, Popover, Space, Spin} from 'antd';
 import {QuestionCircleOutlined} from '@ant-design/icons';
 import Form from '@/components/Form';
 import {skuDetail, skuAdd, skuEdit, skuMarge} from '../skuUrl';
 import * as SysField from '../skuField';
-import {request} from '@/util/Request';
+import {request, useRequest} from '@/util/Request';
 import {spuDetail} from '@/pages/Erp/spu/spuUrl';
 import BrandIds from '@/pages/Erp/brand/components/BrandIds';
-import {isArray} from '@/util/Tools';
+import {isArray, isObject} from '@/util/Tools';
+import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
+import MaterialIds from '@/pages/Erp/material/MaterialIds';
+import {Weight} from '../skuField';
 
 const {FormItem} = Form;
 
@@ -24,7 +27,7 @@ const formActionsPublic = createFormActions();
 const SkuEdit = ({...props}, ref) => {
 
   const {
-    value,
+    value = {},
     addUrl,
     onRepeat = () => {
     },
@@ -34,6 +37,15 @@ const SkuEdit = ({...props}, ref) => {
   const [copy, setCopy] = useState();
 
   const [submitValue, setSubmitValue] = useState({});
+
+  const [typeSetting, setTypeSetting] = useState([]);
+
+  const {loading: skuFormLoading, run: getSkuForm} = useRequest(spuClassificationDetail, {
+    manual: true,
+    onSuccess: (res) => {
+      setTypeSetting(res && res.typeSetting && JSON.parse(res.typeSetting) || []);
+    }
+  });
 
   let save = '';
 
@@ -85,16 +97,17 @@ const SkuEdit = ({...props}, ref) => {
         value={value.skuId || false}
         ref={formRef}
         formActions={formActionsPublic}
-        defaultValue={{
-          'spu': value.spuResult,
-          brandIds: isArray(value.brandResults).map(item => item.brandId),
-          ...(value.defaultValue || {}),
-        }}
         api={ApiConfig}
         NoButton={false}
         fieldKey="skuId"
-        details={(res) => {
+        formatDetail={(res) => {
           setDetails(res);
+          return {
+            ...res,
+            materialId: res.materialIdList || [],
+            spu: res.spuResult,
+            brandIds: isArray(res.brandResults).map(item => item.brandId)
+          };
         }}
         onError={() => {
           openNotificationWithIcon('error');
@@ -118,7 +131,8 @@ const SkuEdit = ({...props}, ref) => {
             isHidden: true,
             skuId: value.copy ? null : value.skuId,
             oldSkuId: copy ? value.skuId : null,
-            spu: {...submitValue.spu, coding: submitValue.spuCoding}
+            spu: {...submitValue.spu, coding: submitValue.spuCoding},
+            skuName: submitValue.nationalStandard || submitValue.model || submitValue.partNo
           };
           setSubmitValue(submitValue);
           return submitValue;
@@ -135,14 +149,6 @@ const SkuEdit = ({...props}, ref) => {
                 'unitId',
                 state => {
                   state.value = spu.unitId;
-                }
-              );
-
-
-              setFieldState(
-                'specifications',
-                state => {
-                  state.value = spu.specifications;
                 }
               );
 
@@ -171,14 +177,20 @@ const SkuEdit = ({...props}, ref) => {
           });
 
 
-          FormEffectHooks.onFieldValueChange$('spuClass').subscribe(({value: spuClassId, inputed}) => {
+          FormEffectHooks.onFieldValueChange$('spuClass').subscribe(({value, inputed}) => {
             if (inputed) {
               setFieldState(
                 'spu',
                 state => {
-                  state.props.classId = spuClassId;
+                  state.props.classId = value;
                 }
               );
+            }
+
+            if (value) {
+              setTimeout(() => {
+                getSkuForm({data: {spuClassificationId: value}});
+              }, 1);
             }
 
           });
@@ -211,87 +223,130 @@ const SkuEdit = ({...props}, ref) => {
           name="spuCoding"
           component={SysField.SpuCoding}
         />
-        <FormItem
-          label="型号/规格"
-          // label="型号"
-          name="skuName"
-          placeholder="型号/规格"
-          component={SysField.SkuName}
-          required />
-        <FormItem
-          label="单位"
-          name="unitId"
-          component={SysField.UnitId}
-          required />
-        <FormItem
-          label="二维码生成方式"
-          name="batch"
-          component={SysField.Batch}
-          required
-        />
-        <FormItem
-          label="执行标准"
-          // label="规格"
-          placeholder="请输入执行标准"
-          name="specifications"
-          component={SysField.Specs}
-        />
-        <FormItem
-          label="养护周期"
-          placeholder="请输入养护周期"
-          name="maintenancePeriod"
-          component={SysField.MaintenancePeriod}
-        />
-        <FormItem
-          label="物料描述"
-          skuId={value.skuId}
-          name="sku"
-          value={value && value.skuJsons && value.skuJsons.length > 0 ? value.skuJsons.map((items) => {
-            return {
-              label: items.attribute.attribute,
-              value: items.values.attributeValues,
-              disabled: true,
-            };
-          }) : []}
-          details={details && details.skuTree}
-          component={SysField.Specifications}
-        />
-        <FormItem
-          label="品牌"
-          name="brandIds"
-          component={BrandIds}
-        />
-        <FormItem
-          label="备注"
-          name="remarks"
-          component={SysField.Note} />
-        <FormItem
-          label={<Space>
-            附件
-            <Popover content="附件支持类型：JPG/JPEG/PDF/DOC/DOCX/XLSX，最大不超过10MB">
-              <QuestionCircleOutlined style={{cursor: 'pointer'}} />
-            </Popover>
-          </Space>}
-          name="fileId"
-          component={SysField.FileId} />
-        <FormItem
-          label={<Space>
-            物料图片
-            <Popover content="附件支持类型：JPG/JPEG/PDF/DOC/DOCX/XLSX，最大不超过10MB">
-              <QuestionCircleOutlined style={{cursor: 'pointer'}} />
-            </Popover>
-          </Space>}
-          name="images"
-          component={SysField.Img} />
-        <FormItem
-          label={<Space>
-            关联图纸
-            <Popover content="附件支持类型：JPG/JPEG/PDF/DOC/DOCX/XLSX，最大不超过10MB">
-              <QuestionCircleOutlined style={{cursor: 'pointer'}} />
-            </Popover>
-          </Space>}
-          name="drawing"
-          component={SysField.Bind} />
+        {skuFormLoading ? <Spin>
+          <Alert
+            style={{padding: 32}}
+            message="正在加载物料表单，请稍后..."
+            type="info"
+          />
+        </Spin> : typeSetting.map((item, index) => {
+
+          if (item.disabled || !item.show) {
+            return <div key={index} />;
+          }
+          let formItemProps;
+          switch (item.key) {
+            case 'unitId':
+              formItemProps = {
+                placeholder: `请选择${item.filedName}`,
+                component: SysField.UnitId,
+                required: true,
+              };
+              break;
+            case 'batch':
+              formItemProps = {
+                placeholder: `请选择${item.filedName}`,
+                component: SysField.Batch,
+                required: true,
+              };
+              break;
+            case 'specifications':
+              formItemProps = {
+                component: SysField.Specs,
+              };
+              break;
+            case 'maintenancePeriod':
+              formItemProps = {
+                component: SysField.MaintenancePeriod,
+              };
+              break;
+            case 'weight':
+              formItemProps = {
+                component: SysField.Weight,
+              };
+              break;
+            case 'sku':
+              formItemProps = {
+                component: SysField.Specifications,
+                value: isArray(value.skuJsons).length > 0 ? value.skuJsons.map((items) => {
+                  return {
+                    label: isObject(items.attribute).attribute,
+                    value: isObject(items.values).attributeValues,
+                    disabled: true,
+                  };
+                }) : [],
+                details: details && details.skuTree
+              };
+              break;
+            case 'brandIds':
+              formItemProps = {
+                component: BrandIds,
+              };
+              break;
+            case 'materialId':
+              formItemProps = {
+                placeholder: `请选择${item.filedName}`,
+                component: MaterialIds,
+              };
+              break;
+            case 'remarks':
+              formItemProps = {
+                component: SysField.Note,
+              };
+              break;
+            case 'skuSize':
+              formItemProps = {
+                component: SysField.SkuSize,
+              };
+              break;
+            case 'fileId':
+              formItemProps = {
+                label: <Space>
+                  附件
+                  <Popover content="附件支持类型：JPG/JPEG/PDF/DOC/DOCX/XLSX，最大不超过10MB">
+                    <QuestionCircleOutlined style={{cursor: 'pointer'}} />
+                  </Popover>
+                </Space>,
+                component: SysField.FileId,
+              };
+              break;
+            case 'images':
+              formItemProps = {
+                label: <Space>
+                  物料图片
+                  <Popover content="附件支持类型：JPG/JPEG/PDF/DOC/DOCX/XLSX，最大不超过10MB">
+                    <QuestionCircleOutlined style={{cursor: 'pointer'}} />
+                  </Popover>
+                </Space>,
+                component: SysField.Img,
+              };
+              break;
+            case 'drawing':
+              formItemProps = {
+                label: <Space>
+                  关联图纸
+                  <Popover content="附件支持类型：JPG/JPEG/PDF/DOC/DOCX/XLSX，最大不超过10MB">
+                    <QuestionCircleOutlined style={{cursor: 'pointer'}} />
+                  </Popover>
+                </Space>,
+                component: SysField.Bind,
+              };
+              break;
+            default:
+              formItemProps = {
+                component: SysField.SkuName,
+                required: false,
+              };
+              break;
+          }
+          return <FormItem
+            key={index}
+            label={item.filedName}
+            name={item.key}
+            placeholder={`请输入${item.filedName}`}
+            {...formItemProps}
+          />;
+        })}
       </Form>
     </div>
   );

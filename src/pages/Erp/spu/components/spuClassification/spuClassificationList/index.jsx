@@ -51,7 +51,6 @@ const SpuClassificationList = ({type}) => {
     return (
       <>
         <FormItem label="名称" name="name" component={SysField.Name} />
-        <FormItem hidden name="isNotproduct" value={type} component={SysField.Name} />
       </>
     );
   };
@@ -105,7 +104,7 @@ const SpuClassificationList = ({type}) => {
           );
         }} width={100} />
       </Table>
-      <Drawer width={800} title="分类" type={type} component={SpuClassificationEdit} onSuccess={() => {
+      <Drawer width={1200} title="分类" type={type} component={SpuClassificationEdit} onSuccess={() => {
         tableRef.current.refresh();
         ref.current.close();
       }} ref={ref} />

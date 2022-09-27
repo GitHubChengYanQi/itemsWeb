@@ -73,6 +73,7 @@ const Select = (
           <Spin />
           :
           <AntSelect
+            suffixIcon={null}
             // open
             {...other}
             listHeight={200}
@@ -93,7 +94,7 @@ const Select = (
               onChange(value, option);
             }}
             onSearch={onSearch}
-            allowClear
+            allowClear={false}
             showSearch
             filterOption={(input, option) => {
               if (typeof option.label !== 'string') {

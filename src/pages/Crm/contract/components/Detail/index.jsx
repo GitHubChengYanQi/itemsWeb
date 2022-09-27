@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Button, Card, Descriptions, Space, Tabs} from 'antd';
-import {config, useParams} from 'ice';
-import ProSkeleton from '@ant-design/pro-skeleton';
+import {config, useHistory, useParams} from 'ice';
 import cookie from 'js-cookie';
+import ProSkeleton from '@ant-design/pro-skeleton';
 import {useRequest} from '@/util/Request';
 import Icon from '@/components/Icon';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -13,8 +13,6 @@ import PayTable from '@/pages/Crm/contract/components/PayTable';
 import {orderDetail} from '@/pages/Erp/order/OrderUrl';
 import Empty from '@/components/Empty';
 
-const {TabPane} = Tabs;
-
 const {baseURI} = config;
 
 const Detail = ({id}) => {
@@ -23,9 +21,17 @@ const Detail = ({id}) => {
 
   const params = useParams();
 
-  const {loading: contractLoading, data: contract, run} = useRequest(contractDetail, {manual: true});
+  const history = useHistory();
 
-  const {loading, data} = useRequest(orderDetail, {
+  const [loading, setLoading] = useState(true);
+
+  const {data: contract, run} = useRequest(contractDetail,
+    {
+      manual: true,
+      onSuccess: () => setLoading(false)
+    });
+
+  const {data} = useRequest(orderDetail, {
     defaultParams: {
       data: {
         orderId: id || params.id,
@@ -33,15 +39,18 @@ const Detail = ({id}) => {
     },
     onSuccess: (res) => {
       if (res && res.contractId) {
+        setLoading(false);
         run({
           data: {contractId: res.contractId}
         });
+        return;
       }
+      setLoading(false);
     }
   });
 
 
-  if (loading || contractLoading) {
+  if (loading) {
     return (<ProSkeleton type="descriptions" />);
   }
 
@@ -53,6 +62,22 @@ const Detail = ({id}) => {
     <Card title={<Breadcrumb />} bodyStyle={{padding: 0}} />
     <div className={styles.main}>
       <Card title="基本信息" extra={<Space>
+        <Button type="link" onClick={() => {
+          const paymentResult = data.paymentResult || {};
+          history.push({
+            pathname: '/purchase/order/createOrder',
+            search: `?module=${data.type === 1 ? 'PO' : 'SO'}`,
+            state: {
+              ...paymentResult,
+              ...data,
+              detailParams: data.detailResults,
+              paymentDetail: paymentResult.detailResults,
+              templateId:contract?.templateId,
+              contractCoding:contract?.coding,
+
+            }
+          });
+        }}>再来一单</Button>
         {contract &&
         <a
           href={`${baseURI}Excel/exportContractWord?id=${contract.contractId}&authorization=${token}`}
@@ -101,10 +126,10 @@ const Detail = ({id}) => {
       className={styles.main}
     >
       <Card>
-        <Tabs defaultActiveKey="1" items={[
-          ...(contract ? [{key: '1', label: '合同内容', children: <Empty description="开发中..." />}] : []),
-          {key: '2', label: '产品明细', children: <OrderDetailTable orderId={data.orderId} />},
-          {key: '3', label: '付款信息', children: <PayTable payment={data.paymentResult} />},
+        <Tabs destroyInactiveTabPane defaultActiveKey="1" items={[
+          {key: '1', label: '产品明细', children: <OrderDetailTable orderId={data.orderId} />},
+          {key: '2', label: '付款信息', children: <PayTable payment={data.paymentResult} />},
+          ...(contract ? [{key: '3', label: '合同内容', children: <Empty description="开发中..." />}] : []),
         ]} />
       </Card>
     </div>

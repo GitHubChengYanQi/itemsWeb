@@ -7,7 +7,20 @@ import TreeSelect from '@/components/TreeSelect';
 import Drawer from '@/components/Drawer';
 
 
-const SetSelectOrCascader = ({disabled, options, component, title,height, moduleType,placement, width, api, tableTitle, ...props}) => {
+const SetSelectOrCascader = ({
+  disabled,
+  options,
+  component,
+  title,
+  height,
+  moduleType,
+  placement,
+  width,
+  api,
+  tableTitle,
+  drawerWidth,
+  ...props
+}) => {
 
   const ref = useRef();
 
@@ -33,6 +46,7 @@ const SetSelectOrCascader = ({disabled, options, component, title,height, module
       }}>{title || '设置分类'}</Button>
       <Drawer
         height={height}
+        width={drawerWidth}
         placement={placement}
         value={false}
         component={component}

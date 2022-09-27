@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {message, Modal} from 'antd';
-import {PHYSICALDETAIL, SKUDETAIL} from '@/components/Editor/components/Module';
+import {PHYSICALDETAIL} from '@/components/Editor/components/Module';
 
-const WindowOpenSku = () => {
+const WindowOpenInkind = () => {
 
   const [visible, setVisible] = useState();
 
   const [editorRef, setEditorRef] = useState();
 
   useEffect(() => {
-    window.OpenSku = (editorRef) => {
+    window.OpenInkind = (editorRef) => {
       setEditorRef(editorRef);
       setVisible(true);
     };
@@ -44,11 +44,11 @@ const WindowOpenSku = () => {
         refresh();
       }}>
 
-      <SKUDETAIL setButton={setButton} button={button} />
+      <PHYSICALDETAIL setButton={setButton} button={button} />
     </Modal>
   </>;
 
 };
 
-export default WindowOpenSku;
+export default WindowOpenInkind;
 

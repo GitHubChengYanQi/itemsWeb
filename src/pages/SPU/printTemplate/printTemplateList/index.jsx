@@ -66,6 +66,8 @@ const PrintTemplateList = () => {
               return '库位详情';
             case 'PHYSICALDETAIL':
               return '实物详情';
+            case 'SKU':
+              return '物料详情';
             default:
               return '';
           }

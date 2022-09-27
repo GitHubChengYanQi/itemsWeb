@@ -33,9 +33,11 @@ const Editor = ({
   const toobar = () => {
     switch (module) {
       case 'PHYSICALDETAIL':
-        return ['actionsSku'];
+        return ['actionsInkind'];
       case 'POSITIONS':
         return ['actionsPosition'];
+      case 'SKU':
+        return ['actionsSku'];
       default:
         return [];
     }
@@ -45,7 +47,7 @@ const Editor = ({
   return (
     <div style={{width}}>
       <TinymceEditor
-        id='editor'
+        id="editor"
         apiKey="no-api-key"
         onInit={(evt, editor) => {
           editorRef.current = editor;
@@ -58,7 +60,7 @@ const Editor = ({
           width: '100%',
           menubar: false,
           plugins: ['advlist', 'autolink', 'autolink'
-            , 'lists', 'link', 'image', 'charmap', 'print','autoresize', 'preview',
+            , 'lists', 'link', 'image', 'charmap', 'print', 'autoresize', 'preview',
             'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
             'insertdatetime', 'media', 'table', 'paste', 'code', 'help', 'wordcount', 'editorPlugins'],
           toolbar: ['undo redo', ...toobar(), 'formatselect', 'fontsizeselect', 'bold italic backcolor', 'alignleft aligncenter', 'alignright alignjustify', 'bullist numlist outdent indent', 'table', 'actionsImg', 'removeformat', 'help'].join(' | ')

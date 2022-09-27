@@ -6,10 +6,11 @@ import Header from '@/layouts/BasicLayout/components/Header';
 import store from '@/store';
 
 import WindowOpenImg from '@/components/Editor/components/WindowOpenImg';
-import WindowOpenSku from '@/components/Editor/components/WindowOpenSku';
 import WindowOpenPosition from '@/components/Editor/components/WindowOpenPosition';
 import GetUserInfo from '@/util/GetUserInfo';
 import {request as requestProivde} from '@/util/Service';
+import WindowOpenInkind from '@/components/Editor/components/WindowOpenInkind';
+import WindowOpenSku from '@/components/Editor/components/WindowOpenSku';
 
 const {Content} = Layout;
 
@@ -79,6 +80,8 @@ export default function BasicLayout({children}) {
         </>
       }
 
+
+      <WindowOpenInkind />
 
       <WindowOpenSku />
 

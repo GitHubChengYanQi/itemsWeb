@@ -5,13 +5,17 @@ import {CloseOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import {useRequest} from '@/util/Request';
 import Icon from '@/components/Icon';
 import {
-  tableViewAdd,
+  tableViewAdd, tableViewDelete,
   tableViewDetail,
   tableViewEdit,
   tableViewListSelect
 } from '@/hook/useTableSet/components/TableViewUrl';
 import {Sortable} from '@/components/Table/components/DndKit/Sortable';
 import styles from './index.module.less';
+import {isArray} from '@/util/Tools';
+import DeleteButton from '@/components/DeleteButton';
+import classNames from 'classnames';
+import Message from '@/components/Message';
 
 const md5 = require('md5');
 
@@ -23,24 +27,27 @@ const md5 = require('md5');
 
 const useTableSet = (column, tableKey) => {
 
-  const [tableColumn, setTableColumn] = useState(Array.isArray(column) && column.map((item) => {
+  const defaultColumn = Array.isArray(column) && column.map((item) => {
     if (!item) {
       return null;
     }
     return {
       ...item,
-      checked: !(item.props && item.props.hidden),
+      checked: !(item.hidden || item.props?.hidden),
     };
-  }) || []);
+  }) || [];
+
+  const [tableColumn, setTableColumn] = useState(defaultColumn);
 
   const itemsData = [];
 
   tableKey && Array.isArray(tableColumn) && tableColumn.map((items) => {
     if (items && items.key) {
+      const props = items.props || {};
       return itemsData.push({
-        title: items.props.title,
+        title: items.title || props.title,
         key: items.key,
-        visible: items.props.fixed,
+        visible: items.fixed || props.fixed,
         checked: items.checked,
       });
     }
@@ -74,17 +81,21 @@ const useTableSet = (column, tableKey) => {
 
   const [showModal, setShowModal] = useState();
 
-  const openNotificationWithIcon = type => {
-    notification[type]({
-      message: type === 'success' ? '保存成功！' : '保存失败!',
-    });
-  };
+  const {loading, data, refresh, run: getTableView} = useRequest(tableViewListSelect, {manual: true});
 
-  const {loading, data, refresh} = useRequest({...tableViewListSelect, data: {tableKey: md5TableKey()}});
-
-  const {run} = useRequest(tableViewEdit, {
+  const {loading: editLoading, run} = useRequest(tableViewEdit, {
     manual: true,
     onSuccess: () => {
+      Message.success('覆盖成功!');
+      setFalse();
+      refresh();
+    }
+  });
+
+  const {loading: delLoading, run: deleteTableView} = useRequest(tableViewDelete, {
+    manual: true,
+    onSuccess: () => {
+      Message.success('删除成功!');
       setFalse();
       refresh();
     }
@@ -104,10 +115,10 @@ const useTableSet = (column, tableKey) => {
 
         setFalse();
         refresh();
-        openNotificationWithIcon('success');
+        Message.success('保存成功!');
       },
       onError: () => {
-        openNotificationWithIcon('error');
+        Message.error('保存失败!');
       }
     });
 
@@ -115,8 +126,12 @@ const useTableSet = (column, tableKey) => {
   const {run: viewDetail} = useRequest(tableViewDetail,
     {
       manual: true,
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
         if (res) {
+          const list = await getTableView({data: {tableKey: md5TableKey()}});
+          if (!(isArray(list).find(item => item.value === res.tableViewId))) {
+            return;
+          }
           setDetail(res);
           if (res.field) {
             if (res.tableKey === md5TableKey()) {
@@ -195,12 +210,12 @@ const useTableSet = (column, tableKey) => {
             setTrue();
             const array = [];
             allIems.map((items) => {
-              const columns = tableColumn.filter((columns) => {
-                return columns && items.key === columns.key;
+              const columns = tableColumn.find((columns) => {
+                return items.key === columns.key;
               });
-              return array.push(columns[0]);
+              return array.push(columns);
             });
-            setTableColumn(array);
+            setTableColumn([...array, ...tableColumn.filter(item => !item.key)]);
           }}
           onChecked={(value) => {
             setTrue();
@@ -222,6 +237,10 @@ const useTableSet = (column, tableKey) => {
 
   const save = (
     <Menu
+      items={[
+        {key: '0', label: '另存为新视图'},
+        {key: '1', label: '覆盖当前视图', disabled: !detail}
+      ]}
       style={{minWidth: 220}}
       onClick={(value) => {
         if (value.key === '0') {
@@ -230,14 +249,6 @@ const useTableSet = (column, tableKey) => {
           cover();
         }
       }}
-      items={[{
-        key: '0',
-        label: '另存为新视图',
-      }, {
-        key: '1',
-        label: '覆盖当前视图',
-        disabled: !detail
-      },]}
     />
   );
 
@@ -248,6 +259,8 @@ const useTableSet = (column, tableKey) => {
           tableViewId: view,
         }
       });
+    } else {
+      getTableView({data: {tableKey: md5TableKey()}});
     }
   }, []);
 
@@ -262,29 +275,38 @@ const useTableSet = (column, tableKey) => {
             <Button style={{marginRight: 8}}>保存视图</Button>
           </Dropdown>
         }
+        {
+          (loading || editLoading || delLoading) ?
+            <Spin />
+            :
+            <Select
+              options={isArray(data)}
+              style={{minWidth: 200}}
+              loading={loading}
+              placeholder="请选择视图"
+              bordered={false}
+              value={detail?.tableViewId}
+              dropdownRender={() => {
+                return isArray(data).map((item, index) => {
+                  const checked = detail?.tableViewId === item.value;
+                  return <div className={classNames(styles.item, checked && styles.checked)} key={index}>
+                    <div className={styles.label} onClick={() => {
+                      localStorage.setItem(md5TableKey(), item.value);
 
-        {loading ?
-          <Spin />
-          :
-          <Select
-            options={data}
-            style={{minWidth: 200}}
-            loading={loading}
-            placeholder="请选择视图"
-            bordered={false}
-            onSelect={(value) => {
-
-              localStorage.setItem(md5TableKey(), value);
-
-              viewDetail({
-                data: {
-                  tableViewId: value,
-                }
-              });
-
-            }}
-            value={detail && detail.tableViewId} />}
-
+                      viewDetail({
+                        data: {
+                          tableViewId: item.value,
+                        }
+                      });
+                    }}>{item.label}</div>
+                    <DeleteButton onClick={() => {
+                      deleteTableView({data: {tableViewId: item.value,}});
+                    }} />
+                  </div>;
+                });
+              }}
+            />
+        }
         <Dropdown
           overlay={menu}
           overlayStyle={{backgroundColor: '#fff', zIndex: 99}}
@@ -298,7 +320,7 @@ const useTableSet = (column, tableKey) => {
             type="text"
             onClick={() => {
               setVisible(true);
-            }}><Icon type="icon-xitongpeizhi" />列设置</Button>
+            }}><Icon type="icon-xitongpeizhi" /></Button>
         </Dropdown>
 
         <Modal
