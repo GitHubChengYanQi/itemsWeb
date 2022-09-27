@@ -1,11 +1,11 @@
-import SiderLayout from '@/layouts/SiderLayout';
 import React from 'react';
 import {useRouteMatch, useHistory, useLocation} from 'ice';
+import {Menu} from 'antd';
+import SiderLayout from '@/layouts/SiderLayout';
 import store from '@/store';
-import { Menu } from 'antd';
 // import * as Icon from '@ant-design/icons';
 
-const BaseSystem = ({ children }) => {
+const BaseSystem = ({children}) => {
 
   const match = useRouteMatch();
   const history = useHistory();
@@ -13,7 +13,7 @@ const BaseSystem = ({ children }) => {
   const location = useLocation();
 
   const [userInfo] = store.useModel('user');
-  const { menus } = userInfo;
+  const {menus} = userInfo;
 
   const subMenu = Array.isArray(menus) && menus.find((item) => {
     return `/${item.id}` === match.path;
@@ -39,9 +39,10 @@ const BaseSystem = ({ children }) => {
             history.push(obj.key);
           }}
           mode="inline"
+          items={loopMenu(subMenus)}
           defaultSelectedKeys={[]}
           // style={{ borderRight: 'none' }}
-        >{loopMenu(subMenus)}</Menu>
+        />
       );
     }
     return null;
@@ -49,12 +50,19 @@ const BaseSystem = ({ children }) => {
 
   const renderItem = (item) => {
     if (item.children) {
-      return (<Menu.ItemGroup key={item.id} title={item.name}>{loopMenu(item.children)}</Menu.ItemGroup>);
+      return {
+        type: 'group',
+        label: item.name,
+        key: item.id,
+        children: loopMenu(item.children)
+      };
     }
     const IconNode = null;// item.icon?Icon[item.icon]:null;
-    return (
-      <Menu.Item key={item.url} icon={IconNode ? <IconNode/> : null}>{item.name}</Menu.Item>
-    );
+    return {
+      label: item.name,
+      key: item.url,
+      icon: IconNode ? <IconNode /> : null
+    };
   };
   // console.log(subMenu);
   return (

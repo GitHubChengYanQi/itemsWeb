@@ -106,7 +106,6 @@ const Setps = ({
       />
       <FormItem
         label="审批操作"
-        required
         name="action"
         component={Actions}
       />

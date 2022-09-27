@@ -38,7 +38,6 @@ export const typeObject = ({type, status = []}) => {
         title: '异常单',
         types: [
           {label: '核实', value: 'verify', disabled: disabled('verify')},
-          ...publicType,
         ]
       };
     case DocumentEnums.outstockOrder:
