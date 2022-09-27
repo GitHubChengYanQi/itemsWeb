@@ -16,7 +16,9 @@ const Draft = (
     getValues = () => {
     },
     onChange = () => {
-    }
+    },
+    name,
+    disabled,
   }) => {
 
   const save = (values) => {
@@ -91,26 +93,24 @@ const Draft = (
 
       <List bordered>
         {
-          listDta.length === 0 && <div style={{paddingBottom:16}}><Empty description="暂无草稿" /></div>
+          listDta.length === 0 && <div style={{paddingBottom: 16}}><Empty description="暂无草稿" /></div>
         }
         {
           listDta.map((item, index) => {
             return <List.Item
               key={item.draftsId}
             >
-              <div style={{display: 'flex', alignItems: 'center'}}>
+              <div style={{display: 'flex', alignItems: 'center',width:'100%'}}>
                 <div style={{flexGrow: 1}}>{index + 1}.</div>
                 <div style={{marginLeft: 8, flexGrow: 1}}>
-                  {item.createTime}
+                  {item.name || item.createTime}
                 </div>
                 <Button type="link" style={{padding: '0 8px', marginLeft: 24}} onClick={() => {
                   setVisible(false);
                   Modal.confirm({
                     title: '是否使用此草稿？',
                     content: `草稿创建时间 【${item.createTime}】`,
-                    onOk: () => {
-                      detailRun({data: {draftsId: item.draftsId}});
-                    }
+                    onOk: () => detailRun({data: {draftsId: item.draftsId}})
                   });
                 }}>使用草稿</Button>
                 <Button type="link" style={{padding: '0 8px'}} danger onClick={() => {
@@ -140,6 +140,7 @@ const Draft = (
       buttonsRender={() => {
         return [
           <Button
+            disabled={disabled}
             type="primary"
             loading={addLoading || detailLoading || deleteLoading}
             ghost
@@ -150,6 +151,7 @@ const Draft = (
                   addRun({
                     data: {
                       info: save(await getValues()),
+                      name,
                       type,
                     }
                   });

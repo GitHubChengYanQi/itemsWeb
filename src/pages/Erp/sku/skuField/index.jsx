@@ -5,9 +5,9 @@
  * @Date 2021-10-18 14:14:21
  */
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Input, Radio, AutoComplete, Spin, List, Button,
+  Input, Radio, AutoComplete, Spin, List, Button, Space,
 } from 'antd';
 import Cascader from '@/components/Cascader';
 import Select from '@/components/Select';
@@ -112,7 +112,7 @@ export const SkuName = (props) => {
 
 
 export const SpuCoding = (props) => {
-  return (<Input {...props} />);
+  return (<Input placeholder="请输入产品码" {...props} />);
 };
 
 export const Codings = (props) => {
@@ -171,6 +171,7 @@ export const SpuClass = (props) => {
   return (<SetSelectOrCascader
     options={state.skuClass}
     moduleType="cascader"
+    drawerWidth={1200}
     width={200}
     title="新增分类"
     type={1}
@@ -184,6 +185,39 @@ export const Note = (props) => {
   return (<Input.TextArea {...props} />);
 };
 
+export const SkuSize = ({value = '', onChange}) => {
+
+  const [size, setSize] = useState({
+    long: null,
+    width: null,
+    height: null
+  });
+
+  useEffect(() => {
+    if (value) {
+      const defaultSize = value.split(',');
+      setSize({
+        long: defaultSize[0],
+        width: defaultSize[1],
+        height: defaultSize[2],
+      });
+    }
+  }, []);
+  const change = (data = {}) => {
+    const newSize = {...size, ...data};
+    setSize(newSize);
+    onChange(`${newSize.long || 0},${newSize.width || 0},${newSize.height || 0}`);
+  };
+  return (<Space>
+    长
+    <InputNumber value={size.long} placeholder="长" onChange={(num) => change({long: num})} />
+    宽
+    <InputNumber value={size.width} placeholder="宽" onChange={(num) => change({width: num})} />
+    高
+    <InputNumber value={size.height} placeholder="高" onChange={(num) => change({height: num})} />
+  </Space>);
+};
+
 export const AddMethod = (props) => {
   return (<Input {...props} />);
 };
@@ -194,6 +228,11 @@ export const Specs = (props) => {
 
 export const MaintenancePeriod = (props) => {
   return (<InputNumber addonAfter={<div>天</div>} {...props} />);
+};
+
+
+export const Weight = (props) => {
+  return (<InputNumber addonAfter={<div>kg</div>} {...props} />);
 };
 
 export const FileId = (props) => {

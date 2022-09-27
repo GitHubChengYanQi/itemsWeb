@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import {FormEffectHooks, InternalFieldList as FieldList} from '@formily/antd';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
-import {getSearchParams, useHistory} from 'ice';
+import {getSearchParams, useHistory, useLocation} from 'ice';
 import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
 import * as SysField from './components/Field';
@@ -51,9 +51,15 @@ const CreateOrder = ({...props}) => {
 
   const params = getSearchParams();
 
+  const {state} = useLocation();
+
   const formRef = useRef();
 
+  const [draftName, setDraftName] = useState('');
+
   const skus = params.skus && Array.isArray(JSON.parse(params.skus)) && JSON.parse(params.skus);
+
+  const initialValues = state || {};
 
   const {data: taxData} = useRequest(taxRateListSelect);
 
@@ -158,6 +164,7 @@ const CreateOrder = ({...props}) => {
       labelAlign="right"
       wrapperCol={24}
       fieldKey="orderId"
+      initialValues={initialValues}
       onSubmit={(value) => {
         if (value.paymentDetail) {
           let percentum = 0;
@@ -223,7 +230,9 @@ const CreateOrder = ({...props}) => {
       }}
       effects={({setFieldState, getFieldState}) => {
 
-        EffectsAction(setFieldState, getFieldState);
+        EffectsAction(setFieldState, getFieldState, (customer) => {
+          setDraftName(customer.customerName);
+        });
 
         FormEffectHooks.onFieldValueChange$('payPlan').subscribe(async ({value, active}) => {
           if (value && active) {
@@ -895,6 +904,8 @@ const CreateOrder = ({...props}) => {
             history.push('/purchase/toBuyPlan');
           }}>取消</Button>
           <Draft
+            disabled={!draftName}
+            name={draftName}
             type={params.module}
             getValues={async () => {
               return await formRef.current.getFormState();

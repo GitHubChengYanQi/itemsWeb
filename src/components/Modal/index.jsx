@@ -64,9 +64,7 @@ const Modal = (
 
       const contain = document.getElementsByClassName(simpleClass)[0];
       const header = contain.getElementsByClassName('ant-modal-header')[0];
-      if (
-        header
-      ) {
+      if (header) {
         modalContent = contain.getElementsByClassName('ant-modal-content')[0];
 
         header.style.cursor = 'all-scroll';

@@ -296,7 +296,7 @@ const ToBuyPlanList = (props) => {
         <>
           <Table
             api={purchaseListingReadyBuy}
-            branch={(value) => {
+            format={(value) => {
               if (Array.isArray(value)) {
                 const allSku = [];
                 value.map((item) => {

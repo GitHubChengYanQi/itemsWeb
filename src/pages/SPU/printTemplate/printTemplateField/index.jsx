@@ -20,7 +20,11 @@ export const Type = ({
   return (<AntdSelect
     value={value}
     style={{width: 200}}
-    options={[{label: '实物详情', value: 'PHYSICALDETAIL'}, {label: '库位详情', value: 'POSITIONS'},]}
+    options={[
+      {label: '实物详情', value: 'PHYSICALDETAIL'},
+      {label: '物料详情', value: 'SKU'},
+      {label: '库位详情', value: 'POSITIONS'},
+    ]}
     onChange={(value) => {
       onChange(value);
       typeChange(value);

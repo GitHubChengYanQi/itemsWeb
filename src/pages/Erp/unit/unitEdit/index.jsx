@@ -6,11 +6,10 @@
  */
 
 import React, {useRef} from 'react';
-import {Input} from 'antd';
+import {createFormActions} from '@formily/antd';
 import Form from '@/components/Form';
 import {unitDetail, unitAdd, unitEdit} from '../unitUrl';
 import * as SysField from '../unitField';
-import {createFormActions} from '@formily/antd';
 
 const {FormItem} = Form;
 
@@ -35,7 +34,7 @@ const UnitEdit = ({...props}) => {
       fieldKey="unitId"
     >
       <FormItem label="单位名称" name="unitName" component={SysField.UnitName}
-        rules= {[{ required: true, message: '请输入单位名称!' }]}
+        rules= {[{ required: true, message: '请输入单位名称!' },{message:'不能输入数字!',pattern:'^[\u0391-\uFFE5A-Za-z]+$'}]}
         required/>
     </Form>
   );

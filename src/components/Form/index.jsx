@@ -23,7 +23,11 @@ const FormWrapper = (
     fieldKey,
     value,
     defaultValue,
-    details,
+    details = () => {
+    },
+    formatDetail = (values) => {
+      return values;
+    },
     labelAlign,
     formatResult,
     initialValues,
@@ -83,8 +87,8 @@ const FormWrapper = (
       return response.data;
     },
     onSuccess: (reslut) => {
-      typeof details === 'function' && details(reslut);
-      setFindData(reslut);
+      details(reslut);
+      setFindData(formatDetail(reslut));
     }
   });
 

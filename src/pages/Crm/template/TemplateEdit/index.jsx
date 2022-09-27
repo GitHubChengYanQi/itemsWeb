@@ -25,7 +25,7 @@ const ApiConfig = {
 
 const formActionsPublic = createFormActions();
 
-const TemplateEdit = ({...props}, ref) => {
+const TemplateEdit = ({module, ...props}, ref) => {
 
   const formRef = useRef();
 
@@ -78,6 +78,7 @@ const TemplateEdit = ({...props}, ref) => {
         onSubmit={(value) => {
           value = {
             ...value,
+            module,
             replaceRule: {replaceRules},
           };
           return value;
@@ -92,7 +93,6 @@ const TemplateEdit = ({...props}, ref) => {
               bodyStyle={{maxHeight: 'calc(100vh - 181px)', overflow: 'auto'}}>
               <FormItem label="合同名" name="name" component={SysField.Name} required />
               <FormItem label="合同分类" name="contractClassId" component={SysField.ContractClassId} required />
-              <FormItem label="所属模块" name="module" component={SysField.Module} />
               <FormItem
                 label="上传合同"
                 name="fileId"

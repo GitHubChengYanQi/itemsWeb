@@ -10,10 +10,10 @@ const SetView = ({mode = 'horizontal', theme, width = '50%', buttons = [], SetMe
   return (
     <>
       <Menu
-        selectable={false}
         mode="horizontal"
         theme={theme}
         style={{backgroundColor: '#2e3c56'}}
+        selectable={false}
         items={[
           {
             key: 'setting',

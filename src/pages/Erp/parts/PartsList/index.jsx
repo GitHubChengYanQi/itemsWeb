@@ -173,7 +173,7 @@ const PartsList = ({
           rowKey="key"
           tableKey="parts"
           isChildren
-          branch={(data) => {
+          format={(data) => {
             return data.map((items) => {
               return {
                 key: items.partsId,
