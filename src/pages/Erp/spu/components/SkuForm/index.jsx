@@ -56,10 +56,12 @@ const SkuForm = ({
   const [dataSource, setDataSource] = useState([]);
 
   const reset = () => {
-    setDataSource(data.map((item, index) => ({
+    const newDataSource = data.map((item, index) => ({
       ...item,
       index
-    })));
+    }));
+    setDataSource(newDataSource);
+    onChange(newDataSource);
   };
 
   useImperativeHandle(skuFormRef, () => ({

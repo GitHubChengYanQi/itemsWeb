@@ -62,8 +62,8 @@ export const SpuId = (props) => {
   };
 
   useEffect(() => {
-    action(value && value.name);
-    if (classId) {
+    action(value?.name);
+    if (classId && value?.name) {
       onChange(null);
     }
   }, [classId]);
