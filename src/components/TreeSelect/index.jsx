@@ -2,8 +2,9 @@ import React, {useEffect} from 'react';
 import {TreeSelect as AntTreeSelect} from 'antd';
 import {useRequest} from '@/util/Request';
 
-const TreeSelect = (props) => {
-  const {value, api, defaultValue, resh, placeholder, width, ...other} = props;
+const TreeSelect = (
+  {value, api, defaultValue, resh, placeholder, width, ...other}
+) => {
   if (!api) {
     throw new Error('Table component: api cannot be empty,But now it doesn\'t exist!');
   }

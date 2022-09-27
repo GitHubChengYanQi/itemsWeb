@@ -1,13 +1,24 @@
 import React, {useRef} from 'react';
 import {useBoolean} from 'ahooks';
-import {Button, Space} from 'antd';
 import Cascader from '@/components/Cascader';
 import Select from '@/components/Select';
 import TreeSelect from '@/components/TreeSelect';
 import Drawer from '@/components/Drawer';
 
 
-const SetSelectOrCascader = ({disabled, options, component, title,height, moduleType,placement, width, api, tableTitle, ...props}) => {
+const SetSelectOrCascader = ({
+  disabled,
+  options,
+  component,
+  title,
+  height,
+  moduleType,
+  placement,
+  width,
+  api,
+  tableTitle,
+  ...props
+}) => {
 
   const ref = useRef();
 
@@ -16,21 +27,40 @@ const SetSelectOrCascader = ({disabled, options, component, title,height, module
   const getModule = () => {
     switch (moduleType) {
       case 'cascader':
-        return <Cascader resh={state} options={options} disabled={disabled} width={width} api={api} {...props} />;
       case 'tree':
-        return <TreeSelect disabled={disabled} options={options} resh={state} width={width} api={api}  {...props} />;
+        return <Cascader
+          resh={state}
+          options={options}
+          disabled={disabled}
+          width={width}
+          api={api}
+          addLabel={title || '新增'}
+          onAdd={() => {
+            ref.current.open(false);
+            setFalse();
+          }}
+          {...props}
+        />;
       default:
-        return <Select resh={state} options={options} disabled={disabled} width={width} api={api} {...props} />;
+        return <Select
+          resh={state}
+          options={options}
+          disabled={disabled}
+          width="100%"
+          api={api}
+          addLabel={title || '新增'}
+          onAdd={() => {
+            ref.current.open(false);
+            setFalse();
+          }}
+          {...props}
+        />;
     }
   };
 
   return (
-    <Space>
+    <div>
       {getModule()}
-      <Button onClick={() => {
-        ref.current.open(false);
-        setFalse();
-      }}>{title || '设置分类'}</Button>
       <Drawer
         height={height}
         placement={placement}
@@ -41,11 +71,11 @@ const SetSelectOrCascader = ({disabled, options, component, title,height, module
           ref.current.close();
           setFalse();
         }}
-        onSuccess={(res) => {
+        onSuccess={() => {
           ref.current.close();
           setTrue();
         }} />
-    </Space>);
+    </div>);
 };
 
 export default SetSelectOrCascader;

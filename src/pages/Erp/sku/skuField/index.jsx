@@ -171,7 +171,6 @@ export const SpuClass = (props) => {
   return (<SetSelectOrCascader
     options={state.skuClass}
     moduleType="cascader"
-    width={200}
     title="新增分类"
     type={1}
     component={SpuClassificationEdit}

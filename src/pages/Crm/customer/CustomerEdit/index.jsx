@@ -76,7 +76,7 @@ const CustomerEdit = (
       </div>}
       <Card title={!add && '创建供应商'} bodyStyle={{padding: add ? 0 : 24}} bordered={!add}>
         <Form
-          className={style.form}
+          className={style.customerForm}
           formatResult={formActionsPublic}
           value={params.id || false}
           ref={formRef}
@@ -478,7 +478,7 @@ const CustomerEdit = (
                   <FormItem label="所属行业" placeholder="请选择企业行业" name="industryId" component={SysField.IndustryOne} />
                 </Col>
                 <Col span={span}>
-                  <FormItem label="成立日期" name="setup" placeholder="请选择企业类型" component={SysField.Setup} />
+                  <FormItem label="成立日期" name="setup" placeholder="请选择成立日期" component={SysField.Setup} />
                 </Col>
                 <Col span={span}>
                   <FormItem label="企业电话" name="telephone" placeholder="请输入企业电话" component={SysField.Name} />

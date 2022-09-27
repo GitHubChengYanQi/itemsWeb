@@ -30,6 +30,9 @@ const Cascader = (
     resh,
     top,
     api,
+    addLabel,
+    onAdd = () => {
+    },
     options,
     onChange = () => {
     }, ...other
@@ -45,7 +48,7 @@ const Cascader = (
   }, [resh]);
 
   if (loading)
-    return <Spin/>;
+    return <Spin />;
 
   const dataSources = options || (top ? [
     {
@@ -75,9 +78,9 @@ const Cascader = (
     valueArray = '';
   }
 
-  const change = (value,option) => {
+  const change = (value, option) => {
     const result = value ? value[value.length - 1] : value;
-    onChange(result,option);
+    onChange(result, option);
   };
 
   const childrenData = (dataSources) => {
@@ -105,10 +108,19 @@ const Cascader = (
     loading={loading}
     style={{width}}
     changeOnSelect={changeOnSelect}
-    options={childrenData(dataSources) || []}
+    options={[...(addLabel ? [{
+      label: <a>{addLabel}</a>,
+      value: 'add',
+    }] : []), ...(childrenData(dataSources) || [])]}
     value={valueArray}
     placeholder={placeholder}
-    onChange={change}
+    onChange={(value, option) => {
+      if (value && value[0] === 'add') {
+        onAdd();
+        return;
+      }
+      change(value, option);
+    }}
   />);
 
 
