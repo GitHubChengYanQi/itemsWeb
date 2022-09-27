@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useImperativeHandle, useState} from 'react';
 import {message, Switch, Table, Typography} from 'antd';
 import {MenuOutlined} from '@ant-design/icons';
 import {arrayMoveImmutable} from 'array-move';
@@ -15,10 +15,10 @@ const DragHandle = SortableHandle(() => (
 ));
 
 const data = [
-  {key: 'standard', filedName: '物料编码', describe: '物料唯一标识符', show: true, defaultShow: true, disabled: true},
   {key: 'spuClass', filedName: '物料分类', describe: '物料分类', show: true, defaultShow: true, disabled: true},
-  {key: 'spu', filedName: '产品名称', show: true, defaultShow: true, disabled: true},
-  {key: 'spuCoding', filedName: '产品码', show: true, defaultShow: true, disabled: true},
+  {key: 'standard', filedName: '物料编码', describe: '物料唯一标识符', show: true, defaultShow: true},
+  {key: 'spu', filedName: '产品名称', show: true, defaultShow: true},
+  {key: 'spuCoding', filedName: '产品码', show: true, defaultShow: true,},
   {key: 'unitId', filedName: '单位', show: true, defaultShow: true},
   {key: 'batch', filedName: '二维码生成方式', show: true, defaultShow: true},
   {key: 'specifications', filedName: '规格', show: true,},
@@ -49,10 +49,22 @@ const SortableItem = SortableElement((props) => <tr {...props} />);
 const SkuForm = ({
   value = [],
   onChange = () => {
-  }
+  },
+  skuFormRef,
 }) => {
 
   const [dataSource, setDataSource] = useState([]);
+
+  const reset = () => {
+    setDataSource(data.map((item, index) => ({
+      ...item,
+      index
+    })));
+  };
+
+  useImperativeHandle(skuFormRef, () => ({
+    reset,
+  }));
 
   useEffect(() => {
     let defaultDataSource = data;
@@ -148,7 +160,7 @@ const SkuForm = ({
         disabled={record.defaultShow}
         checked={value}
         onChange={(checked) => {
-          const only = ['nationalStandard', 'skuName', 'partNo'];
+          const only = ['nationalStandard', 'model', 'partNo'];
           const newDataSource = dataSource.map(item => {
             if (only.includes(item.key)) {
               if (only.includes(record.key)) {
@@ -191,4 +203,4 @@ const SkuForm = ({
   />;
 };
 
-export default SkuForm;
+export default React.forwardRef(SkuForm);

@@ -198,31 +198,11 @@ const SkuEdit = ({...props}, ref) => {
         }}
       >
         <FormItem
-          label="物料编码"
-          name="standard"
-          copy={value.copy}
-          data={value}
-          placeholder="请输入自定义物料编码"
-          component={SysField.Codings}
-          module={0}
-        />
-        <FormItem
           label="物料分类"
           name="spuClass"
           placeholder="请选择所属分类"
           component={SysField.SpuClass}
           required />
-        <FormItem
-          label="产品名称"
-          skuId={value.skuId}
-          name="spu"
-          component={SysField.SpuId}
-          required />
-        <FormItem
-          label="产品码"
-          name="spuCoding"
-          component={SysField.SpuCoding}
-        />
         {skuFormLoading ? <Spin>
           <Alert
             style={{padding: 32}}
@@ -241,6 +221,27 @@ const SkuEdit = ({...props}, ref) => {
                 placeholder: `请选择${item.filedName}`,
                 component: SysField.UnitId,
                 required: true,
+              };
+              break;
+            case 'standard':
+              formItemProps = {
+                component: SysField.Codings,
+                required: true,
+                copy: value.copy,
+                data: value,
+                module: 0,
+              };
+              break;
+            case 'spu':
+              formItemProps = {
+                component: SysField.SpuId,
+                required: true,
+                skuId: value.skuId,
+              };
+              break;
+            case 'spuCoding':
+              formItemProps = {
+                component: SysField.SpuCoding,
               };
               break;
             case 'batch':

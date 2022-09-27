@@ -6,7 +6,7 @@
  */
 
 import React, {useRef} from 'react';
-import {Col, Popover, Row, Space} from 'antd';
+import {Button, Col, Modal, Popover, Row, Space} from 'antd';
 import {QuestionCircleOutlined} from '@ant-design/icons';
 import {createFormActions} from '@formily/antd';
 import ProCard from '@ant-design/pro-card';
@@ -31,6 +31,8 @@ const SpuClassificationEdit = ({...props}) => {
   const formRef = useRef();
 
   const dispatchers = store.useModel('dataSource')[1];
+
+  const skuFormRef = useRef();
 
   return (
     <Form
@@ -82,8 +84,16 @@ const SpuClassificationEdit = ({...props}) => {
           </Col>
         </Row>
       </ProCard>
-      <ProCard className="h2Card" title="设置物料表单" headerBordered>
-        <FormItem wrapperCol={24} name="typeSetting" component={SkuForm} />
+      <ProCard className="h2Card" title="设置物料表单" headerBordered extra={<Button type="primary" ghost onClick={() => {
+        Modal.confirm({
+          type:'warn',
+          content: '确定要恢复默认吗？',
+          onOk: skuFormRef.current.reset,
+          okText: '确定',
+          cancelText:'取消'
+        });
+      }}>恢复默认</Button>}>
+        <FormItem wrapperCol={24} name="typeSetting" component={SkuForm} skuFormRef={skuFormRef} />
       </ProCard>
     </Form>
   );
