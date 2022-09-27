@@ -52,6 +52,7 @@ export default function Login({ submitText }) {
       </FormItem>
       <FormItem
         name="password"
+        validateTrigger='onBlur'
         rules={[
           { required: true, message: '请填写密码' },
           () => ({
