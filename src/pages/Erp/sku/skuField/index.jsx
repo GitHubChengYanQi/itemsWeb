@@ -172,7 +172,6 @@ export const SpuClass = (props) => {
     options={state.skuClass}
     moduleType="cascader"
     drawerWidth={1200}
-    width={200}
     title="新增分类"
     type={1}
     component={SpuClassificationEdit}

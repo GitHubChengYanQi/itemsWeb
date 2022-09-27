@@ -16,8 +16,11 @@ const Select = (
     defaultValue,
     onChange = () => {
     },
+    onAdd = () => {
+    },
     onSearch = () => {
     },
+    addLabel,
     width: wid,
     ...other
   }
@@ -66,7 +69,7 @@ const Select = (
   }
 
   return (
-    <div id='select' style={{width:wid || '100%'}}>
+    <div id="select" style={{width: wid || '100%'}}>
       {
         loading
           ?
@@ -78,12 +81,15 @@ const Select = (
             {...other}
             listHeight={200}
             bordered={border}
-            options={options || data && data.map((items) => {
+            options={[...(addLabel ? [{
+              label: <a>{addLabel}</a>,
+              value: 'add',
+            }] : []), ...(options || data && data.map((items) => {
               return {
                 label: items.label || items.title,
                 value: items.value
               };
-            })}
+            }))]}
             defaultValue={defaultValue}
             showArrow={showArrow}
             disabled={disabled}
@@ -91,6 +97,10 @@ const Select = (
             style={{width: '100%'}}
             value={valueArray}
             onChange={(value, option) => {
+              if (value === 'add') {
+                onAdd();
+                return;
+              }
               onChange(value, option);
             }}
             onSearch={onSearch}

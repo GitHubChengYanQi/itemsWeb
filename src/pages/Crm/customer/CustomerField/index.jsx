@@ -31,6 +31,9 @@ import Drawer from '@/components/Drawer';
 import BankEdit from '@/pages/Purshase/bank/bankEdit';
 import UpLoadImg from '@/components/Upload';
 import CrmIndustryEdit from '@/pages/Crm/crmIndustry/crmIndustryEdit';
+import SpuClassificationEdit from '@/pages/Erp/spu/components/spuClassification/spuClassificationEdit';
+import {unitListSelect} from '@/pages/Erp/Spus/spuUrl';
+import UnitEdit from '@/pages/Erp/unit/unitEdit';
 
 export const ContactsName = (props) => {
 
@@ -344,7 +347,6 @@ export const Utscc = (props) => {
 export const CompanyType = (props) => {
   return (<AntdSelect
     showSearch
-    style={{maxWidth: 200}}
     allowClear
     filterOption={(input, option) => option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
     options={[{value: '有限责任公司（自然人独资）', label: '有限责任公司（自然人独资）'}, {value: '股份有限公司', label: '股份有限公司'}, {
@@ -467,27 +469,7 @@ export const BankAccount = (props) => {
 };
 
 export const Bank = (props) => {
-
-  const [state, {setTrue, setFalse}] = useBoolean();
-
-  const ref = useRef();
-
-  return (<Space>
-    <Select api={bankListSelect} width="300" resh={state} {...props} />
-    <Button onClick={() => {
-      setFalse();
-      ref.current.open(false);
-    }}>新增银行</Button>
-    <Drawer
-      headTitle="创建银行名称"
-      component={BankEdit}
-      ref={ref}
-      onSuccess={() => {
-        ref.current.close();
-        setTrue();
-      }}
-    />
-  </Space>);
+  return (<SetSelectOrCascader api={bankListSelect} title="新增银行" component={BankEdit} {...props} />);
 };
 
 export const Industry = (props) => {
@@ -499,7 +481,6 @@ export const IndustryOne = (props) => {
   return (<SetSelectOrCascader
     moduleType="tree"
     api={apiUrl.crmIndustryTreeView}
-    width="200"
     component={CrmIndustryEdit}
     title="新增行业"
     {...props} />);
