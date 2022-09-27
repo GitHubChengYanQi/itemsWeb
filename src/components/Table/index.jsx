@@ -235,7 +235,6 @@ const TableWarp = (
   const {tableColumn, setButton} = useTableSet(children || (columns.map((item, index) => ({
     ...item,
     key: `${index}`,
-    align: item.align || 'center',
     render: (value, record, index) => {
       return typeof item.render === 'function' ? item.render(value, record, index) : <Render text={value || '-'} />;
     }
@@ -319,8 +318,7 @@ const TableWarp = (
                   align: 'center',
                   fixed: 'left',
                   dataIndex: '0',
-                  width: '70px',
-                  render: (value, record, index) => <Render text={index + 1} width={70} />
+                  render: (value, record, index) => <Render text={index + 1} width={40} maxWidth={40} />
                 }]),
                 ...tableColumn.filter((items) => {
                   if (items && items.props && items.props.visible === false) {

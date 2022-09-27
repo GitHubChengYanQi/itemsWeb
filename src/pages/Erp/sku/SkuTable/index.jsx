@@ -191,6 +191,34 @@ const SkuTable = ({...props}, ref) => {
         <Note width={300} value={<SkuResultSkuJsons describe skuResult={record} />} />
       </Render>
     },
+    {
+      dataIndex: 'inBom', title: 'BOM', render: (value, record) => {
+        return <Render>
+          <Button type="link" style={{color: value && 'green', padding: 0}} onClick={() => {
+            if (value) {
+              editParts.current.open(record.partsId);
+            } else {
+              editParts.current.open(false);
+              setSkuId(record.skuId);
+            }
+          }}>{record.inBom ? '有' : '无'}</Button>
+        </Render>;
+      }
+    },
+    {
+      dataIndex: 'processResult', title: '工艺路线', render: (value) => {
+        return <Render>
+          <Button type="link" style={{color: value && 'green', padding: 0}} onClick={() => {
+            if (value) {
+              showShip.current.open(value.processId);
+            } else {
+              showShip.current.open(false);
+              setSkuId(value);
+            }
+          }}>{value ? '有' : '无'}</Button>
+        </Render>;
+      }
+    },
     {dataIndex: 'maintenancePeriod', title: '养护周期(天)', sorter: true},
     {
       dataIndex: 'brandResults',
@@ -215,22 +243,6 @@ const SkuTable = ({...props}, ref) => {
       dataIndex: 'skuId', title: '操作', fixed: 'right', sorter: true, render: (value, record) => {
         return (
           <>
-            <Button type="link" style={{color: record.inBom && 'green'}} onClick={() => {
-              if (record.inBom) {
-                editParts.current.open(record.partsId);
-              } else {
-                editParts.current.open(false);
-                setSkuId(record.skuId);
-              }
-            }}>{record.inBom ? '有' : '无'}BOM</Button>
-            <Button type="link" style={{color: record.processResult && 'green'}} onClick={() => {
-              if (record.processResult) {
-                showShip.current.open(record.processResult.processId);
-              } else {
-                showShip.current.open(false);
-                setSkuId(value);
-              }
-            }}>{record.processResult ? '有' : '无'}工艺</Button>
             <EditButton onClick={() => {
               addRef.current.open(record);
               setCopy(false);
