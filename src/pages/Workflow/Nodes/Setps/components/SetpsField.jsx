@@ -14,7 +14,7 @@ export const Actions = (props) => {
 
 
   return <>
-    <Checkbox checked={true}>或签</Checkbox>
+    <Checkbox checked>或签</Checkbox>
     <Checkbox checked={false} disabled>并签</Checkbox>
   </>;
 };
