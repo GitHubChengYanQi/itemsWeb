@@ -18,7 +18,6 @@ import BrandIds from '@/pages/Erp/brand/components/BrandIds';
 import {isArray, isObject} from '@/util/Tools';
 import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
 import MaterialIds from '@/pages/Erp/material/MaterialIds';
-import {Weight} from '../skuField';
 
 const {FormItem} = Form;
 
@@ -201,8 +200,10 @@ const SkuEdit = ({...props}, ref) => {
           label="物料分类"
           name="spuClass"
           placeholder="请选择所属分类"
+          triggerType="onBlur"
           component={SysField.SpuClass}
-          required />
+          required
+        />
         {skuFormLoading ? <Spin>
           <Alert
             style={{padding: 32}}
@@ -226,7 +227,6 @@ const SkuEdit = ({...props}, ref) => {
             case 'standard':
               formItemProps = {
                 component: SysField.Codings,
-                required: true,
                 copy: value.copy,
                 data: value,
                 module: 0,
@@ -341,6 +341,7 @@ const SkuEdit = ({...props}, ref) => {
               break;
           }
           return <FormItem
+            triggerType="onBlur"
             key={index}
             label={item.filedName}
             name={item.key}

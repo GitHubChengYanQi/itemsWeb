@@ -191,7 +191,8 @@ const SkuForm = ({
 
   return <Table
     className={styles}
-    scroll={{y: 500}}
+    // scroll={{y: 500}}
+    sticky
     pagination={false}
     dataSource={dataSource}
     columns={columns}

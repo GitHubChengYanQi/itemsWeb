@@ -14,6 +14,7 @@ const formActionsPublic = createAsyncFormActions();
 
 const FormWrapper = (
   {
+    boxShadow,
     formType,
     children,
     labelCol,
@@ -190,7 +191,7 @@ const FormWrapper = (
   >
     {children}
 
-    {NoButton && <FormButtonGroup offset={11}>
+    {NoButton && <FormButtonGroup offset={11} className={boxShadow && style.bottom}>
       <Submit showLoading>保存</Submit>
       <Reset>重置</Reset>
       <Draft

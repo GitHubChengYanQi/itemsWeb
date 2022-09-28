@@ -49,7 +49,7 @@ export const SelectSpu = (props) => {
 
 export const SpuId = (props) => {
 
-  const {classId, value, onChange} = props;
+  const {classId, value, onChange,onBlur} = props;
 
   const {loading, data, run} = useRequest(spuListSelect, {manual: true});
 
@@ -76,14 +76,14 @@ export const SpuId = (props) => {
   });
 
   return (<AutoComplete
-    value={value && value.name ? value.name : null}
+    value={value?.name || null}
     notFoundContent={loading && <Spin />}
     options={options || []}
-    // disabled={skuId}
     style={{width: 300}}
     onSelect={(value, option) => {
       onChange({name: value, spuId: option.id});
     }}
+    onBlur={onBlur}
     onChange={async (value) => {
       if (value === '') {
         onChange(null);
