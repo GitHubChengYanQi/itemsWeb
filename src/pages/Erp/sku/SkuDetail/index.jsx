@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {useHistory, useParams} from 'ice';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {Button, Card, Col, Descriptions, Dropdown, Empty, Image, Menu, Row, Space, Tabs, Typography} from 'antd';
@@ -18,6 +18,7 @@ import OutStock from '@/pages/Erp/sku/SkuDetail/components/OutStock';
 import Stocktaking from '@/pages/Erp/sku/SkuDetail/components/Stocktaking';
 import Maintenance from '@/pages/Erp/sku/SkuDetail/components/Maintenance';
 import Allocation from '@/pages/Erp/sku/SkuDetail/components/Allocation';
+import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
 
 const SkuDetail = ({value}) => {
 
@@ -26,15 +27,30 @@ const SkuDetail = ({value}) => {
 
   const history = useHistory();
 
+  const [typeSetting, setTypeSetting] = useState([]);
+
+  const {loading: skuFormLoading, run: getSkuForm} = useRequest(spuClassificationDetail, {
+    manual: true,
+    onSuccess: (res) => {
+      setTypeSetting(res && res.typeSetting && JSON.parse(res.typeSetting) || []);
+    }
+  });
+
   const {loading, data, refresh} = useRequest(skuDetail, {
     defaultParams: {
       data: {
         skuId: value || params.cid
       }
+    },
+    onSuccess: (res) => {
+      const spuClassificationId = res?.spuClass;
+      if (spuClassificationId) {
+        getSkuForm({data: {spuClassificationId}});
+      }
     }
   });
 
-  if (loading) {
+  if (loading || skuFormLoading) {
     return (<ProSkeleton type="descriptions" />);
   }
 
@@ -83,83 +99,93 @@ const SkuDetail = ({value}) => {
           <Row>
             <Col span={22}>
               <Descriptions column={4}>
-                <Descriptions.Item label="物料编码"><Typography.Text
-                  copyable>{data.standard}</Typography.Text></Descriptions.Item>
-                <Descriptions.Item label="名称">{spuResult.name} </Descriptions.Item>
-                <Descriptions.Item label="型号">{data.skuName}</Descriptions.Item>
-                <Descriptions.Item label="规格">{data.specifications || '-'}</Descriptions.Item>
-                <Descriptions.Item label="单位">{isObject(data.unit).unitName || '-'}</Descriptions.Item>
-                <Descriptions.Item label="分类">{isObject(spuResult.spuClassificationResult).name}</Descriptions.Item>
-                <Descriptions.Item label="实物码">{data.batch ? '一批一码' : '一物一码'}</Descriptions.Item>
+                {
+                  typeSetting.map((item, index) => {
+                    let children;
+                    switch (item.key) {
+                      case 'standard':
+                        children = <Typography.Text
+                          copyable>{data.standard}
+                        </Typography.Text>;
+                        break;
+                      case 'spuClass':
+                        children = isObject(spuResult.spuClassificationResult).name;
+                        break;
+                      case 'spu':
+                        children = spuResult.name;
+                        break;
+                      case 'batch':
+                        children = data.batch ? '一批一码' : '一物一码';
+                        break;
+                      case 'unitId':
+                        children = isObject(data.unit).unitName || '-';
+                        break;
+                      case 'weight':
+                        children = `${data[item.key] || 0} kg`;
+                        break;
+                      case 'maintenancePeriod':
+                        children = `${data[item.key] || 0} 天`;
+                        break;
+                      case 'sku':
+                        children = <>(
+                          {
+                            data.list &&
+                            data.list.length > 0 &&
+                            data.list[0].attributeValues ? <em>{data.list.map((items) => {
+                              return `${items.itemAttributeResult.attribute}: ${items.attributeValues}`;
+                            }).toString()}</em> : '无'
+                          }
+                          )</>;
+                        break;
+                      case 'materialId':
+                        console.log(data);
+                        break;
+                      case 'brandIds':
+                        children = isArray(data.brandResults).map(item => item.brandName).join('、');
+                        break;
+                      case 'images':
+                        children = <Image.PreviewGroup>
+                          {
+                            isArray(data.imgResults).map((item, index) => {
+                              return <Image
+                                key={index}
+                                width={34}
+                                preview={{src: item.url}}
+                                src={item.thumbUrl}
+                              />;
+                            })
+                          }
+                        </Image.PreviewGroup>;
+                        break;
+                      case 'fileId':
+                        children = <Space>
+                          {isArray(data.filedUrls).map((item, index) => {
+                            return <a
+                              key={index}
+                              href={data.filedUrls[0]}
+                              target="_blank"
+                              rel="noreferrer"
+                            >附件{index + 1}</a>;
+                          })}
+                        </Space>;
+                        break;
+                      default:
+                        children = data[item.key] || '-';
+                    }
+                    return <Descriptions.Item key={index} label={item.filedName}>
+                      {children}
+                    </Descriptions.Item>;
+                  })
+                }
                 <Descriptions.Item label="物料清单"><a>查看</a></Descriptions.Item>
                 <Descriptions.Item label="创建人">{data.createUserName || '-'}</Descriptions.Item>
-                <Descriptions.Item label="创建时间" span={3}>{data.createTime}</Descriptions.Item>
-                <Descriptions.Item label="备注" span={4}>{data.remarks || '-'}</Descriptions.Item>
-                <Descriptions.Item label="附件" span={4}>
-                  <Space>
-                    {isArray(data.filedUrls).map((item, index) => {
-                      return <a
-                        key={index}
-                        href={data.filedUrls[0]}
-                        target="_blank"
-                        rel="noreferrer"
-                      >附件{index + 1}</a>;
-                    })}
-                  </Space>
-                </Descriptions.Item>
+                <Descriptions.Item label="创建时间">{data.createTime}</Descriptions.Item>
               </Descriptions>
             </Col>
             <Col span={2}>
               <Image preview={{src: isObject(data.imgResults[0]).url}} src={isObject(data.imgResults[0]).thumbUrl} />
             </Col>
           </Row>
-        </Card>
-      </div>
-      <div className={styles.info}>
-        <Card
-          title="详细信息"
-          headStyle={{border: 'none'}}
-          bodyStyle={{padding: '0px 24px'}}
-        >
-          <Descriptions column={4}>
-            <Descriptions.Item label="材质">-</Descriptions.Item>
-            <Descriptions.Item label="养护周期">{data.maintenancePeriod || 0} 天</Descriptions.Item>
-            <Descriptions.Item label="重量">0</Descriptions.Item>
-            <Descriptions.Item label="品牌">
-              {isArray(data.brandResults).map(item => item.brandName).join('、')}
-            </Descriptions.Item>
-            <Descriptions.Item
-              label="物料描述"
-              span={4}
-            >
-              (
-              {
-                data.list &&
-                data.list.length > 0 &&
-                data.list[0].attributeValues ? <em>{data.list.map((items) => {
-                  return `${items.itemAttributeResult.attribute}: ${items.attributeValues}`;
-                }).toString()}</em> : '无'
-              }
-              )
-            </Descriptions.Item>
-            <Descriptions.Item
-              label="图片"
-              span={4}
-            >
-              <Image.PreviewGroup>
-                {
-                  isArray(data.imgResults).map((item, index) => {
-                    return <Image
-                      key={index}
-                      width={34}
-                      preview={{src: item.url}}
-                      src={item.thumbUrl}
-                    />;
-                  })
-                }
-              </Image.PreviewGroup>
-            </Descriptions.Item>
-          </Descriptions>
         </Card>
       </div>
 
