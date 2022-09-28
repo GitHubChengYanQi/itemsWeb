@@ -100,7 +100,7 @@ const SkuDetail = ({value}) => {
             <Col span={22}>
               <Descriptions column={4}>
                 {
-                  typeSetting.map((item, index) => {
+                  typeSetting.filter(item => item.show).map((item, index) => {
                     let children;
                     switch (item.key) {
                       case 'standard':
@@ -138,10 +138,13 @@ const SkuDetail = ({value}) => {
                           )</>;
                         break;
                       case 'materialId':
-                        console.log(data);
+                        children = isArray(data.materialResultList).map(item => item.name).join('、');
                         break;
                       case 'brandIds':
                         children = isArray(data.brandResults).map(item => item.brandName).join('、');
+                        break;
+                      case 'skuSize':
+                        children = data.skuSize && data.skuSize.split(',').join('×') || '无';
                         break;
                       case 'images':
                         children = <Image.PreviewGroup>
