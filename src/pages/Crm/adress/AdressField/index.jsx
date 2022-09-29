@@ -23,7 +23,7 @@ export const Latitude = (props) => {
   return (<InputNumber min={0}   {...props} />);
 };
 export const Region = (props) => {
-  const {city, onChange} = props;
+  const {city, onChange,value} = props;
 
 
   const {run} = useRequest(commonAreaList, {
@@ -34,7 +34,7 @@ export const Region = (props) => {
 
 
   useEffect(() => {
-    if (city){
+    if (city && !value){
       run(
         {
           data: {
