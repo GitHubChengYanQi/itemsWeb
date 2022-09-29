@@ -131,9 +131,10 @@ const SkuDetail = ({value}) => {
                           {
                             data.list &&
                             data.list.length > 0 &&
-                            data.list[0].attributeValues ? <em>{data.list.map((items) => {
-                              return `${items.itemAttributeResult.attribute}: ${items.attributeValues}`;
-                            }).toString()}</em> : '无'
+                            data.list[0].attributeValues ?
+                              <em>{data.list.map((items) => {
+                                return `${items.itemAttributeResult.attribute}: ${items.attributeValues}`;
+                              }).toString()}</em> : '无'
                           }
                           )</>;
                         break;

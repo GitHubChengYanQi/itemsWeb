@@ -101,11 +101,12 @@ const SkuEdit = ({...props}, ref) => {
         fieldKey="skuId"
         formatDetail={(res) => {
           setDetails(res);
+          console.log(res);
           return {
             ...res,
             materialId: res.materialIdList || [],
             spu: res.spuResult,
-            brandIds: isArray(res.brandResults).map(item => item.brandId)
+            brandIds: isArray(res.brandResults).map(item => item.brandId),
           };
         }}
         onError={() => {
@@ -212,7 +213,7 @@ const SkuEdit = ({...props}, ref) => {
           />
         </Spin> : typeSetting.map((item, index) => {
 
-          if (item.disabled || !item.show) {
+          if (!item.show) {
             return <div key={index} />;
           }
           let formItemProps;
@@ -239,21 +240,11 @@ const SkuEdit = ({...props}, ref) => {
                 skuId: value.skuId,
               };
               break;
-            case 'spuCoding':
-              formItemProps = {
-                component: SysField.SpuCoding,
-              };
-              break;
             case 'batch':
               formItemProps = {
                 placeholder: `请选择${item.filedName}`,
                 component: SysField.Batch,
                 required: true,
-              };
-              break;
-            case 'specifications':
-              formItemProps = {
-                component: SysField.Specs,
               };
               break;
             case 'maintenancePeriod':
