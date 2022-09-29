@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Button, Space, Table as AntTable, Typography} from 'antd';
+import {Button, Input, Space, Table as AntTable, Typography} from 'antd';
 import {CopyOutlined} from '@ant-design/icons';
 import {config, useHistory} from 'ice';
 import cookie from 'js-cookie';
@@ -102,20 +102,10 @@ const SkuTable = ({...props}, ref) => {
     return (
       <>
         <FormItem
-          label="编码"
-          placeholder="请输入编码"
-          name="standard"
-          component={SysField.SelectSkuName} />
-        <FormItem
-          label="名称"
-          placeholder="请输入名称"
-          name="spuName"
-          component={SysField.SelectSkuName} />
-        <FormItem
-          label="型号"
-          placeholder="请输入型号"
-          name="name"
-          component={SysField.SelectSkuName} />
+          label="物料名称"
+          placeholder="搜索物料"
+          name="skuName"
+          component={Input} />
         <FormItem
           name="spuClass"
           hidden
