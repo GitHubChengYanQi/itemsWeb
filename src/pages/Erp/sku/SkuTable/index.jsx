@@ -102,7 +102,6 @@ const SkuTable = ({...props}, ref) => {
     return (
       <>
         <FormItem
-          label="物料名称"
           placeholder="搜索物料"
           name="skuName"
           component={Input} />
