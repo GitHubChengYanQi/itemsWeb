@@ -25,7 +25,7 @@ const formActionsPublic = createFormActions();
 
 const AdressEdit = ({...props}, ref) => {
 
-  const {customer, NoButton,adressType, ...other} = props;
+  const {customer, NoButton, adressType, ...other} = props;
 
   const formRef = useRef();
 
@@ -55,7 +55,7 @@ const AdressEdit = ({...props}, ref) => {
             message.warn('请选择客户！');
             return false;
           }
-          return {...value, customerId: customer,type:adressType};
+          return {...value, customerId: customer, type: adressType};
         }}
         onSuccess={(res) => {
           props.onSuccess(res.data);
@@ -68,6 +68,7 @@ const AdressEdit = ({...props}, ref) => {
         onError={() => {
         }}
       >
+        <FormItem label="定位地址" name="map" component={SysField.Map} disabled required />
         <FormItem
           label="省市区地址"
           name="region"
@@ -76,8 +77,7 @@ const AdressEdit = ({...props}, ref) => {
           options={data && data.area}
           required />
         <FormItem label="详细地址" name="detailLocation" component={SysField.Location} />
-        <FormItem label="定位地址" name="map" component={SysField.Map} disabled />
-        <FormItem label="定位名称" name="addressName" component={SysField.Location} />
+        <FormItem label="地址名称" name="addressName" component={SysField.Location} />
       </Form>
     </div>
   );
