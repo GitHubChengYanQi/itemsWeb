@@ -3,26 +3,36 @@ import {Marker} from 'react-amap';
 import {Button, Card, Cascader as AntCascader, Input, List, Popover, Space} from 'antd';
 import {useRequest} from '@/util/Request';
 import store from '@/store';
+import {isArray} from '@/util/Tools';
 
 let MSearch = null;
 let Geocoder = null;
 
 const AmapSearch = ({
-  value: defaultValue,
-  __ele__, __map__, onChange = () => {
-  }, center
+  value: defaultValue = [],
+  __map__,
+  onChange = () => {
+  },
+  center
 }, ref) => {
 
   const [data] = store.useModel('dataSource');
 
-  const [city, setCity] = useState();
+  const [city, setCity] = useState({});
 
   const [visiable, setVisiable] = useState();
 
-  const [value, setValue] = useState('');
-  const [adinfo, setadinfo] = useState({});
+  const [adinfo, setadinfo] = useState({
+    location: defaultValue.length > 0 ? [
+      defaultValue[0],
+      defaultValue[1],
+    ] : [],
+  });
   const [reslut, setResult] = useState(null);
-  const [markerPosition, setMarkerPosition] = useState(null);
+  const [markerPosition, setMarkerPosition] = useState(defaultValue.length > 0 ? {
+    lng: defaultValue[0],
+    lat: defaultValue[1],
+  } : null);
 
 
   const {run: runCisy} = useRequest({url: '/commonArea/list', method: 'POST'}, {manual: true});
@@ -52,10 +62,6 @@ const AmapSearch = ({
   // const MSearch = new __map__.PlaceSearch();
   // console.log(MSearch);
 
-  const onClick = () => {
-    MSearch.search(value); // 关键字查询
-  };
-
 
   const setData = (value) => {
     setMarkerPosition(value.location);
@@ -70,12 +76,13 @@ const AmapSearch = ({
         const lnglat = [value.lng, value.lat];
         Geocoder.getAddress(lnglat, function (status, result) {
           if (status === 'complete' && result.info === 'OK') {
+            const position = result.regeocode.addressComponent || {};
             // result为对应的地理位置详细信息
             const m = {
               address: result.regeocode.formattedAddress,
               name: '',
               location: [value.lng, value.lat],
-              city: result.regeocode.addressComponent.city || result.regeocode.addressComponent.province
+              city: position.district || position.city || position.province
             };
             setadinfo(m);
           }
@@ -87,45 +94,39 @@ const AmapSearch = ({
 
   useEffect(() => {
 
-    if (defaultValue) {
-      const m = {
-        ...defaultValue,
-        location: Array.isArray(defaultValue.map) && defaultValue.map.length > 1 && [defaultValue.map[0], defaultValue.map[1]],
-      };
-      setadinfo(m);
-      setData(m);
-      setCity(defaultValue);
-    } else {
-      window.AMap.plugin('AMap.CitySearch', function () {
-        const citySearch = new window.AMap.CitySearch();
-        citySearch.getLocalCity(function (status, result) {
-          if (status === 'complete' && result.info === 'OK') {
-            Geocoder.getLocation(result.city, function (status, result) {
-              if (status === 'complete' && result.info === 'OK') {
-                setadinfo({
-                  address: result.geocodes[0].formattedAddress,
-                  location: [result.geocodes[0].location.lng, result.geocodes[0].location.lat],
-                  city: result.geocodes[0].addressComponent.city || result.geocodes[0].addressComponent.province
-                });
-                center(
-                  {
-                    lat: result.geocodes[0].location.lat,
-                    lgn: result.geocodes[0].location.lng
-                  }
-                );
-                setMarkerPosition({
-                  lat: result.geocodes[0].location.lat,
-                  lng: result.geocodes[0].location.lng
-                });
-                // result中对应详细地理坐标信息
-              }
-            });
-            // 查询成功，result即为当前所在城市信息
-            setCity(result);
-          }
-        });
-      });
+    if (isArray(defaultValue).length > 0) {
+      return;
     }
+    window.AMap.plugin('AMap.CitySearch', function () {
+      const citySearch = new window.AMap.CitySearch();
+      citySearch.getLocalCity((status, result) => {
+        if (status === 'complete' && result.info === 'OK') {
+          Geocoder.getLocation(result.city, function (status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+              const position = result.geocodes[0].addressComponent || {};
+              setadinfo({
+                address: position.province + position.city,
+                location: [result.geocodes[0].location.lng, result.geocodes[0].location.lat],
+                city: position.district || position.city || position.province
+              });
+              center(
+                {
+                  lat: result.geocodes[0].location.lat,
+                  lgn: result.geocodes[0].location.lng
+                }
+              );
+              setMarkerPosition({
+                lat: result.geocodes[0].location.lat,
+                lng: result.geocodes[0].location.lng
+              });
+              // result中对应详细地理坐标信息
+            }
+          });
+          // 查询成功，result即为当前所在城市信息
+          setCity(result);
+        }
+      });
+    });
   }, []);
 
   const children = (data) => {
@@ -147,13 +148,13 @@ const AmapSearch = ({
     >
       <span style={{paddingLeft: 10}}>{city &&
       <AntCascader
+        placeholder='请选择省市区地址'
         changeOnSelect
         style={{minWidth: 250, marginRight: 10}}
         showSearch={(inputValue, path) => {
           path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
         }}
         options={children(data && data.area)}
-        defaultValue={[city.city]}
         onChange={async (value, options) => {
           let cityId = null;
           value.length > 0 && value.map((items, index) => {
@@ -227,10 +228,9 @@ const AmapSearch = ({
         </List>
       </Card>} open={visiable}>
         <Input.Search
-          placeholder='搜索地点'
+          placeholder="搜索地点"
           onChange={(value) => {
             MSearch.search(value.target.value);
-            setValue(value.target.value);
             setVisiable(true);
           }}
           onSearch={(e) => {
@@ -251,7 +251,7 @@ const AmapSearch = ({
       <Button
         type="primary"
         onClick={() => {
-          typeof onChange === 'function' && onChange(adinfo);
+          onChange(adinfo);
         }}>确定</Button>
       {markerPosition && <Marker position={markerPosition} __map__={__map__} />}
     </div>
