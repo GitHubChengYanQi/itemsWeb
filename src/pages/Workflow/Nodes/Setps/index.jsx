@@ -57,8 +57,8 @@ const Setps = ({
               const visible = value.actions;
               state.visible = visible;
               state.props.actions = visible ? actions : [];
-              state.value = actions.map(item => {
-                return {...item, checked: true};
+              state.value = actions.map((item,index) => {
+                return {...item, checked: index === 0};
               }) || [];
             });
           }

@@ -91,7 +91,7 @@ export const StautsId = (props) => {
 };
 
 export const ActionIds = ({value = [], onChange, actions = [], defaultValue}) => {
-
+  console.log(value);
   useEffect(() => {
     if (defaultValue) {
       onChange(defaultValue);
@@ -104,13 +104,13 @@ export const ActionIds = ({value = [], onChange, actions = [], defaultValue}) =>
 
   const change = (item, checked) => {
     const newActions = actions.map(oldItem => {
-      if (oldItem.actionId === item.actionId) {
+      if (oldItem.action === item.action) {
         return {
-          actionId: item.actionId,
+          ...oldItem,
           checked,
         };
       }
-      return item;
+      return oldItem;
     });
     onChange(newActions);
   };
