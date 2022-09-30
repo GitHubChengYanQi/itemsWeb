@@ -1,24 +1,18 @@
 import React, {useState} from 'react';
-import {Input} from 'antd';
 import Amap from '@/components/Amap';
+import Note from '@/components/Note';
 
-const AdressMap = ({width, value, onChange, disabled, ...props}) => {
+const AdressMap = ({width, value, onChange}) => {
 
   const [location, setLocation] = useState(value || {});
 
   return (
-    <div style={{flexGrow: 1,display:'flex'}}>
-      <Input
-        {...props}
-        disabled={disabled}
-        value={location && location.address}
-        style={{width,flexGrow: 1}}
-        onChange={(value) => {
-          setLocation({...location, address: value.target.value});
-          onChange({address: value.target.value, map: location.location, city: location.city});
-        }} />
+    <div style={{flexGrow: 1, display: 'flex',alignItems:'center'}}>
+      <Note maxWidth='70%' style={{width}} >
+        {location && location.address}
+      </Note>
       <div>
-        <Amap value={value} onChange={(value) => {
+        <Amap value={value?.map} onChange={(value) => {
           setLocation(value);
           onChange({address: value.address, map: value.location, city: value.city});
         }} />

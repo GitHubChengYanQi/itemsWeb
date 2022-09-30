@@ -138,7 +138,7 @@ const AdressList = (props) => {
         component={AdressEdit}
         customer={customer && customer.customerId}
         onSuccess={() => {
-          tableRef.current.refresh();
+          tableRef.current.submit();
           ref.current.close();
         }}
         ref={ref}
