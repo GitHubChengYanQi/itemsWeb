@@ -85,6 +85,7 @@ const AmapSearch = ({
               city: position.district || position.city || position.province
             };
             setadinfo(m);
+            setCity(position.city);
           }
         });
       }
@@ -170,10 +171,11 @@ const AmapSearch = ({
           });
           Geocoder.getLocation(city.length > 0 && city[0].title, function (status, result) {
             if (status === 'complete' && result.info === 'OK') {
+              const position = result.geocodes[0].addressComponent || {};
               setadinfo({
-                address: result.geocodes[0].formattedAddress,
+                address: position.province + position.city,
                 location: [result.geocodes[0].location.lng, result.geocodes[0].location.lat],
-                city: result.geocodes[0].addressComponent.city || result.geocodes[0].addressComponent.province
+                city: position.district || position.city || position.province
               });
               center(
                 {
@@ -199,7 +201,7 @@ const AmapSearch = ({
               const m = {
                 address: item.address,
                 location: [item.location.lng, item.location.lat],
-                city: item.cityname
+                city: item.adname || item.cityname || item.pname
               };
               setadinfo(m);
               setData(item);
@@ -227,23 +229,11 @@ const AmapSearch = ({
           })}
         </List>
       </Card>} open={visiable}>
-        <Input.Search
+        <Input
           placeholder="搜索地点"
           onChange={(value) => {
             MSearch.search(value.target.value);
             setVisiable(true);
-          }}
-          onSearch={(e) => {
-            MSearch.search(e);
-            if (reslut && reslut.pois && reslut.pois.length > 0) {
-              const m = {
-                address: reslut.pois[0].address,
-                location: [reslut.pois[0].location.lng, reslut.pois[0].location.lat],
-                city: reslut.pois[0].cityname
-              };
-              setadinfo(m);
-              setData(reslut.pois[0]);
-            }
           }}
           style={{width: 'auto', marginRight: 20}}
         />
