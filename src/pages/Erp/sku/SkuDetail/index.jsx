@@ -170,7 +170,7 @@ const SkuDetail = ({value}) => {
             defaultActiveKey="1"
             destroyInactiveTabPane
             items={[
-              {key: '1', label: '关联物料清单', children: <PartsList value={data.skuId} showTable />},
+              {key: '1', label: '关联物料清单', children: <PartsList skuDetail value={data.skuId} showTable />},
               {key: '2', label: '关联供应商', children: <Supply skuId={data.skuId} />},
               {key: '3', label: '库存明细', children: <StockDetail />},
               {key: '4', label: '入库记录', children: <InStock />},
