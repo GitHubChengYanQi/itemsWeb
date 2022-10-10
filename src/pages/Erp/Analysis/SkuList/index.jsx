@@ -1,4 +1,4 @@
-import React, {useImperativeHandle, useRef, useState} from 'react';
+import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Button, Space, Spin} from 'antd';
 import {PlusOutlined, MenuOutlined, VerticalAlignTopOutlined, DeleteOutlined} from '@ant-design/icons';
 import {useBoolean} from 'ahooks';
@@ -83,6 +83,10 @@ const SkuList = ({...props}, ref) => {
       </Button>
     </Space>;
   };
+
+  useEffect(() => {
+    addSku.current.open(false);
+  }, []);
 
   return <>
     <Sortable
