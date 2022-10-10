@@ -172,7 +172,12 @@ const SkuTable = ({...props}, ref) => {
         );
       }
     },
-    {dataIndex: 'spuResult', title: '产品名称', render: (value) => <Render text={value?.name} />, sorter: true},
+    {
+      dataIndex: 'spuName',
+      title: '产品名称',
+      render: (value, record) => <Render text={record.spuResult?.name} />,
+      sorter: true
+    },
     {dataIndex: 'model', title: '型号', sorter: true,},
     {dataIndex: 'nationalStandard', title: '国家标准', sorter: false,},
     {dataIndex: 'partNo', title: '零件号', sorter: false,},
@@ -242,7 +247,7 @@ const SkuTable = ({...props}, ref) => {
       title: '操作',
       fixed: 'right',
       sorter: true,
-      width:100,
+      width: 100,
       render: (value, record) => {
         return (
           <>
