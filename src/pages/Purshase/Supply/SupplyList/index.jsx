@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useRef, useState} from 'react';
-import {Avatar, Button, Col, Row, Space, Table as AntTable} from 'antd';
+import {Avatar, Button, Col, Row, Space, Table as AntTable, Tag} from 'antd';
 import {config, useHistory} from 'ice';
 import {SearchOutlined} from '@ant-design/icons';
 import {FormButtonGroup, Submit} from '@formily/antd';
@@ -24,6 +24,7 @@ import CreateNewCustomer from '@/pages/Crm/customer/components/CreateNewCustomer
 import UpdateSort from '@/components/Table/components/UpdateSort';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
 import {supplierBatchDelete, supplierList} from '@/pages/Purshase/Supply/SupplyUrl';
+import Render from '@/components/Render';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -131,9 +132,75 @@ const SupplyList = (props) => {
     </Space>);
   };
 
+  const columns = [
+    {
+      title: '供应商信息', dataIndex: 'customerName', fixed: 'left,', render: (value, record) => {
+        return (
+          <Row gutter={24} wrap={false} style={{cursor: 'pointer'}} onClick={() => {
+            history.push(`/purchase/supply/detail/${record.customerId}`);
+          }}>
+            <Col>
+              <Avatar size={64} src={record.avatar}>{!record.avatar && value.substring(0, 1)}</Avatar>
+            </Col>
+            <Col>
+              <Space>
+                <strong>{value}</strong>
+                <Tag hidden={!record.abbreviation}>{record.abbreviation}</Tag>
+              </Space>
+              <div>
+                <em>
+                  {record.defaultContactsResult && record.defaultContactsResult.contactsName || '--'}
+                  &nbsp;&nbsp;/&nbsp;&nbsp;
+                  {record.defaultContactsResult && record.defaultContactsResult.phoneParams && record.defaultContactsResult.phoneParams[0] && record.defaultContactsResult.phoneParams[0].phoneNumber || '--'}
+                  &nbsp;&nbsp;/&nbsp;&nbsp;
+                  {record.defaultContactsResult && record.defaultContactsResult.companyRoleResult && record.defaultContactsResult.companyRoleResult.position || '--'}
+                  &nbsp;&nbsp;/&nbsp;&nbsp;
+                  {record.defaultContactsResult && record.defaultContactsResult.deptResult && record.defaultContactsResult.deptResult.fullName || '--'}
+                </em>
+              </div>
+              <div>
+                <em>详细地址：{record.address && record.address.detailLocation || '--'}</em>
+              </div>
+            </Col>
+          </Row>
+        );
+      }
+    },
+    {
+      title: '开户信息', dataIndex: 'invoiceResult', render: (value) => {
+        if (value) {
+          return (
+            <>
+              <Space direction="vertical">
+                <strong>{value.bankResult && value.bankResult.bankName || '无'}</strong>
+                <div>
+                  开户账号：{value.bankAccount || '--'}
+                </div>
+              </Space>
+            </>
+          );
+        } else {
+          return '暂无';
+        }
+
+      }
+    },
+    {
+      title: '供应商级别', dataIndex: 'customerName', render: (text, record) => {
+        const level = typeof record.crmCustomerLevelResult === 'object' ? record.crmCustomerLevelResult : {};
+        return (
+          <CustomerLevel
+            level={level.rank}>{level.level}</CustomerLevel>);
+      }
+    },
+    {title: '创建人', dataIndex: 'createUserResult', sorter: true,render:(value)=><Render text={value?.name || '-'} />},
+    {title: '创建时间', dataIndex: 'createTime', sorter: true},
+  ];
+
   return (
     <>
       <Table
+        columns={columns}
         title={<Breadcrumb />}
         api={supplierList}
         rowKey="customerId"
@@ -163,73 +230,7 @@ const SupplyList = (props) => {
           setIds(keys);
         }}
         {...other}
-      >
-        <Column
-          key={1}
-          title="供应商信息"
-          fixed
-          dataIndex="customerName"
-          render={(value, record) => {
-            return (
-              <Row gutter={24} wrap={false} style={{cursor: 'pointer'}} onClick={() => {
-                history.push(`/purchase/supply/detail/${record.customerId}`);
-              }}>
-                <Col>
-                  <Avatar size={64} src={record.avatar}>{!record.avatar && value.substring(0, 1)}</Avatar>
-                </Col>
-                <Col>
-                  <strong>{value}</strong>
-                  <div>
-                    <em>
-                      {record.defaultContactsResult && record.defaultContactsResult.contactsName || '--'}
-                      &nbsp;&nbsp;/&nbsp;&nbsp;
-                      {record.defaultContactsResult && record.defaultContactsResult.phoneParams && record.defaultContactsResult.phoneParams[0] && record.defaultContactsResult.phoneParams[0].phoneNumber || '--'}
-                      &nbsp;&nbsp;/&nbsp;&nbsp;
-                      {record.defaultContactsResult && record.defaultContactsResult.companyRoleResult && record.defaultContactsResult.companyRoleResult.position || '--'}
-                      &nbsp;&nbsp;/&nbsp;&nbsp;
-                      {record.defaultContactsResult && record.defaultContactsResult.deptResult && record.defaultContactsResult.deptResult.fullName || '--'}
-                    </em>
-                  </div>
-                  <div>
-                    <em>详细地址：{record.address && record.address.detailLocation || '--'}</em>
-                  </div>
-                </Col>
-              </Row>
-            );
-          }} />
-        <Column
-          key={2}
-          title="开户信息"
-          dataIndex="invoiceResult"
-          render={(value) => {
-            if (value) {
-              return (
-                <>
-                  <Space direction="vertical">
-                    <strong>{value.bankResult && value.bankResult.bankName || '无'}</strong>
-                    <div>
-                      开户行号：{value.bankNo || '--'}
-                    </div>
-                    <div>
-                      开户账号：{value.bankAccount || '--'}
-                    </div>
-                  </Space>
-                </>
-              );
-            } else {
-              return '暂无';
-            }
-
-          }} />
-        <Column key={4} title="供应商级别" width={120} align="center" render={(text, record) => {
-          const level = typeof record.crmCustomerLevelResult === 'object' ? record.crmCustomerLevelResult : {};
-          return (
-            <CustomerLevel
-              level={level.rank}>{level.level}</CustomerLevel>);
-        }} />
-        <Column key={5} title="创建人" width={200} align="center" dataIndex="createTime" sorter />
-        <Column key={6} title="创建时间" width={200} align="center" dataIndex="createTime" sorter />
-      </Table>
+      />
       <CreateNewCustomer
         title="供应商"
         model={CustomerEdit}
