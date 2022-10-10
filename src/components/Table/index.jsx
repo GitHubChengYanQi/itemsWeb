@@ -236,7 +236,7 @@ const TableWarp = (
     ...item,
     key: `${index}`,
     render: (value, record, index) => {
-      return typeof item.render === 'function' ? item.render(value, record, index) : <Render text={value || '-'} />;
+      return typeof item.render === 'function' ? item.render(value, record, index) : <Render text={typeof value === 'object' ? '' : (value || '-')} />;
     }
   }))), tableKey);
 
@@ -318,6 +318,7 @@ const TableWarp = (
                   align: 'center',
                   fixed: 'left',
                   dataIndex: '0',
+                  width:40,
                   render: (value, record, index) => <Render text={index + 1} width={40} maxWidth={40} />
                 }]),
                 ...tableColumn.filter((items) => {
