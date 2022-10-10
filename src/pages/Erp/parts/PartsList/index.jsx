@@ -37,6 +37,7 @@ const {baseURI} = config;
 const PartsList = ({
   showTable,
   spuId,
+  skuDetail,
   spuSkuId,
   value,
   getPartsId = () => {
@@ -96,7 +97,7 @@ const PartsList = ({
           component={SysField.SkuInput} />
         <FormItem
           hidden
-          name="skuId"
+          name={skuDetail ? 'children' : 'skuId'}
           value={value || null}
           component={SysField.SkuInput} />
         <FormItem
