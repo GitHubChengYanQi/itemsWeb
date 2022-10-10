@@ -152,6 +152,13 @@ const SkuEdit = ({...props}, ref) => {
                 }
               );
 
+              // setFieldState(
+              //   'spuClass',
+              //   state => {
+              //     state.value = spu.spuClassificationId;
+              //   }
+              // );
+
               setFieldState(
                 'spuCoding',
                 state => {
@@ -206,7 +213,7 @@ const SkuEdit = ({...props}, ref) => {
           />
         </Spin> : typeSetting.map((item, index) => {
 
-          if (!item.show) {
+          if (!item.show || item.disabled) {
             return <div key={index} />;
           }
           let formItemProps;
