@@ -94,7 +94,6 @@ const AmapSearch = ({
 
 
   useEffect(() => {
-
     if (isArray(defaultValue).length > 0) {
       return;
     }
