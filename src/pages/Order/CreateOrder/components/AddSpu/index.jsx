@@ -15,6 +15,7 @@ const AddSpu = (
     customerId,
     supply,
     maxWidth,
+    noSpu,
   }) => {
 
   const [checkConfig, setCheckConfig] = useState([]);
@@ -143,6 +144,7 @@ const AddSpu = (
       </Descriptions.Item>
       <Descriptions.Item label="物料名称">
         <SelectSku
+          noSpu={noSpu}
           style={{maxWidth: maxWidth || 538}}
           supply={supply}
           params={{customerId}}
@@ -181,7 +183,7 @@ const AddSpu = (
           }}
         />
       </Descriptions.Item>
-      <Descriptions.Item label="物料描述">
+      {!noSpu && <Descriptions.Item label="物料描述">
         <div style={{display: 'flex', flexDirection: 'column'}}>
           {config.tree.length === 0 && '无描述'}
           {
@@ -216,7 +218,7 @@ const AddSpu = (
               })
           }
         </div>
-      </Descriptions.Item>
+      </Descriptions.Item>}
     </Descriptions>
 
   </div>;

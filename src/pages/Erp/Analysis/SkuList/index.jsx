@@ -155,7 +155,7 @@ const SkuList = ({...props}, ref) => {
       </Space>}
     >
       <div style={{padding:24}}>
-        <AddSpu maxWidth='100%' onChange={setSkuId} value={skuId} noSkuIds={skuList.map((item) => item.skuId)}/>
+        <AddSpu noSpu maxWidth='100%' onChange={setSkuId} value={skuId} noSkuIds={skuList.map((item) => item.skuId)}/>
       </div>
     </Modal>
   </>;

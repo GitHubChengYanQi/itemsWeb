@@ -17,6 +17,7 @@ const SelectSku = (
     placeholder,
     onSpuId = () => {
     },
+    noSpu,
     params,
     skuIds,
     noAdd,
@@ -48,7 +49,10 @@ const SelectSku = (
     if (!Array.isArray(data)) {
       return [];
     }
+
+
     let spus = [];
+    const skus = [];
     data.map((item) => {
       const sku = {
         disabled: skuIds && skuIds.filter((value) => {
@@ -61,6 +65,10 @@ const SelectSku = (
         type: 'sku',
         supply: item.inSupply,
       };
+
+      if (noSpu) {
+        return skus.push(sku);
+      }
 
       if (spus.map(item => item.value).includes(item.spuId)) {
         return spus = spus.map((spuItem) => {
@@ -84,7 +92,7 @@ const SelectSku = (
       });
     });
 
-    return spus;
+    return noSpu ? skus : spus;
   };
 
   const {loading, data, run} = useRequest({...skuList, data: {skuIds: ids, ...params}}, {
@@ -171,7 +179,31 @@ const SelectSku = (
           新增物料
         </a>
       </Select.Option>}
-      {options && options.map((items) => {
+      {options.map((items) => {
+        if (noSpu){
+          return <Select.Option
+            key={items.value}
+            style={{color: 'rgb(113 111 111)'}}
+            disabled={items.disabled}
+            title={items.label}
+            standard={items.standard}
+            value={`${items.label}standard:${items.standard}`}>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+              <div style={{flexGrow: 1, maxWidth: '85%'}}>
+                <Note>
+                  {items.label}
+                </Note>
+              </div>
+              {supply && params && params.customerId && <div style={{textAlign: 'right', width: 100}}>
+                <Button
+                  type="link"
+                  danger={!items.supply}
+                  style={{padding: 0}}>{items.supply ? '供应物料' : '非供应物料'}</Button>
+              </div>}
+            </div>
+
+          </Select.Option>;
+        }
         return (
           <Select.OptGroup key={items.value} label={<Button type="text" style={{padding: 0}} onClick={() => {
             onSpuId(items.value);
