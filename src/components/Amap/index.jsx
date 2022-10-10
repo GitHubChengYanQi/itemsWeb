@@ -49,14 +49,16 @@ const Amap = ({
           onClose();
         }}
         width="50%"
-        title={title}>
+        title={title}
+      >
         <div style={{height: 'calc(100vh - 90px)'}}>
           <Map events={events} amapkey={AMAP_KEY} center={center} version={AMAP_VERSION} zoom={16}>
             <AmapSearch value={value} ref={mapRef} center={(value) => {
               setCenter({longitude: value.lgn, latitude: value.lat});
             }} onChange={(value) => {
+              setCenter({longitude: value.location[0], latitude:  value.location[1]});
               setVisible(false);
-              typeof onChange === 'function' && onChange(value);
+              onChange(value);
             }} />
           </Map>
         </div>
