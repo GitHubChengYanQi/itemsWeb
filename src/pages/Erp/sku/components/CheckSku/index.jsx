@@ -133,8 +133,7 @@ const CheckSku = ({
               setSkus({data: array});
             }
           }
-        }
-        }
+        }}
       >
         <Column title="序号" width={70} align="center" render={(value, record, index) => {
           return <>{index + 1}</>;

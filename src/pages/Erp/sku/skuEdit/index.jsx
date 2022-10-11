@@ -326,6 +326,7 @@ const SkuEdit = ({...props}, ref) => {
               break;
             default:
               formItemProps = {
+                tableName: item.key,
                 component: SysField.SkuName,
                 required: false,
               };
