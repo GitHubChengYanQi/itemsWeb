@@ -64,7 +64,7 @@ export const Item = React.memo(
       },
       ref
     ) => {
-      console.log(value)
+
       useEffect(() => {
         if (!dragOverlay) {
           return;

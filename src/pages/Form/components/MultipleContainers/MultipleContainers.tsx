@@ -34,6 +34,7 @@ import {
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
+import ColumnsConfig from '../ColumnsConfig'
 
 import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
@@ -44,10 +45,16 @@ export default {
   title: 'Presets/Sortable/Multiple Containers',
 };
 
+
+const dropAnimation: DropAnimation = {
+  ...defaultDropAnimation,
+  dragSourceOpacity: 0.5,
+};
+
 const animateLayoutChanges: AnimateLayoutChanges = (args) =>
   args.isSorting || args.wasDragging ? defaultAnimateLayoutChanges(args) : true;
 
-function DroppableContainer(
+export const DroppableContainer = (
   {
     children,
     columns = 1,
@@ -61,7 +68,8 @@ function DroppableContainer(
     id: string;
     items: string[];
     style?: React.CSSProperties;
-  }) {
+  }) => {
+
   const {
     active,
     attributes,
@@ -104,11 +112,6 @@ function DroppableContainer(
       {children}
     </Container>
   );
-}
-
-const dropAnimation: DropAnimation = {
-  ...defaultDropAnimation,
-  dragSourceOpacity: 0.5,
 };
 
 type Items = Record<string, { key: any, filedName: any }[]>;
@@ -450,71 +453,83 @@ export function MultipleContainers(
       onDragCancel={onDragCancel}
       modifiers={modifiers}
     >
-      <div
-        style={{
-          display: 'inline-grid',
-          boxSizing: 'border-box',
-          padding: 20,
-          gridAutoFlow: vertical ? 'row' : 'column',
-        }}
-      >
-        <SortableContext
-          items={[...containers, PLACEHOLDER_ID]}
-          strategy={
-            vertical
-              ? verticalListSortingStrategy
-              : horizontalListSortingStrategy
-          }
-        >
-          {containers.map((containerId, index) => {
-              const disabled = containerId === 'A';
-              return <DroppableContainer
-                noNandle={disabled}
-                key={containerId}
-                id={containerId}
-                label={disabled ? '待选字段' : `第${index + 1}列`}
-                columns={columns}
-                items={items[containerId].map(item => item.key)}
-                scrollable={scrollable}
-                style={containerStyle}
-                unstyled={minimal}
-                onRemove={disabled ? undefined : () => handleRemove(containerId)}
-              >
-                <SortableContext items={items[containerId].map(item => item.key)} strategy={strategy}>
-                  {items[containerId].map((item, index) => {
-                    return (
-                      <SortableItem
-                        disabled={isSortingContainer}
-                        key={item.key}
-                        id={item.key}
-                        value={item.filedName}
-                        index={index}
-                        handle={handle}
-                        style={getItemStyles}
-                        wrapperStyle={wrapperStyle}
-                        renderItem={renderItem}
-                        containerId={containerId}
-                        getIndex={getIndex}
-                      />
-                    );
-                  })}
-                </SortableContext>
-              </DroppableContainer>
-            }
-          )}
-          {minimal ? undefined : (
-            <DroppableContainer
-              id={PLACEHOLDER_ID}
-              disabled={isSortingContainer}
-              items={empty}
-              onClick={handleAddColumn}
-              placeholder
+      <div style={{display: 'flex', alignItems: 'flex-start'}}>
+        <div style={{width: '16vw', display: "inline-block"}}>
+          <ColumnsConfig
+            disabled
+            containerId='A'
+            index={0}
+            items={items}
+            scrollable={scrollable}
+            containerStyle={containerStyle}
+            minimal={minimal}
+            handleRemove={handleRemove}
+            strategy={strategy}
+            isSortingContainer={isSortingContainer}
+            handle={handle}
+            getItemStyles={getItemStyles}
+            wrapperStyle={wrapperStyle}
+            renderItem={renderItem}
+            getIndex={getIndex}
+          />
+        </div>
+        <div style={{flexGrow: 1,textAlign:"center"}}>
+          <div
+            style={{
+              display: 'inline-grid',
+              boxSizing: 'border-box',
+              padding: 20,
+              gridAutoFlow: vertical ? 'row' : 'column',
+              alignItems: 'flex-start',
+              gridTemplateColumns: new Array(columns).fill('auto').join(' '),
+            }}
+          >
+            <SortableContext
+              items={[...containers, PLACEHOLDER_ID]}
+              strategy={
+                vertical
+                  ? verticalListSortingStrategy
+                  : horizontalListSortingStrategy
+              }
             >
-              + Add column
-            </DroppableContainer>
-          )}
-        </SortableContext>
+              {containers.filter(containerId => containerId !== 'A').map((containerId, index) => {
+                  return <ColumnsConfig
+                    disabled={false}
+                    key={index}
+                    containerId={containerId}
+                    index={index}
+                    items={items}
+                    scrollable={scrollable}
+                    containerStyle={containerStyle}
+                    minimal={minimal}
+                    handleRemove={handleRemove}
+                    strategy={strategy}
+                    isSortingContainer={isSortingContainer}
+                    handle={handle}
+                    getItemStyles={getItemStyles}
+                    wrapperStyle={wrapperStyle}
+                    renderItem={renderItem}
+                    getIndex={getIndex}
+                  />;
+                }
+              )}
+              {minimal ? undefined : (
+                <DroppableContainer
+                  id={PLACEHOLDER_ID}
+                  disabled={isSortingContainer}
+                  items={empty}
+                  onClick={handleAddColumn}
+                  placeholder
+                >
+                  + Add column
+                </DroppableContainer>
+              )}
+            </SortableContext>
+          </div>
+        </div>
+
       </div>
+
       {createPortal(
         <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
           {activeId
@@ -673,7 +688,7 @@ interface SortableItemProps {
   wrapperStyle({index}: { index: number }): React.CSSProperties;
 }
 
-function SortableItem(
+export const SortableItem = (
   {
     disabled,
     id,
@@ -685,7 +700,7 @@ function SortableItem(
     getIndex,
     value,
     wrapperStyle,
-  }: SortableItemProps) {
+  }: SortableItemProps) => {
   const {
     setNodeRef,
     listeners,

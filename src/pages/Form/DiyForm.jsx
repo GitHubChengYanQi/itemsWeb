@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {InputNumber} from 'antd';
 import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 import {createRange} from '@/pages/Form/components/createRange';
 
@@ -32,13 +33,21 @@ const DiyForm = () => {
     {key: 'remarks', filedName: '备注', show: true,},
   ];
 
+  const [columns, setColumns] = useState(1);
 
-  return <MultipleContainers
-    items={{
-      'A': createRange(data.length, (index) => data[index]),
-    }}
-    columns={1}
-  />;
+  return <>
+    <div style={{textAlign: 'center', padding: 24}}>
+      <InputNumber min={1} style={{width: 100}} value={columns} onChange={(number) => setColumns(number)} addonAfter="列" />
+    </div>
+    <MultipleContainers
+      vertical
+      items={{
+        'A': createRange(data.length, (index) => data[index]),
+      }}
+      columns={columns}
+    />
+
+  </>;
 };
 
 export default DiyForm;

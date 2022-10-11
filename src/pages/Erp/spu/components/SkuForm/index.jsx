@@ -142,7 +142,7 @@ const SkuForm = ({
       render: (value, record) => <Typography.Paragraph
         style={{margin: 0}}
         editable={record.disabled ? false : {
-          tooltip: '点击自定义字段名',
+          tooltip: '点击自定义标题名',
           onChange: (filedName) => {
             dataSourceChange({filedName}, record.key);
           },

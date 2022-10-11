@@ -8,7 +8,7 @@ import styles from './Container.module.less';
 export interface Props {
   children: React.ReactNode;
   columns?: number;
-  label?: string;
+  label?: any;
   style?: React.CSSProperties;
   horizontal?: boolean;
   hover?: boolean;
@@ -44,7 +44,6 @@ export const Container = forwardRef<HTMLDivElement, Props>(
     ref
   ) => {
     const Component = onClick ? 'button' : 'div';
-
     return (
       <Component
         {...props}
