@@ -90,6 +90,10 @@ const UserList = () => {
       dataIndex: 'sexName'
     },
     {
+      title: '工号',
+      dataIndex: 'JobNo'
+    },
+    {
       title: '部门',
       dataIndex: 'deptName'
     },
