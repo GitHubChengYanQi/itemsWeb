@@ -7,7 +7,7 @@
 
 import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions, FormEffectHooks} from '@formily/antd';
-import {Alert, notification, Popover, Space, Spin} from 'antd';
+import {Alert, Input, notification, Popover, Space, Spin} from 'antd';
 import {QuestionCircleOutlined} from '@ant-design/icons';
 import Form from '@/components/Form';
 import {skuDetail, skuAdd, skuEdit, skuMarge} from '../skuUrl';
@@ -238,6 +238,12 @@ const SkuEdit = ({...props}, ref) => {
                 component: SysField.SpuId,
                 required: true,
                 skuId: value.skuId,
+              };
+              break;
+            case 'spuCoding':
+              formItemProps = {
+                component: Input,
+                rules:[{message:'不能输入汉字或特殊字符!',pattern:/^[a-zA-Z0-9_]{0,}$/}]
               };
               break;
             case 'batch':
