@@ -31,7 +31,7 @@ import {supplierDetail} from '@/pages/Purshase/Supply/SupplyUrl';
 
 const {TabPane} = Tabs;
 
-const CustomerDetail = ({id, supply = 0, status, ...props}) => {
+const CustomerDetail = ({id, supply = 0, status,}) => {
 
   const params = useParams();
   const addRef = useRef(null);
@@ -155,29 +155,6 @@ const CustomerDetail = ({id, supply = 0, status, ...props}) => {
             refresh={() => {
               refresh();
             }} />
-          {props.hidden && <>
-            <Button
-              style={params.state === 'false' ? {'display': 'none'} : null}
-              onClick={() => {
-                addRef.current.open(false);
-              }} icon={<EditOutlined />}>创建商机</Button>
-            <BusinessAdd
-              ref={addRef}
-              customerId={data.customerId}
-              userId={data.userId}
-              onClose={() => {
-                addRef.current.close();
-                refTrack.current.close();
-                refresh();
-              }}
-            />
-            <Button
-              type="primary"
-              style={params.state === 'false' ? {'display': 'none'} : null}
-              onClick={() => {
-                refTrack.current.open(false);
-              }} icon={<EditOutlined />}>添加跟进</Button>
-          </>}
 
           <Modal
             width={width === 1 ? 1400 : 800}
