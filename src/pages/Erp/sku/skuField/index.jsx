@@ -25,6 +25,7 @@ import store from '@/store';
 import InputNumber from '@/components/InputNumber';
 import SpuClassificationEdit from '@/pages/Erp/spu/components/spuClassification/spuClassificationEdit';
 import UnitEdit from '@/pages/Erp/unit/unitEdit';
+import {materialListSelect} from '@/pages/Erp/material/MaterialUrl';
 
 export const Type = (props) => {
 
@@ -182,6 +183,10 @@ export const SpuClass = (props) => {
 
 export const Note = (props) => {
   return (<Input.TextArea {...props} />);
+};
+
+export const Material = (props) => {
+  return (<Select api={materialListSelect} {...props} />);
 };
 
 export const SkuSize = ({value = '', onChange}) => {

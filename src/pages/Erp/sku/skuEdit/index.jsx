@@ -101,7 +101,6 @@ const SkuEdit = ({...props}, ref) => {
         fieldKey="skuId"
         formatDetail={(res) => {
           setDetails(res);
-          console.log(res);
           return {
             ...res,
             materialId: res.materialIdList || [],
@@ -129,6 +128,7 @@ const SkuEdit = ({...props}, ref) => {
             ...submitValue,
             type: 0,
             isHidden: true,
+            materialId: submitValue.materialId ? [submitValue.materialId] : [],
             skuId: value.copy ? null : value.skuId,
             oldSkuId: copy ? value.skuId : null,
             spu: {...submitValue.spu, coding: submitValue.spuCoding},
@@ -243,7 +243,7 @@ const SkuEdit = ({...props}, ref) => {
             case 'spuCoding':
               formItemProps = {
                 component: Input,
-                rules:[{message:'不能输入汉字或特殊字符!',pattern:/^[a-zA-Z0-9_]{0,}$/}]
+                rules: [{message: '不能输入汉字或特殊字符!', pattern: /^[a-zA-Z0-9_]{0,}$/}]
               };
               break;
             case 'batch':
@@ -284,7 +284,7 @@ const SkuEdit = ({...props}, ref) => {
             case 'materialId':
               formItemProps = {
                 placeholder: `请选择${item.filedName}`,
-                component: MaterialIds,
+                component: SysField.Material,
               };
               break;
             case 'remarks':
