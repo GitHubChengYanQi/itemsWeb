@@ -161,7 +161,7 @@ const UserList = () => {
         searchForm={searchForm}
         actions={actions()}
       />
-      <Drawer ref={dfRef} title='编辑客户' component={UserEdit} onSuccess={() => {
+      <Drawer ref={dfRef} title='用户' component={UserEdit} onSuccess={() => {
         ref.current.refresh();
         dfRef.current.close();
       }}/>
