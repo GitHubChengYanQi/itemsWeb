@@ -20,13 +20,15 @@ const ColumnsConfig = (
     wrapperStyle,
     renderItem,
     getIndex,
+    config = {},
+    configChange = () => {
+    }
   }) => {
 
-  const [title, setTitle] = useState(`标题 ${index + 1}`);
-  const [columns, setColumns] = useState(1);
+  const currentConfig = config[containerId] || {};
 
   return <DroppableContainer
-    noNandle={disabled}
+    noNandle
     key={containerId}
     id={containerId}
     label={disabled ? '待选字段' : <>
@@ -35,15 +37,21 @@ const ColumnsConfig = (
         editable={{
           tooltip: '点击自定义字段名',
           onChange: (filedName) => {
-            setTitle(filedName);
+            configChange({title: filedName}, containerId);
           },
         }}
       >
-        {title}
+        {currentConfig.title}
       </Typography.Paragraph>
-      <InputNumber min={1} style={{width: 100}} value={columns} onChange={(number) => setColumns(number)} addonAfter="列" />
+      <InputNumber
+        min={1}
+        style={{width: 100}}
+        value={currentConfig.columns}
+        onChange={(number) => configChange({columns: number}, containerId)}
+        addonAfter="列"
+      />
     </>}
-    columns={columns}
+    columns={currentConfig.columns}
     items={items[containerId].map(item => item.key)}
     scrollable={scrollable}
     style={containerStyle}

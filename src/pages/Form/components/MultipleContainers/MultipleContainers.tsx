@@ -40,6 +40,7 @@ import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
 
 import {createRange} from '../createRange';
+import {Button} from "antd";
 
 export default {
   title: 'Presets/Sortable/Multiple Containers',
@@ -136,7 +137,7 @@ interface Props {
   wrapperStyle?(args: { index: number }): React.CSSProperties;
 
   itemCount?: number;
-  items?: Items;
+  items: Items;
   handle?: boolean;
   renderItem?: any;
   strategy?: SortingStrategy;
@@ -171,18 +172,21 @@ export function MultipleContainers(
     vertical = false,
     scrollable,
   }: Props) {
-  const [items, setItems] = useState<Items>(
-    () =>
-      initialItems ?? {
-        A: createRange(itemCount, (index) => `A${index + 1}`),
-        B: createRange(itemCount, (index) => `B${index + 1}`),
-        C: createRange(itemCount, (index) => `C${index + 1}`),
-        D: createRange(itemCount, (index) => `D${index + 1}`),
-      }
-  );
+  const [items, setItems] = useState<Items>(initialItems);
+  console.log(items)
+
+  const [rows, setRows] = useState([0]);
+
+  const [columnsConfig, setColumnsConfig] = useState({});
+
+  const configChange = (newConfig, key) => {
+    setColumnsConfig({...columnsConfig, [key]: {...columnsConfig[key], ...newConfig}});
+  }
 
   const [containers, setContainers] = useState(Object.keys(items));
-  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const [activeId, setActiveId] = useState<any>(null);
+  const [activeTitle, setActiveTitle] = useState<any>('');
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
   const isSortingContainer = activeId ? containers.includes(activeId) : false;
@@ -310,8 +314,9 @@ export function MultipleContainers(
           strategy: MeasuringStrategy.Always,
         },
       }}
-      onDragStart={({active}) => {
-        setActiveId(active.id);
+      onDragStart={({active: {id, data: {current}}}) => {
+        setActiveId(id);
+        setActiveTitle(current?.value);
         setClonedItems(items);
       }}
       onDragOver={({active, over}) => {
@@ -404,30 +409,6 @@ export function MultipleContainers(
           return;
         }
 
-        if (overId === PLACEHOLDER_ID) {
-          const newContainerId = getNextContainerId();
-
-          unstable_batchedUpdates(() => {
-            setContainers((containers) => [...containers, newContainerId]);
-            const oldItem: any = [];
-            const newItem: any = [];
-            items[activeContainer].forEach((id) => {
-              if (id.key !== activeId) {
-                oldItem.push(id)
-              } else {
-                newItem.push(id)
-              }
-            })
-            const newItems = {
-              ...items,
-              [activeContainer]: oldItem,
-              [newContainerId]: newItem,
-            }
-            setItems(newItems);
-            setActiveId(null);
-          });
-          return;
-        }
 
         const overContainer = findContainer(overId);
 
@@ -454,7 +435,7 @@ export function MultipleContainers(
       modifiers={modifiers}
     >
       <div style={{display: 'flex', alignItems: 'flex-start'}}>
-        <div style={{width: '16vw', display: "inline-block"}}>
+        <div style={{minWidth: 350, display: "inline-block"}}>
           <ColumnsConfig
             disabled
             containerId='A'
@@ -473,58 +454,82 @@ export function MultipleContainers(
             getIndex={getIndex}
           />
         </div>
-        <div style={{flexGrow: 1,textAlign:"center"}}>
-          <div
-            style={{
-              display: 'inline-grid',
-              boxSizing: 'border-box',
-              padding: 20,
-              gridAutoFlow: vertical ? 'row' : 'column',
-              alignItems: 'flex-start',
-              gridTemplateColumns: new Array(columns).fill('auto').join(' '),
-            }}
-          >
-            <SortableContext
-              items={[...containers, PLACEHOLDER_ID]}
-              strategy={
-                vertical
-                  ? verticalListSortingStrategy
-                  : horizontalListSortingStrategy
-              }
-            >
-              {containers.filter(containerId => containerId !== 'A').map((containerId, index) => {
-                  return <ColumnsConfig
-                    disabled={false}
-                    key={index}
-                    containerId={containerId}
-                    index={index}
-                    items={items}
-                    scrollable={scrollable}
-                    containerStyle={containerStyle}
-                    minimal={minimal}
-                    handleRemove={handleRemove}
-                    strategy={strategy}
-                    isSortingContainer={isSortingContainer}
-                    handle={handle}
-                    getItemStyles={getItemStyles}
-                    wrapperStyle={wrapperStyle}
-                    renderItem={renderItem}
-                    getIndex={getIndex}
-                  />;
-                }
-              )}
-              {minimal ? undefined : (
-                <DroppableContainer
-                  id={PLACEHOLDER_ID}
-                  disabled={isSortingContainer}
-                  items={empty}
-                  onClick={handleAddColumn}
-                  placeholder
+        <div style={{flexGrow: 1, height: '90vh', overflow: 'auto'}}>
+          {
+            rows.map((item, index) => {
+              const array = containers.filter(containerId => {
+                return containerId !== 'A' && containerId.split('-')[1] === item + ''
+              })
+              return <div key={index}>
+                <div
+                  style={{
+                    display: 'inline-grid',
+                    boxSizing: 'border-box',
+                    padding: 20,
+                    gridAutoFlow: 'column',
+                    alignItems: 'flex-start',
+                  }}
                 >
-                  + Add column
-                </DroppableContainer>
-              )}
-            </SortableContext>
+                  <SortableContext
+                    items={[...array, PLACEHOLDER_ID]}
+                    strategy={
+                      vertical
+                        ? verticalListSortingStrategy
+                        : horizontalListSortingStrategy
+                    }
+                  >
+                    {array.map((containerId, index) => {
+                        return <ColumnsConfig
+                          config={columnsConfig}
+                          configChange={configChange}
+                          disabled={false}
+                          key={index}
+                          containerId={containerId}
+                          index={index}
+                          items={items}
+                          scrollable={scrollable}
+                          containerStyle={containerStyle}
+                          minimal={minimal}
+                          handleRemove={handleRemove}
+                          strategy={strategy}
+                          isSortingContainer={isSortingContainer}
+                          handle={handle}
+                          getItemStyles={getItemStyles}
+                          wrapperStyle={wrapperStyle}
+                          renderItem={renderItem}
+                          getIndex={getIndex}
+                        />;
+                      }
+                    )}
+                    <DroppableContainer
+                      id={PLACEHOLDER_ID}
+                      disabled={isSortingContainer}
+                      items={empty}
+                      onClick={() => {
+                        handleAddColumn(index)
+                      }}
+                      placeholder
+                    >
+                      + Add column
+                    </DroppableContainer>
+                  </SortableContext>
+                </div>
+              </div>
+            })
+          }
+          <div style={{padding: 20}}>
+            <DroppableContainer
+              id={PLACEHOLDER_ID}
+              disabled={isSortingContainer}
+              items={empty}
+              onClick={() => {
+                setRows([...rows, rows[rows.length - 1] + 1])
+              }}
+              placeholder
+            >
+              + Add row
+            </DroppableContainer>
+            <Button type='primary'>保存</Button>
           </div>
         </div>
 
@@ -535,21 +540,21 @@ export function MultipleContainers(
           {activeId
             ? containers.includes(activeId)
               ? renderContainerDragOverlay(activeId)
-              : renderSortableItemDragOverlay(activeId)
+              : renderSortableItemDragOverlay(activeId, activeTitle)
             : null}
         </DragOverlay>,
         document.body
       )}
       {trashable && activeId && !containers.includes(activeId) ? (
-        <Trash id={TRASH_ID} />
+        <Trash id={TRASH_ID}/>
       ) : null}
     </DndContext>
   );
 
-  function renderSortableItemDragOverlay(id: string) {
+  function renderSortableItemDragOverlay(id: string, value: string) {
     return (
       <Item
-        value={id}
+        value={value}
         handle={handle}
         style={getItemStyles({
           containerId: findContainer(id) as string,
@@ -602,20 +607,37 @@ export function MultipleContainers(
     );
   }
 
+
   function handleRemove(containerID: UniqueIdentifier) {
+    const newItems = {};
+    containers.forEach(item => {
+      if (item === containerID) {
+        newItems['A'] = [...items[item], ...items['A']]
+      } else {
+        newItems[item] = items[item]
+      }
+    })
     setContainers((containers) =>
       containers.filter((id) => id !== containerID)
     );
+    setItems(newItems)
   }
 
-  function handleAddColumn() {
+  function handleAddColumn(index) {
     const newContainerId = getNextContainerId();
 
+    const key = newContainerId + '-' + index
     unstable_batchedUpdates(() => {
-      setContainers((containers) => [...containers, newContainerId]);
+      setContainers((containers) => [...containers, key]);
+      setColumnsConfig({
+        ...columnsConfig, [key]: {
+          title: '标题',
+          columns: 1,
+        }
+      });
       setItems((items) => ({
         ...items,
-        [newContainerId]: [],
+        [key]: [],
       }));
     });
   }
@@ -712,7 +734,9 @@ export const SortableItem = (
     transition,
   } = useSortable({
     id,
+    data: {value}
   });
+
   const mounted = useMountStatus();
   const mountedWhileDragging = isDragging && !mounted;
 
