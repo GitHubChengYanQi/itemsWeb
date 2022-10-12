@@ -49,14 +49,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
 
   const [required, setRequired] = useState({});
 
-  const {loading, run: getRecord} = useRequest(orderDetailRecord, {
-    manual: true,
-    onSuccess: (res) => {
-      if (res) {
-        setSku({...sku, ...res});
-      }
-    }
-  });
+  const {loading, run: getRecord} = useRequest(orderDetailRecord, {manual: true});
 
   const requiredFiled = () => {
     if (!sku.purchaseNumber) {
@@ -113,10 +106,11 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
           <AddSpu
             supply={module === 'PO'}
             customerId={customerId}
-            onChange={(skuId, sku) => {
+            onChange={async (skuId, sku) => {
               setSkuId(skuId);
-              if (skuId && customerId) {
-                getRecord({
+              let record = {};
+              if (skuId && customerId && sku) {
+                record = await getRecord({
                   data: {
                     customerId,
                     skuId,
@@ -125,11 +119,12 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
               }
               if (sku) {
                 setSku({
+                  preordeNumber: 0,
+                  ...record,
                   skuId: sku.skuId,
                   coding: sku.standard,
-                  skuResult: sku,
-                  preordeNumber: 0,
                   unitId: sku.spuResult && sku.spuResult.unitId,
+                  skuResult: sku,
                 });
               }
             }}
@@ -145,9 +140,10 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
                 placeholder="请选择品牌/厂家"
                 width={200}
                 value={sku.brandId}
-                onChange={(brandId, option) => {
+                onChange={async (brandId, option) => {
+                  let record = {};
                   if (customerId) {
-                    getRecord({
+                    record = await getRecord({
                       data: {
                         customerId,
                         skuId,
@@ -155,8 +151,8 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
                       }
                     });
                   }
-                  setSku({...sku, brandId, brandResult: option && option.label});
-                }} />
+                  setSku({...sku, ...record, skuResult: sku.skuResult, brandId, brandResult: option && option.label});
+                }}/>
             </Descriptions.Item>
             <Descriptions.Item label="单位" span={3}>
               <Select
@@ -271,7 +267,7 @@ export const Currency = (props) => {
   });
 
   if (loading) {
-    return <Spin />;
+    return <Spin/>;
   }
   const options = data ? data.map((item) => {
     return {
@@ -325,7 +321,7 @@ export const PayPlan = (props) => {
   const style = {borderTop: 'dashed 1px #d9d9d9'};
 
   if (loading) {
-    return <Spin />;
+    return <Spin/>;
   }
 
   return (<AntSelect
@@ -395,7 +391,7 @@ export const TemplateId = (props) => {
 };
 
 export const Upload = (props) => {
-  return <FileUpload {...props} title="上传合同" />;
+  return <FileUpload {...props} title="上传合同"/>;
 };
 
 export const Freight = (props) => {
@@ -451,9 +447,9 @@ export const Note = (props) => {
 };
 
 export const AllField = ({
-  value: values = [], onChange = () => {
+                           value: values = [], onChange = () => {
   }, array
-}) => {
+                         }) => {
 
   useEffect(() => {
     if (array && Array.isArray(array)) {
@@ -538,13 +534,13 @@ export const AllField = ({
         return <div>
           <UpLoadImg onChange={(value, id) => {
             valuesChange(item.name, id);
-          }} />
+          }}/>
         </div>;
       case 'editor':
         return <div>
           <Editor onChange={(value) => {
             valuesChange(item.name, value);
-          }} />
+          }}/>
         </div>;
       default:
         return <></>;
