@@ -35,6 +35,8 @@ import {
 } from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
 import ColumnsConfig from '../ColumnsConfig'
+import TableConfig from '../TableConfig'
+
 
 import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
@@ -115,7 +117,7 @@ export const DroppableContainer = (
   );
 };
 
-type Items = Record<string, { key: any, filedName: any }[]>;
+type Items = Record<string, { data: { key: any, filedName: any }[] }>;
 
 interface Props {
   adjustScale?: boolean;
@@ -227,7 +229,7 @@ export function MultipleContainers(
         }
 
         if (overId in items) {
-          const containerItems = items[overId];
+          const containerItems = items[overId].data;
 
           // If a container is matched and it contains items (columns 'A', 'B', 'C')
           if (containerItems.length > 0) {
@@ -274,7 +276,7 @@ export function MultipleContainers(
       return id;
     }
 
-    return Object.keys(items).find((key) => items[key].map(item => item.key).includes(id));
+    return Object.keys(items).find((key) => items[key].data.map(item => item.key).includes(id));
   };
 
   const getIndex = (id: string) => {
@@ -283,7 +285,7 @@ export function MultipleContainers(
     if (!container) {
       return -1;
     }
-    const index = items[container].map(item => item.key).indexOf(id);
+    const index = items[container].data.map(item => item.key).indexOf(id);
 
     return index;
   };
@@ -334,8 +336,8 @@ export function MultipleContainers(
         }
         if (activeContainer !== overContainer) {
           setItems((items) => {
-            const activeItems = items[activeContainer];
-            const overItems = items[overContainer];
+            const activeItems = items[activeContainer].data;
+            const overItems = items[overContainer].data;
             const overIndex = overItems.map(item => item.key).indexOf(overId);
             const activeIndex = activeItems.map(item => item.key).indexOf(active.id);
             let newIndex: number;
@@ -359,17 +361,23 @@ export function MultipleContainers(
 
             return {
               ...items,
-              [activeContainer]: items[activeContainer].filter(
-                (item) => item.key !== active.id
-              ),
-              [overContainer]: [
-                ...items[overContainer].slice(0, newIndex),
-                items[activeContainer][activeIndex],
-                ...items[overContainer].slice(
-                  newIndex,
-                  items[overContainer].length
-                ),
-              ],
+              [activeContainer]: {
+                ...items[activeContainer],
+                data: items[activeContainer].data.filter(
+                  (item) => item.key !== active.id
+                )
+              },
+              [overContainer]: {
+                ...items[overContainer],
+                data: [
+                  ...items[overContainer].data.slice(0, newIndex),
+                  items[activeContainer].data[activeIndex],
+                  ...items[overContainer].data.slice(
+                    newIndex,
+                    items[overContainer].data.length
+                  ),
+                ]
+              },
             };
           });
         }
@@ -392,18 +400,26 @@ export function MultipleContainers(
         }
 
         const overId = over?.id;
-
         if (!overId) {
           setActiveId(null);
+          if (active.id === 'card') {
+            setItems((items) => ({
+              ...items,
+              'A': {data: [{key: 'card', filedName: 'Card'}, ...items['A'].data]}
+            }));
+          }
           return;
         }
 
         if (overId === TRASH_ID) {
           setItems((items) => ({
             ...items,
-            [activeContainer]: items[activeContainer].filter(
-              (id) => id.key !== activeId
-            ),
+            [activeContainer]: {
+              ...items[activeContainer],
+              data: items[activeContainer].data.filter(
+                (id) => id.key !== activeId
+              )
+            },
           }));
           setActiveId(null);
           return;
@@ -413,23 +429,26 @@ export function MultipleContainers(
         const overContainer = findContainer(overId);
 
         if (overContainer) {
-          const activeIndex = items[activeContainer].map(item => item.key).indexOf(active.id);
-          const overIndex = items[overContainer].map(item => item.key).indexOf(overId);
+          const activeIndex = items[activeContainer].data.map(item => item.key).indexOf(active.id);
+          const overIndex = items[overContainer].data.map(item => item.key).indexOf(overId);
 
           if (activeIndex !== overIndex) {
             setItems((items) => ({
               ...items,
-              [overContainer]: arrayMove(
-                items[overContainer],
-                activeIndex,
-                overIndex
-              ),
+              [overContainer]: {
+                ...items[overContainer],
+                data: arrayMove(
+                  items[overContainer].data,
+                  activeIndex,
+                  overIndex
+                )
+              },
             }));
           }
         }
-
         setActiveId(null);
-      }}
+      }
+      }
       cancelDrop={cancelDrop}
       onDragCancel={onDragCancel}
       modifiers={modifiers}
@@ -454,85 +473,32 @@ export function MultipleContainers(
             getIndex={getIndex}
           />
         </div>
-        <div style={{flexGrow: 1, height: '90vh', overflow: 'auto'}}>
-          {
-            rows.map((item, index) => {
-              const array = containers.filter(containerId => {
-                return containerId !== 'A' && containerId.split('-')[1] === item + ''
-              })
-              return <div key={index}>
-                <div
-                  style={{
-                    display: 'inline-grid',
-                    boxSizing: 'border-box',
-                    padding: 20,
-                    gridAutoFlow: 'column',
-                    alignItems: 'flex-start',
-                  }}
-                >
-                  <SortableContext
-                    items={[...array, PLACEHOLDER_ID]}
-                    strategy={
-                      vertical
-                        ? verticalListSortingStrategy
-                        : horizontalListSortingStrategy
-                    }
-                  >
-                    {array.map((containerId, index) => {
-                        return <ColumnsConfig
-                          config={columnsConfig}
-                          configChange={configChange}
-                          disabled={false}
-                          key={index}
-                          containerId={containerId}
-                          index={index}
-                          items={items}
-                          scrollable={scrollable}
-                          containerStyle={containerStyle}
-                          minimal={minimal}
-                          handleRemove={handleRemove}
-                          strategy={strategy}
-                          isSortingContainer={isSortingContainer}
-                          handle={handle}
-                          getItemStyles={getItemStyles}
-                          wrapperStyle={wrapperStyle}
-                          renderItem={renderItem}
-                          getIndex={getIndex}
-                        />;
-                      }
-                    )}
-                    <DroppableContainer
-                      id={PLACEHOLDER_ID}
-                      disabled={isSortingContainer}
-                      items={empty}
-                      onClick={() => {
-                        handleAddColumn(index)
-                      }}
-                      placeholder
-                    >
-                      + Add column
-                    </DroppableContainer>
-                  </SortableContext>
-                </div>
-              </div>
-            })
-          }
-          <div style={{padding: 20}}>
-            <DroppableContainer
-              id={PLACEHOLDER_ID}
-              disabled={isSortingContainer}
-              items={empty}
-              onClick={() => {
-                setRows([...rows, rows[rows.length - 1] + 1])
-              }}
-              placeholder
-            >
-              + Add row
-            </DroppableContainer>
-            <Button type='primary'>保存</Button>
-          </div>
+        <div style={{flexGrow: 1, height: '90vh', overflow: 'auto', marginLeft: 16}}>
+          <TableConfig
+            columnsConfig={columnsConfig}
+            rows={rows}
+            containers={containers}
+            vertical={vertical}
+            PLACEHOLDER_ID={PLACEHOLDER_ID}
+            configChange={configChange}
+            items={items}
+            scrollable={scrollable}
+            containerStyle={containerStyle}
+            minimal={minimal}
+            handleRemove={handleRemove}
+            strategy={strategy}
+            isSortingContainer={isSortingContainer}
+            handle={handle}
+            getItemStyles={getItemStyles}
+            wrapperStyle={wrapperStyle}
+            renderItem={renderItem}
+            getIndex={getIndex}
+            empty={empty}
+            handleAddColumn={handleAddColumn}
+            setRows={setRows}
+          />
+          <Button type='primary'>保存</Button>
         </div>
-
       </div>
 
       {createPortal(
@@ -584,7 +550,7 @@ export function MultipleContainers(
         shadow
         unstyled={false}
       >
-        {items[containerId].map((item, index) => (
+        {items[containerId].data.map((item, index) => (
           <Item
             key={item.key}
             value={item.filedName}
@@ -612,7 +578,7 @@ export function MultipleContainers(
     const newItems = {};
     containers.forEach(item => {
       if (item === containerID) {
-        newItems['A'] = [...items[item], ...items['A']]
+        newItems['A'] = {...items['A'], data: [...items[item].data, ...items['A'].data]}
       } else {
         newItems[item] = items[item]
       }
@@ -637,7 +603,7 @@ export function MultipleContainers(
       });
       setItems((items) => ({
         ...items,
-        [key]: [],
+        [key]: {data: []},
       }));
     });
   }
@@ -650,7 +616,8 @@ export function MultipleContainers(
   }
 }
 
-function getColor(id: string) {
+function getColor(id: string
+) {
   switch (id[0]) {
     case 'A':
       return '#7193f1';

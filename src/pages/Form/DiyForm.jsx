@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {InputNumber} from 'antd';
+import React from 'react';
 import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 import {createRange} from '@/pages/Form/components/createRange';
 
 const DiyForm = () => {
 
   const data = [
+    {key: 'card', filedName: 'Card'},
     {key: 'spuClass', filedName: '物料分类', describe: '物料分类', show: true, defaultShow: true, disabled: true},
     {key: 'standard', filedName: '物料编码', describe: '物料唯一标识符', show: true, defaultShow: true},
     {key: 'spu', filedName: '产品名称', show: true, defaultShow: true},
@@ -37,7 +37,9 @@ const DiyForm = () => {
     <MultipleContainers
       vertical
       items={{
-        'A': createRange(data.length, (index) => data[index]),
+        'A': {
+          data,
+        },
       }}
     />
 

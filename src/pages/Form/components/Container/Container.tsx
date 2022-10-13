@@ -45,7 +45,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
   ) => {
     const Component = onClick ? 'button' : 'div';
     return (
-      <Component
+      <div
         {...props}
         ref={ref}
         style={
@@ -76,7 +76,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
           </div>
         ) : null}
         {placeholder ? children : <ul>{children}</ul>}
-      </Component>
+      </div>
     );
   }
 );

@@ -1,13 +1,21 @@
 import React, {useState} from 'react';
-import {InputNumber, Typography} from 'antd';
+import {InputNumber, Radio, Typography} from 'antd';
 import {SortableContext} from '@dnd-kit/sortable';
 import {DroppableContainer, SortableItem} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
+import TableConfig from "@/pages/Form/components/TableConfig";
+import {isArray, isObject} from "@/util/Tools";
 
 const ColumnsConfig = (
   {
     disabled,
     containerId,
-    index,
+
+    containers,
+    vertical,
+    PLACEHOLDER_ID,
+    empty,
+    handleAddColumn,
+
     items,
     scrollable,
     containerStyle,
@@ -27,11 +35,15 @@ const ColumnsConfig = (
 
   const currentConfig = config[containerId] || {};
 
+  const [rows, setRows] = useState([0]);
+
+  const card = !disabled && isObject(isObject(items[containerId][0]).data).key === 'card';
+
   return <DroppableContainer
     noNandle
     key={containerId}
     id={containerId}
-    label={disabled ? '待选字段' : <>
+    label={disabled ? '待选字段' : (card && <>
       <Typography.Paragraph
         style={{margin: 0}}
         editable={{
@@ -43,23 +55,16 @@ const ColumnsConfig = (
       >
         {currentConfig.title}
       </Typography.Paragraph>
-      <InputNumber
-        min={1}
-        style={{width: 100}}
-        value={currentConfig.columns}
-        onChange={(number) => configChange({columns: number}, containerId)}
-        addonAfter="列"
-      />
-    </>}
+    </>)}
     columns={currentConfig.columns}
-    items={items[containerId].map(item => item.key)}
+    items={items[containerId].data.map(item => item.key)}
     scrollable={scrollable}
     style={containerStyle}
     unstyled={minimal}
     onRemove={disabled ? undefined : () => handleRemove(containerId)}
   >
-    <SortableContext items={items[containerId].map(item => item.key)} strategy={strategy}>
-      {items[containerId].map((item, index) => {
+    {!card ? <SortableContext items={items[containerId].data.map(item => item.key)} strategy={strategy}>
+      {items[containerId].data.map((item, index) => {
         return (
           <SortableItem
             disabled={isSortingContainer}
@@ -76,7 +81,32 @@ const ColumnsConfig = (
           />
         );
       })}
-    </SortableContext>
+    </SortableContext> : <TableConfig
+      noCard
+      columnsConfig={config}
+      rows={rows}
+      containers={containers}
+      vertical={vertical}
+      PLACEHOLDER_ID={PLACEHOLDER_ID}
+      configChange={configChange}
+      items={items}
+      scrollable={scrollable}
+      containerStyle={containerStyle}
+      minimal={minimal}
+      handleRemove={handleRemove}
+      strategy={strategy}
+      isSortingContainer={isSortingContainer}
+      handle={handle}
+      getItemStyles={getItemStyles}
+      wrapperStyle={wrapperStyle}
+      renderItem={renderItem}
+      getIndex={getIndex}
+      empty={empty}
+      handleAddColumn={(index) => {
+        handleAddColumn(`${index}-${index}`);
+      }}
+      setRows={setRows}
+    />}
   </DroppableContainer>;
 };
 
