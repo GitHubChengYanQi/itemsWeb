@@ -36,11 +36,7 @@ const DiyForm = () => {
   return <>
     <MultipleContainers
       vertical
-      items={{
-        'A': {
-          data,
-        },
-      }}
+      items={[{data}]}
     />
 
   </>;

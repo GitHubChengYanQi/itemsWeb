@@ -7,10 +7,11 @@ import {isArray, isObject} from "@/util/Tools";
 
 const ColumnsConfig = (
   {
+    data,
+
     disabled,
     containerId,
 
-    containers,
     vertical,
     PLACEHOLDER_ID,
     empty,
@@ -30,19 +31,20 @@ const ColumnsConfig = (
     getIndex,
     config = {},
     configChange = () => {
-    }
+    },
+    id
   }) => {
 
   const currentConfig = config[containerId] || {};
 
   const [rows, setRows] = useState([0]);
 
-  const card = !disabled && isObject(isObject(items[containerId][0]).data).key === 'card';
+  const card = false;
 
   return <DroppableContainer
     noNandle
-    key={containerId}
-    id={containerId}
+    key={id}
+    id={id}
     label={disabled ? '待选字段' : (card && <>
       <Typography.Paragraph
         style={{margin: 0}}
@@ -85,7 +87,6 @@ const ColumnsConfig = (
       noCard
       columnsConfig={config}
       rows={rows}
-      containers={containers}
       vertical={vertical}
       PLACEHOLDER_ID={PLACEHOLDER_ID}
       configChange={configChange}
