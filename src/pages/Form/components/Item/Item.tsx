@@ -6,6 +6,7 @@ import type {Transform} from '@dnd-kit/utilities';
 import {Handle, Remove} from './components';
 
 import styles from './Item.module.less';
+import {Checkbox, Typography} from "antd";
 
 export interface Props {
   dragOverlay?: boolean;
@@ -23,7 +24,9 @@ export interface Props {
   transition?: string | null;
   wrapperStyle?: React.CSSProperties;
   value: React.ReactNode;
+
   onRemove?(): void;
+
   renderItem?(args: {
     dragOverlay: boolean;
     dragging: boolean;
@@ -123,12 +126,20 @@ export const Item = React.memo(
           {...props}
           tabIndex={!handle ? 0 : undefined}
         >
-          {value}
+          <Typography.Paragraph
+            style={{margin: 0}}
+            editable={{
+              tooltip: '点击自定义字段名',
+              onChange: (filedName) => {
+
+              },
+            }}
+          >
+            {value}
+          </Typography.Paragraph>
           <span className={styles.Actions}>
-              {onRemove ? (
-                <Remove className={styles.Remove} onClick={onRemove} />
-              ) : null}
-            {handle ? <Handle {...listeners} /> : null}
+             <Checkbox />
+            <Handle {...listeners} />
             </span>
         </div>
       </li>

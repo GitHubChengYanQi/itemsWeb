@@ -33,11 +33,19 @@ const TableConfig = (
 ) => {
 
   const table = [];
+  const cardTable = [];
   items.forEach((item, index) => {
     if (index === 0) {
       return;
     }
-    if (table[item.line]) {
+    if (item.cardTable) {
+      if (cardTable[item.cardLine]) {
+        const columns = [...cardTable[item.cardLine], item];
+        cardTable[item.cardLine] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
+      } else {
+        cardTable[item.cardLine] = [item];
+      }
+    } else if (table[item.line]) {
       const columns = [...table[item.line], item];
       table[item.line] = columns.sort((a, b) => a.column - b.column);
     } else {
@@ -46,8 +54,7 @@ const TableConfig = (
   });
 
   return <>
-    {table.map((columns, rowIndex) => {
-
+    {(card ? cardTable : table).map((columns, rowIndex) => {
       return <div key={rowIndex}>
         <div
           style={{
@@ -57,7 +64,7 @@ const TableConfig = (
             gridAutoFlow: 'column',
             alignItems: 'flex-start',
             border: 'dashed 1px rgba(0,0,0,0.05)',
-            width:`${width}vw`,
+            width: card ? '100%' : `${width}vw`,
             // overflow: 'hidden'
           }}
         >
@@ -71,18 +78,21 @@ const TableConfig = (
           >
             {columns.map((item, index) => {
                 return <ColumnsConfig
-                  id={`${item.line}-${item.column}`}
-                  card={card}
-                  table={table.filter(item => item)}
+                  id={card ? `${item.line}-${item.column}-${item.cardLine}-${item.cardColumn}` : `${item.line}-${item.column}`}
+                  card={item.card}
+                  cardTable={card}
+                  table={(card ? cardTable : table).filter(item => item)}
                   config={columnsConfig}
                   configChange={configChange}
                   disabled={false}
                   key={index}
-                  line={item.line}
-                  column={item.column}
+                  item={item}
+                  line={card ? item.cardLine : item.line}
+                  column={card ? item.cardColumn : item.column}
                   containerId={index}
                   index={index}
-                  items={columns}
+                  items={items}
+                  columns={columns}
                   scrollable={scrollable}
                   containerStyle={containerStyle}
                   minimal={minimal}
@@ -101,7 +111,7 @@ const TableConfig = (
                   handleAddRow={handleAddRow}
                   handleRemoveRow={handleRemoveRow}
                   handleRemoveColumn={handleRemoveColumn}
-                />
+                />;
               }
             )}
           </SortableContext>
