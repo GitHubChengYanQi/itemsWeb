@@ -145,6 +145,7 @@ interface Props {
   wrapperStyle?(args: { index: number }): React.CSSProperties;
 
   itemCount?: number;
+  width?: number;
   items: Items;
   handle?: boolean;
   renderItem?: any;
@@ -162,6 +163,7 @@ const empty: UniqueIdentifier[] = [];
 
 export function MultipleContainers(
   {
+    width,
     adjustScale = false,
     itemCount = 3,
     cancelDrop,
@@ -276,13 +278,14 @@ export function MultipleContainers(
     })
   );
   const findContainer = (id: string) => {
-    if (id in items) {
-      return id;
-    }
+    let idIndex;
     let currentIndex;
     items.forEach((item, index) => {
       if (typeof currentIndex === "number") {
         return;
+      }
+      if (item.line === parseInt(id.split('-')[0]) && item.column === parseInt(id.split('-')[1])) {
+        idIndex = index
       }
       item.data.forEach((item) => {
         if (typeof currentIndex === "number") {
@@ -294,6 +297,9 @@ export function MultipleContainers(
         }
       })
     })
+    if (typeof currentIndex !== "number") {
+      return idIndex;
+    }
     return currentIndex
   };
 
@@ -342,8 +348,8 @@ export function MultipleContainers(
       onDragOver={({active, over}) => {
         const overId = over?.id;
 
-        const overContainer = findContainer(overId);
-        const activeContainer = findContainer(active.id);
+        const overContainer = findContainer(overId || '');
+        const activeContainer = findContainer(active.id || '');
 
         if (typeof overContainer !== 'number' || typeof activeContainer !== 'number') {
           return;
@@ -356,46 +362,43 @@ export function MultipleContainers(
           const activeIndex = activeItems.map(item => item.key).indexOf(active.id);
           let newIndex: number;
 
-            if (!overIndex) {
-              newIndex = overItems.length + 1;
-            } else {
-              const isBelowOverItem =
-                over &&
-                active.rect.current.translated &&
-                active.rect.current.translated.top >
-                over.rect.top + over.rect.height;
-              const modifier = isBelowOverItem ? 1 : 0;
+          const isBelowOverItem =
+            over &&
+            active.rect.current.translated &&
+            active.rect.current.translated.top >
+            over.rect.top + over.rect.height;
+          const modifier = isBelowOverItem ? 1 : 0;
 
-              newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
-            }
+          newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
 
           recentlyMovedToNewContainer.current = true;
 
-          const newItems: Items = items.map((item, index) => {
-            if (index === activeContainer) {
-              return {
-                ...item,
-                data: item.data.filter(
-                  (item) => item.key !== active.id
-                )
+          setItems((items)=>{
+            return items.map((item, index) => {
+              if (index === activeContainer) {
+                return {
+                  ...item,
+                  data: item.data.filter(
+                    (item) => item.key !== active.id
+                  )
+                }
+              } else if (index === overContainer) {
+                return {
+                  ...item,
+                  data: [
+                    ...item.data.slice(0, newIndex),
+                    items[activeContainer].data[activeIndex],
+                    ...item.data.slice(
+                      newIndex,
+                      item.data.length
+                    ),
+                  ]
+                }
+              } else {
+                return item
               }
-            } else if (index === overContainer) {
-              return {
-                ...item,
-                data: [
-                  ...item.data.slice(0, newIndex),
-                  items[activeContainer].data[activeIndex],
-                  ...item.data.slice(
-                    newIndex,
-                    item.data.length
-                  ),
-                ]
-              }
-            } else {
-              return item
-            }
-          })
-          setItems(newItems);
+            })
+          });
         }
       }}
       onDragEnd={({active, over}) => {
@@ -408,7 +411,7 @@ export function MultipleContainers(
         // }
 
         const overId = over?.id;
-        console.log(overId)
+
         if (!overId) {
           setActiveId(null);
           if (active.id === 'card') {
@@ -422,7 +425,6 @@ export function MultipleContainers(
           }
           return;
         }
-
         if (overId === TRASH_ID) {
           const newItems = items.map((item, index) => {
             if (index === activeContainer) {
@@ -442,8 +444,7 @@ export function MultipleContainers(
 
 
         const overContainer = findContainer(overId);
-
-        if (overContainer) {
+        if (typeof overContainer === 'number') {
           const activeIndex = items[activeContainer].data.map(item => item.key).indexOf(active.id);
           const overIndex = items[overContainer].data.map(item => item.key).indexOf(overId);
 
@@ -483,7 +484,8 @@ export function MultipleContainers(
             scrollable={scrollable}
             containerStyle={containerStyle}
             minimal={minimal}
-            handleRemove={handleRemove}
+            handleRemove={() => {
+            }}
             strategy={strategy}
             isSortingContainer={isSortingContainer}
             handle={handle}
@@ -493,10 +495,12 @@ export function MultipleContainers(
             getIndex={getIndex}
           />
         </div>
-        <div style={{flexGrow: 1, height: '90vh', overflow: 'auto', marginLeft: 16}}>
+        <div style={{flexGrow: 1, height: '90vh', overflow: 'auto', padding: '20px 40px'}}>
           <TableConfig
+            handleRemove={()=>{}}
+            card={false}
+            width={width}
             columnsConfig={columnsConfig}
-            rows={rows}
             vertical={vertical}
             PLACEHOLDER_ID={PLACEHOLDER_ID}
             configChange={configChange}
@@ -504,7 +508,6 @@ export function MultipleContainers(
             scrollable={scrollable}
             containerStyle={containerStyle}
             minimal={minimal}
-            handleRemove={handleRemove}
             strategy={strategy}
             isSortingContainer={isSortingContainer}
             handle={handle}
@@ -514,17 +517,13 @@ export function MultipleContainers(
             getIndex={getIndex}
             empty={empty}
             handleAddColumn={handleAddColumn}
-            setRows={(line) => {
-              const newItems = [...items.map(item => {
-                if (item.line >= line) {
-                  return {...item, column: item.column + 1}
-                }
-                return item;
-              }), {line, column: 0, data: []}];
-              setItems(newItems)
-            }}
+            handleAddRow={handleAddRow}
+            handleRemoveRow={handleRemoveRow}
+            handleRemoveColumn={handleRemoveColumn}
           />
-          <Button type='primary'>保存</Button>
+          <div style={{paddingTop: 24}}>
+            <Button type='primary'>保存</Button>
+          </div>
         </div>
       </div>
 
@@ -563,19 +562,44 @@ export function MultipleContainers(
   }
 
 
-  function handleRemove(containerID: UniqueIdentifier) {
-    // const newItems = {};
-    // containers.forEach(item => {
-    //   if (item === containerID) {
-    //     newItems['A'] = {...items['A'], data: [...items[item].data, ...items['A'].data]}
-    //   } else {
-    //     newItems[item] = items[item]
-    //   }
-    // })
-    // setContainers((containers) =>
-    //   containers.filter((id) => id !== containerID)
-    // );
-    // setItems(newItems)
+  function handleRemoveRow(line) {
+    const files = [];
+    const newItems = items.filter(item => {
+      if (item.line === line) {
+        item.data.forEach(item => {
+          files.push(item)
+        })
+        return false;
+      }
+      return true;
+    });
+    const array = newItems.map((item, index) => {
+      if (index === 0) {
+        return {...item, data: [...files, ...item.data]}
+      }
+      return item;
+    })
+    setItems(array)
+  }
+
+  function handleRemoveColumn(line, column) {
+    const files = [];
+    const newItems = items.filter(item => {
+      if (item.line === line && item.column === column) {
+        item.data.forEach(item => {
+          files.push(item)
+        })
+        return false;
+      }
+      return true;
+    });
+    const array = newItems.map((item, index) => {
+      if (index === 0) {
+        return {...item, data: [...files, ...item.data]}
+      }
+      return item;
+    })
+    setItems(array)
   }
 
   function handleAddColumn(line, column) {
@@ -585,6 +609,16 @@ export function MultipleContainers(
       }
       return item;
     }), {line, column, data: []}];
+    setItems(newItems)
+  }
+
+  function handleAddRow(line) {
+    const newItems = [...items.map(item => {
+      if (item.line >= line) {
+        return {...item, line: item.line + 1}
+      }
+      return item;
+    }), {line, column: 0, data: []}];
     setItems(newItems)
   }
 

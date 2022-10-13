@@ -2,12 +2,12 @@ import React from "react";
 import {horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
 import {DroppableContainer} from "@/pages/Form/components/MultipleContainers/MultipleContainers";
 import ColumnsConfig from "@/pages/Form/components/ColumnsConfig";
-import {Button} from "antd";
+import {Button, Tooltip} from "antd";
 
 const TableConfig = (
   {
-    noCard,
-    rows = [],
+    card,
+    width,
     vertical,
     PLACEHOLDER_ID,
     columnsConfig,
@@ -26,7 +26,9 @@ const TableConfig = (
     getIndex,
     empty,
     handleAddColumn,
-    setRows,
+    handleAddRow,
+    handleRemoveRow,
+    handleRemoveColumn,
   }
 ) => {
 
@@ -43,9 +45,10 @@ const TableConfig = (
     }
   });
 
-  return < >
-    {table.map((columns, index) => {
-      return <div key={index}>
+  return <>
+    {table.map((columns, rowIndex) => {
+
+      return <div key={rowIndex}>
         <div
           style={{
             display: 'inline-grid',
@@ -53,7 +56,9 @@ const TableConfig = (
             // margin: 20,
             gridAutoFlow: 'column',
             alignItems: 'flex-start',
-            border: 'dashed 1px rgba(0,0,0,0.05)'
+            border: 'dashed 1px rgba(0,0,0,0.05)',
+            width:`${width}vw`,
+            // overflow: 'hidden'
           }}
         >
           <SortableContext
@@ -67,14 +72,17 @@ const TableConfig = (
             {columns.map((item, index) => {
                 return <ColumnsConfig
                   id={`${item.line}-${item.column}`}
-                  noCard={noCard}
+                  card={card}
+                  table={table.filter(item => item)}
                   config={columnsConfig}
                   configChange={configChange}
                   disabled={false}
                   key={index}
-                  containerId={index + 1}
+                  line={item.line}
+                  column={item.column}
+                  containerId={index}
                   index={index}
-                  items={items}
+                  items={columns}
                   scrollable={scrollable}
                   containerStyle={containerStyle}
                   minimal={minimal}
@@ -90,40 +98,17 @@ const TableConfig = (
                   PLACEHOLDER_ID={PLACEHOLDER_ID}
                   empty={empty}
                   handleAddColumn={handleAddColumn}
-                />;
+                  handleAddRow={handleAddRow}
+                  handleRemoveRow={handleRemoveRow}
+                  handleRemoveColumn={handleRemoveColumn}
+                />
               }
             )}
-            <DroppableContainer
-              id={PLACEHOLDER_ID}
-              disabled={isSortingContainer}
-              items={empty}
-              onClick={() => {
-                handleAddColumn(index, columns.length);
-              }}
-              placeholder
-            >
-              + 添加列
-            </DroppableContainer>
           </SortableContext>
         </div>
       </div>;
     })}
-
-    <div style={{padding: 20}}>
-      <DroppableContainer
-        style={{alignItems: 'flex-start'}}
-        id={PLACEHOLDER_ID}
-        disabled={isSortingContainer}
-        items={empty}
-        onClick={() => {
-          setRows(table.filter(item => item).length + 1);
-        }}
-        placeholder
-      >
-        <Button>+ 添加行</Button>
-      </DroppableContainer>
-    </div>
-  </>
+  </>;
 };
 
 export default TableConfig;
