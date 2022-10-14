@@ -11,6 +11,7 @@ export interface Props {
   columns?: number;
   label?: any;
   style?: React.CSSProperties;
+  ulStyle?: React.CSSProperties;
   horizontal?: boolean;
   hover?: boolean;
   handleProps?: React.HTMLAttributes<any>;
@@ -78,13 +79,13 @@ export const Container = forwardRef<HTMLDivElement, Props>(
       leftBottomHidden,
       topLeftHidden,
       topRightHidden,
+      ulStyle,
       ...props
     }: Props,
     ref
   ) => {
 
     const [over, setOver] = useState(true);
-
     return (
       <div
         {...props}
@@ -158,7 +159,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
             </div>
           </div>
         ) : null}
-        {placeholder ? children : <ul>{children}</ul>}
+        {placeholder ? children : <ul style={ulStyle}>{children}</ul>}
       </div>
     );
   }

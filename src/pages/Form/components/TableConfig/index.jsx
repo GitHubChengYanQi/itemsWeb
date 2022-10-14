@@ -1,11 +1,11 @@
 import React from "react";
 import {horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
-import {DroppableContainer} from "@/pages/Form/components/MultipleContainers/MultipleContainers";
 import ColumnsConfig from "@/pages/Form/components/ColumnsConfig";
-import {Button, Tooltip} from "antd";
 
 const TableConfig = (
   {
+    gutter,
+    widthUnit,
     card,
     width,
     vertical,
@@ -29,6 +29,7 @@ const TableConfig = (
     handleAddRow,
     handleRemoveRow,
     handleRemoveColumn,
+    itemChange,
   }
 ) => {
 
@@ -55,16 +56,18 @@ const TableConfig = (
 
   return <>
     {(card ? cardTable : table).map((columns, rowIndex) => {
-      return <div key={rowIndex}>
+      return <div key={rowIndex} style={{padding: card && 24}}>
         <div
           style={{
             display: 'inline-grid',
             boxSizing: 'border-box',
             // margin: 20,
+            padding: 0,
             gridAutoFlow: 'column',
             alignItems: 'flex-start',
             border: 'dashed 1px rgba(0,0,0,0.05)',
-            width: card ? '100%' : `${width}vw`,
+            borderBottom: rowIndex === (card ? cardTable : table).length - 1 ? 'dashed 1px rgba(0,0,0,0.05)' : 'none',
+            width: card ? '100%' : `${width + widthUnit}`,
             // overflow: 'hidden'
           }}
         >
@@ -78,6 +81,11 @@ const TableConfig = (
           >
             {columns.map((item, index) => {
                 return <ColumnsConfig
+                  gutter={gutter}
+                  ulStyle={{padding: gutter / 2}}
+                  itemChange={(newData, filed) => {
+                    itemChange(newData, filed, item);
+                  }}
                   id={card ? `${item.line}-${item.column}-${item.cardLine}-${item.cardColumn}` : `${item.line}-${item.column}`}
                   card={item.card}
                   cardTable={card}
@@ -94,7 +102,7 @@ const TableConfig = (
                   items={items}
                   columns={columns}
                   scrollable={scrollable}
-                  containerStyle={containerStyle}
+                  containerStyle={{borderRight: index !== columns.length - 1 ? 'dashed 1px rgba(0,0,0,0.05)' : 'none'}}
                   minimal={minimal}
                   handleRemove={handleRemove}
                   strategy={strategy}

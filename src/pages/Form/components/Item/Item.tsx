@@ -23,9 +23,12 @@ export interface Props {
   style?: React.CSSProperties;
   transition?: string | null;
   wrapperStyle?: React.CSSProperties;
-  value: React.ReactNode;
+  value: string;
+  item: any;
 
   onRemove?(): void;
+
+  itemChange: Function;
 
   renderItem?(args: {
     dragOverlay: boolean;
@@ -46,6 +49,8 @@ export const Item = React.memo(
   React.forwardRef<HTMLLIElement, Props>(
     (
       {
+        itemChange = () => {
+        },
         color,
         dragOverlay,
         dragging,
@@ -62,6 +67,7 @@ export const Item = React.memo(
         transition,
         transform,
         value,
+        item,
         wrapperStyle,
         ...props
       },
@@ -126,19 +132,21 @@ export const Item = React.memo(
           {...props}
           tabIndex={!handle ? 0 : undefined}
         >
-          <Typography.Paragraph
+          {handle ? <Typography.Paragraph
             style={{margin: 0}}
             editable={{
               tooltip: '点击自定义字段名',
               onChange: (filedName) => {
-
+                itemChange({filedName}, item.key);
               },
             }}
           >
             {value}
-          </Typography.Paragraph>
-          <span className={styles.Actions}>
-             <Checkbox />
+          </Typography.Paragraph> : value}
+          <span hidden={!handle} className={styles.Actions}>
+             <Checkbox
+               checked={item.required}
+               onChange={({target: {checked}}) => itemChange({required: checked}, item.key)}>必填</Checkbox>
             <Handle {...listeners} />
             </span>
         </div>

@@ -10,11 +10,11 @@ const ColumnsConfig = (
     table,
     card,
     cardTable,
+    ulStyle,
 
     disabled,
     containerId,
 
-    vertical,
     PLACEHOLDER_ID,
     empty,
     handleAddColumn,
@@ -38,6 +38,9 @@ const ColumnsConfig = (
     config = {},
     configChange = () => {
     },
+    gutter,
+    itemChange = () => {
+    },
     handleRemoveRow,
     handleRemoveColumn,
     id
@@ -46,6 +49,7 @@ const ColumnsConfig = (
   const currentConfig = config[containerId] || {};
 
   return <DroppableContainer
+    ulStyle={card ? {padding: 0} : ulStyle}
     removeRowHidden={disabled || containerId !== 0 || table.length === 1}
     removeColumnHidden={disabled || (table.length === 1 && table[0].length === 1)}
     leftTopHidden={disabled || containerId !== 0}
@@ -84,7 +88,7 @@ const ColumnsConfig = (
           },
         }}
       >
-        {currentConfig.title}
+        {currentConfig.title || '无标题'}
       </Typography.Paragraph>
     </>)}
     items={columns[containerId].data.map(item => item.key)}
@@ -97,13 +101,14 @@ const ColumnsConfig = (
       {columns[containerId].data.map((item, index) => {
         return (
           <SortableItem
-            disabled={isSortingContainer}
+            itemChange={itemChange}
+            disabled={item.disabled}
             key={item.key}
             id={item.key}
-            value={item.filedName}
+            item={item}
             cardTable={cardTable}
             index={index}
-            handle={handle}
+            handle={!disabled}
             style={getItemStyles}
             wrapperStyle={wrapperStyle}
             renderItem={renderItem}
@@ -113,9 +118,10 @@ const ColumnsConfig = (
         );
       })}
     </SortableContext> : <TableConfig
+      gutter={gutter}
+      itemChange={itemChange}
       card={card}
       columnsConfig={config}
-      vertical={vertical}
       PLACEHOLDER_ID={PLACEHOLDER_ID}
       configChange={configChange}
       items={items}

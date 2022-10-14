@@ -43,6 +43,7 @@ import {Container, ContainerProps} from '../Container';
 
 import {createRange} from '../createRange';
 import {Button} from "antd";
+import {isObject} from '@/util/Tools';
 
 export default {
   title: 'Presets/Sortable/Multiple Containers',
@@ -150,6 +151,8 @@ interface Props {
 
   itemCount?: number;
   width?: number;
+  gutter?: number;
+  widthUnit?: string;
   items: Items;
   handle?: boolean;
   renderItem?: any;
@@ -167,7 +170,9 @@ const empty: UniqueIdentifier[] = [];
 
 export function MultipleContainers(
   {
+    gutter,
     width,
+    widthUnit,
     adjustScale = false,
     itemCount = 3,
     cancelDrop,
@@ -189,8 +194,6 @@ export function MultipleContainers(
   const [items, setItems] = useState<Items>(initialItems);
   console.log(items)
 
-  const [rows, setRows] = useState([0]);
-
   const [columnsConfig, setColumnsConfig] = useState({});
 
   const configChange = (newConfig, key) => {
@@ -198,7 +201,7 @@ export function MultipleContainers(
   }
 
   const [activeId, setActiveId] = useState<any>(null);
-  const [activeTitle, setActiveTitle] = useState<any>('');
+  const [active, setActive] = useState<any>({});
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
   const isSortingContainer = false;
@@ -282,6 +285,9 @@ export function MultipleContainers(
     })
   );
   const findContainer = (id: string) => {
+    if (!id) {
+      return null;
+    }
     let idIndex;
     let currentIndex;
     const position = id.split('-') || [];
@@ -360,7 +366,7 @@ export function MultipleContainers(
       }}
       onDragStart={({active: {id, data: {current}}}) => {
         setActiveId(id);
-        setActiveTitle(current?.value);
+        setActive(current);
         setClonedItems(items);
       }}
       onDragOver={({active, over}) => {
@@ -427,12 +433,8 @@ export function MultipleContainers(
         const overId = over?.id;
         const overContainer = findContainer(overId);
 
-        // if (!activeContainer) {
-        //   setActiveId(null);
-        //   return;
-        // }
-
-        if (items[overContainer].cardTable && active.id === 'card') {
+        if (isObject(items[overContainer]).cardTable && active.id === 'card') {
+          setActiveId(null);
           return;
         }
 
@@ -563,15 +565,14 @@ export function MultipleContainers(
       <div style={{display: 'flex', alignItems: 'flex-start'}}>
         <div style={{minWidth: 350, display: "inline-block"}}>
           <ColumnsConfig
+            ulStyle={{padding: 16}}
+            card={false}
             disabled
             containerId={0}
-            index={0}
             id='0-0'
             items={items}
             columns={items}
-            data={items[0]}
             scrollable={scrollable}
-            containerStyle={containerStyle}
             minimal={minimal}
             handleRemove={() => {
             }}
@@ -586,6 +587,8 @@ export function MultipleContainers(
         </div>
         <div style={{flexGrow: 1, height: '90vh', overflow: 'auto', padding: '20px 40px'}}>
           <TableConfig
+            gutter={gutter}
+            widthUnit={widthUnit}
             handleRemove={handleRemoveCard}
             card={false}
             width={width}
@@ -609,6 +612,7 @@ export function MultipleContainers(
             handleAddRow={handleAddRow}
             handleRemoveRow={handleRemoveRow}
             handleRemoveColumn={handleRemoveColumn}
+            itemChange={itemChange}
           />
           <div style={{paddingTop: 24}}>
             <Button type='primary'>保存</Button>
@@ -618,7 +622,7 @@ export function MultipleContainers(
 
       {createPortal(
         <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
-          {activeId ? renderSortableItemDragOverlay(activeId, activeTitle) : null}
+          {activeId ? renderSortableItemDragOverlay(activeId, active) : null}
         </DragOverlay>,
         document.body
       )}
@@ -628,10 +632,11 @@ export function MultipleContainers(
     </DndContext>
   );
 
-  function renderSortableItemDragOverlay(id: string, value: string) {
+  function renderSortableItemDragOverlay(id: string, active: any) {
     return (
       <Item
-        value={value}
+        item={active}
+        value={active.filedName}
         handle={handle}
         style={getItemStyles({
           containerId: findContainer(id) as string,
@@ -703,6 +708,23 @@ export function MultipleContainers(
       return item;
     })
     setItems(array)
+  }
+
+  function itemChange(newData, filed, position) {
+    const newItems = items.map(item => {
+      if (item.line === position.line && item.column === position.column && (position.cardTable ? (item.cardLine === position.cardLine && item.cardColumn === position.cardColumn) : true)) {
+        const data = item.data || [];
+        const newArray = data.map(item => {
+          if (item.key === filed) {
+            return {...item, ...newData}
+          }
+          return item;
+        });
+        return {...item, data: newArray}
+      }
+      return item;
+    })
+    setItems(newItems)
   }
 
   function handleRemoveColumn(line, column, cardTable, cardPosition) {
@@ -783,8 +805,10 @@ export function MultipleContainers(
   // }
 }
 
-function getColor(id: string
-) {
+function getColor(item) {
+  if (item.disabled) {
+    return '#ff4d4f';
+  }
   return '#7193f1';
 }
 
@@ -823,7 +847,7 @@ interface SortableItemProps {
   handle: boolean;
   disabled?: boolean;
   cardTable?: boolean;
-  value?: string,
+  item?: any,
 
   style(args: any): React.CSSProperties;
 
@@ -831,12 +855,16 @@ interface SortableItemProps {
 
   renderItem(): React.ReactElement;
 
+  itemChange: Function;
+
   wrapperStyle({index}: { index: number }): React.CSSProperties;
 }
 
 export const SortableItem = (
   {
     disabled,
+    itemChange = () => {
+    },
     id,
     index,
     handle,
@@ -844,7 +872,7 @@ export const SortableItem = (
     style,
     containerId,
     getIndex,
-    value,
+    item = {},
     cardTable,
     wrapperStyle,
   }: SortableItemProps) => {
@@ -859,7 +887,7 @@ export const SortableItem = (
     transition,
   } = useSortable({
     id,
-    data: {value, cardTable}
+    data: {...item, cardTable}
   });
 
   const mounted = useMountStatus();
@@ -868,10 +896,11 @@ export const SortableItem = (
   return (
     <Item
       ref={disabled ? undefined : setNodeRef}
-      value={value}
+      value={item.filedName}
+      item={item}
       dragging={isDragging}
       sorting={isSorting}
-      handle
+      handle={handle}
       index={index}
       wrapperStyle={wrapperStyle({index})}
       style={style({
@@ -882,7 +911,8 @@ export const SortableItem = (
         overIndex: over ? getIndex(over.id) : overIndex,
         containerId,
       })}
-      color={getColor(id)}
+      itemChange={itemChange}
+      color={getColor(item)}
       transition={transition}
       transform={transform}
       fadeIn={mountedWhileDragging}
