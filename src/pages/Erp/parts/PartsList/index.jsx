@@ -35,15 +35,15 @@ const {FormItem} = Form;
 const {baseURI} = config;
 
 const PartsList = ({
-  showTable,
-  spuId,
-  skuDetail,
-  spuSkuId,
-  value,
-  getPartsId = () => {
-  },
-  type = 1
-}) => {
+                     showTable,
+                     spuId,
+                     skuDetail,
+                     spuSkuId,
+                     value,
+                     getPartsId = () => {
+                     },
+                     type = 1
+                   }) => {
 
   const [formActionsPublic, setFormActionsPublic] = useState(createFormActions);
 
@@ -75,14 +75,14 @@ const PartsList = ({
   const [bom, setBom] = useState();
 
   if (skuLoading) {
-    return <ProSkeleton type="descriptions" />;
+    return <ProSkeleton type="descriptions"/>;
   }
 
   const action = () => {
     return (
       <AddButton name="创建物料清单" onClick={() => {
         refAdd.current.open(false);
-      }} />
+      }}/>
     );
   };
 
@@ -94,28 +94,28 @@ const PartsList = ({
           label="物料名称"
           placeholder="搜索物料"
           name="skuName"
-          component={SysField.SkuInput} />
+          component={SysField.SkuInput}/>
         <FormItem
           hidden
           name={skuDetail ? 'children' : 'skuId'}
           value={value || null}
-          component={SysField.SkuInput} />
+          component={SysField.SkuInput}/>
         <FormItem
           hidden
           placeholder="请选择物料"
           name="spuId"
           value={spuId}
-          component={SysField.PartName} />
+          component={SysField.PartName}/>
         <FormItem
           hidden
           name="type"
           value={type}
-          component={SysField.PartName} />
+          component={SysField.PartName}/>
         <FormItem
           hidden
           name="status"
           value={99}
-          component={SysField.PartName} />
+          component={SysField.PartName}/>
       </>
     );
   };
@@ -126,7 +126,7 @@ const PartsList = ({
         {value && skuData && <div hidden={showTable}>
           <Descriptions style={{margin: 24, marginBottom: 0}} column={2} contentStyle={{fontWeight: 700}}>
             <Descriptions.Item label="编号">{skuData.standard}</Descriptions.Item>
-            <Descriptions.Item label="物料"><BackSkus record={skuData} /></Descriptions.Item>
+            <Descriptions.Item label="物料"><BackSkus record={skuData}/></Descriptions.Item>
             <Descriptions.Item label="描述">
               {
                 skuData.list
@@ -163,7 +163,7 @@ const PartsList = ({
           listHeader={value}
           formActions={formActionsPublic}
           headStyle={(spuId || spuSkuId || showTable) && {display: 'none'}}
-          title={value !== false && <Breadcrumb title="物料清单" />}
+          title={value !== false && <Breadcrumb title="物料清单"/>}
           actions={action()}
           searchForm={searchForm}
           ref={tableRef}
@@ -208,25 +208,25 @@ const PartsList = ({
             }
           }}
         >
-          <Column title={<div style={{marginLeft: 24}}>版本号</div>} key={1} dataIndex="skuResult" render={(value) => {
-            return <div style={{minWidth: 100}}>{value && value.name || '无'}</div>;
-          }} />
+          <Column title={<div style={{marginLeft: 24}}>版本号</div>} key={1} dataIndex="name" render={(value) => {
+            return <div style={{minWidth: 100}}>{value || '无'}</div>;
+          }}/>
           <Column title="物料编码" key={1} dataIndex="skuResult" render={(value) => {
             return <div style={{minWidth: 100}}>{value && value.standard}</div>;
-          }} />
+          }}/>
           <Column title="物料" key={1} dataIndex="skuResult" render={(value) => {
-            return (<Note width={400}><SkuResultSkuJsons skuResult={value} /></Note>);
-          }} />
+            return (<Note width={400}><SkuResultSkuJsons skuResult={value}/></Note>);
+          }}/>
           <Column title="数量" key={2} dataIndex="number" align="center" render={(value) => {
             return <div style={{minWidth: 50}}>{value || null}</div>;
-          }} />
-          <Column title="备注" key={3} visible={spuSkuId && false} dataIndex="note" />
+          }}/>
+          <Column title="备注" key={3} visible={spuSkuId && false} dataIndex="note"/>
           <Column title="创建人" key={4} visible={spuSkuId && false} dataIndex="userResult" render={(value) => {
             return <>{value && value.name}</>;
-          }} />
+          }}/>
           <Column title="创建时间" key={5} visible={spuSkuId && false} dataIndex="createTime" render={(value, record) => {
             return !record.partsDetailId && <>{value}</>;
-          }} />
+          }}/>
 
           <Column
             title="操作"
@@ -247,7 +247,7 @@ const PartsList = ({
                     <>
                       <EditButton onClick={() => {
                         refAdd.current.open(record.id || value);
-                      }} />
+                      }}/>
                       <Button type="link" onClick={() => {
                         showRef.current.open(record.id || value);
                       }}>详情</Button>
@@ -255,7 +255,7 @@ const PartsList = ({
                 }
 
               </>;
-            }} />
+            }}/>
         </Table>
 
 
