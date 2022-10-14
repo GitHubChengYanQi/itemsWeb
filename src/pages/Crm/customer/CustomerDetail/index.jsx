@@ -2,7 +2,6 @@ import React, {useRef, useState} from 'react';
 import {Button, Card, Col, Row, Tabs, Typography, Tag, Space} from 'antd';
 import {useHistory, useParams} from 'ice';
 import ProSkeleton from '@ant-design/pro-skeleton';
-import {EditOutlined} from '@ant-design/icons';
 import Breadcrumb from '@/components/Breadcrumb';
 import Icon from '@/components/Icon';
 import {request, useRequest} from '@/util/Request';
@@ -13,13 +12,11 @@ import AdressList from '@/pages/Crm/customer/CustomerEdit/components/AdressList'
 import Dynamic from '@/pages/Crm/customer/CustomerDetail/compontents/Dynamic';
 import ContractTable from '@/pages/Crm/contract/components/components/ContractTable';
 import Upload from '@/pages/Crm/customer/CustomerDetail/compontents/Upload';
-import Track from '@/pages/Crm/business/BusinessDetails/compontents/Track';
 import CrmBusinessTrackEdit from '@/pages/Crm/business/crmBusinessTrack/crmBusinessTrackEdit';
 import Modal from '@/components/Modal';
 import ContactsTable from '@/pages/Crm/contacts/ContactsList';
 import InputEdit from '@/pages/Crm/customer/components/Edit/InputEdit';
 import AvatarEdit from '@/pages/Crm/customer/components/Edit/AvatarEdit';
-import BusinessAdd from '@/pages/Crm/business/BusinessAdd';
 import DetailMenu from '@/pages/Crm/customer/CustomerDetail/compontents/DetailMenu';
 import styles from './index.module.scss';
 import InvoiceList from '@/pages/Crm/invoice/invoiceList';
@@ -155,29 +152,6 @@ const CustomerDetail = ({id, supply = 0, status, ...props}) => {
             refresh={() => {
               refresh();
             }} />
-          {props.hidden && <>
-            <Button
-              style={params.state === 'false' ? {'display': 'none'} : null}
-              onClick={() => {
-                addRef.current.open(false);
-              }} icon={<EditOutlined />}>创建商机</Button>
-            <BusinessAdd
-              ref={addRef}
-              customerId={data.customerId}
-              userId={data.userId}
-              onClose={() => {
-                addRef.current.close();
-                refTrack.current.close();
-                refresh();
-              }}
-            />
-            <Button
-              type="primary"
-              style={params.state === 'false' ? {'display': 'none'} : null}
-              onClick={() => {
-                refTrack.current.open(false);
-              }} icon={<EditOutlined />}>添加跟进</Button>
-          </>}
 
           <Modal
             width={width === 1 ? 1400 : 800}
