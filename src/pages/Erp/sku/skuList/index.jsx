@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Tree} from 'antd';
+import useUrlState from "@ahooksjs/use-url-state";
 import ListLayout from '@/layouts/ListLayout';
 import SkuTable from '@/pages/Erp/sku/SkuTable';
 import store from '@/store';
@@ -8,6 +9,15 @@ import store from '@/store';
 const SkuList = () => {
 
   const [data] = store.useModel('dataSource');
+
+  const [state, setState] = useUrlState(
+    {
+      navigateMode: 'push',
+    },
+  );
+
+  const defaultTableQuery = state.params && JSON.parse(state.params) || {};
+  console.log(defaultTableQuery);
 
   const dataResult = (items) => {
     if (!Array.isArray(items)) {
@@ -24,7 +34,7 @@ const SkuList = () => {
 
   const dataSource = dataResult(data && data.skuClass);
 
-  const [spuClass, setSpuClass] = useState([]);
+  const [spuClass, setSpuClass] = useState(defaultTableQuery.values?.spuClass ? [defaultTableQuery.values?.spuClass] : []);
 
   const Left = () => {
     return (
@@ -49,7 +59,7 @@ const SkuList = () => {
   };
   return (
     <ListLayout>
-      <SkuTable left={Left()} spuClass={spuClass[0] || null} setSpuClass={setSpuClass} />
+      <SkuTable left={Left()} spuClass={spuClass[0] || null} setSpuClass={setSpuClass}/>
     </ListLayout>
   );
 };
