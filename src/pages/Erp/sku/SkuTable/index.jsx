@@ -78,8 +78,8 @@ const SkuTable = ({...props}, ref) => {
   }));
 
   useEffect(() => {
-    if (spuClass !== undefined) {
-      tableRef.current.formActions.setFieldValue('spuClass', spuClass);
+    if (spuClass) {
+      tableRef.current.formActions.setFieldValue('spuClass', spuClass === '0' ? null : spuClass);
       tableRef.current.submit();
     }
   }, [spuClass]);
