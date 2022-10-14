@@ -42,7 +42,7 @@ import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
 
 import {createRange} from '../createRange';
-import {Button} from "antd";
+import {Button, InputNumber, Select, Space} from "antd";
 import {isObject} from '@/util/Tools';
 
 export default {
@@ -170,9 +170,6 @@ const empty: UniqueIdentifier[] = [];
 
 export function MultipleContainers(
   {
-    gutter,
-    width,
-    widthUnit,
     adjustScale = false,
     itemCount = 3,
     cancelDrop,
@@ -192,13 +189,10 @@ export function MultipleContainers(
     scrollable,
   }: Props) {
   const [items, setItems] = useState<Items>(initialItems);
-  console.log(items)
 
-  const [columnsConfig, setColumnsConfig] = useState({});
-
-  const configChange = (newConfig, key) => {
-    setColumnsConfig({...columnsConfig, [key]: {...columnsConfig[key], ...newConfig}});
-  }
+  const [width, setWidth] = useState(100);
+  const [gutter, setGutter] = useState(16);
+  const [widthUnit, setWidthUnit] = useState('%');
 
   const [activeId, setActiveId] = useState<any>(null);
   const [active, setActive] = useState<any>({});
@@ -284,7 +278,7 @@ export function MultipleContainers(
       coordinateGetter,
     })
   );
-  const findContainer = (id: string) => {
+  const findContainer = (id: any) => {
     if (!id) {
       return null;
     }
@@ -398,33 +392,31 @@ export function MultipleContainers(
           newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
 
           recentlyMovedToNewContainer.current = true;
-
-          setItems((items) => {
-            return items.map((item, index) => {
-              if (index === activeContainer) {
-                return {
-                  ...item,
-                  data: item.data.filter(
-                    (item) => item.key !== active.id
-                  )
-                }
-              } else if (index === overContainer) {
-                return {
-                  ...item,
-                  data: [
-                    ...item.data.slice(0, newIndex),
-                    items[activeContainer].data[activeIndex],
-                    ...item.data.slice(
-                      newIndex,
-                      item.data.length
-                    ),
-                  ]
-                }
-              } else {
-                return item
+          const newItems: any = items.map((item, index) => {
+            if (index === activeContainer) {
+              return {
+                ...item,
+                data: item.data.filter(
+                  (item) => item.key !== active.id
+                )
               }
-            })
-          });
+            } else if (index === overContainer) {
+              return {
+                ...item,
+                data: [
+                  ...item.data.slice(0, newIndex),
+                  items[activeContainer].data[activeIndex],
+                  ...item.data.slice(
+                    newIndex,
+                    item.data.length
+                  ),
+                ]
+              }
+            } else {
+              return item
+            }
+          })
+          setItems(newItems);
         }
       }}
       onDragEnd={({active, over}) => {
@@ -441,15 +433,15 @@ export function MultipleContainers(
         if (!overId) {
           setActiveId(null);
           if ((active.id === 'card' && activeContainer !== 0)) {
-            let cardPosition = {};
+            let cardPosition: any = {};
             const newItems = items.map((item, index) => {
               if (index === overContainer) {
                 cardPosition = item;
-                return {...item, card: true}
+                return {...item, card: true,data:[]}
               }
               return item;
             });
-            const array = [...newItems.map((item, index) => {
+            const array: any = [...newItems.map((item, index) => {
               if (index === 0) {
                 return {...item, data: [...cardPosition.data, ...item.data]}
               }
@@ -466,11 +458,11 @@ export function MultipleContainers(
           return;
         }
         if (overId === TRASH_ID) {
-          let cardPosition = {};
+          let cardPosition: any = {};
           const newItems = items.map((item, index) => {
             if ((active.id === 'card' && activeContainer !== 0) && index === overContainer) {
               cardPosition = item;
-              return {...item, card: true}
+              return {...item, card: true,data:[]}
             }
             if (index === activeContainer) {
               return {
@@ -482,7 +474,7 @@ export function MultipleContainers(
             }
             return item;
           })
-          const array = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
+          const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
             if (index === 0) {
               return {...item, data: [...cardPosition.data, ...item.data]}
             }
@@ -493,7 +485,7 @@ export function MultipleContainers(
             cardColumn: 0,
             cardTable: true,
             data: []
-          }] : newItems
+          }] : newItems;
           setItems(array);
           setActiveId(null);
           return;
@@ -514,7 +506,7 @@ export function MultipleContainers(
                 return {
                   ...item,
                   card: (active.id === 'card' && activeContainer !== 0) || item.card,
-                  data: arrayMove(
+                  data: (active.id === 'card' && activeContainer !== 0) || item.card ? [] : arrayMove(
                     items[overContainer].data,
                     activeIndex,
                     overIndex
@@ -523,7 +515,7 @@ export function MultipleContainers(
               }
               return item;
             })
-            const array = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
+            const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
               if (index === 0) {
                 return {...item, data: [...cardPosition.data, ...item.data]}
               }
@@ -537,7 +529,7 @@ export function MultipleContainers(
             }] : newItems;
             setItems(array);
           } else if (active.id === 'card' && activeContainer !== 0) {
-            let cardPosition = {};
+            let cardPosition: any = {};
             const newItems = items.map((item, index) => {
               if (index === overContainer) {
                 cardPosition = item;
@@ -546,7 +538,7 @@ export function MultipleContainers(
               return item;
             });
 
-            const array = [...newItems.map((item, index) => {
+            const array: any = [...newItems.map((item, index) => {
               if (index === 0) {
                 return {...item, data: [...cardPosition.data, ...item.data]}
               }
@@ -586,16 +578,42 @@ export function MultipleContainers(
           />
         </div>
         <div style={{flexGrow: 1, height: '90vh', overflow: 'auto', padding: '20px 40px'}}>
+          <div style={{padding: 24, textAlign: 'center'}}>
+            <Space align='center'>
+              行宽：
+              <InputNumber
+                max={100}
+                min={30}
+                value={width}
+                onChange={setWidth}
+                addonAfter={<Select
+                  value={widthUnit}
+                  onChange={setWidthUnit}
+                  options={[{label: '%', value: '%'}, {label: 'vw', value: 'vw'}, {label: 'px', value: 'px'},]}/>}
+              />
+            </Space>
+            <Space align='center' style={{marginLeft:16}}>
+              间距：
+              <InputNumber
+                max={100}
+                min={8}
+                value={gutter}
+                onChange={setGutter}
+                addonAfter='px'
+              />
+            </Space>
+          </div>
           <TableConfig
+            onUp={onUp}
+            onDown={onDown}
+            configChange={configChange}
             gutter={gutter}
             widthUnit={widthUnit}
             handleRemove={handleRemoveCard}
             card={false}
             width={width}
-            columnsConfig={columnsConfig}
             vertical={vertical}
             PLACEHOLDER_ID={PLACEHOLDER_ID}
-            configChange={configChange}
             items={items}
             scrollable={scrollable}
             containerStyle={containerStyle}
@@ -615,7 +633,40 @@ export function MultipleContainers(
             itemChange={itemChange}
           />
           <div style={{paddingTop: 24}}>
-            <Button type='primary'>保存</Button>
+            <Button type='primary' onClick={() => {
+              const submitData: any = [];
+
+              items.slice(1, items.length).forEach((item) => {
+                let column: any = item;
+                if (item.card) {
+                  const table: any = [];
+                  const cardTable = items.filter(cardItems => {
+                    return cardItems.line === item.line && cardItems.column === item.column && cardItems.cardTable
+                  })
+                  cardTable.forEach((item) => {
+                    if (table[item.cardLine || 0]) {
+                      const columns = [...table[item.cardLine || 0], item];
+                      table[item.cardLine || 0] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
+                    } else {
+                      table[item.cardLine || 0] = [item];
+                    }
+                  })
+                  column = {
+                    ...item,
+                    table:table.slice(1, table.length),
+                  }
+                }
+                if (item.cardTable) {
+                  return;
+                } else if (submitData[item.line]) {
+                  const columns = [...submitData[item.line], column];
+                  submitData[item.line] = columns.sort((a, b) => a.column - b.column);
+                } else {
+                  submitData[item.line] = [column];
+                }
+              })
+              console.log(submitData.slice(1, items.length))
+            }}>保存</Button>
           </div>
         </div>
       </div>
@@ -657,8 +708,8 @@ export function MultipleContainers(
 
 
   function handleRemoveCard(line, column) {
-    const files = [];
-    const newItems = [];
+    const files: any = [];
+    const newItems: any = [];
     items.forEach(item => {
       if (item.line === line && item.column === column) {
         item.data.forEach(item => {
@@ -681,24 +732,35 @@ export function MultipleContainers(
   }
 
   function handleRemoveRow(line, cardTable, cardPosition) {
-    const files = [];
-    const newItems = items.filter(item => {
+    const files: any = [];
+    const newItems: any = [];
+    items.forEach(item => {
       if (cardTable) {
-        if (item.line === cardPosition.line && item.column === cardPosition.column && item.cardLine === line) {
-          item.data.forEach(item => {
-            files.push(item)
-          })
-          return false;
+        if (item.line === cardPosition.line && item.column === cardPosition.column) {
+          if (item.cardLine === line) {
+            item.data.forEach(item => {
+              files.push(item)
+            })
+            return;
+          } else if ((item.cardLine || 0) > line) {
+            newItems.push({...item, cardLine: (item.cardLine || 0) - 1})
+            return;
+          }
+          newItems.push(item)
+          return;
         }
-        return true;
+        newItems.push(item)
       } else {
         if (item.line === line) {
           item.data.forEach(item => {
             files.push(item)
           })
-          return false;
+          return;
+        } else if (item.line > line) {
+          newItems.push({...item, line: item.line - 1})
+          return;
         }
-        return true;
+        newItems.push(item)
       }
     });
     const array = newItems.map((item, index) => {
@@ -710,8 +772,42 @@ export function MultipleContainers(
     setItems(array)
   }
 
-  function itemChange(newData, filed, position) {
+  function onUp(line, card, position) {
+    const newItems: any = items.map(item => {
+      if (card ? (item.cardLine === line && item.line === position.line && item.column === position.column) : item.line === line) {
+        return card ? {...item, cardLine: line - 1} : {...item, line: item.line - 1}
+      } else if (card ? (item?.cardLine >= line - 1 && item.line === position.line && item.column === position.column) : item.line >= (line - 1)) {
+        return card ? {...item, cardLine: item.cardLine + 1} : {...item, line: item.line + 1}
+      }
+      return item;
+    })
+    setItems(newItems);
+  }
+
+  function onDown(line, card, position) {
+    const newItems: any = items.map(item => {
+      if (card ? (item.cardLine === line && item.line === position.line && item.column === position.column) : item.line === line) {
+        return card ? {...item, cardLine: line + 1} : {...item, line: item.line + 1}
+      } else if (card ? (item.cardLine === line + 1 && item.line === position.line && item.column === position.column) : item.line === line + 1) {
+        return card ? {...item, cardLine: line} : {...item, line: line}
+      }
+      return item;
+    })
+    setItems(newItems)
+  }
+
+  function configChange(newData, line, column) {
     const newItems = items.map(item => {
+      if (item.line === line && item.column === column && item.card) {
+        return {...item, ...newData}
+      }
+      return item;
+    })
+    setItems(newItems)
+  }
+
+  function itemChange(newData, filed, position) {
+    const newItems: any = items.map(item => {
       if (item.line === position.line && item.column === position.column && (position.cardTable ? (item.cardLine === position.cardLine && item.cardColumn === position.cardColumn) : true)) {
         const data = item.data || [];
         const newArray = data.map(item => {
@@ -728,24 +824,43 @@ export function MultipleContainers(
   }
 
   function handleRemoveColumn(line, column, cardTable, cardPosition) {
-    const files = [];
-    const newItems = items.filter(item => {
+    const files: any = [];
+    const newItems: any = [];
+    items.forEach(item => {
       if (cardTable) {
-        if (item.line === cardPosition.line && item.column === cardPosition.column && item.cardLine === line && item.cardColumn === column) {
-          item.data.forEach(item => {
-            files.push(item)
-          })
-          return false;
+        if (item.line === cardPosition.line && item.column === cardPosition.column) {
+          if (item.cardLine === line && item.cardColumn === column) {
+            item.data.forEach(item => {
+              files.push(item)
+            })
+            return;
+          } else if (item.cardLine === line && (item.cardColumn || 0) > column) {
+            newItems.push({...item, cardColumn: (item.cardColumn || 0) - 1});
+            return;
+          }
+          if (column === 0 && (item.cardLine || 0) > line) {
+            newItems.push({...item, cardLine: item.cardLine - 1})
+          } else {
+            newItems.push(item)
+          }
+          return;
         }
-        return true;
+        newItems.push(item)
       } else {
         if (item.line === line && item.column === column) {
           item.data.forEach(item => {
             files.push(item)
           })
-          return false;
+          return;
+        } else if (item.line === line && item.column > column) {
+          newItems.push({...item, column: item.column - 1})
+          return;
         }
-        return true;
+        if (column === 0 && item.line > line) {
+          newItems.push({...item, line: item.line - 1})
+        } else {
+          newItems.push(item)
+        }
       }
     });
     const array = newItems.map((item, index) => {
@@ -759,15 +874,15 @@ export function MultipleContainers(
 
   function handleAddColumn(line, column, cardTable, cardPosition) {
     if (cardTable) {
-      const newItems = [...items.map(item => {
-        if (item.line === cardPosition.line && item.column === cardPosition.column && item.cardLine === line && item.cardColumn >= column) {
-          return {...item, cardColumn: item.cardColumn + 1}
+      const newItems: any = [...items.map(item => {
+        if (item.line === cardPosition.line && item.column === cardPosition.column && item.cardLine === line && (item.cardColumn || 0) >= column) {
+          return {...item, cardColumn: (item.cardColumn || 0) + 1}
         }
         return item;
       }), {...cardPosition, cardLine: line, cardColumn: column, data: []}];
       setItems(newItems)
     } else {
-      const newItems = [...items.map(item => {
+      const newItems: any = [...items.map(item => {
         if (item.line === line && item.column >= column) {
           return {...item, column: item.column + 1}
         }
@@ -779,15 +894,15 @@ export function MultipleContainers(
 
   function handleAddRow(line, cardTable, cardPosition) {
     if (cardTable) {
-      const newItems = [...items.map(item => {
-        if (item.line === cardPosition.line && item.column === cardPosition.column && item.cardLine >= line) {
-          return {...item, cardLine: item.cardLine + 1}
+      const newItems: any = [...items.map(item => {
+        if (item.line === cardPosition.line && item.column === cardPosition.column && (item.cardLine || 0) >= line) {
+          return {...item, cardLine: (item.cardLine || 0) + 1}
         }
         return item;
       }), {...cardPosition, cardLine: line, cardColumn: 0, data: []}];
       setItems(newItems)
     } else {
-      const newItems = [...items.map(item => {
+      const newItems: any = [...items.map(item => {
         if (item.line >= line) {
           return {...item, line: item.line + 1}
         }

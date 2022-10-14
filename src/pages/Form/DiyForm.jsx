@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Col, InputNumber, Row, Select, Space} from 'antd';
+import {InputNumber, Select, Space} from 'antd';
 import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 
 const DiyForm = () => {
@@ -33,40 +33,8 @@ const DiyForm = () => {
     {key: 'remarks', filedName: '备注'},
   ];
 
-  const [width, setWidth] = useState(100);
-  const [gutter, setGutter] = useState(16);
-  const [widthUnit, setWidthUnit] = useState('%');
-
   return <>
-    <div style={{padding: 24, textAlign: 'center'}}>
-      <Space align='center'>
-        行宽：
-        <InputNumber
-          max={100}
-          min={30}
-          value={width}
-          onChange={setWidth}
-          addonAfter={<Select
-            value={widthUnit}
-            onChange={setWidthUnit}
-            options={[{label: '%', value: '%'}, {label: 'vw', value: 'vw'}, {label: 'px', value: 'px'},]}/>}
-        />
-      </Space>
-      <Space align='center' style={{marginLeft:16}}>
-        间距：
-        <InputNumber
-          max={100}
-          min={8}
-          value={gutter}
-          onChange={setGutter}
-          addonAfter='px'
-        />
-      </Space>
-    </div>
     <MultipleContainers
-      gutter={gutter}
-      width={width}
-      widthUnit={widthUnit}
       vertical
       items={[{line: 0, column: 0, data}, {line: 1, column: 0, data: []}]}
     />

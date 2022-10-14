@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
-import {InputNumber, Radio, Tooltip, Typography} from 'antd';
+import React, {} from 'react';
+import { Typography} from 'antd';
 import {SortableContext} from '@dnd-kit/sortable';
 import {DroppableContainer, SortableItem} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 import TableConfig from "@/pages/Form/components/TableConfig";
-import {isObject} from "@/util/Tools";
 
 const ColumnsConfig = (
   {
@@ -35,18 +34,19 @@ const ColumnsConfig = (
     wrapperStyle,
     renderItem,
     getIndex,
-    config = {},
     configChange = () => {
     },
     gutter,
     itemChange = () => {
     },
+    onUp = () => {
+    },
+    onDown = () => {
+    },
     handleRemoveRow,
     handleRemoveColumn,
     id
   }) => {
-
-  const currentConfig = config[containerId] || {};
 
   return <DroppableContainer
     ulStyle={card ? {padding: 0} : ulStyle}
@@ -84,11 +84,11 @@ const ColumnsConfig = (
         editable={{
           tooltip: '点击自定义字段名',
           onChange: (filedName) => {
-            configChange({title: filedName}, containerId);
+            configChange({title: filedName}, line, column);
           },
         }}
       >
-        {currentConfig.title || '无标题'}
+        {item.title || '无标题'}
       </Typography.Paragraph>
     </>)}
     items={columns[containerId].data.map(item => item.key)}
@@ -118,10 +118,12 @@ const ColumnsConfig = (
         );
       })}
     </SortableContext> : <TableConfig
+      position={item}
+      onUp={onUp}
+      onDown={onDown}
       gutter={gutter}
       itemChange={itemChange}
       card={card}
-      columnsConfig={config}
       PLACEHOLDER_ID={PLACEHOLDER_ID}
       configChange={configChange}
       items={items}
