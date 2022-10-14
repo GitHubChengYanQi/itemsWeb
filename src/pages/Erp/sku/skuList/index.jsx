@@ -36,11 +36,11 @@ const SkuList = () => {
           onSelect={(value) => {
             setSpuClass(value);
           }}
-          defaultExpandedKeys={['']}
+          defaultExpandedKeys={['0']}
           treeData={[
             {
               title: '所有分类',
-              key: '',
+              key: '0',
               children: dataSource
             },
           ]}
