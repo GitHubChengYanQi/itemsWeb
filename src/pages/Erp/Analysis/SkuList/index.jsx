@@ -157,6 +157,7 @@ const SkuList = ({...props}, ref) => {
     >
       <div style={{padding: 24}}>
         <AddSpu
+          noSpu
           params={{status: 99}}
           skuResult
           api={partsList}
