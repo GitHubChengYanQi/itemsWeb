@@ -109,11 +109,12 @@ const SkuTable = ({...props}, ref) => {
           name="spuClass"
           hidden
           component={SysField.SelectSpuClass} />
-        <FormItem
-          name="spuId"
-          hidden
-          value={spuId}
-          component={SysField.SkuName} />
+        <div hidden>
+          <FormItem
+            name="spuId"
+            value={spuId}
+            component={SysField.SkuName} />
+        </div>
       </>
     );
   };

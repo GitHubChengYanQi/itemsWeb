@@ -39,6 +39,9 @@ const SkuEdit = ({...props}, ref) => {
 
   const [typeSetting, setTypeSetting] = useState([]);
 
+  const [formData, setFormData] = useState([]);
+  console.log(formData);
+
   const {loading: skuFormLoading, run: getSkuForm} = useRequest(spuClassificationDetail, {
     manual: true,
     onSuccess: (res) => {
@@ -132,7 +135,8 @@ const SkuEdit = ({...props}, ref) => {
             skuId: value.copy ? null : value.skuId,
             oldSkuId: copy ? value.skuId : null,
             spu: {...submitValue.spu, coding: submitValue.spuCoding},
-            skuName: submitValue.nationalStandard || submitValue.model || submitValue.partNo
+            skuName: submitValue.nationalStandard || submitValue.model || submitValue.partNo,
+            generalFormDataParams: formData,
           };
           setSubmitValue(submitValue);
           return submitValue;
@@ -332,8 +336,26 @@ const SkuEdit = ({...props}, ref) => {
               break;
             default:
               formItemProps = {
+                fieldName: item.key,
                 component: SysField.SkuName,
                 required: false,
+                onChange: (value) => {
+
+                  setFormData((formData) => {
+                    let exits = false;
+                    const newFormData = formData.map(formDataItem => {
+                      if (formDataItem.fieldName === item.key) {
+                        exits = true;
+                        return {...formDataItem, value};
+                      }
+                      return formDataItem;
+                    });
+                    if (!exits) {
+                      newFormData.push({fieldName: item.key, value});
+                    }
+                    return newFormData;
+                  });
+                }
               };
               break;
           }
