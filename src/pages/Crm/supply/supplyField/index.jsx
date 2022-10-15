@@ -69,7 +69,9 @@ export const BrandId = (props) => {
     onSuccess: (res) => {
       if (!value) {
         const brand = res.find(item => item.label === brandName) || {};
-        props.onChange([brand.value]);
+        if (brand.value){
+          props.onChange([brand.value]);
+        }
       }
     }
   });

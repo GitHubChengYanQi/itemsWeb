@@ -46,7 +46,7 @@ const SupplyList = ({customer = {}}) => {
     );
   };
 
-  const [dataSource, setDataSource] = useState();
+  const [dataSource, setDataSource] = useState([]);
 
   const searchForm = () => {
     return (
