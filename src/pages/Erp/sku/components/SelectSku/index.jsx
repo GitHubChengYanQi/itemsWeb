@@ -5,6 +5,7 @@ import {skuDetail, skuList} from '@/pages/Erp/sku/skuUrl';
 import Modal from '@/components/Modal';
 import SkuEdit from '@/pages/Erp/sku/skuEdit';
 import Note from '@/components/Note';
+import {partsList} from '@/pages/Erp/parts/PartsUrl';
 
 
 const SelectSku = (
@@ -17,12 +18,14 @@ const SelectSku = (
     placeholder,
     onSpuId = () => {
     },
+    skuResult,
     params,
     skuIds,
     noAdd,
     spuClassId,
     ids,
     style,
+    api,
     getDetailLoading = () => {
     },
   }) => {
@@ -50,21 +53,22 @@ const SelectSku = (
     }
     let spus = [];
     data.map((item) => {
+      const skuItem = (skuResult ? item.skuResult : item) || {};
       const sku = {
         disabled: skuIds && skuIds.filter((value) => {
-          return value === item.skuId;
+          return value === skuItem.skuId;
         }).length > 0,
-        label: skuLabel(item),
-        value: item.skuId,
-        spu: item.spuResult,
-        standard: item.standard,
+        label: skuLabel(skuItem),
+        value: skuItem.skuId,
+        spu: skuItem.spuResult,
+        standard: skuItem.standard,
         type: 'sku',
-        supply: item.inSupply,
+        supply: skuItem.inSupply,
       };
 
-      if (spus.map(item => item.value).includes(item.spuId)) {
+      if (spus.map(item => item.value).includes(skuItem.spuId)) {
         return spus = spus.map((spuItem) => {
-          if (spuItem.value === item.spuId) {
+          if (spuItem.value === skuItem.spuId) {
             return {
               ...spuItem,
               options: [...spuItem.options, sku],
@@ -77,8 +81,8 @@ const SelectSku = (
       }
 
       return spus.push({
-        label: item.spuResult && item.spuResult.name,
-        value: item.spuId,
+        label: skuItem.spuResult && skuItem.spuResult.name,
+        value: skuItem.spuId,
         type: 'spu',
         options: [sku]
       });
@@ -87,7 +91,7 @@ const SelectSku = (
     return spus;
   };
 
-  const {loading, data, run} = useRequest({...skuList, data: {skuIds: ids, ...params}}, {
+  const {loading, data, run} = useRequest({...(api || skuList), data: {skuIds: ids, ...params}}, {
     debounceInterval: 300,
   });
 
