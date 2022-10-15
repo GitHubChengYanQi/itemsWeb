@@ -13,8 +13,11 @@ const AddSpu = (
     onChange,
     noSkuIds,
     customerId,
+    params,
     supply,
     maxWidth,
+    skuResult,
+    api,
     noSpu,
   }) => {
 
@@ -144,10 +147,12 @@ const AddSpu = (
       </Descriptions.Item>
       <Descriptions.Item label="物料名称">
         <SelectSku
+          skuResult={skuResult}
+          api={api}
           noSpu={noSpu}
           style={{maxWidth: maxWidth || 538}}
           supply={supply}
-          params={{customerId}}
+          params={{customerId, params}}
           // getDetailLoading={}
           width="100%"
           value={value}
