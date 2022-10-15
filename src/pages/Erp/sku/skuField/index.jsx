@@ -108,12 +108,12 @@ export const ClassCode = (props) => {
 
 export const SkuName = (props) => {
 
-  const {value, onChange, disabled, placeholder, tableName} = props;
+  const {value, onChange, disabled, placeholder, fieldName} = props;
 
   const {loading, data, run} = useRequest({
     url: '/generalFormData/list',
     method: 'POST',
-    data: {tableName},
+    data: {fieldName},
   }, {
     debounceInterval: 300,
   });
@@ -142,7 +142,7 @@ export const SkuName = (props) => {
           onChange(value.target.value);
           run({
             data: {
-              tableName,
+              fieldName,
               value: value.target.value,
             }
           });
