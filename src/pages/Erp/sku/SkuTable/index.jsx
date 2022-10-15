@@ -118,8 +118,7 @@ const SkuTable = ({...props}, ref) => {
       </>
     );
   };
-
-
+  
   const footer = () => {
     return (
       <>
@@ -263,7 +262,7 @@ const SkuTable = ({...props}, ref) => {
         headStyle={spuId && {display: 'none'}}
         noRowSelection={spuId}
         api={skuList}
-        tableKey="sku"
+        tableKey={`sku${spuClass || ''}`}
         columns={columns}
         actionButton={<Space size={24}>
           <a>查看日志</a>
