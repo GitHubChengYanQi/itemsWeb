@@ -199,7 +199,7 @@ const useTableSet = (column, tableKey) => {
         className={styles.cardTitle}
         title="表头设置"
         headStyle={{textAlign: 'center', padding: 0}}
-        bodyStyle={{maxWidth: 300, padding: 0, borderTop: 'solid 1px #eee', height: 'auto'}}
+        bodyStyle={{maxWidth: 300, padding: 0, borderTop: 'solid 1px #eee', height: '50vh', overflow: 'auto'}}
         extra={<Button icon={<CloseOutlined />} style={{marginRight: 16}} type="text" onClick={() => {
           setVisible(false);
         }} />}
@@ -263,8 +263,11 @@ const useTableSet = (column, tableKey) => {
       });
     } else {
       getTableView({data: {tableKey: md5TableKey()}});
+      setTableColumn(defaultColumn);
+      setDetail();
+      toggle();
     }
-  }, []);
+  }, [tableKey]);
 
   return {
     tableColumn,
