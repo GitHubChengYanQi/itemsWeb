@@ -5,7 +5,7 @@
  * @Date 2021-12-20 10:08:44
  */
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Input,
   Tag,
@@ -40,7 +40,9 @@ export const Model = (props) => {
 
 export const BrandId = (props) => {
 
-  const {value, displays} = props;
+  const {value, displays, brandName} = props;
+
+  const [open, setOpen] = useState(false);
 
   const brandBindResults = [];
 
@@ -63,7 +65,14 @@ export const BrandId = (props) => {
   }, []);
 
 
-  const {data} = useRequest(brandListSelect);
+  const {data} = useRequest(brandListSelect, {
+    onSuccess: (res) => {
+      if (!value) {
+        const brand = res.find(item => item.label === brandName) || {};
+        props.onChange([brand.value]);
+      }
+    }
+  });
 
   const options = data || [];
 
@@ -91,6 +100,8 @@ export const BrandId = (props) => {
     <AntSelect
       mode="multiple"
       showArrow
+      open={open}
+      onDropdownVisibleChange={setOpen}
       allowClear
       showSearch
       filterOption={(input, option) => option.label && option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -99,6 +110,7 @@ export const BrandId = (props) => {
       style={{width: '100%', display: displays || null}}
       options={[{value: 0, label: '无品牌'}, ...options]}
       onChange={(value) => {
+        setOpen(false);
         props.onChange(value);
       }}
     />
