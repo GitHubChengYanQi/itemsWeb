@@ -110,7 +110,6 @@ export const SkuName = (props) => {
 
   const {value, onChange, disabled, placeholder, tableName} = props;
 
-
   const {loading, data, run} = useRequest({
     url: '/generalFormData/list',
     method: 'POST',
