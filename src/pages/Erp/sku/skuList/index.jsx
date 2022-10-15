@@ -17,7 +17,6 @@ const SkuList = () => {
   );
 
   const defaultTableQuery = state.params && JSON.parse(state.params) || {};
-  console.log(defaultTableQuery);
 
   const dataResult = (items) => {
     if (!Array.isArray(items)) {
