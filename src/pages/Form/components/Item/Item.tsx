@@ -6,7 +6,8 @@ import type {Transform} from '@dnd-kit/utilities';
 import {Handle, Remove} from './components';
 
 import styles from './Item.module.less';
-import {Checkbox, Typography} from "antd";
+import {Button, Checkbox, Form, Input, Radio, Select, Typography, Upload} from "antd";
+import {UploadOutlined} from "@ant-design/icons";
 
 export interface Props {
   dragOverlay?: boolean;
@@ -74,6 +75,23 @@ export const Item = React.memo(
       ref
     ) => {
 
+      const inputType = () => {
+        switch (item.inputType) {
+          case 'input':
+            return <Input disabled placeholder='请输入'/>;
+          case 'select':
+            return <Select disabled placeholder='请选择'/>;
+          case 'upload':
+            return <Upload disabled>
+              <Button icon={<UploadOutlined/>}>上传</Button>
+            </Upload>;
+          case 'radio':
+            return <Radio.Group><Radio>单选1</Radio><Radio>单选2</Radio></Radio.Group>;
+          default:
+            return <Input disabled placeholder='请输入'/>
+        }
+      }
+
       useEffect(() => {
         if (!dragOverlay) {
           return;
@@ -91,7 +109,7 @@ export const Item = React.memo(
           styles.Wrapper,
           fadeIn && styles.fadeIn,
           sorting && styles.sorting,
-          dragOverlay && styles.dragOverlay
+          dragOverlay && styles.dragOverlay,
         )}
         style={
           {
@@ -112,7 +130,7 @@ export const Item = React.memo(
               ? `${transform.scaleY}`
               : undefined,
             '--index': index,
-            '--color': color,
+            '--color': !handle && color,
           } as React.CSSProperties
         }
         ref={ref}
@@ -121,10 +139,10 @@ export const Item = React.memo(
           className={classNames(
             styles.Item,
             dragging && styles.dragging,
-            handle && styles.withHandle,
             dragOverlay && styles.dragOverlay,
             disabled && styles.disabled,
-            color && styles.color
+            color && styles.color,
+            handle && styles.handle,
           )}
           style={style}
           data-cypress="draggable-item"
@@ -132,17 +150,24 @@ export const Item = React.memo(
           {...props}
           tabIndex={!handle ? 0 : undefined}
         >
-          {handle ? <Typography.Paragraph
-            style={{margin: 0}}
-            editable={{
-              tooltip: '点击自定义字段名',
-              onChange: (filedName) => {
-                itemChange({filedName}, item.key);
-              },
-            }}
-          >
-            {value}
-          </Typography.Paragraph> : value}
+          {handle ?
+            <Form.Item
+              style={{margin: 0, flexGrow: 1}}
+              labelCol={{span: 6}}
+              wrapperCol={{span: 18}}
+              label={<><Typography.Paragraph
+                style={{margin: 0}}
+                editable={{
+                  tooltip: '点击自定义字段名',
+                  onChange: (filedName) => {
+                    itemChange({filedName}, item.key);
+                  },
+                }}
+              >
+                {value}
+              </Typography.Paragraph><span className='red'>{item.required && '*'}</span></>}>
+              {inputType()}
+            </Form.Item> : value}
           <span hidden={!handle} className={styles.Actions}>
              <Checkbox
                checked={item.required}

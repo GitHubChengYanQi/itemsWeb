@@ -62,7 +62,7 @@ const TableConfig = (
   return <>
     {(card ? cardTable : table).map((columns, rowIndex) => {
       return <div key={rowIndex} style={{display: 'flex', alignItems: 'center'}}>
-        <div style={{width: 64}}>
+        <div style={{width: card ? 40 : 64}}>
           <Button
             disabled={rowIndex === 1}
             type='link'

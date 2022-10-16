@@ -5,6 +5,7 @@ import {Handle, Remove} from '../Item';
 
 import styles from './Container.module.less';
 import {MinusCircleFilled, PlusCircleFilled} from "@ant-design/icons";
+import ProCard from "@ant-design/pro-card";
 
 export interface Props {
   children: React.ReactNode;
@@ -151,13 +152,10 @@ export const Container = forwardRef<HTMLDivElement, Props>(
           <MinusCircleFilled onClick={onRemoveColumn}/>
         </div>
         {label ? (
-          <div className={styles.Header}>
-            {label}
-            <div className={styles.Actions}>
-              {onRemove ? <Remove onClick={onRemove}/> : undefined}
-              {!noNandle && <Handle {...handleProps} />}
-            </div>
-          </div>
+          <ProCard bodyStyle={{padding:0}} headerBordered className='h2Card' title={label} extra={<div className={styles.Actions}>
+            {onRemove ? <Remove onClick={onRemove}/> : undefined}
+            {!noNandle && <Handle {...handleProps} />}
+          </div>} />
         ) : null}
         {placeholder ? children : <ul style={ulStyle}>{children}</ul>}
       </div>

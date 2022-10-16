@@ -437,13 +437,13 @@ export function MultipleContainers(
             const newItems = items.map((item, index) => {
               if (index === overContainer) {
                 cardPosition = item;
-                return {...item, card: true,data:[]}
+                return {...item, card: true, data: []}
               }
               return item;
             });
             const array: any = [...newItems.map((item, index) => {
               if (index === 0) {
-                return {...item, data: [...cardPosition.data, ...item.data]}
+                return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
               }
               return item;
             }), {
@@ -451,7 +451,7 @@ export function MultipleContainers(
               cardLine: 1,
               cardColumn: 0,
               cardTable: true,
-              data: []
+              data: cardPosition.data.filter(item => item.key !== 'card')
             }]
             setItems(array)
           }
@@ -462,7 +462,7 @@ export function MultipleContainers(
           const newItems = items.map((item, index) => {
             if ((active.id === 'card' && activeContainer !== 0) && index === overContainer) {
               cardPosition = item;
-              return {...item, card: true,data:[]}
+              return {...item, card: true, data: []}
             }
             if (index === activeContainer) {
               return {
@@ -476,7 +476,7 @@ export function MultipleContainers(
           })
           const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
             if (index === 0) {
-              return {...item, data: [...cardPosition.data, ...item.data]}
+              return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
             }
             return item;
           }), {
@@ -484,7 +484,7 @@ export function MultipleContainers(
             cardLine: 1,
             cardColumn: 0,
             cardTable: true,
-            data: []
+            data: cardPosition.data.filter(item => item.key !== 'card')
           }] : newItems;
           setItems(array);
           setActiveId(null);
@@ -517,7 +517,7 @@ export function MultipleContainers(
             })
             const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
               if (index === 0) {
-                return {...item, data: [...cardPosition.data, ...item.data]}
+                return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
               }
               return item;
             }), {
@@ -525,7 +525,7 @@ export function MultipleContainers(
               cardLine: 1,
               cardColumn: 0,
               cardTable: true,
-              data: []
+              data: cardPosition.data.filter(item => item.key !== 'card')
             }] : newItems;
             setItems(array);
           } else if (active.id === 'card' && activeContainer !== 0) {
@@ -540,10 +540,16 @@ export function MultipleContainers(
 
             const array: any = [...newItems.map((item, index) => {
               if (index === 0) {
-                return {...item, data: [...cardPosition.data, ...item.data]}
+                return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
               }
               return item;
-            }), {...cardPosition, cardLine: 1, cardColumn: 0, cardTable: true, data: []}]
+            }), {
+              ...cardPosition,
+              cardLine: 1,
+              cardColumn: 0,
+              cardTable: true,
+              data: cardPosition.data.filter(item => item.key !== 'card')
+            }]
             setItems(array)
           }
           setActiveId(null);
@@ -592,7 +598,7 @@ export function MultipleContainers(
                   options={[{label: '%', value: '%'}, {label: 'vw', value: 'vw'}, {label: 'px', value: 'px'},]}/>}
               />
             </Space>
-            <Space align='center' style={{marginLeft:16}}>
+            <Space align='center' style={{marginLeft: 16}}>
               间距：
               <InputNumber
                 max={100}
@@ -653,7 +659,7 @@ export function MultipleContainers(
                   })
                   column = {
                     ...item,
-                    table:table.slice(1, table.length),
+                    table: table.slice(1, table.length),
                   }
                 }
                 if (item.cardTable) {
