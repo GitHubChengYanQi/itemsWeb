@@ -236,8 +236,14 @@ const SkuTable = ({...props}, ref) => {
     {dataIndex: 'remarks', title: '备注',},
     {dataIndex: 'user', title: '添加人', render: (value) => <Render text={value?.name || '-'} />, sorter: true},
     {dataIndex: 'createTime', title: '添加时间', sorter: true},
+    {},
     {
-      dataIndex: 'skuId', title: '操作', fixed: 'right', sorter: true, render: (value, record) => {
+      dataIndex: 'skuId',
+      title: '操作',
+      fixed: 'right',
+      sorter: true,
+      width:100,
+      render: (value, record) => {
         return (
           <>
             <EditButton onClick={() => {

@@ -80,10 +80,12 @@ const SkuForm = ({
       const otherData = data.filter(item => !newDataSource.some(defaultItem => defaultItem.key === item.key));
       defaultDataSource = [...newDataSource, ...otherData];
     }
-    setDataSource(defaultDataSource.map((item, index) => ({
+    const newDataSource = defaultDataSource.map((item, index) => ({
       ...item,
       index
-    })));
+    }));
+    setDataSource(newDataSource);
+    onChange(newDataSource);
   }, []);
 
   const dataSourceChange = (data = {}, key) => {

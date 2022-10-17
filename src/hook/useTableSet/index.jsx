@@ -1,7 +1,8 @@
-import {Button, Card, Dropdown, Input, Menu, message, Modal, notification, Select, Space, Spin} from 'antd';
+import {Button, Card, Dropdown, Input, Menu, message, Modal, Select, Space, Spin} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {useBoolean} from 'ahooks';
 import {CloseOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import classNames from 'classnames';
 import {useRequest} from '@/util/Request';
 import Icon from '@/components/Icon';
 import {
@@ -14,7 +15,6 @@ import {Sortable} from '@/components/Table/components/DndKit/Sortable';
 import styles from './index.module.less';
 import {isArray} from '@/util/Tools';
 import DeleteButton from '@/components/DeleteButton';
-import classNames from 'classnames';
 import Message from '@/components/Message';
 
 const md5 = require('md5');
@@ -42,8 +42,8 @@ const useTableSet = (column, tableKey) => {
   const itemsData = [];
 
   tableKey && Array.isArray(tableColumn) && tableColumn.map((items) => {
-    if (items && items.key) {
-      const props = items.props || {};
+    const props = items.props || {};
+    if (items && items.key && (items.title || props.title)) {
       return itemsData.push({
         title: items.title || props.title,
         key: items.key,
@@ -98,6 +98,8 @@ const useTableSet = (column, tableKey) => {
       Message.success('删除成功!');
       setFalse();
       refresh();
+      setDetail();
+      setTableColumn(defaultColumn);
     }
   });
 
