@@ -49,7 +49,7 @@ const ColumnsConfig = (
   }) => {
 
   return <DroppableContainer
-    ulStyle={card ? {padding: 0} : ulStyle}
+    ulStyle={card ? {padding: '24px 0',gridGap:0} : ulStyle}
     removeRowHidden={disabled || containerId !== 0 || table.length === 1}
     removeColumnHidden={disabled || (table.length === 1 && table[0].length === 1)}
     leftTopHidden={disabled || containerId !== 0}
@@ -93,7 +93,7 @@ const ColumnsConfig = (
     </>)}
     items={columns[containerId].data.map(item => item.key)}
     scrollable={scrollable}
-    style={containerStyle}
+    style={disabled ? {border:'none'} : containerStyle}
     unstyled={minimal}
     onRemove={disabled ? undefined : () => handleRemove(line, column)}
   >

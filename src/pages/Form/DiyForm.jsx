@@ -35,9 +35,8 @@ const DiyForm = () => {
   return <>
     <MultipleContainers
       vertical
-      items={[{line: 0, column: 0, data}, {line: 1, column: 0, data: []}]}
+      items={[{line: 0, column: 0, data}, {step: 0, line: 1, column: 0, data: []}]}
     />
-
   </>;
 };
 

@@ -42,7 +42,7 @@ import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
 
 import {createRange} from '../createRange';
-import {Button, InputNumber, Select, Space} from "antd";
+import {Button, Card, InputNumber, Select, Space, Steps} from "antd";
 import {isObject} from '@/util/Tools';
 
 export default {
@@ -120,6 +120,7 @@ export const DroppableContainer = (
 
 type Items = [
   {
+    step: number;
     line: number;
     column: number;
     cardLine?: number;
@@ -188,7 +189,11 @@ export function MultipleContainers(
     vertical = false,
     scrollable,
   }: Props) {
+
   const [items, setItems] = useState<Items>(initialItems);
+  console.log(items)
+
+  const [steps, setSteps] = useState([{data: [{step: 0, line: 1, column: 0, data: []}], type: 'add'}]);
 
   const [width, setWidth] = useState(100);
   const [gutter, setGutter] = useState(16);
@@ -199,6 +204,8 @@ export function MultipleContainers(
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
   const isSortingContainer = false;
+
+  const [currentStep, setCurrentStep] = useState(0);
 
   /**
    * Custom collision detection strategy optimized for multiple containers
@@ -350,167 +357,160 @@ export function MultipleContainers(
   }, [items]);
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={collisionDetectionStrategy}
-      measuring={{
-        droppable: {
-          strategy: MeasuringStrategy.Always,
-        },
-      }}
-      onDragStart={({active: {id, data: {current}}}) => {
-        setActiveId(id);
-        setActive(current);
-        setClonedItems(items);
-      }}
-      onDragOver={({active, over}) => {
+    <Card title="表单配置" extra={
+      <div>
+        <Space align='center' size={16}>
+          <Space>
+            行宽:
+            <InputNumber
+              max={100}
+              min={30}
+              value={width}
+              onChange={setWidth}
+              addonAfter={<Select
+                value={widthUnit}
+                onChange={setWidthUnit}
+                options={[{label: '%', value: '%'}, {label: 'vw', value: 'vw'}, {label: 'px', value: 'px'},]} />}
+            />
+          </Space>
 
-        const overId = over?.id;
+          <Space>
+            间距:
+            <InputNumber
+              max={100}
+              min={8}
+              value={gutter}
+              onChange={setGutter}
+              addonAfter='px'
+            />
+          </Space>
 
-        const overContainer = findContainer(overId || '');
-        const activeContainer = findContainer(active.id || '');
-        if (typeof overContainer !== 'number' || typeof activeContainer !== 'number') {
-          return;
-        }
-        if (items[overContainer].cardTable && active.id === 'card') {
-          return;
-        }
-        if (activeContainer !== overContainer) {
-          const activeItems = items[activeContainer].data;
-          const overItems = items[overContainer].data;
-          const overIndex = overItems.map(item => item.key).indexOf(overId);
-          const activeIndex = activeItems.map(item => item.key).indexOf(active.id);
-          let newIndex: number;
+          <Button onClick={() => {
+            setSteps([...steps, {data: [{step: steps.length - 1, line: 1, column: 0, data: []}], type: 'add'}])
+          }}>增加步骤</Button>
+        </Space>
 
-          const isBelowOverItem =
-            over &&
-            active.rect.current.translated &&
-            active.rect.current.translated.top >
-            over.rect.top + over.rect.height;
-          const modifier = isBelowOverItem ? 1 : 0;
 
-          newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+      </div>
+    }>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={collisionDetectionStrategy}
+        measuring={{
+          droppable: {
+            strategy: MeasuringStrategy.Always,
+          },
+        }}
+        onDragStart={({active: {id, data: {current}}}) => {
+          setActiveId(id);
+          setActive(current);
+          setClonedItems(items);
+        }}
+        onDragOver={({active, over}) => {
 
-          recentlyMovedToNewContainer.current = true;
-          const newItems: any = items.map((item, index) => {
-            if (index === activeContainer) {
-              return {
-                ...item,
-                data: item.data.filter(
-                  (item) => item.key !== active.id
-                )
+          const overId = over?.id;
+
+          const overContainer = findContainer(overId || '');
+          const activeContainer = findContainer(active.id || '');
+          if (typeof overContainer !== 'number' || typeof activeContainer !== 'number') {
+            return;
+          }
+          if (items[overContainer].cardTable && active.id === 'card') {
+            return;
+          }
+          if (activeContainer !== overContainer) {
+            const activeItems = items[activeContainer].data;
+            const overItems = items[overContainer].data;
+            const overIndex = overItems.map(item => item.key).indexOf(overId);
+            const activeIndex = activeItems.map(item => item.key).indexOf(active.id);
+            let newIndex: number;
+
+            const isBelowOverItem =
+              over &&
+              active.rect.current.translated &&
+              active.rect.current.translated.top >
+              over.rect.top + over.rect.height;
+            const modifier = isBelowOverItem ? 1 : 0;
+
+            newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+
+            recentlyMovedToNewContainer.current = true;
+            const newItems: any = items.map((item, index) => {
+              if (index === activeContainer) {
+                return {
+                  ...item,
+                  data: item.data.filter(
+                    (item) => item.key !== active.id
+                  )
+                }
+              } else if (index === overContainer) {
+                return {
+                  ...item,
+                  data: [
+                    ...item.data.slice(0, newIndex),
+                    items[activeContainer].data[activeIndex],
+                    ...item.data.slice(
+                      newIndex,
+                      item.data.length
+                    ),
+                  ]
+                }
+              } else {
+                return item
               }
-            } else if (index === overContainer) {
-              return {
-                ...item,
-                data: [
-                  ...item.data.slice(0, newIndex),
-                  items[activeContainer].data[activeIndex],
-                  ...item.data.slice(
-                    newIndex,
-                    item.data.length
-                  ),
-                ]
-              }
-            } else {
-              return item
+            })
+            setItems(newItems);
+          }
+        }}
+        onDragEnd={({active, over}) => {
+
+          const activeContainer = findContainer(active.id);
+          const overId = over?.id;
+          const overContainer = findContainer(overId);
+
+          if (isObject(items[overContainer]).cardTable && active.id === 'card') {
+            setActiveId(null);
+            return;
+          }
+
+          if (!overId) {
+            setActiveId(null);
+            if ((active.id === 'card' && activeContainer !== 0)) {
+              let cardPosition: any = {};
+              const newItems = items.map((item, index) => {
+                if (index === overContainer) {
+                  cardPosition = item;
+                  return {...item, card: true, data: []}
+                }
+                return item;
+              });
+              const array: any = [...newItems.map((item, index) => {
+                if (index === 0) {
+                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
+                }
+                return item;
+              }), {
+                ...cardPosition,
+                cardLine: 1,
+                cardColumn: 0,
+                cardTable: true,
+                data: cardPosition.data.filter(item => item.key !== 'card')
+              }]
+              setItems(array)
             }
-          })
-          setItems(newItems);
-        }
-      }}
-      onDragEnd={({active, over}) => {
-
-        const activeContainer = findContainer(active.id);
-        const overId = over?.id;
-        const overContainer = findContainer(overId);
-
-        if (isObject(items[overContainer]).cardTable && active.id === 'card') {
-          setActiveId(null);
-          return;
-        }
-
-        if (!overId) {
-          setActiveId(null);
-          if ((active.id === 'card' && activeContainer !== 0)) {
+            return;
+          }
+          if (overId === TRASH_ID) {
             let cardPosition: any = {};
             const newItems = items.map((item, index) => {
-              if (index === overContainer) {
+              if ((active.id === 'card' && activeContainer !== 0) && index === overContainer) {
                 cardPosition = item;
                 return {...item, card: true, data: []}
               }
-              return item;
-            });
-            const array: any = [...newItems.map((item, index) => {
-              if (index === 0) {
-                return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
-              }
-              return item;
-            }), {
-              ...cardPosition,
-              cardLine: 1,
-              cardColumn: 0,
-              cardTable: true,
-              data: cardPosition.data.filter(item => item.key !== 'card')
-            }]
-            setItems(array)
-          }
-          return;
-        }
-        if (overId === TRASH_ID) {
-          let cardPosition: any = {};
-          const newItems = items.map((item, index) => {
-            if ((active.id === 'card' && activeContainer !== 0) && index === overContainer) {
-              cardPosition = item;
-              return {...item, card: true, data: []}
-            }
-            if (index === activeContainer) {
-              return {
-                ...item,
-                data: item.data.filter(
-                  (id) => id.key !== activeId
-                )
-              }
-            }
-            return item;
-          })
-          const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
-            if (index === 0) {
-              return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
-            }
-            return item;
-          }), {
-            ...cardPosition,
-            cardLine: 1,
-            cardColumn: 0,
-            cardTable: true,
-            data: cardPosition.data.filter(item => item.key !== 'card')
-          }] : newItems;
-          setItems(array);
-          setActiveId(null);
-          return;
-        }
-
-
-        if (typeof overContainer === 'number') {
-          const activeIndex = items[activeContainer].data.map(item => item.key).indexOf(active.id);
-          const overIndex = items[overContainer].data.map(item => item.key).indexOf(overId);
-
-          if (activeIndex !== overIndex) {
-            let cardPosition;
-            const newItems = items.map((item, index) => {
-              if (index === overContainer) {
-                if ((active.id === 'card' && activeContainer !== 0)) {
-                  cardPosition = item;
-                }
+              if (index === activeContainer) {
                 return {
                   ...item,
-                  card: (active.id === 'card' && activeContainer !== 0) || item.card,
-                  data: (active.id === 'card' && activeContainer !== 0) || item.card ? [] : arrayMove(
-                    items[overContainer].data,
-                    activeIndex,
-                    overIndex
-                  )
+                  data: item.data.filter((id) => id.key !== activeId)
                 }
               }
               return item;
@@ -528,165 +528,203 @@ export function MultipleContainers(
               data: cardPosition.data.filter(item => item.key !== 'card')
             }] : newItems;
             setItems(array);
-          } else if (active.id === 'card' && activeContainer !== 0) {
-            let cardPosition: any = {};
-            const newItems = items.map((item, index) => {
-              if (index === overContainer) {
-                cardPosition = item;
-                return {...item, card: true, data: []}
-              }
-              return item;
-            });
-
-            const array: any = [...newItems.map((item, index) => {
-              if (index === 0) {
-                return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
-              }
-              return item;
-            }), {
-              ...cardPosition,
-              cardLine: 1,
-              cardColumn: 0,
-              cardTable: true,
-              data: cardPosition.data.filter(item => item.key !== 'card')
-            }]
-            setItems(array)
+            setActiveId(null);
+            return;
           }
-          setActiveId(null);
-        }
-      }
-      }
-      cancelDrop={cancelDrop}
-      onDragCancel={onDragCancel}
-      modifiers={modifiers}
-    >
-      <div style={{display: 'flex', alignItems: 'flex-start'}}>
-        <div style={{minWidth: 350, display: "inline-block"}}>
-          <ColumnsConfig
-            ulStyle={{padding: 16}}
-            card={false}
-            disabled
-            containerId={0}
-            id='0-0'
-            items={items}
-            columns={items}
-            scrollable={scrollable}
-            minimal={minimal}
-            handleRemove={() => {
-            }}
-            strategy={strategy}
-            isSortingContainer={isSortingContainer}
-            handle={handle}
-            getItemStyles={getItemStyles}
-            wrapperStyle={wrapperStyle}
-            renderItem={renderItem}
-            getIndex={getIndex}
-          />
-        </div>
-        <div style={{flexGrow: 1, height: '90vh', overflow: 'auto', padding: '20px 40px'}}>
-          <div style={{padding: 24, textAlign: 'center'}}>
-            <Space align='center'>
-              行宽：
-              <InputNumber
-                max={100}
-                min={30}
-                value={width}
-                onChange={setWidth}
-                addonAfter={<Select
-                  value={widthUnit}
-                  onChange={setWidthUnit}
-                  options={[{label: '%', value: '%'}, {label: 'vw', value: 'vw'}, {label: 'px', value: 'px'},]}/>}
-              />
-            </Space>
-            <Space align='center' style={{marginLeft: 16}}>
-              间距：
-              <InputNumber
-                max={100}
-                min={8}
-                value={gutter}
-                onChange={setGutter}
-                addonAfter='px'
-              />
-            </Space>
-          </div>
-          <TableConfig
-            onUp={onUp}
-            onDown={onDown}
-            configChange={configChange}
-            gutter={gutter}
-            widthUnit={widthUnit}
-            handleRemove={handleRemoveCard}
-            card={false}
-            width={width}
-            vertical={vertical}
-            PLACEHOLDER_ID={PLACEHOLDER_ID}
-            items={items}
-            scrollable={scrollable}
-            containerStyle={containerStyle}
-            minimal={minimal}
-            strategy={strategy}
-            isSortingContainer={isSortingContainer}
-            handle={handle}
-            getItemStyles={getItemStyles}
-            wrapperStyle={wrapperStyle}
-            renderItem={renderItem}
-            getIndex={getIndex}
-            empty={empty}
-            handleAddColumn={handleAddColumn}
-            handleAddRow={handleAddRow}
-            handleRemoveRow={handleRemoveRow}
-            handleRemoveColumn={handleRemoveColumn}
-            itemChange={itemChange}
-          />
-          <div style={{paddingTop: 24}}>
-            <Button type='primary' onClick={() => {
-              const submitData: any = [];
 
-              items.slice(1, items.length).forEach((item) => {
-                let column: any = item;
-                if (item.card) {
-                  const table: any = [];
-                  const cardTable = items.filter(cardItems => {
-                    return cardItems.line === item.line && cardItems.column === item.column && cardItems.cardTable
-                  })
-                  cardTable.forEach((item) => {
-                    if (table[item.cardLine || 0]) {
-                      const columns = [...table[item.cardLine || 0], item];
-                      table[item.cardLine || 0] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
-                    } else {
-                      table[item.cardLine || 0] = [item];
-                    }
-                  })
-                  column = {
+
+          if (typeof overContainer === 'number') {
+            const activeIndex = items[activeContainer].data.map(item => item.key).indexOf(active.id);
+            const overIndex = items[overContainer].data.map(item => item.key).indexOf(overId);
+
+            if (activeIndex !== overIndex) {
+              let cardPosition;
+              const newItems = items.map((item, index) => {
+                if (index === overContainer) {
+                  if ((active.id === 'card' && activeContainer !== 0)) {
+                    cardPosition = item;
+                  }
+                  return {
                     ...item,
-                    table: table.slice(1, table.length),
+                    card: (active.id === 'card' && activeContainer !== 0) || item.card,
+                    data: (active.id === 'card' && activeContainer !== 0) || item.card ? [] : arrayMove(
+                      items[overContainer].data,
+                      activeIndex,
+                      overIndex
+                    )
                   }
                 }
-                if (item.cardTable) {
-                  return;
-                } else if (submitData[item.line]) {
-                  const columns = [...submitData[item.line], column];
-                  submitData[item.line] = columns.sort((a, b) => a.column - b.column);
-                } else {
-                  submitData[item.line] = [column];
-                }
+                return item;
               })
-              console.log(submitData.slice(1, items.length))
-            }}>保存</Button>
+              const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
+                if (index === 0) {
+                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
+                }
+                return item;
+              }), {
+                ...cardPosition,
+                cardLine: 1,
+                cardColumn: 0,
+                cardTable: true,
+                data: cardPosition.data.filter(item => item.key !== 'card')
+              }] : newItems;
+              setItems(array);
+            } else if (active.id === 'card' && activeContainer !== 0) {
+              let cardPosition: any = {};
+              const newItems = items.map((item, index) => {
+                if (index === overContainer) {
+                  cardPosition = item;
+                  return {...item, card: true, data: []}
+                }
+                return item;
+              });
+
+              const array: any = [...newItems.map((item, index) => {
+                if (index === 0) {
+                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
+                }
+                return item;
+              }), {
+                ...cardPosition,
+                cardLine: 1,
+                cardColumn: 0,
+                cardTable: true,
+                data: cardPosition.data.filter(item => item.key !== 'card')
+              }]
+              setItems(array)
+            }
+            setActiveId(null);
+          }
+        }
+        }
+        cancelDrop={cancelDrop}
+        onDragCancel={onDragCancel}
+        modifiers={modifiers}
+      >
+        <div style={{display: 'flex', alignItems: 'flex-start'}}>
+          <div style={{minWidth: 350, display: "inline-block"}}>
+            <ColumnsConfig
+              ulStyle={{padding: 16}}
+              card={false}
+              disabled
+              containerId={0}
+              id='0-0'
+              items={items}
+              columns={items}
+              scrollable={scrollable}
+              minimal={minimal}
+              handleRemove={() => {
+              }}
+              strategy={strategy}
+              isSortingContainer={isSortingContainer}
+              handle={handle}
+              getItemStyles={getItemStyles}
+              wrapperStyle={wrapperStyle}
+              renderItem={renderItem}
+              getIndex={getIndex}
+            />
+          </div>
+          <div style={{flexGrow: 1, height: '90vh', overflow: 'auto', padding: '20px 40px'}}>
+            <div style={{marginBottom: 24}}>
+              <Steps current={currentStep} onChange={(step) => {
+                const newSteps: any = steps.map((item, index) => {
+                  if (index === currentStep) {
+                    return {...item, data: items.filter((item, index) => index !== 0)}
+                  }
+                  return item;
+                })
+                setSteps(newSteps)
+                const newItems: any = [items[0], ...steps[step].data]
+                setItems(newItems)
+                setCurrentStep(step);
+              }}>
+                {
+                  steps.map((item, index) => {
+                    return <Steps.Step title={`步骤${index + 1}`} key={index} />
+                  })
+                }
+              </Steps>
+            </div>
+
+            <TableConfig
+              onUp={onUp}
+              onDown={onDown}
+              configChange={configChange}
+              gutter={gutter}
+              widthUnit={widthUnit}
+              handleRemove={handleRemoveCard}
+              card={false}
+              width={width}
+              vertical={vertical}
+              PLACEHOLDER_ID={PLACEHOLDER_ID}
+              items={items}
+              scrollable={scrollable}
+              containerStyle={containerStyle}
+              minimal={minimal}
+              strategy={strategy}
+              isSortingContainer={isSortingContainer}
+              handle={handle}
+              getItemStyles={getItemStyles}
+              wrapperStyle={wrapperStyle}
+              renderItem={renderItem}
+              getIndex={getIndex}
+              empty={empty}
+              handleAddColumn={handleAddColumn}
+              handleAddRow={handleAddRow}
+              handleRemoveRow={handleRemoveRow}
+              handleRemoveColumn={handleRemoveColumn}
+              itemChange={itemChange}
+            />
+            <div style={{paddingTop: 24}}>
+              <Button type='primary' onClick={() => {
+                const submitData: any = [];
+
+                items.slice(1, items.length).forEach((item) => {
+                  let column: any = item;
+                  if (item.card) {
+                    const table: any = [];
+                    const cardTable = items.filter(cardItems => {
+                      return cardItems.line === item.line && cardItems.column === item.column && cardItems.cardTable
+                    })
+                    cardTable.forEach((item) => {
+                      if (table[item.cardLine || 0]) {
+                        const columns = [...table[item.cardLine || 0], item];
+                        table[item.cardLine || 0] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
+                      } else {
+                        table[item.cardLine || 0] = [item];
+                      }
+                    })
+                    column = {
+                      ...item,
+                      table: table.slice(1, table.length),
+                    }
+                  }
+                  if (item.cardTable) {
+                    return;
+                  } else if (submitData[item.line]) {
+                    const columns = [...submitData[item.line], column];
+                    submitData[item.line] = columns.sort((a, b) => a.column - b.column);
+                  } else {
+                    submitData[item.line] = [column];
+                  }
+                })
+                console.log(submitData.slice(1, items.length))
+              }}>保存</Button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {createPortal(
-        <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
-          {activeId ? renderSortableItemDragOverlay(activeId, active) : null}
-        </DragOverlay>,
-        document.body
-      )}
-      {trashable && activeId ? (
-        <Trash id={TRASH_ID}/>
-      ) : null}
-    </DndContext>
+        {createPortal(
+          <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
+            {activeId ? renderSortableItemDragOverlay(activeId, active) : null}
+          </DragOverlay>,
+          document.body
+        )}
+        {trashable && activeId ? (
+          <Trash id={TRASH_ID} />
+        ) : null}
+      </DndContext>
+    </Card>
   );
 
   function renderSortableItemDragOverlay(id: string, active: any) {
@@ -893,7 +931,7 @@ export function MultipleContainers(
           return {...item, column: item.column + 1}
         }
         return item;
-      }), {line, column, data: []}];
+      }), {step: currentStep, line, column, data: []}];
       setItems(newItems)
     }
   }
@@ -913,7 +951,7 @@ export function MultipleContainers(
           return {...item, line: item.line + 1}
         }
         return item;
-      }), {line, column: 0, data: []}];
+      }), {step: currentStep, line, column: 0, data: []}];
       setItems(newItems)
     }
   }

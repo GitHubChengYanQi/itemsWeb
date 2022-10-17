@@ -1,8 +1,8 @@
-import React from "react";
-import {horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
-import {DownOutlined, UpOutlined} from "@ant-design/icons";
-import {Button} from "antd";
-import ColumnsConfig from "@/pages/Form/components/ColumnsConfig";
+import React from 'react';
+import {horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
+import {DownOutlined, UpOutlined} from '@ant-design/icons';
+import {Button} from 'antd';
+import ColumnsConfig from '@/pages/Form/components/ColumnsConfig';
 
 const TableConfig = (
   {
@@ -65,21 +65,23 @@ const TableConfig = (
         <div style={{width: card ? 40 : 64}}>
           <Button
             disabled={rowIndex === 1}
-            type='link'
+            type="link"
+            style={{height: 20, padding: '0 16px'}}
             onClick={() => onUp(rowIndex, card, position)}>
-            <UpOutlined/>
+            <UpOutlined />
           </Button>
           <Button
+            style={{height: 20, padding: '0 16px'}}
             disabled={rowIndex === (card ? cardTable : table).length - 1}
-            type='link'
+            type="link"
             onClick={() => onDown(rowIndex, card, position)}>
-            <DownOutlined/>
+            <DownOutlined />
           </Button>
         </div>
         <div style={{
-          padding: card && 24,
-          paddingBottom: rowIndex === (card ? cardTable : table).length - 1 ? 20 : 0,
-          paddingTop: rowIndex === 1 ? 20 : 0,
+          padding: card && '0 24px',
+          // paddingBottom: rowIndex === (card ? cardTable : table).length - 1 ? 20 : 0,
+          // paddingTop: rowIndex === 1 ? 20 : 0,
           width: '100%'
         }}>
           <div
@@ -90,8 +92,8 @@ const TableConfig = (
               padding: 0,
               gridAutoFlow: 'column',
               alignItems: 'flex-start',
-              border: 'dashed 1px rgba(0,0,0,0.05)',
-              borderBottom: rowIndex === (card ? cardTable : table).length - 1 ? 'dashed 1px rgba(0,0,0,0.05)' : 'none',
+              border: 'dashed 1px rgba(0,0,0,0.2)',
+              borderBottom: rowIndex === (card ? cardTable : table).length - 1 ? 'dashed 1px rgba(0,0,0,0.2)' : 'none',
               width: card ? '100%' : `${width + widthUnit}`,
               // overflow: 'hidden'
             }}
@@ -128,7 +130,7 @@ const TableConfig = (
                     items={items}
                     columns={columns}
                     scrollable={scrollable}
-                    containerStyle={{borderRight: index !== columns.length - 1 ? 'dashed 1px rgba(0,0,0,0.05)' : 'none'}}
+                    containerStyle={{borderRight: index !== columns.length - 1 ? 'dashed 1px rgba(0,0,0,0.2)' : 'none'}}
                     minimal={minimal}
                     handleRemove={handleRemove}
                     strategy={strategy}
