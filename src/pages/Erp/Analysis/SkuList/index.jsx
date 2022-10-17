@@ -12,6 +12,7 @@ import {Handle} from '@/components/Table/components/DndKit/Item';
 import Note from '@/components/Note';
 import InputNumber from '@/components/InputNumber';
 import styles from './index.module.less';
+import {partsList} from '@/pages/Erp/parts/PartsUrl';
 
 const SkuList = ({...props}, ref) => {
 
@@ -52,7 +53,7 @@ const SkuList = ({...props}, ref) => {
   const Item = (props) => {
     const {value, item, index, ...other} = props;
     return <Space size={4}>
-      <Handle icon={<MenuOutlined/>} {...other} />
+      <Handle icon={<MenuOutlined />} {...other} />
       <Note width={300}>{value}</Note>
       <InputNumber
         max={999}
@@ -63,15 +64,15 @@ const SkuList = ({...props}, ref) => {
           setSku({num: value}, index);
         }}
       />
-      <Button type='text' onClick={() => {
+      <Button type="text" onClick={() => {
         setSku({fixed: !item.fixed}, index);
       }}>
-        <VerticalAlignTopOutlined style={{color: item.fixed ? '#d79418' : '#b3b3b3', fontSize: 24}}/>
+        <VerticalAlignTopOutlined style={{color: item.fixed ? '#d79418' : '#b3b3b3', fontSize: 24}} />
       </Button>
       <Button
         danger
         style={{padding: 0}}
-        type='link'
+        type="link"
         onClick={async () => {
           const array = skuList.filter((item, skuIndex) => {
             return skuIndex !== index;
@@ -79,7 +80,7 @@ const SkuList = ({...props}, ref) => {
           await setSkuList(array);
           await toggle();
         }}>
-        <DeleteOutlined/>
+        <DeleteOutlined />
       </Button>
     </Space>;
   };
@@ -98,7 +99,7 @@ const SkuList = ({...props}, ref) => {
         return {
           ...item,
           key: item.skuId,
-          title: <SkuResultSkuJsons skuResult={item.skuResult}/>,
+          title: <SkuResultSkuJsons skuResult={item.skuResult} />,
         };
       })}
       onDragEnd={async (allIems, activeIndex, overIndex) => {
@@ -120,13 +121,13 @@ const SkuList = ({...props}, ref) => {
       {
         skuLoading
           ?
-          <Spin/>
+          <Spin />
           :
           <Button
             style={{width: '100%'}}
             onClick={() => {
               addSku.current.open(false);
-            }}><PlusOutlined/></Button>
+            }}><PlusOutlined /></Button>
       }
     </div>
 
@@ -154,8 +155,17 @@ const SkuList = ({...props}, ref) => {
         }}>确定</Button>
       </Space>}
     >
-      <div style={{padding:24}}>
-        <AddSpu noSpu maxWidth='100%' onChange={setSkuId} value={skuId} noSkuIds={skuList.map((item) => item.skuId)}/>
+      <div style={{padding: 24}}>
+        <AddSpu
+        noSpu
+          params={{status: 99}}
+          skuResult
+          api={partsList}
+          maxWidth="100%"
+          onChange={setSkuId}
+          value={skuId}
+          noSkuIds={skuList.map((item) => item.skuId)}
+        />
       </div>
     </Modal>
   </>;
