@@ -1,8 +1,8 @@
 import React, {} from 'react';
-import { Typography} from 'antd';
+import {Typography} from 'antd';
 import {SortableContext} from '@dnd-kit/sortable';
 import {DroppableContainer, SortableItem} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
-import TableConfig from "@/pages/Form/components/TableConfig";
+import TableConfig from '@/pages/Form/components/TableConfig';
 
 const ColumnsConfig = (
   {
@@ -28,7 +28,6 @@ const ColumnsConfig = (
     minimal,
     handleRemove,
     strategy,
-    isSortingContainer,
     handle,
     getItemStyles,
     wrapperStyle,
@@ -39,6 +38,7 @@ const ColumnsConfig = (
     gutter,
     itemChange = () => {
     },
+    mobile,
     onUp = () => {
     },
     onDown = () => {
@@ -49,13 +49,13 @@ const ColumnsConfig = (
   }) => {
 
   return <DroppableContainer
-    ulStyle={card ? {padding: '24px 0',gridGap:0} : ulStyle}
+    ulStyle={card ? {padding: '24px 0', gridGap: 0} : ulStyle}
     removeRowHidden={disabled || containerId !== 0 || table.length === 1}
     removeColumnHidden={disabled || (table.length === 1 && table[0].length === 1)}
     leftTopHidden={disabled || containerId !== 0}
     leftBottomHidden={disabled || containerId !== 0}
-    topLeftHidden={disabled}
-    topRightHidden={disabled}
+    topLeftHidden={disabled || mobile}
+    topRightHidden={disabled || mobile}
     onRemoveColumn={() => {
       handleRemoveColumn(line, column, cardTable, item);
     }}
@@ -93,7 +93,7 @@ const ColumnsConfig = (
     </>)}
     items={columns[containerId].data.map(item => item.key)}
     scrollable={scrollable}
-    style={disabled ? {border:'none'} : containerStyle}
+    style={disabled ? {border: 'none'} : containerStyle}
     unstyled={minimal}
     onRemove={disabled ? undefined : () => handleRemove(line, column)}
   >
@@ -101,6 +101,7 @@ const ColumnsConfig = (
       {columns[containerId].data.map((item, index) => {
         return (
           <SortableItem
+            mobile={mobile}
             itemChange={itemChange}
             disabled={item.disabled}
             key={item.key}
@@ -120,6 +121,7 @@ const ColumnsConfig = (
     </SortableContext> : <TableConfig
       position={item}
       onUp={onUp}
+      mobile={mobile}
       onDown={onDown}
       gutter={gutter}
       itemChange={itemChange}
@@ -132,7 +134,6 @@ const ColumnsConfig = (
       minimal={minimal}
       handleRemove={handleRemove}
       strategy={strategy}
-      isSortingContainer={isSortingContainer}
       handle={handle}
       getItemStyles={getItemStyles}
       wrapperStyle={wrapperStyle}

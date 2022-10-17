@@ -6,7 +6,7 @@ import type {Transform} from '@dnd-kit/utilities';
 import {Handle, Remove} from './components';
 
 import styles from './Item.module.less';
-import {Button, Checkbox, Form, Input, Radio, Select, Typography, Upload} from "antd";
+import {Button, Checkbox, Form, Input, Radio, Select, Space, Typography, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 
 export interface Props {
@@ -21,6 +21,7 @@ export interface Props {
   transform?: Transform | null;
   listeners?: DraggableSyntheticListeners;
   sorting?: boolean;
+  mobile?: boolean;
   style?: React.CSSProperties;
   transition?: string | null;
   wrapperStyle?: React.CSSProperties;
@@ -29,7 +30,7 @@ export interface Props {
 
   onRemove?(): void;
 
-  itemChange: Function;
+  itemChange?: Function;
 
   renderItem?(args: {
     dragOverlay: boolean;
@@ -69,6 +70,7 @@ export const Item = React.memo(
         transform,
         value,
         item,
+        mobile,
         wrapperStyle,
         ...props
       },
@@ -78,18 +80,35 @@ export const Item = React.memo(
       const inputType = () => {
         switch (item.inputType) {
           case 'input':
-            return <Input disabled placeholder='请输入'/>;
+            return <Input disabled placeholder='请输入' />;
           case 'select':
-            return <Select disabled placeholder='请选择'/>;
+            return <Select disabled placeholder='请选择' />;
           case 'upload':
             return <Upload disabled>
-              <Button icon={<UploadOutlined/>}>上传</Button>
+              <Button icon={<UploadOutlined />}>上传</Button>
             </Upload>;
           case 'radio':
             return <Radio.Group><Radio>单选1</Radio><Radio>单选2</Radio></Radio.Group>;
           default:
-            return <Input disabled placeholder='请输入'/>
+            return <Input disabled placeholder='请输入' />
         }
+      }
+
+      const label = () => {
+        return <div style={{flexGrow: 1, marginLeft: 16}}>
+          <Typography.Paragraph
+            style={{margin: 0, display: 'inline-block'}}
+            editable={{
+              tooltip: '点击自定义字段名',
+              onChange: (filedName) => {
+                itemChange({filedName}, item.key);
+              },
+            }}
+          >
+            {value}
+          </Typography.Paragraph>
+          <span className='red'>{item.required && '*'}</span>
+        </div>
       }
 
       useEffect(() => {
@@ -150,30 +169,24 @@ export const Item = React.memo(
           {...props}
           tabIndex={!handle ? 0 : undefined}
         >
-          {handle ?
-            <Form.Item
-              style={{margin: 0, flexGrow: 1}}
-              labelCol={{span: 6}}
-              wrapperCol={{span: 18}}
-              label={<><Typography.Paragraph
-                style={{margin: 0}}
-                editable={{
-                  tooltip: '点击自定义字段名',
-                  onChange: (filedName) => {
-                    itemChange({filedName}, item.key);
-                  },
-                }}
-              >
-                {value}
-              </Typography.Paragraph><span className='red'>{item.required && '*'}</span></>}>
-              {inputType()}
-            </Form.Item> : value}
-          <span hidden={!handle} className={styles.Actions}>
-             <Checkbox
-               checked={item.required}
-               onChange={({target: {checked}}) => itemChange({required: checked}, item.key)}>必填</Checkbox>
+           <span hidden={!handle} className={styles.Actions}>
             <Handle {...listeners} />
             </span>
+          {handle ? (
+              mobile ? label() : <Form.Item
+                style={{margin: 0, flexGrow: 1}}
+                labelCol={{span: 6}}
+                wrapperCol={{span: 18}}
+                label={label()}>
+                {inputType()}
+              </Form.Item>
+            )
+            : value}
+          {handle && <Checkbox
+            style={{padding:'0 12px'}}
+            checked={item.required}
+            onChange={({target: {checked}}) => itemChange({required: checked}, item.key)}
+          >必填</Checkbox>}
         </div>
       </li>
     }

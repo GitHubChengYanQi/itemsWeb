@@ -10,6 +10,7 @@ const TableConfig = (
     gutter,
     widthUnit,
     card,
+    mobile,
     width,
     vertical,
     PLACEHOLDER_ID,
@@ -19,7 +20,6 @@ const TableConfig = (
     minimal,
     handleRemove,
     strategy,
-    isSortingContainer,
     handle,
     getItemStyles,
     wrapperStyle,
@@ -108,6 +108,7 @@ const TableConfig = (
             >
               {columns.map((item, index) => {
                   return <ColumnsConfig
+                    mobile={mobile}
                     onUp={onUp}
                     onDown={onDown}
                     gutter={gutter}
@@ -134,7 +135,6 @@ const TableConfig = (
                     minimal={minimal}
                     handleRemove={handleRemove}
                     strategy={strategy}
-                    isSortingContainer={isSortingContainer}
                     handle={handle}
                     getItemStyles={getItemStyles}
                     wrapperStyle={wrapperStyle}

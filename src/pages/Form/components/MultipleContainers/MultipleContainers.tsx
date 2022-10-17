@@ -1,49 +1,35 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {createPortal, unstable_batchedUpdates} from 'react-dom';
+import React, {useEffect, useState} from 'react';
+import {createPortal} from 'react-dom';
 import {
   CancelDrop,
-  closestCenter,
-  pointerWithin,
-  rectIntersection,
-  CollisionDetection,
+  defaultDropAnimation,
   DndContext,
   DragOverlay,
   DropAnimation,
-  defaultDropAnimation,
-  getFirstCollision,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  Modifiers,
-  useDroppable,
-  UniqueIdentifier,
-  useSensors,
-  useSensor,
-  MeasuringStrategy,
   KeyboardCoordinateGetter,
+  MeasuringStrategy,
+  Modifiers,
+  UniqueIdentifier,
+  useDroppable,
 } from '@dnd-kit/core';
 import {
   AnimateLayoutChanges,
-  SortableContext,
-  useSortable,
   arrayMove,
   defaultAnimateLayoutChanges,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
   SortingStrategy,
-  horizontalListSortingStrategy,
+  useSortable,
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
-import ColumnsConfig from '../ColumnsConfig'
-import TableConfig from '../TableConfig'
+import {Button, Card, Checkbox, InputNumber, Modal, Select, Space, Steps, Tabs, Tooltip, Typography} from 'antd';
+import ColumnsConfig from '../ColumnsConfig';
+import TableConfig from '../TableConfig';
 
 
 import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
-
-import {createRange} from '../createRange';
-import {Button, Card, InputNumber, Select, Space, Steps} from "antd";
 import {isObject} from '@/util/Tools';
+import {DeleteOutlined} from "@ant-design/icons";
 
 export default {
   title: 'Presets/Sortable/Multiple Containers',
@@ -52,7 +38,6 @@ export default {
 
 const dropAnimation: DropAnimation = {
   ...defaultDropAnimation,
-  dragSourceOpacity: 0.5,
 };
 
 const animateLayoutChanges: AnimateLayoutChanges = (args) =>
@@ -93,7 +78,7 @@ export const DroppableContainer = (
   });
   const isOverContainer = over
     ? (id === over.id && active?.data.current?.type !== 'container') ||
-    items.includes(over.id)
+    items.includes(`${over.id}`)
     : false;
 
   return (
@@ -138,17 +123,9 @@ interface Props {
   containerStyle?: React.CSSProperties;
   coordinateGetter?: KeyboardCoordinateGetter;
 
-  getItemStyles?(args: {
-    value: UniqueIdentifier;
-    index: number;
-    overIndex: number;
-    isDragging: boolean;
-    containerId: UniqueIdentifier;
-    isSorting: boolean;
-    isDragOverlay: boolean;
-  }): React.CSSProperties;
+  getItemStyles: (styles: any) => {};
 
-  wrapperStyle?(args: { index: number }): React.CSSProperties;
+  wrapperStyle: (styles: any) => {};
 
   itemCount?: number;
   width?: number;
@@ -172,13 +149,9 @@ const empty: UniqueIdentifier[] = [];
 export function MultipleContainers(
   {
     adjustScale = false,
-    itemCount = 3,
     cancelDrop,
-    columns,
     handle = false,
     items: initialItems,
-    containerStyle,
-    coordinateGetter = sortableKeyboardCoordinates,
     getItemStyles = () => ({}),
     wrapperStyle = () => ({}),
     minimal = false,
@@ -190,10 +163,17 @@ export function MultipleContainers(
     scrollable,
   }: Props) {
 
-  const [items, setItems] = useState<Items>(initialItems);
-  console.log(items)
+  const initSteps = [{data: [{step: 0, line: 1, column: 0, data: []}], type: 'add', title: ''}];
 
-  const [steps, setSteps] = useState([{data: [{step: 0, line: 1, column: 0, data: []}], type: 'add'}]);
+  const [items, setItems] = useState<Items>(initialItems);
+
+  const [steps, setSteps] = useState(initSteps);
+
+  const [delStep, setDelStep] = useState<number | undefined>();
+
+  const [module, setModule] = useState('pc');
+
+  const mobile = module === 'mobile';
 
   const [width, setWidth] = useState(100);
   const [gutter, setGutter] = useState(16);
@@ -201,90 +181,9 @@ export function MultipleContainers(
 
   const [activeId, setActiveId] = useState<any>(null);
   const [active, setActive] = useState<any>({});
-  const lastOverId = useRef<UniqueIdentifier | null>(null);
-  const recentlyMovedToNewContainer = useRef(false);
-  const isSortingContainer = false;
 
   const [currentStep, setCurrentStep] = useState(0);
 
-  /**
-   * Custom collision detection strategy optimized for multiple containers
-   *
-   * - First, find any droppable containers intersecting with the pointer.
-   * - If there are none, find intersecting containers with the active draggable.
-   * - If there are no intersecting containers, return the last matched intersection
-   *
-   */
-  const collisionDetectionStrategy: CollisionDetection = useCallback(
-    (args) => {
-      if (activeId && activeId in items) {
-        return closestCenter({
-          ...args,
-          droppableContainers: args.droppableContainers.filter(
-            (container) => container.id in items
-          ),
-        });
-      }
-
-      // Start by finding any intersecting droppable
-      const pointerIntersections = pointerWithin(args);
-      const intersections =
-        pointerIntersections.length > 0
-          ? // If there are droppables intersecting with the pointer, return those
-          pointerIntersections
-          : rectIntersection(args);
-      let overId = getFirstCollision(intersections, 'id');
-
-      if (overId != null) {
-        if (overId === TRASH_ID) {
-          // If the intersecting droppable is the trash, return early
-          // Remove this if you're not using trashable functionality in your app
-          return intersections;
-        }
-
-        if (overId in items) {
-          const containerItems = items[overId].data;
-
-          // If a container is matched and it contains items (columns 'A', 'B', 'C')
-          if (containerItems.length > 0) {
-            // Return the closest droppable within that container
-            overId = closestCenter({
-              ...args,
-              droppableContainers: args.droppableContainers.filter(
-                (container) =>
-                  container.id !== overId &&
-                  containerItems.map(item => item.key).includes(container.id)
-              ),
-            })[0]?.id;
-          }
-        }
-
-        lastOverId.current = overId;
-
-        return [{id: overId}];
-      }
-
-      // When a draggable item moves to a new container, the layout may shift
-      // and the `overId` may become `null`. We manually set the cached `lastOverId`
-      // to the id of the draggable item that was moved to the new container, otherwise
-      // the previous `overId` will be returned which can cause items to incorrectly shift positions
-      if (recentlyMovedToNewContainer.current) {
-        lastOverId.current = activeId;
-      }
-
-      // If no droppable is matched, return the last match
-      return lastOverId.current ? [{id: lastOverId.current}] : [];
-    },
-    [activeId, items]
-  );
-  const [clonedItems, setClonedItems] = useState<Items | null>(null);
-  const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter,
-    })
-  );
   const findContainer = (id: any) => {
     if (!id) {
       return null;
@@ -293,39 +192,38 @@ export function MultipleContainers(
     let currentIndex;
     const position = id.split('-') || [];
     items.forEach((item, index) => {
-      if (typeof currentIndex === "number") {
+      if (typeof currentIndex === 'number') {
         return;
       }
       if (
         position.length === 4
         &&
-        item.line === parseInt(position[0])
+        item.line === parseInt(position[0], 0)
         &&
-        item.column === parseInt(position[1])
+        item.column === parseInt(position[1], 0)
         &&
-        item.cardLine === parseInt(position[2])
+        item.cardLine === parseInt(position[2], 0)
         &&
-        item.cardColumn === parseInt(position[3])
+        item.cardColumn === parseInt(position[3], 0)
       ) {
-        idIndex = index
-      } else if (position.length === 2 && item.line === parseInt(position[0]) && item.column === parseInt(position[1])) {
-        idIndex = index
+        idIndex = index;
+      } else if (position.length === 2 && item.line === parseInt(position[0], 0) && item.column === parseInt(position[1], 0)) {
+        idIndex = index;
       }
       item.data.forEach((item) => {
-        if (typeof currentIndex === "number") {
+        if (typeof currentIndex === 'number') {
           return;
         }
         if (item.key === id) {
           currentIndex = index;
-          return;
         }
-      })
-    })
+      });
+    });
 
-    if (typeof currentIndex !== "number") {
+    if (typeof currentIndex !== 'number') {
       return idIndex;
     }
-    return currentIndex
+    return currentIndex;
   };
 
   const getIndex = (id: string) => {
@@ -334,68 +232,12 @@ export function MultipleContainers(
     if (!container) {
       return -1;
     }
-    const index = items[container].data.map(item => item.key).indexOf(id);
-
-    return index;
+    return items[container].data.map(item => item.key).indexOf(id);
   };
-
-  const onDragCancel = () => {
-    if (clonedItems) {
-      // Reset items to their original state in case items have been
-      // Dragged across containers
-      setItems(clonedItems);
-    }
-
-    setActiveId(null);
-    setClonedItems(null);
-  };
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      recentlyMovedToNewContainer.current = false;
-    });
-  }, [items]);
 
   return (
-    <Card title="表单配置" extra={
-      <div>
-        <Space align='center' size={16}>
-          <Space>
-            行宽:
-            <InputNumber
-              max={100}
-              min={30}
-              value={width}
-              onChange={setWidth}
-              addonAfter={<Select
-                value={widthUnit}
-                onChange={setWidthUnit}
-                options={[{label: '%', value: '%'}, {label: 'vw', value: 'vw'}, {label: 'px', value: 'px'},]} />}
-            />
-          </Space>
-
-          <Space>
-            间距:
-            <InputNumber
-              max={100}
-              min={8}
-              value={gutter}
-              onChange={setGutter}
-              addonAfter='px'
-            />
-          </Space>
-
-          <Button onClick={() => {
-            setSteps([...steps, {data: [{step: steps.length - 1, line: 1, column: 0, data: []}], type: 'add'}])
-          }}>增加步骤</Button>
-        </Space>
-
-
-      </div>
-    }>
+    <Card title="表单配置">
       <DndContext
-        sensors={sensors}
-        collisionDetection={collisionDetectionStrategy}
         measuring={{
           droppable: {
             strategy: MeasuringStrategy.Always,
@@ -404,7 +246,6 @@ export function MultipleContainers(
         onDragStart={({active: {id, data: {current}}}) => {
           setActiveId(id);
           setActive(current);
-          setClonedItems(items);
         }}
         onDragOver={({active, over}) => {
 
@@ -423,18 +264,18 @@ export function MultipleContainers(
             const overItems = items[overContainer].data;
             const overIndex = overItems.map(item => item.key).indexOf(overId);
             const activeIndex = activeItems.map(item => item.key).indexOf(active.id);
-            let newIndex: number;
 
             const isBelowOverItem =
               over &&
               active.rect.current.translated &&
               active.rect.current.translated.top >
               over.rect.top + over.rect.height;
+
             const modifier = isBelowOverItem ? 1 : 0;
 
-            newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+            const newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
 
-            recentlyMovedToNewContainer.current = true;
+
             const newItems: any = items.map((item, index) => {
               if (index === activeContainer) {
                 return {
@@ -442,7 +283,7 @@ export function MultipleContainers(
                   data: item.data.filter(
                     (item) => item.key !== active.id
                   )
-                }
+                };
               } else if (index === overContainer) {
                 return {
                   ...item,
@@ -454,11 +295,11 @@ export function MultipleContainers(
                       item.data.length
                     ),
                   ]
-                }
+                };
               } else {
-                return item
+                return item;
               }
-            })
+            });
             setItems(newItems);
           }
         }}
@@ -480,13 +321,13 @@ export function MultipleContainers(
               const newItems = items.map((item, index) => {
                 if (index === overContainer) {
                   cardPosition = item;
-                  return {...item, card: true, data: []}
+                  return {...item, card: true, data: []};
                 }
                 return item;
               });
               const array: any = [...newItems.map((item, index) => {
                 if (index === 0) {
-                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
+                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
                 }
                 return item;
               }), {
@@ -495,8 +336,8 @@ export function MultipleContainers(
                 cardColumn: 0,
                 cardTable: true,
                 data: cardPosition.data.filter(item => item.key !== 'card')
-              }]
-              setItems(array)
+              }];
+              setItems(array);
             }
             return;
           }
@@ -505,19 +346,19 @@ export function MultipleContainers(
             const newItems = items.map((item, index) => {
               if ((active.id === 'card' && activeContainer !== 0) && index === overContainer) {
                 cardPosition = item;
-                return {...item, card: true, data: []}
+                return {...item, card: true, data: []};
               }
               if (index === activeContainer) {
                 return {
                   ...item,
                   data: item.data.filter((id) => id.key !== activeId)
-                }
+                };
               }
               return item;
-            })
+            });
             const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
               if (index === 0) {
-                return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
+                return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
               }
               return item;
             }), {
@@ -552,13 +393,13 @@ export function MultipleContainers(
                       activeIndex,
                       overIndex
                     )
-                  }
+                  };
                 }
                 return item;
-              })
+              });
               const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
                 if (index === 0) {
-                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
+                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
                 }
                 return item;
               }), {
@@ -574,14 +415,14 @@ export function MultipleContainers(
               const newItems = items.map((item, index) => {
                 if (index === overContainer) {
                   cardPosition = item;
-                  return {...item, card: true, data: []}
+                  return {...item, card: true, data: []};
                 }
                 return item;
               });
 
               const array: any = [...newItems.map((item, index) => {
                 if (index === 0) {
-                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]}
+                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
                 }
                 return item;
               }), {
@@ -590,20 +431,40 @@ export function MultipleContainers(
                 cardColumn: 0,
                 cardTable: true,
                 data: cardPosition.data.filter(item => item.key !== 'card')
-              }]
-              setItems(array)
+              }];
+              setItems(array);
             }
             setActiveId(null);
           }
-        }
-        }
+        }}
         cancelDrop={cancelDrop}
-        onDragCancel={onDragCancel}
         modifiers={modifiers}
       >
         <div style={{display: 'flex', alignItems: 'flex-start'}}>
-          <div style={{minWidth: 350, display: "inline-block"}}>
+          <div style={{minWidth: 350, display: 'inline-block'}}>
             <ColumnsConfig
+              item
+              column
+              itemChange={() => {
+              }}
+              configChange={() => {
+              }}
+              line
+              containerStyle
+              cardTable
+              table
+              gutter
+              isSortingContainer
+              empty
+              handleAddColumn
+              handleRemoveColumn
+              handleAddRow
+              handleRemoveRow
+              onUp={() => {
+              }}
+              onDown={() => {
+              }}
+              PLACEHOLDER_ID
               ulStyle={{padding: 16}}
               card={false}
               disabled
@@ -616,7 +477,6 @@ export function MultipleContainers(
               handleRemove={() => {
               }}
               strategy={strategy}
-              isSortingContainer={isSortingContainer}
               handle={handle}
               getItemStyles={getItemStyles}
               wrapperStyle={wrapperStyle}
@@ -624,58 +484,159 @@ export function MultipleContainers(
               getIndex={getIndex}
             />
           </div>
-          <div style={{flexGrow: 1, height: '90vh', overflow: 'auto', padding: '20px 40px'}}>
-            <div style={{marginBottom: 24}}>
-              <Steps current={currentStep} onChange={(step) => {
-                const newSteps: any = steps.map((item, index) => {
-                  if (index === currentStep) {
-                    return {...item, data: items.filter((item, index) => index !== 0)}
-                  }
-                  return item;
-                })
-                setSteps(newSteps)
-                const newItems: any = [items[0], ...steps[step].data]
-                setItems(newItems)
-                setCurrentStep(step);
-              }}>
+          <div style={{flexGrow: 1, height: '80vh', overflow: 'auto', padding: '20px 40px'}}>
+            <Tabs
+              tabBarExtraContent={
+                <div>
+                  <Space align='center' size={16}>
+                    <Space>
+                      页面宽:
+                      <InputNumber
+                        min={30}
+                        disabled={mobile}
+                        value={width}
+                        onChange={(number) => setWidth(number)}
+                        addonAfter={<Select
+                          disabled={mobile}
+                          value={widthUnit}
+                          onChange={(number) => setWidthUnit(number)}
+                          options={[{label: '%', value: '%'}, {label: 'vw', value: 'vw'}, {label: 'px', value: 'px'},]}
+                        />}
+                      />
+                    </Space>
+
+                    <Space>
+                      间距:
+                      <InputNumber
+                        max={100}
+                        min={8}
+                        value={gutter}
+                        onChange={(number) => setGutter(number)}
+                        addonAfter='px'
+                      />
+                    </Space>
+
+                    <Button onClick={() => {
+                      setSteps([...steps, {
+                        data: [{step: steps.length, line: 1, column: 0, data: []}],
+                        type: 'edit',
+                        title: ''
+                      }]);
+                    }}>增加步骤</Button>
+                  </Space>
+                </div>
+              }
+              activeKey={module}
+              items={[{key: 'pc', label: 'PC端'}, {key: 'mobile', label: '移动端'}]}
+              onChange={(key) => {
+                if (key === 'mobile') {
+                  setWidth(400);
+                  setWidthUnit('px');
+                } else {
+                  setWidth(100);
+                  setWidthUnit('%');
+                }
+                setItems(initialItems);
+                setSteps(initSteps);
+                setModule(key);
+              }}
+            />
+            <div hidden={steps.length === 1} style={{marginBottom: 24}}>
+              <Steps
+                current={currentStep}
+                onChange={(step) => {
+                  const newSteps: any = steps.map((item, index) => {
+                    if (index === currentStep) {
+                      return {...item, data: items.filter((item, index) => index !== 0)};
+                    }
+                    return item;
+                  });
+                  setSteps(newSteps);
+                  const newItems: any = [items[0], ...steps[step].data];
+                  setItems(newItems);
+                  setCurrentStep(step);
+                  console.log(1)
+                }}>
                 {
                   steps.map((item, index) => {
-                    return <Steps.Step title={`步骤${index + 1}`} key={index} />
+                    return <Steps.Step
+                      title={<div>
+                        <Typography.Paragraph
+                          style={{margin: '0 8px', display: 'inline-block'}}
+                          editable={{
+                            tooltip: '点击自定义步骤名',
+                            onChange: (filedName) => {
+                              const newSteps = steps.map((stepItem, stepIndex) => {
+                                if (stepIndex === index) {
+                                  return {...stepItem, title: filedName};
+                                }
+                                return stepItem;
+                              });
+                              setSteps(newSteps);
+                            },
+                          }}
+                        >
+                          {item.title || `步骤${index + 1}`}
+                        </Typography.Paragraph>
+                        <Button onClick={() => {
+                          setDelStep(index);
+                        }} type='link' danger><DeleteOutlined /></Button>
+                      </div>}
+                      key={index}
+                      description={<Space align='center'>保存表单内容<Checkbox
+                        checked={item.type === 'add'}
+                        style={{color: 'rgba(0,0,0,0.5)'}}
+                        onChange={({target: {checked}}) => {
+                          if (!checked) {
+                            return;
+                          }
+                          const newSteps = steps.map((item, stepIndex) => {
+                            if (stepIndex === index) {
+                              return {...item, type: 'add'};
+                            }
+                            return {...item, type: 'edit'};
+                          });
+                          setSteps(newSteps);
+                        }}
+                      /></Space>} />;
                   })
                 }
               </Steps>
             </div>
 
-            <TableConfig
-              onUp={onUp}
-              onDown={onDown}
-              configChange={configChange}
-              gutter={gutter}
-              widthUnit={widthUnit}
-              handleRemove={handleRemoveCard}
-              card={false}
-              width={width}
-              vertical={vertical}
-              PLACEHOLDER_ID={PLACEHOLDER_ID}
-              items={items}
-              scrollable={scrollable}
-              containerStyle={containerStyle}
-              minimal={minimal}
-              strategy={strategy}
-              isSortingContainer={isSortingContainer}
-              handle={handle}
-              getItemStyles={getItemStyles}
-              wrapperStyle={wrapperStyle}
-              renderItem={renderItem}
-              getIndex={getIndex}
-              empty={empty}
-              handleAddColumn={handleAddColumn}
-              handleAddRow={handleAddRow}
-              handleRemoveRow={handleRemoveRow}
-              handleRemoveColumn={handleRemoveColumn}
-              itemChange={itemChange}
-            />
-            <div style={{paddingTop: 24}}>
+            <div style={{width: mobile ? 500 : '100%', margin: 'auto',padding:' 24px 0'}}>
+              <TableConfig
+                mobile={mobile}
+                isSortingContainer
+                position={{}}
+                onUp={onUp}
+                onDown={onDown}
+                configChange={configChange}
+                gutter={gutter}
+                widthUnit={widthUnit}
+                handleRemove={handleRemoveCard}
+                card={false}
+                width={width}
+                vertical={vertical}
+                PLACEHOLDER_ID={PLACEHOLDER_ID}
+                items={items}
+                scrollable={scrollable}
+                minimal={minimal}
+                strategy={strategy}
+                handle={handle}
+                getItemStyles={getItemStyles}
+                wrapperStyle={wrapperStyle}
+                renderItem={renderItem}
+                getIndex={getIndex}
+                empty={empty}
+                handleAddColumn={handleAddColumn}
+                handleAddRow={handleAddRow}
+                handleRemoveRow={handleRemoveRow}
+                handleRemoveColumn={handleRemoveColumn}
+                itemChange={itemChange}
+              />
+            </div>
+            <div style={{paddingTop: 24, textAlign: 'center'}}>
               <Button type='primary' onClick={() => {
                 const submitData: any = [];
 
@@ -684,8 +645,8 @@ export function MultipleContainers(
                   if (item.card) {
                     const table: any = [];
                     const cardTable = items.filter(cardItems => {
-                      return cardItems.line === item.line && cardItems.column === item.column && cardItems.cardTable
-                    })
+                      return cardItems.line === item.line && cardItems.column === item.column && cardItems.cardTable;
+                    });
                     cardTable.forEach((item) => {
                       if (table[item.cardLine || 0]) {
                         const columns = [...table[item.cardLine || 0], item];
@@ -693,22 +654,22 @@ export function MultipleContainers(
                       } else {
                         table[item.cardLine || 0] = [item];
                       }
-                    })
+                    });
                     column = {
                       ...item,
                       table: table.slice(1, table.length),
+                    };
+                  }
+                  if (!item.cardTable) {
+                    if (submitData[item.line]) {
+                      const columns = [...submitData[item.line], column];
+                      submitData[item.line] = columns.sort((a, b) => a.column - b.column);
+                    } else {
+                      submitData[item.line] = [column];
                     }
                   }
-                  if (item.cardTable) {
-                    return;
-                  } else if (submitData[item.line]) {
-                    const columns = [...submitData[item.line], column];
-                    submitData[item.line] = columns.sort((a, b) => a.column - b.column);
-                  } else {
-                    submitData[item.line] = [column];
-                  }
-                })
-                console.log(submitData.slice(1, items.length))
+                });
+                console.log(submitData.slice(1, items.length));
               }}>保存</Button>
             </div>
           </div>
@@ -724,6 +685,44 @@ export function MultipleContainers(
           <Trash id={TRASH_ID} />
         ) : null}
       </DndContext>
+
+      <Modal
+        bodyStyle={{padding:32}}
+        footer={null}
+        open={typeof delStep === 'number'}
+        centered
+        closable={false}
+      >
+        <div>
+          是否确认删除步骤?
+          <div style={{textAlign: 'right',marginTop:24}}>
+            <Space>
+              <Button onClick={() => setDelStep(undefined)}>取消</Button>
+              <Button type='primary' onClick={() => {
+                const files: any = [];
+                items.forEach((item, index) => {
+                  if (index === 0) {
+                    return;
+                  }
+                  item.data.forEach(item => {
+                    files.push(item);
+                  });
+                });
+                const newSteps: any = steps.filter((item, stepIndex) => stepIndex !== delStep);
+                setSteps(newSteps);
+                const currentIndex = newSteps[(delStep || 0)] ? delStep : (delStep || 0) - 1;
+                const newItems: any = [{
+                  ...items[0],
+                  data: [...files, ...items[0].data]
+                }, ...newSteps[(currentIndex || 0)].data];
+                setItems(newItems);
+                setCurrentStep((currentIndex || 0));
+                setDelStep(undefined);
+              }}>取消</Button>
+            </Space>
+          </div>
+        </div>
+      </Modal>
     </Card>
   );
 
@@ -734,7 +733,7 @@ export function MultipleContainers(
         value={active.filedName}
         handle={handle}
         style={getItemStyles({
-          containerId: findContainer(id) as string,
+          containerId: findContainer(id),
           overIndex: -1,
           index: getIndex(id),
           value: id,
@@ -757,22 +756,22 @@ export function MultipleContainers(
     items.forEach(item => {
       if (item.line === line && item.column === column) {
         item.data.forEach(item => {
-          files.push(item)
-        })
+          files.push(item);
+        });
         if (item.card) {
-          newItems.push({...item, data: [], card: false})
+          newItems.push({...item, data: [], card: false});
         }
         return;
       }
-      newItems.push(item)
+      newItems.push(item);
     });
     const array = newItems.map((item, index) => {
       if (index === 0) {
-        return {...item, data: [...files, ...item.data]}
+        return {...item, data: [...files, ...item.data]};
       }
       return item;
-    })
-    setItems(array)
+    });
+    setItems(array);
   }
 
   function handleRemoveRow(line, cardTable, cardPosition) {
@@ -783,71 +782,71 @@ export function MultipleContainers(
         if (item.line === cardPosition.line && item.column === cardPosition.column) {
           if (item.cardLine === line) {
             item.data.forEach(item => {
-              files.push(item)
-            })
+              files.push(item);
+            });
             return;
           } else if ((item.cardLine || 0) > line) {
-            newItems.push({...item, cardLine: (item.cardLine || 0) - 1})
+            newItems.push({...item, cardLine: (item.cardLine || 0) - 1});
             return;
           }
-          newItems.push(item)
+          newItems.push(item);
           return;
         }
-        newItems.push(item)
+        newItems.push(item);
       } else {
         if (item.line === line) {
           item.data.forEach(item => {
-            files.push(item)
-          })
+            files.push(item);
+          });
           return;
         } else if (item.line > line) {
-          newItems.push({...item, line: item.line - 1})
+          newItems.push({...item, line: item.line - 1});
           return;
         }
-        newItems.push(item)
+        newItems.push(item);
       }
     });
     const array = newItems.map((item, index) => {
       if (index === 0) {
-        return {...item, data: [...files, ...item.data]}
+        return {...item, data: [...files, ...item.data]};
       }
       return item;
-    })
-    setItems(array)
+    });
+    setItems(array);
   }
 
   function onUp(line, card, position) {
     const newItems: any = items.map(item => {
       if (card ? (item.cardLine === line && item.line === position.line && item.column === position.column) : item.line === line) {
-        return card ? {...item, cardLine: line - 1} : {...item, line: item.line - 1}
-      } else if (card ? (item?.cardLine >= line - 1 && item.line === position.line && item.column === position.column) : item.line >= (line - 1)) {
-        return card ? {...item, cardLine: item.cardLine + 1} : {...item, line: item.line + 1}
+        return card ? {...item, cardLine: line - 1} : {...item, line: item.line - 1};
+      } else if (card ? ((item.cardLine || 0) >= line - 1 && item.line === position.line && item.column === position.column) : item.line >= (line - 1)) {
+        return card ? {...item, cardLine: (item.cardLine || 0) + 1} : {...item, line: item.line + 1};
       }
       return item;
-    })
+    });
     setItems(newItems);
   }
 
   function onDown(line, card, position) {
     const newItems: any = items.map(item => {
       if (card ? (item.cardLine === line && item.line === position.line && item.column === position.column) : item.line === line) {
-        return card ? {...item, cardLine: line + 1} : {...item, line: item.line + 1}
+        return card ? {...item, cardLine: line + 1} : {...item, line: item.line + 1};
       } else if (card ? (item.cardLine === line + 1 && item.line === position.line && item.column === position.column) : item.line === line + 1) {
-        return card ? {...item, cardLine: line} : {...item, line: line}
+        return card ? {...item, cardLine: line} : {...item, line};
       }
       return item;
-    })
-    setItems(newItems)
+    });
+    setItems(newItems);
   }
 
   function configChange(newData, line, column) {
-    const newItems = items.map(item => {
+    const newItems: any = items.map(item => {
       if (item.line === line && item.column === column && item.card) {
-        return {...item, ...newData}
+        return {...item, ...newData};
       }
       return item;
-    })
-    setItems(newItems)
+    });
+    setItems(newItems);
   }
 
   function itemChange(newData, filed, position) {
@@ -856,15 +855,15 @@ export function MultipleContainers(
         const data = item.data || [];
         const newArray = data.map(item => {
           if (item.key === filed) {
-            return {...item, ...newData}
+            return {...item, ...newData};
           }
           return item;
         });
-        return {...item, data: newArray}
+        return {...item, data: newArray};
       }
       return item;
-    })
-    setItems(newItems)
+    });
+    setItems(newItems);
   }
 
   function handleRemoveColumn(line, column, cardTable, cardPosition) {
@@ -875,64 +874,64 @@ export function MultipleContainers(
         if (item.line === cardPosition.line && item.column === cardPosition.column) {
           if (item.cardLine === line && item.cardColumn === column) {
             item.data.forEach(item => {
-              files.push(item)
-            })
+              files.push(item);
+            });
             return;
           } else if (item.cardLine === line && (item.cardColumn || 0) > column) {
             newItems.push({...item, cardColumn: (item.cardColumn || 0) - 1});
             return;
           }
           if (column === 0 && (item.cardLine || 0) > line) {
-            newItems.push({...item, cardLine: item.cardLine - 1})
+            newItems.push({...item, cardLine: (item.cardLine || 0) - 1});
           } else {
-            newItems.push(item)
+            newItems.push(item);
           }
           return;
         }
-        newItems.push(item)
+        newItems.push(item);
       } else {
         if (item.line === line && item.column === column) {
           item.data.forEach(item => {
-            files.push(item)
-          })
+            files.push(item);
+          });
           return;
         } else if (item.line === line && item.column > column) {
-          newItems.push({...item, column: item.column - 1})
+          newItems.push({...item, column: item.column - 1});
           return;
         }
         if (column === 0 && item.line > line) {
-          newItems.push({...item, line: item.line - 1})
+          newItems.push({...item, line: item.line - 1});
         } else {
-          newItems.push(item)
+          newItems.push(item);
         }
       }
     });
     const array = newItems.map((item, index) => {
       if (index === 0) {
-        return {...item, data: [...files, ...item.data]}
+        return {...item, data: [...files, ...item.data]};
       }
       return item;
-    })
-    setItems(array)
+    });
+    setItems(array);
   }
 
   function handleAddColumn(line, column, cardTable, cardPosition) {
     if (cardTable) {
       const newItems: any = [...items.map(item => {
         if (item.line === cardPosition.line && item.column === cardPosition.column && item.cardLine === line && (item.cardColumn || 0) >= column) {
-          return {...item, cardColumn: (item.cardColumn || 0) + 1}
+          return {...item, cardColumn: (item.cardColumn || 0) + 1};
         }
         return item;
       }), {...cardPosition, cardLine: line, cardColumn: column, data: []}];
-      setItems(newItems)
+      setItems(newItems);
     } else {
       const newItems: any = [...items.map(item => {
         if (item.line === line && item.column >= column) {
-          return {...item, column: item.column + 1}
+          return {...item, column: item.column + 1};
         }
         return item;
       }), {step: currentStep, line, column, data: []}];
-      setItems(newItems)
+      setItems(newItems);
     }
   }
 
@@ -940,28 +939,21 @@ export function MultipleContainers(
     if (cardTable) {
       const newItems: any = [...items.map(item => {
         if (item.line === cardPosition.line && item.column === cardPosition.column && (item.cardLine || 0) >= line) {
-          return {...item, cardLine: (item.cardLine || 0) + 1}
+          return {...item, cardLine: (item.cardLine || 0) + 1};
         }
         return item;
       }), {...cardPosition, cardLine: line, cardColumn: 0, data: []}];
-      setItems(newItems)
+      setItems(newItems);
     } else {
       const newItems: any = [...items.map(item => {
         if (item.line >= line) {
-          return {...item, line: item.line + 1}
+          return {...item, line: item.line + 1};
         }
         return item;
       }), {step: currentStep, line, column: 0, data: []}];
-      setItems(newItems)
+      setItems(newItems);
     }
   }
-
-  // function getNextContainerId() {
-  //   const containerIds = Object.keys(items);
-  //   const lastContainerId = containerIds[containerIds.length - 1];
-  //
-  //   return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
-  // }
 }
 
 function getColor(item) {
@@ -1006,6 +998,7 @@ interface SortableItemProps {
   handle: boolean;
   disabled?: boolean;
   cardTable?: boolean;
+  mobile?: boolean;
   item?: any,
 
   style(args: any): React.CSSProperties;
@@ -1016,7 +1009,7 @@ interface SortableItemProps {
 
   itemChange: Function;
 
-  wrapperStyle({index}: { index: number }): React.CSSProperties;
+  wrapperStyle({index: any}): React.CSSProperties;
 }
 
 export const SortableItem = (
@@ -1029,6 +1022,7 @@ export const SortableItem = (
     handle,
     renderItem,
     style,
+    mobile,
     containerId,
     getIndex,
     item = {},
@@ -1054,6 +1048,7 @@ export const SortableItem = (
 
   return (
     <Item
+      mobile={mobile}
       ref={disabled ? undefined : setNodeRef}
       value={item.filedName}
       item={item}
@@ -1067,7 +1062,7 @@ export const SortableItem = (
         value: id,
         isDragging,
         isSorting,
-        overIndex: over ? getIndex(over.id) : overIndex,
+        overIndex: over ? getIndex(`${over.id}`) : overIndex,
         containerId,
       })}
       itemChange={itemChange}
@@ -1079,7 +1074,7 @@ export const SortableItem = (
       renderItem={renderItem}
     />
   );
-}
+};
 
 function useMountStatus() {
   const [isMounted, setIsMounted] = useState(false);
