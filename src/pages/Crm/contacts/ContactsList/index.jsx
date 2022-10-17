@@ -261,7 +261,7 @@ const ContactsTable = (props) => {
       component={ContactsEdit}
       customerId={customer && customer.customerId}
       onSuccess={() => {
-        tableRef.current.refresh();
+        tableRef.current.submit();
         ref.current.close();
       }} ref={ref}
       compoentRef={submitRef}
