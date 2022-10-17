@@ -18,6 +18,7 @@ import OutStock from '@/pages/Erp/sku/SkuDetail/components/OutStock';
 import Stocktaking from '@/pages/Erp/sku/SkuDetail/components/Stocktaking';
 import Maintenance from '@/pages/Erp/sku/SkuDetail/components/Maintenance';
 import Allocation from '@/pages/Erp/sku/SkuDetail/components/Allocation';
+import SkuPartsList from '@/pages/Erp/sku/SkuDetail/components/SkuPartsList';
 import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
 import Modal from '@/components/Modal';
 import PartsEdit from '@/pages/Erp/parts/PartsEdit';
@@ -216,7 +217,7 @@ const SkuDetail = ({value}) => {
             defaultActiveKey="1"
             destroyInactiveTabPane
             items={[
-              {key: '1', label: '关联物料清单', children: <PartsList skuDetail value={data.skuId} showTable />},
+              {key: '1', label: '关联物料清单', children: <SkuPartsList value={data.skuId} />},
               {key: '2', label: '关联供应商', children: <Supply skuId={data.skuId} />},
               {key: '3', label: '库存明细', children: <StockDetail />},
               {key: '4', label: '入库记录', children: <InStock />},
