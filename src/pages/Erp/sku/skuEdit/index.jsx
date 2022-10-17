@@ -39,6 +39,9 @@ const SkuEdit = ({...props}, ref) => {
 
   const [typeSetting, setTypeSetting] = useState([]);
 
+  const [formData, setFormData] = useState([]);
+  console.log(formData);
+
   const {loading: skuFormLoading, run: getSkuForm} = useRequest(spuClassificationDetail, {
     manual: true,
     onSuccess: (res) => {
@@ -101,11 +104,12 @@ const SkuEdit = ({...props}, ref) => {
         fieldKey="skuId"
         formatDetail={(res) => {
           setDetails(res);
+          console.log(res);
           return {
             ...res,
             materialId: res.materialIdList || [],
             spu: res.spuResult,
-            brandIds: isArray(res.brandResults).map(item => item.brandId)
+            brandIds: isArray(res.brandResults).map(item => item.brandId),
           };
         }}
         onError={() => {
@@ -131,7 +135,8 @@ const SkuEdit = ({...props}, ref) => {
             skuId: value.copy ? null : value.skuId,
             oldSkuId: copy ? value.skuId : null,
             spu: {...submitValue.spu, coding: submitValue.spuCoding},
-            skuName: submitValue.nationalStandard || submitValue.model || submitValue.partNo
+            skuName: submitValue.nationalStandard || submitValue.model || submitValue.partNo,
+            generalFormDataParams: formData,
           };
           setSubmitValue(submitValue);
           return submitValue;
@@ -150,6 +155,13 @@ const SkuEdit = ({...props}, ref) => {
                   state.value = spu.unitId;
                 }
               );
+
+              // setFieldState(
+              //   'spuClass',
+              //   state => {
+              //     state.value = spu.spuClassificationId;
+              //   }
+              // );
 
               setFieldState(
                 'spuCoding',
@@ -205,7 +217,7 @@ const SkuEdit = ({...props}, ref) => {
           />
         </Spin> : typeSetting.map((item, index) => {
 
-          if (item.disabled || !item.show) {
+          if (!item.show || item.disabled) {
             return <div key={index} />;
           }
           let formItemProps;
@@ -232,21 +244,11 @@ const SkuEdit = ({...props}, ref) => {
                 skuId: value.skuId,
               };
               break;
-            case 'spuCoding':
-              formItemProps = {
-                component: SysField.SpuCoding,
-              };
-              break;
             case 'batch':
               formItemProps = {
                 placeholder: `请选择${item.filedName}`,
                 component: SysField.Batch,
                 required: true,
-              };
-              break;
-            case 'specifications':
-              formItemProps = {
-                component: SysField.Specs,
               };
               break;
             case 'maintenancePeriod':
@@ -328,8 +330,26 @@ const SkuEdit = ({...props}, ref) => {
               break;
             default:
               formItemProps = {
+                fieldName: item.key,
                 component: SysField.SkuName,
                 required: false,
+                onChange: (value) => {
+
+                  setFormData((formData) => {
+                    let exits = false;
+                    const newFormData = formData.map(formDataItem => {
+                      if (formDataItem.fieldName === item.key) {
+                        exits = true;
+                        return {...formDataItem, value};
+                      }
+                      return formDataItem;
+                    });
+                    if (!exits) {
+                      newFormData.push({fieldName: item.key, value});
+                    }
+                    return newFormData;
+                  });
+                }
               };
               break;
           }

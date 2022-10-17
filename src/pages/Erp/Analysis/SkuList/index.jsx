@@ -1,4 +1,4 @@
-import React, {useImperativeHandle, useRef, useState} from 'react';
+import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Button, Space, Spin} from 'antd';
 import {PlusOutlined, MenuOutlined, VerticalAlignTopOutlined, DeleteOutlined} from '@ant-design/icons';
 import {useBoolean} from 'ahooks';
@@ -84,6 +84,10 @@ const SkuList = ({...props}, ref) => {
     </Space>;
   };
 
+  useEffect(() => {
+    addSku.current.open(false);
+  }, []);
+
   return <>
     <Sortable
       handle
@@ -151,7 +155,7 @@ const SkuList = ({...props}, ref) => {
       </Space>}
     >
       <div style={{padding:24}}>
-        <AddSpu maxWidth='100%' onChange={setSkuId} value={skuId} noSkuIds={skuList.map((item) => item.skuId)}/>
+        <AddSpu noSpu maxWidth='100%' onChange={setSkuId} value={skuId} noSkuIds={skuList.map((item) => item.skuId)}/>
       </div>
     </Modal>
   </>;

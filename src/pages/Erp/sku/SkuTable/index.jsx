@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Button, Space, Table as AntTable, Typography} from 'antd';
+import {Button, Input, Space, Table as AntTable, Typography} from 'antd';
 import {CopyOutlined} from '@ant-design/icons';
 import {config, useHistory} from 'ice';
 import cookie from 'js-cookie';
@@ -102,29 +102,19 @@ const SkuTable = ({...props}, ref) => {
     return (
       <>
         <FormItem
-          label="编码"
-          placeholder="请输入编码"
-          name="standard"
-          component={SysField.SelectSkuName} />
-        <FormItem
-          label="名称"
-          placeholder="请输入名称"
-          name="spuName"
-          component={SysField.SelectSkuName} />
-        <FormItem
-          label="型号"
-          placeholder="请输入型号"
-          name="name"
-          component={SysField.SelectSkuName} />
+          placeholder="搜索物料"
+          name="skuName"
+          component={Input} />
         <FormItem
           name="spuClass"
           hidden
           component={SysField.SelectSpuClass} />
-        <FormItem
-          name="spuId"
-          hidden
-          value={spuId}
-          component={SysField.SkuName} />
+        <div hidden>
+          <FormItem
+            name="spuId"
+            value={spuId}
+            component={SysField.SkuName} />
+        </div>
       </>
     );
   };
@@ -171,7 +161,12 @@ const SkuTable = ({...props}, ref) => {
         );
       }
     },
-    {dataIndex: 'spuResult', title: '产品名称', render: (value) => <Render text={value?.name} />, sorter: true},
+    {
+      dataIndex: 'spuName',
+      title: '产品名称',
+      render: (value, record) => <Render text={record.spuResult?.name} />,
+      sorter: true
+    },
     {dataIndex: 'model', title: '型号', sorter: true,},
     {dataIndex: 'nationalStandard', title: '国家标准', sorter: false,},
     {dataIndex: 'partNo', title: '零件号', sorter: false,},
