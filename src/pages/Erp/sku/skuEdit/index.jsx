@@ -231,6 +231,7 @@ const SkuEdit = ({...props}, ref) => {
                 copy: value.copy,
                 data: value,
                 module: 0,
+                rules: [{message: '不能输入汉字或特殊字符!', pattern: /^[a-zA-Z0-9_]{0,}$/}]
               };
               break;
             case 'spu':
