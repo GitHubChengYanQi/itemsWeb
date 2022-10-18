@@ -1,24 +1,35 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {
   CancelDrop,
-  defaultDropAnimation,
+  closestCenter,
+  pointerWithin,
+  rectIntersection,
+  CollisionDetection,
   DndContext,
   DragOverlay,
   DropAnimation,
-  KeyboardCoordinateGetter,
-  MeasuringStrategy,
+  defaultDropAnimation,
+  getFirstCollision,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
   Modifiers,
-  UniqueIdentifier,
   useDroppable,
+  UniqueIdentifier,
+  useSensors,
+  useSensor,
+  MeasuringStrategy,
+  KeyboardCoordinateGetter,
 } from '@dnd-kit/core';
 import {
   AnimateLayoutChanges,
+  useSortable,
   arrayMove,
   defaultAnimateLayoutChanges,
-  SortingStrategy,
-  useSortable,
+  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  SortingStrategy,
 } from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
 import {Button, Checkbox, InputNumber, Modal, Select, Space, Steps, Tabs, Typography} from 'antd';
@@ -126,13 +137,15 @@ interface Props {
   getItemStyles?: (styles: any) => {};
 
   wrapperStyle?: (styles: any) => {};
-  onSave: (data:any) => {};
+  onSave: (data: any) => {};
 
   itemCount?: number;
   width?: number;
   gutter?: number;
   widthUnit?: string;
   items: Items;
+  initItems: Items;
+  initSteps: any;
   handle?: boolean;
   renderItem?: any;
   strategy?: SortingStrategy;
@@ -152,7 +165,9 @@ export function MultipleContainers(
     adjustScale = false,
     cancelDrop,
     handle = false,
-    items: initialItems,
+    items: defaultItems,
+    initItems,
+    coordinateGetter = sortableKeyboardCoordinates,
     getItemStyles = () => ({}),
     wrapperStyle = () => ({}),
     onSave = () => ({}),
@@ -163,11 +178,14 @@ export function MultipleContainers(
     trashable = false,
     vertical = false,
     scrollable,
+    initSteps = [],
+    width: defaultWidth,
+    gutter: defaultGutter,
+    widthUnit: defaultWidthUnit,
   }: Props) {
 
-  const initSteps = [{data: [{step: 0, line: 1, column: 0, data: []}], type: 'add', title: ''}];
-
-  const [items, setItems] = useState<Items>(initialItems);
+  const [items, setItems] = useState<Items>(defaultItems);
+  console.log(items);
 
   const [steps, setSteps] = useState(initSteps);
 
@@ -177,15 +195,63 @@ export function MultipleContainers(
 
   const mobile = module === 'mobile';
 
-  const [width, setWidth] = useState(100);
-  const [gutter, setGutter] = useState(16);
-  const [widthUnit, setWidthUnit] = useState('%');
+  const [width, setWidth] = useState(defaultWidth || 100);
+  const [gutter, setGutter] = useState(defaultGutter || 16);
+  const [widthUnit, setWidthUnit] = useState(defaultWidthUnit || '%');
 
   const [activeId, setActiveId] = useState<any>(null);
   const [active, setActive] = useState<any>({});
+  const lastOverId = useRef<UniqueIdentifier | null>(null);
+  const recentlyMovedToNewContainer = useRef(false);
 
   const [currentStep, setCurrentStep] = useState(0);
 
+  /**
+   * Custom collision detection strategy optimized for multiple containers
+   *
+   * - First, find any droppable containers intersecting with the pointer.
+   * - If there are none, find intersecting containers with the active draggable.
+   * - If there are no intersecting containers, return the last matched intersection
+   *
+   */
+  const collisionDetectionStrategy: CollisionDetection = useCallback(
+    (args) => {
+
+      // Start by finding any intersecting droppable
+      const pointerIntersections = pointerWithin(args);
+      const intersections =
+        pointerIntersections.length > 0
+          ? // If there are droppables intersecting with the pointer, return those
+          pointerIntersections
+          : rectIntersection(args);
+      const overId = getFirstCollision(intersections, 'id');
+
+      if (overId != null) {
+        lastOverId.current = overId;
+        return [{id: overId}];
+      }
+
+      // When a draggable item moves to a new container, the layout may shift
+      // and the `overId` may become `null`. We manually set the cached `lastOverId`
+      // to the id of the draggable item that was moved to the new container, otherwise
+      // the previous `overId` will be returned which can cause items to incorrectly shift positions
+      if (recentlyMovedToNewContainer.current) {
+        lastOverId.current = activeId;
+      }
+
+      // If no droppable is matched, return the last match
+      return lastOverId.current ? [{id: lastOverId.current}] : [];
+    },
+    [activeId, items]
+  );
+  // const [clonedItems, setClonedItems] = useState<Items | null>(null);
+  const sensors = useSensors(
+    useSensor(MouseSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter,
+    })
+  );
   const findContainer = (id: any) => {
     if (!id) {
       return null;
@@ -193,48 +259,39 @@ export function MultipleContainers(
     let idIndex;
     let currentIndex;
     const position = id.split('-') || [];
-    items.forEach((item, index) => {
-      if (typeof currentIndex === 'number') {
-        return;
-      }
+    items.find((item, index) => {
       if (
         position.length === 4
         &&
-        item.line === parseInt(position[0], 0)
+        `${item.line}` === position[0]
         &&
-        item.column === parseInt(position[1], 0)
+        `${item.column}` === position[1]
         &&
-        item.cardLine === parseInt(position[2], 0)
+        `${item.cardLine}` === position[2]
         &&
-        item.cardColumn === parseInt(position[3], 0)
+        `${item.cardColumn}` === position[3]
       ) {
         idIndex = index;
-      } else if (position.length === 2 && item.line === parseInt(position[0], 0) && item.column === parseInt(position[1], 0)) {
+        return true;
+      } else if (position.length === 2 && `${item.line}` === position[0] && `${item.column}` === position[1]) {
         idIndex = index;
+        return true;
+      } else {
+        return item.data.find((item) => {
+          if (item.key === id) {
+            currentIndex = index;
+            return true;
+          }
+          return false;
+        });
       }
-      item.data.forEach((item) => {
-        if (typeof currentIndex === 'number') {
-          return;
-        }
-        if (item.key === id) {
-          currentIndex = index;
-        }
-      });
+
     });
 
     if (typeof currentIndex !== 'number') {
       return idIndex;
     }
     return currentIndex;
-  };
-
-  const getIndex = (id: string) => {
-    const container = findContainer(id);
-
-    if (!container) {
-      return -1;
-    }
-    return items[container].data.map(item => item.key).indexOf(id);
   };
 
   const getTable = (data: any = []) => {
@@ -272,30 +329,61 @@ export function MultipleContainers(
   };
 
   const submit = () => {
-    return steps.map(item => {
-      return {
-        ...item,
-        data: getTable(item.data)
-      };
-    });
+    return {
+      width,
+      widthUnit,
+      gutter,
+      steps: steps.map((item, index) => {
+        if (index === currentStep) {
+          return {...item, data: getTable(items.filter((item, index) => index !== 0))};
+        }
+        return {
+          ...item,
+          data: getTable(item.data)
+        };
+      })
+    };
   };
+
+  // const onDragCancel = () => {
+  //   if (clonedItems) {
+  //     // Reset items to their original state in case items have been
+  //     // Dragged across containers
+  //     setItems(clonedItems);
+  //   }
+  //
+  //   setActiveId(null);
+  //   setClonedItems(null);
+  // };
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      recentlyMovedToNewContainer.current = false;
+    });
+  }, [items]);
 
   return (
     <>
       <DndContext
+        sensors={sensors}
+        collisionDetection={collisionDetectionStrategy}
         measuring={{
           droppable: {
             strategy: MeasuringStrategy.Always,
           },
         }}
         onDragStart={({active: {id, data: {current}}}) => {
+          console.log('start');
           setActiveId(id);
           setActive(current);
+          // setClonedItems(items);
         }}
         onDragOver={({active, over}) => {
-
+          console.log('over');
           const overId = over?.id;
-          console.log(overId);
+          if (overId === active.id) {
+            return;
+          }
           const overContainer = findContainer(overId || '');
           const activeContainer = findContainer(active.id || '');
 
@@ -322,7 +410,7 @@ export function MultipleContainers(
 
             const newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
 
-
+            recentlyMovedToNewContainer.current = true;
             const newItems: any = items.map((item, index) => {
               if (index === activeContainer) {
                 return {
@@ -485,6 +573,7 @@ export function MultipleContainers(
           }
         }}
         cancelDrop={cancelDrop}
+        // onDragCancel={onDragCancel}
         modifiers={modifiers}
       >
         <div style={{display: 'flex', alignItems: 'flex-start'}}>
@@ -528,7 +617,6 @@ export function MultipleContainers(
               getItemStyles={getItemStyles}
               wrapperStyle={wrapperStyle}
               renderItem={renderItem}
-              getIndex={getIndex}
             />
           </div>
           <div style={{flexGrow: 1, height: '80vh', overflow: 'auto', padding: '20px 40px'}}>
@@ -583,8 +671,8 @@ export function MultipleContainers(
                   setWidth(100);
                   setWidthUnit('%');
                 }
-                setItems(initialItems);
-                setSteps(initSteps);
+                setItems(initItems);
+                setSteps([{type: 'add', title: '', data: [{step: 0, line: 1, column: 0, data: []}],}]);
                 setModule(key);
               }}
             />
@@ -672,7 +760,6 @@ export function MultipleContainers(
                 getItemStyles={getItemStyles}
                 wrapperStyle={wrapperStyle}
                 renderItem={renderItem}
-                getIndex={getIndex}
                 empty={empty}
                 handleAddColumn={handleAddColumn}
                 handleAddRow={handleAddRow}
@@ -749,7 +836,6 @@ export function MultipleContainers(
         style={getItemStyles({
           containerId: findContainer(id),
           overIndex: -1,
-          index: getIndex(id),
           value: id,
           isSorting: true,
           isDragging: true,
@@ -833,7 +919,7 @@ export function MultipleContainers(
     const newItems: any = items.map(item => {
       if (card ? (item.cardLine === line && item.line === position.line && item.column === position.column) : item.line === line) {
         return card ? {...item, cardLine: line - 1} : {...item, line: item.line - 1};
-      } else if (card ? ((item.cardLine || 0) >= line - 1 && item.line === position.line && item.column === position.column) : item.line >= (line - 1)) {
+      } else if (card ? ((item.cardLine || 0) === line - 1 && item.line === position.line && item.column === position.column) : item.line === (line - 1)) {
         return card ? {...item, cardLine: (item.cardLine || 0) + 1} : {...item, line: item.line + 1};
       }
       return item;
@@ -1038,7 +1124,6 @@ export const SortableItem = (
     style,
     mobile,
     containerId,
-    getIndex,
     item = {},
     cardTable,
     wrapperStyle,
@@ -1048,8 +1133,6 @@ export const SortableItem = (
     listeners,
     isDragging,
     isSorting,
-    over,
-    overIndex,
     transform,
     transition,
   } = useSortable({
@@ -1076,7 +1159,6 @@ export const SortableItem = (
         value: id,
         isDragging,
         isSorting,
-        overIndex: over ? getIndex(`${over.id}`) : overIndex,
         containerId,
       })}
       itemChange={itemChange}

@@ -1,7 +1,7 @@
 import React from 'react';
 import {horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
 import {DownOutlined, UpOutlined} from '@ant-design/icons';
-import {Button} from 'antd';
+import {Button, Row} from 'antd';
 import ColumnsConfig from '@/pages/Form/components/ColumnsConfig';
 
 const TableConfig = (
@@ -84,14 +84,9 @@ const TableConfig = (
           // paddingTop: rowIndex === 1 ? 20 : 0,
           width: '100%'
         }}>
-          <div
+          <Row
+            gutter={gutter}
             style={{
-              display: 'inline-grid',
-              boxSizing: 'border-box',
-              // margin: 20,
-              padding: 0,
-              gridAutoFlow: 'column',
-              alignItems: 'flex-start',
               border: 'dashed 1px rgba(0,0,0,0.2)',
               borderBottom: rowIndex === (card ? cardTable : table).length - 1 ? 'dashed 1px rgba(0,0,0,0.2)' : 'none',
               width: card ? '100%' : `${width + widthUnit}`,
@@ -112,7 +107,6 @@ const TableConfig = (
                     onUp={onUp}
                     onDown={onDown}
                     gutter={gutter}
-                    ulStyle={{padding: gutter / 2}}
                     itemChange={(newData, filed) => {
                       itemChange(newData, filed, item);
                     }}
@@ -151,7 +145,7 @@ const TableConfig = (
                 }
               )}
             </SortableContext>
-          </div>
+          </Row>
         </div>
       </div>;
     })}

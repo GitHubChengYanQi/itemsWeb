@@ -6,6 +6,7 @@ import {Handle, Remove} from '../Item';
 import styles from './Container.module.less';
 import {MinusCircleFilled, PlusCircleFilled} from "@ant-design/icons";
 import ProCard from "@ant-design/pro-card";
+import {Col} from "antd";
 
 export interface Props {
   children: React.ReactNode;
@@ -88,13 +89,13 @@ export const Container = forwardRef<HTMLDivElement, Props>(
 
     const [over, setOver] = useState(true);
     return (
-      <div
+      <Col
+        span={parseInt(`${24 / columns}`, 0)}
         {...props}
         ref={ref}
         style={
           {
             ...style,
-            '--columns': columns,
           } as React.CSSProperties
         }
         className={classNames(
@@ -119,46 +120,47 @@ export const Container = forwardRef<HTMLDivElement, Props>(
           hidden={over || leftTopHidden}
           className={classNames(styles.add, styles.leftTop)}
         >
-          <PlusCircleFilled onClick={onLeftTop}/>
+          <PlusCircleFilled onClick={onLeftTop} />
         </div>
         <div
           hidden={over || leftBottomHidden}
           className={classNames(styles.add, styles.leftBottom)}
         >
-          <PlusCircleFilled onClick={onLeftBottom}/>
+          <PlusCircleFilled onClick={onLeftBottom} />
         </div>
         <div
           hidden={over || topLeftHidden}
           className={classNames(styles.add, styles.topLeft)}
         >
-          <PlusCircleFilled onClick={onTopLeft}/>
+          <PlusCircleFilled onClick={onTopLeft} />
         </div>
         <div
           hidden={over || topRightHidden}
           className={classNames(styles.add, styles.topRight)}
         >
-          <PlusCircleFilled onClick={onTopRight}/>
+          <PlusCircleFilled onClick={onTopRight} />
         </div>
         <div
           hidden={over || removeRowHidden}
           className={classNames(styles.add, styles.removeRow)}
         >
-          <MinusCircleFilled onClick={onRemoveRow}/>
+          <MinusCircleFilled onClick={onRemoveRow} />
         </div>
         <div
           hidden={over || removeColumnHidden}
           className={classNames(styles.add, styles.removeColumn)}
         >
-          <MinusCircleFilled onClick={onRemoveColumn}/>
+          <MinusCircleFilled onClick={onRemoveColumn} />
         </div>
         {label ? (
-          <ProCard bodyStyle={{padding:0}} headerBordered className='h2Card' title={label} extra={<div className={styles.Actions}>
-            {onRemove ? <Remove onClick={onRemove}/> : undefined}
-            {!noNandle && <Handle {...handleProps} />}
-          </div>} />
+          <ProCard bodyStyle={{padding: 0}} headerBordered className='h2Card' title={label}
+                   extra={<div className={styles.Actions}>
+                     {onRemove ? <Remove onClick={onRemove} /> : undefined}
+                     {!noNandle && <Handle {...handleProps} />}
+                   </div>} />
         ) : null}
         {placeholder ? children : <ul style={ulStyle}>{children}</ul>}
-      </div>
+      </Col>
     );
   }
 );

@@ -32,7 +32,6 @@ const ColumnsConfig = (
     getItemStyles,
     wrapperStyle,
     renderItem,
-    getIndex,
     configChange = () => {
     },
     gutter,
@@ -49,6 +48,7 @@ const ColumnsConfig = (
   }) => {
 
   return <DroppableContainer
+    columns={disabled ? 1 : columns.length}
     ulStyle={card ? {padding: '24px 0', gridGap: 0} : ulStyle}
     removeRowHidden={disabled || containerId !== 0 || table.length === 1}
     removeColumnHidden={disabled || (table.length === 1 && table[0].length === 1)}
@@ -114,7 +114,6 @@ const ColumnsConfig = (
             wrapperStyle={wrapperStyle}
             renderItem={renderItem}
             containerId={containerId}
-            getIndex={getIndex}
           />
         );
       })}
@@ -138,7 +137,6 @@ const ColumnsConfig = (
       getItemStyles={getItemStyles}
       wrapperStyle={wrapperStyle}
       renderItem={renderItem}
-      getIndex={getIndex}
       empty={empty}
       handleAddColumn={handleAddColumn}
       handleAddRow={handleAddRow}

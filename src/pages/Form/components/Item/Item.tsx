@@ -175,10 +175,11 @@ export const Item = React.memo(
             <Handle {...listeners} />
             </span>
           {handle ? (
-              (mobile || item.inputType === 'show') ? label() : <Form.Item
+              mobile ? label() : <Form.Item
+                className={styles.formItem}
                 style={{margin: 0, flexGrow: 1}}
-                labelCol={{span: 6}}
-                wrapperCol={{span: 18}}
+                labelCol={{span: 12}}
+                wrapperCol={{span: 12}}
                 label={label()}>
                 {inputType()}
               </Form.Item>
