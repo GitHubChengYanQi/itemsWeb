@@ -98,9 +98,10 @@ const useTableSet = (column, tableKey) => {
     onSuccess: () => {
       Message.success('删除成功!');
       setFalse();
+      setTableColumn(defaultColumn);
       refresh();
       setDetail();
-      setTableColumn(defaultColumn);
+      toggle();
     }
   });
 
