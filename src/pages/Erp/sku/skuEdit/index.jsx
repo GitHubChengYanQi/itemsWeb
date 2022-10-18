@@ -40,7 +40,6 @@ const SkuEdit = ({...props}, ref) => {
   const [typeSetting, setTypeSetting] = useState([]);
 
   const [formData, setFormData] = useState([]);
-  console.log(formData);
 
   const {loading: skuFormLoading, run: getSkuForm} = useRequest(spuClassificationDetail, {
     manual: true,
