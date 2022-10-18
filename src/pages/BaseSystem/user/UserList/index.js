@@ -91,7 +91,7 @@ const UserList = () => {
     },
     {
       title: '工号',
-      dataIndex: 'JobNo'
+      dataIndex: 'jobNo'
     },
     {
       title: '部门',
