@@ -3,7 +3,10 @@ import {Input, Select as AntdSelect} from 'antd';
 import cookie from 'js-cookie';
 
 
-const Coding = ({value, onChange, placeholder}) => {
+const Coding = ({
+  value, onChange, placeholder, onBlur = () => {
+  }
+}) => {
 
   const [state, setState] = useState(value ? 'defined' : (cookie.get('codingType') || 'defined'));
 
@@ -30,7 +33,8 @@ const Coding = ({value, onChange, placeholder}) => {
           onChange(null);
         }}
       />
-      {state === 'defined' && <Input value={value} placeholder={placeholder || '请输入自定义编码'} onChange={(value) => {
+      {state === 'defined' &&
+      <Input onBlur={onBlur} value={value} placeholder={placeholder || '请输入自定义编码'} onChange={(value) => {
         onChange(value.target.value);
       }} />}
     </div>
