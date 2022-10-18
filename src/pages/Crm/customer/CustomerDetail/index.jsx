@@ -28,7 +28,7 @@ import {supplierDetail} from '@/pages/Purshase/Supply/SupplyUrl';
 
 const {TabPane} = Tabs;
 
-const CustomerDetail = ({id, supply = 0, status, ...props}) => {
+const CustomerDetail = ({id, supply = 0, status,}) => {
 
   const params = useParams();
   const addRef = useRef(null);

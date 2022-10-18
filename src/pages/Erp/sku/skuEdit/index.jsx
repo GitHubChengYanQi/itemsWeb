@@ -7,7 +7,7 @@
 
 import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions, FormEffectHooks} from '@formily/antd';
-import {Alert, notification, Popover, Space, Spin} from 'antd';
+import {Alert, Input, notification, Popover, Space, Spin} from 'antd';
 import {QuestionCircleOutlined} from '@ant-design/icons';
 import Form from '@/components/Form';
 import {skuDetail, skuAdd, skuEdit, skuMarge} from '../skuUrl';
@@ -104,10 +104,9 @@ const SkuEdit = ({...props}, ref) => {
         fieldKey="skuId"
         formatDetail={(res) => {
           setDetails(res);
-          console.log(res);
           return {
             ...res,
-            materialId: res.materialIdList || [],
+            materialId: isArray(res.materialIdList)[0],
             spu: res.spuResult,
             brandIds: isArray(res.brandResults).map(item => item.brandId),
           };
@@ -132,6 +131,7 @@ const SkuEdit = ({...props}, ref) => {
             ...submitValue,
             type: 0,
             isHidden: true,
+            materialId: submitValue.materialId ? [submitValue.materialId] : [],
             skuId: value.copy ? null : value.skuId,
             oldSkuId: copy ? value.skuId : null,
             spu: {...submitValue.spu, coding: submitValue.spuCoding},
@@ -235,6 +235,7 @@ const SkuEdit = ({...props}, ref) => {
                 copy: value.copy,
                 data: value,
                 module: 0,
+                rules: [{message: '不能输入汉字!', pattern: /[^\u4e00-\u9fa5]+$/}]
               };
               break;
             case 'spu':
@@ -242,6 +243,12 @@ const SkuEdit = ({...props}, ref) => {
                 component: SysField.SpuId,
                 required: true,
                 skuId: value.skuId,
+              };
+              break;
+            case 'spuCoding':
+              formItemProps = {
+                component: Input,
+                rules: [{message: '不能输入汉字!', pattern: /[^\u4e00-\u9fa5]+$/}]
               };
               break;
             case 'batch':
@@ -282,7 +289,7 @@ const SkuEdit = ({...props}, ref) => {
             case 'materialId':
               formItemProps = {
                 placeholder: `请选择${item.filedName}`,
-                component: MaterialIds,
+                component: SysField.Material,
               };
               break;
             case 'remarks':
