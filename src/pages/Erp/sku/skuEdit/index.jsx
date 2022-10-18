@@ -234,7 +234,7 @@ const SkuEdit = ({...props}, ref) => {
                 copy: value.copy,
                 data: value,
                 module: 0,
-                rules: [{message: '不能输入汉字或特殊字符!', pattern: /^[a-zA-Z0-9_]{0,}$/}]
+                rules: [{message: '不能输入汉字!', pattern: /[^\u4e00-\u9fa5]+$/}]
               };
               break;
             case 'spu':
@@ -247,7 +247,7 @@ const SkuEdit = ({...props}, ref) => {
             case 'spuCoding':
               formItemProps = {
                 component: Input,
-                rules: [{message: '不能输入汉字或特殊字符!', pattern: /^[a-zA-Z0-9_]{0,}$/}]
+                rules: [{message: '不能输入汉字!', pattern: /[^\u4e00-\u9fa5]+$/}]
               };
               break;
             case 'batch':
