@@ -132,15 +132,13 @@ const SkuDetail = ({value}) => {
               label="物料描述"
               span={4}
             >
-              (
-              {
+              ({
                 data.list &&
                 data.list.length > 0 &&
                 data.list[0].attributeValues ? <em>{data.list.map((items) => {
                   return `${items.itemAttributeResult.attribute}: ${items.attributeValues}`;
                 }).toString()}</em> : '无'
-              }
-              )
+              })
             </Descriptions.Item>
             <Descriptions.Item
               label="图片"

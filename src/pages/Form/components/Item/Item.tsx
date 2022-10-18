@@ -6,7 +6,7 @@ import type {Transform} from '@dnd-kit/utilities';
 import {Handle, Remove} from './components';
 
 import styles from './Item.module.less';
-import {Button, Checkbox, Form, Input, Radio, Select, Space, Typography, Upload} from "antd";
+import {Button, Checkbox, DatePicker, Form, Input, Radio, Select, Space, Typography, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 
 export interface Props {
@@ -81,8 +81,10 @@ export const Item = React.memo(
         switch (item.inputType) {
           case 'input':
             return <Input disabled placeholder='请输入' />;
+          case 'date':
+            return <DatePicker disabled />;
           case 'select':
-            return <Select disabled placeholder='请选择' />;
+            return <Input disabled placeholder='请选择' />;
           case 'upload':
             return <Upload disabled>
               <Button icon={<UploadOutlined />}>上传</Button>
@@ -173,7 +175,7 @@ export const Item = React.memo(
             <Handle {...listeners} />
             </span>
           {handle ? (
-              mobile ? label() : <Form.Item
+              (mobile || item.inputType === 'show') ? label() : <Form.Item
                 style={{margin: 0, flexGrow: 1}}
                 labelCol={{span: 6}}
                 wrapperCol={{span: 18}}
@@ -183,7 +185,7 @@ export const Item = React.memo(
             )
             : value}
           {handle && <Checkbox
-            style={{padding:'0 12px'}}
+            style={{padding: '0 12px'}}
             checked={item.required}
             onChange={({target: {checked}}) => itemChange({required: checked}, item.key)}
           >必填</Checkbox>}

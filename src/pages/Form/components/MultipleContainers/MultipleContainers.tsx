@@ -21,7 +21,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
-import {Button, Card, Checkbox, InputNumber, Modal, Select, Space, Steps, Tabs, Tooltip, Typography} from 'antd';
+import {Button, Checkbox, InputNumber, Modal, Select, Space, Steps, Tabs, Typography} from 'antd';
+import {DeleteOutlined} from '@ant-design/icons';
 import ColumnsConfig from '../ColumnsConfig';
 import TableConfig from '../TableConfig';
 
@@ -29,7 +30,6 @@ import TableConfig from '../TableConfig';
 import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
 import {isObject} from '@/util/Tools';
-import {DeleteOutlined} from "@ant-design/icons";
 
 export default {
   title: 'Presets/Sortable/Multiple Containers',
@@ -123,9 +123,10 @@ interface Props {
   containerStyle?: React.CSSProperties;
   coordinateGetter?: KeyboardCoordinateGetter;
 
-  getItemStyles: (styles: any) => {};
+  getItemStyles?: (styles: any) => {};
 
-  wrapperStyle: (styles: any) => {};
+  wrapperStyle?: (styles: any) => {};
+  onSave: (data:any) => {};
 
   itemCount?: number;
   width?: number;
@@ -154,6 +155,7 @@ export function MultipleContainers(
     items: initialItems,
     getItemStyles = () => ({}),
     wrapperStyle = () => ({}),
+    onSave = () => ({}),
     minimal = false,
     modifiers,
     renderItem,
@@ -235,8 +237,51 @@ export function MultipleContainers(
     return items[container].data.map(item => item.key).indexOf(id);
   };
 
+  const getTable = (data: any = []) => {
+    const submitData: any = [];
+    data.forEach((item) => {
+      let column: any = item;
+      if (item.card) {
+        const table: any = [];
+        const cardTable = data.filter(cardItems => {
+          return cardItems.line === item.line && cardItems.column === item.column && cardItems.cardTable;
+        });
+        cardTable.forEach((item) => {
+          if (table[item.cardLine || 0]) {
+            const columns = [...table[item.cardLine || 0], item];
+            table[item.cardLine || 0] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
+          } else {
+            table[item.cardLine || 0] = [item];
+          }
+        });
+        column = {
+          ...item,
+          table: table.slice(1, table.length),
+        };
+      }
+      if (!item.cardTable) {
+        if (submitData[item.line]) {
+          const columns = [...submitData[item.line], column];
+          submitData[item.line] = columns.sort((a, b) => a.column - b.column);
+        } else {
+          submitData[item.line] = [column];
+        }
+      }
+    });
+    return submitData.slice(1, items.length);
+  };
+
+  const submit = () => {
+    return steps.map(item => {
+      return {
+        ...item,
+        data: getTable(item.data)
+      };
+    });
+  };
+
   return (
-    <Card title="表单配置">
+    <>
       <DndContext
         measuring={{
           droppable: {
@@ -250,12 +295,14 @@ export function MultipleContainers(
         onDragOver={({active, over}) => {
 
           const overId = over?.id;
-
+          console.log(overId);
           const overContainer = findContainer(overId || '');
           const activeContainer = findContainer(active.id || '');
+
           if (typeof overContainer !== 'number' || typeof activeContainer !== 'number') {
             return;
           }
+
           if (items[overContainer].cardTable && active.id === 'card') {
             return;
           }
@@ -443,6 +490,7 @@ export function MultipleContainers(
         <div style={{display: 'flex', alignItems: 'flex-start'}}>
           <div style={{minWidth: 350, display: 'inline-block'}}>
             <ColumnsConfig
+              mobile={mobile}
               item
               column
               itemChange={() => {
@@ -454,7 +502,6 @@ export function MultipleContainers(
               cardTable
               table
               gutter
-              isSortingContainer
               empty
               handleAddColumn
               handleRemoveColumn
@@ -555,7 +602,6 @@ export function MultipleContainers(
                   const newItems: any = [items[0], ...steps[step].data];
                   setItems(newItems);
                   setCurrentStep(step);
-                  console.log(1)
                 }}>
                 {
                   steps.map((item, index) => {
@@ -604,10 +650,9 @@ export function MultipleContainers(
               </Steps>
             </div>
 
-            <div style={{width: mobile ? 500 : '100%', margin: 'auto',padding:' 24px 0'}}>
+            <div style={{width: mobile ? 500 : '100%', margin: 'auto', padding: ' 24px 0'}}>
               <TableConfig
                 mobile={mobile}
-                isSortingContainer
                 position={{}}
                 onUp={onUp}
                 onDown={onDown}
@@ -638,38 +683,7 @@ export function MultipleContainers(
             </div>
             <div style={{paddingTop: 24, textAlign: 'center'}}>
               <Button type='primary' onClick={() => {
-                const submitData: any = [];
-
-                items.slice(1, items.length).forEach((item) => {
-                  let column: any = item;
-                  if (item.card) {
-                    const table: any = [];
-                    const cardTable = items.filter(cardItems => {
-                      return cardItems.line === item.line && cardItems.column === item.column && cardItems.cardTable;
-                    });
-                    cardTable.forEach((item) => {
-                      if (table[item.cardLine || 0]) {
-                        const columns = [...table[item.cardLine || 0], item];
-                        table[item.cardLine || 0] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
-                      } else {
-                        table[item.cardLine || 0] = [item];
-                      }
-                    });
-                    column = {
-                      ...item,
-                      table: table.slice(1, table.length),
-                    };
-                  }
-                  if (!item.cardTable) {
-                    if (submitData[item.line]) {
-                      const columns = [...submitData[item.line], column];
-                      submitData[item.line] = columns.sort((a, b) => a.column - b.column);
-                    } else {
-                      submitData[item.line] = [column];
-                    }
-                  }
-                });
-                console.log(submitData.slice(1, items.length));
+                onSave(submit());
               }}>保存</Button>
             </div>
           </div>
@@ -687,7 +701,7 @@ export function MultipleContainers(
       </DndContext>
 
       <Modal
-        bodyStyle={{padding:32}}
+        bodyStyle={{padding: 32}}
         footer={null}
         open={typeof delStep === 'number'}
         centered
@@ -695,7 +709,7 @@ export function MultipleContainers(
       >
         <div>
           是否确认删除步骤?
-          <div style={{textAlign: 'right',marginTop:24}}>
+          <div style={{textAlign: 'right', marginTop: 24}}>
             <Space>
               <Button onClick={() => setDelStep(undefined)}>取消</Button>
               <Button type='primary' onClick={() => {
@@ -723,7 +737,7 @@ export function MultipleContainers(
           </div>
         </div>
       </Modal>
-    </Card>
+    </>
   );
 
   function renderSortableItemDragOverlay(id: string, active: any) {
