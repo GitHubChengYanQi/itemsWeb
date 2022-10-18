@@ -90,6 +90,10 @@ const UserList = () => {
       dataIndex: 'sexName'
     },
     {
+      title: '工号',
+      dataIndex: 'jobNo'
+    },
+    {
       title: '部门',
       dataIndex: 'deptName'
     },
@@ -161,7 +165,7 @@ const UserList = () => {
         searchForm={searchForm}
         actions={actions()}
       />
-      <Drawer ref={dfRef} title='编辑客户' component={UserEdit} onSuccess={() => {
+      <Drawer ref={dfRef} title='用户' component={UserEdit} onSuccess={() => {
         ref.current.refresh();
         dfRef.current.close();
       }}/>
