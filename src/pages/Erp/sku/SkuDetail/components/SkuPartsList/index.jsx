@@ -98,8 +98,8 @@ const SkuPartsList = ({
         <Column title="版本号" key={1} dataIndex="name" render={(value) => {
           return <Render text={value} />;
         }} />
-        <Column title="配套数量" key={2} dataIndex="number" align="center" render={(value) => {
-          return <Render>{value || 0}</Render>
+        <Column title="配套数量" key={2} dataIndex="bomNum" align="center" render={(value) => {
+          return <Render>{value || 0}</Render>;
         }} />
         <Column title="状态" key={2} dataIndex="number" align="center" render={(value) => {
           return <Render text='启用' />;
