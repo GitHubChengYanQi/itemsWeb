@@ -11,7 +11,7 @@ import ThousandsSeparator from '@/components/ThousandsSeparator';
 
 
 const Description = (props) => {
-  const {data} = props;
+  const {data,enterprise} = props;
 
   const {data: OriginData} = useRequest(OriginIdSelect);
 
@@ -56,7 +56,7 @@ const Description = (props) => {
                 return current && current < moment().endOf('day');
               }} />
           </Descriptions.Item>
-          <Descriptions.Item label="客户来源">
+          {!enterprise && <Descriptions.Item label="客户来源">
             <SelectEdit
               data={OriginData}
               value={data.originId}
@@ -64,7 +64,7 @@ const Description = (props) => {
               onChange={async (value) => {
                 edit({originId: value});
               }} />
-          </Descriptions.Item>
+          </Descriptions.Item>}
           <Descriptions.Item label="注册资本">
             <InputEdit
               num
@@ -135,15 +135,15 @@ const Description = (props) => {
                 edit({signIn: value});
               }} />
           </Descriptions.Item>
-          <Descriptions.Item span={2} label="统一社会信用代码">
+          <Descriptions.Item label="统一社会信用代码">
             <InputEdit value={data.utscc} onChange={async (value) => {
               edit({utscc: value});
             }} /></Descriptions.Item>
-          <Descriptions.Item span={2} label="公司简介">
+          <Descriptions.Item label="公司简介">
             <TextEdit value={data.introduction} onChange={async (value) => {
               edit({introduction: value});
             }} /></Descriptions.Item>
-          <Descriptions.Item span={2} label="备注">
+          <Descriptions.Item label="备注">
             <TextEdit
               value={data.note}
               onChange={async (value) => {
