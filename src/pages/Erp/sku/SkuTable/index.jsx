@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Button, Input, Space, Table as AntTable, Typography} from 'antd';
+import {Button, Input, Space, Typography} from 'antd';
 import {CopyOutlined} from '@ant-design/icons';
 import {config, useHistory} from 'ice';
 import cookie from 'js-cookie';
@@ -78,10 +78,8 @@ const SkuTable = ({...props}, ref) => {
   }));
 
   useEffect(() => {
-    if (spuClass) {
-      tableRef.current.formActions.setFieldValue('spuClass', spuClass === '0' ? null : spuClass);
-      tableRef.current.submit();
-    }
+    tableRef.current.formActions.setFieldValue('spuClass', spuClass === '0' ? null : spuClass);
+    tableRef.current.submit();
   }, [spuClass]);
 
 
@@ -118,7 +116,7 @@ const SkuTable = ({...props}, ref) => {
       </>
     );
   };
-  
+
   const footer = () => {
     return (
       <>
@@ -262,7 +260,7 @@ const SkuTable = ({...props}, ref) => {
         headStyle={spuId && {display: 'none'}}
         noRowSelection={spuId}
         api={skuList}
-        tableKey={`sku${spuClass || ''}`}
+        tableKey={`sku${spuClass || '0'}`}
         columns={columns}
         actionButton={<Space size={24}>
           <a>查看日志</a>
