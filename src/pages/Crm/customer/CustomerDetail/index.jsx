@@ -70,10 +70,12 @@ const CustomerDetail = ({id, supply = 0, status,}) => {
 
   const enterprise = data.status === 99;
 
+  const title = supply ? '供应商详情' : '客户详情';
+
   return (
     <div className={styles.detail}>
       <Card>
-        <Breadcrumb title={supply ? '供应商详情' : '客户详情'} />
+        <Breadcrumb title={enterprise ? null : title} />
       </Card>
       <Card>
         <div className={styles.title}>
@@ -219,7 +221,7 @@ const CustomerDetail = ({id, supply = 0, status,}) => {
                   {key: '6', label: '货单', children: <Empty />},
                   {key: '7', label: '回款', children: <Empty />},
                   {key: '8', label: '附件', children: <Upload customerId={data && data.customerId} />},
-                  {key: '9', label: '企业信息', children: <Description data={data} />},
+                  {key: '9', label: '企业信息', children: <Description enterprise={enterprise} data={data} />},
                 ]}
               />
             </Card>
