@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Tree} from 'antd';
-import useUrlState from "@ahooksjs/use-url-state";
+import useUrlState from '@ahooksjs/use-url-state';
 import ListLayout from '@/layouts/ListLayout';
 import SkuTable from '@/pages/Erp/sku/SkuTable';
 import store from '@/store';
@@ -33,7 +33,9 @@ const SkuList = () => {
 
   const dataSource = dataResult(data && data.skuClass);
 
-  const [spuClass, setSpuClass] = useState(defaultTableQuery.values?.spuClass ? [defaultTableQuery.values?.spuClass] : []);
+  const [spuClass, setSpuClass] = useState([]);
+
+  const defaultSpuClass = defaultTableQuery.values?.spuClass ? [defaultTableQuery.values?.spuClass] : ['0'];
 
   const Left = () => {
     return (
@@ -41,8 +43,11 @@ const SkuList = () => {
         <Tree
           showLine
           selectable
-          selectedKeys={spuClass}
+          selectedKeys={spuClass.length > 0 ? spuClass : defaultSpuClass}
           onSelect={(value) => {
+            if (value.length === 0) {
+              return;
+            }
             setSpuClass(value);
           }}
           defaultExpandedKeys={['0']}
@@ -58,7 +63,7 @@ const SkuList = () => {
   };
   return (
     <ListLayout>
-      <SkuTable left={Left()} spuClass={spuClass[0] || null} setSpuClass={setSpuClass}/>
+      <SkuTable left={Left()} spuClass={spuClass[0] || null} setSpuClass={setSpuClass} />
     </ListLayout>
   );
 };
