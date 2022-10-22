@@ -1,8 +1,8 @@
 import React from 'react';
 import {createFormActions} from '@formily/antd';
-import {Button, Table as AntTable} from 'antd';
+import {Table as AntTable} from 'antd';
 import Table from '@/components/Table';
-import {outstockOrderList, stockDetail} from '@/pages/Erp/stock/StockUrl';
+import {outstockOrderList} from '@/pages/Erp/stock/StockUrl';
 import Render from '@/components/Render';
 
 
@@ -28,13 +28,13 @@ const OutStock = ({skuId}) => {
     >
       <Column title="时间" dataIndex="createTime" sorter />
       <Column title="原库存" dataIndex="brandResult" render={(value) => {
-        return <>{0}</>;
+        return <Render text="-" />;
       }} />
       <Column title="出库数量" dataIndex="brandResult" render={(value) => {
-        return <>{0}</>;
+        return <Render text="-" />;
       }} />
       <Column title="结余" dataIndex="brandResult" render={(value) => {
-        return <>{0}</>;
+        return <Render text="-" />;
       }} />
       <Column title="人员" dataIndex="userResult" render={(value) => {
         return <>{value?.name || '-'}</>;
@@ -43,13 +43,13 @@ const OutStock = ({skuId}) => {
         return <>{value && value.brandName || '无品牌'}</>;
       }} />
       <Column title="供应商" dataIndex="brandResult" render={(value) => {
-        return <>{'-'}</>;
+        return <Render text="-" />;
       }} />
       <Column title="关联任务" dataIndex="brandResult" render={(value) => {
-        return <>{'-'}</>;
+        return <Render text="-" />;
       }} />
       <Column title="关联单据" dataIndex="brandResult" render={(value) => {
-        return <>{'-'}</>;
+        return <Render text="-" />;
       }} />
     </Table>
   </>;

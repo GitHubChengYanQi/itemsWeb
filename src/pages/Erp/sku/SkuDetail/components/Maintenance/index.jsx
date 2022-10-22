@@ -31,13 +31,13 @@ const Maintenance = ({skuId}) => {
       <Column title="养护数量" dataIndex="detailResults" render={(value) => {
         let number = 0;
         isArray(value).forEach(item => number += item.number);
-        return <>{number}</>;
+        return <Render text={number} />;
       }} />
       <Column title="养护内容" dataIndex="brandResult" render={(value) => {
-        return <>{'-'}</>;
+        return <Render text='-' />;
       }} />
       <Column width={70} title="养护人员" dataIndex="createUserResult" render={(value) => {
-        return value?.name || '-';
+        return <Render text={value?.name || '-'} />;
       }} />
       <Column width={70} title="操作" dataIndex="brandResult" render={(value) => {
         return <Render><Button type="link">详情</Button></Render>;
