@@ -34,6 +34,24 @@ export const stockDetail = {
   rowKey:'stockId'
 };
 
+export const outstockOrderList = {
+  url: '/outstockOrder/list',
+  method: 'POST',
+  rowKey:'stockId'
+};
+
+export const maintenanceLogList = {
+  url: '/maintenanceLog/list',
+  method: 'POST',
+  rowKey:'stockId'
+};
+
+export const stockDetailList = {
+  url: '/stockDetails/list',
+  method: 'POST',
+  rowKey:'stockId'
+};
+
 export const stockList = {
   url: '/stock/list',
   method: 'POST',
