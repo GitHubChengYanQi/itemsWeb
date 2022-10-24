@@ -40,6 +40,12 @@ export const outstockOrderList = {
   rowKey:'stockId'
 };
 
+
+export const outstockListingList = {
+  url: '/outstockListing/list',
+  method: 'POST',
+};
+
 export const instockOrderList = {
   url: '/instockOrder/list',
   method: 'POST',
