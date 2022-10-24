@@ -31,7 +31,6 @@ const routerConfig = [
     name: 'Home',
     component: BasicLayout,
     children: [
-      ...FormConfig,
       ...WorkflowConfig,
       ...CrmRouterConfig,
       ...ErpRouterConfig,
@@ -49,6 +48,12 @@ const routerConfig = [
         path: '/test',
         component: lazy(() => import('@/pages/Test')),
         fallback: <div>loading...</div>,
+        exact: true,
+      },
+      {
+        path: '/form/config',
+        name: '表单设置',
+        component: lazy(() => import('@/pages/Form/DiyForm')),
         exact: true,
       },
       {

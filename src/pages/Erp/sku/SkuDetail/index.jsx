@@ -212,6 +212,51 @@ const SkuDetail = ({value}) => {
           </Row>
         </Card>
       </div>
+      <div className={styles.info}>
+        <Card
+          title="详细信息"
+          headStyle={{border: 'none'}}
+          bodyStyle={{padding: '0px 24px'}}
+        >
+          <Descriptions column={4}>
+            <Descriptions.Item label="材质">-</Descriptions.Item>
+            <Descriptions.Item label="养护周期">{data.maintenancePeriod || 0} 天</Descriptions.Item>
+            <Descriptions.Item label="重量">0</Descriptions.Item>
+            <Descriptions.Item label="品牌">
+              {isArray(data.brandResults).map(item => item.brandName).join('、')}
+            </Descriptions.Item>
+            <Descriptions.Item
+              label="物料描述"
+              span={4}
+            >
+              ({
+                data.list &&
+                data.list.length > 0 &&
+                data.list[0].attributeValues ? <em>{data.list.map((items) => {
+                  return `${items.itemAttributeResult.attribute}: ${items.attributeValues}`;
+                }).toString()}</em> : '无'
+              })
+            </Descriptions.Item>
+            <Descriptions.Item
+              label="图片"
+              span={4}
+            >
+              <Image.PreviewGroup>
+                {
+                  isArray(data.imgResults).map((item, index) => {
+                    return <Image
+                      key={index}
+                      width={34}
+                      preview={{src: item.url}}
+                      src={item.thumbUrl}
+                    />;
+                  })
+                }
+              </Image.PreviewGroup>
+            </Descriptions.Item>
+          </Descriptions>
+        </Card>
+      </div>
 
       {!value && <div
         className={styles.info}>
