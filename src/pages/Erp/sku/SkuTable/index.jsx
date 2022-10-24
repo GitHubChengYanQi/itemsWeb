@@ -118,7 +118,7 @@ const SkuTable = ({...props}, ref) => {
       </>
     );
   };
-  
+
   const footer = () => {
     return (
       <>
@@ -227,6 +227,11 @@ const SkuTable = ({...props}, ref) => {
       title: '尺寸',
       render: (value) => <Render text={value && value.split(',').join('×') || '-'} />
     },
+    {dataIndex: 'color', title: '表色',},
+    {dataIndex: 'heatTreatment', title: '热处理',},
+    {dataIndex: 'level', title: '级别',},
+    {dataIndex: 'packaging', title: '包装方式',},
+    {dataIndex: 'viewFrame', title: '图幅',},
     {dataIndex: 'remarks', title: '备注',},
     {dataIndex: 'user', title: '添加人', render: (value) => <Render text={value?.name || '-'} />, sorter: true},
     {dataIndex: 'createTime', title: '添加时间', sorter: true},
