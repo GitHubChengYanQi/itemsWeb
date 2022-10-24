@@ -19,7 +19,6 @@ import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
 import * as SysField from './components/Field';
 import * as CustomerSysField from './components/CustomerAll';
-import Overflow from '@/components/Overflow';
 import CustomerEdit from '@/pages/Crm/customer/CustomerEdit';
 import {EffectsAction} from '@/pages/Order/CreateOrder/components/EffectsAction';
 import store from '@/store';
@@ -33,6 +32,7 @@ import Draft from '@/components/Form/components/Draft';
 import style from './index.module.less';
 import {taxRateListSelect} from '@/pages/Purshase/taxRate/taxRateUrl';
 import FormLayout from '@/components/Form/components/FormLayout';
+import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
 
@@ -57,6 +57,8 @@ const CreateOrder = ({...props}) => {
   const formRef = useRef();
 
   const [draftName, setDraftName] = useState('');
+
+  const [id, setId] = useState(false);
 
   const skus = params.skus && Array.isArray(JSON.parse(params.skus)) && JSON.parse(params.skus);
 
@@ -134,6 +136,9 @@ const CreateOrder = ({...props}) => {
 
   const [visible, setVisible] = useState();
 
+  const [currentStep, setCurrentStep] = useState({});
+  console.log(currentStep);
+
   const [resultVisible, setResultVisible] = useState();
 
   const [loading, setLoading] = useState();
@@ -159,7 +164,7 @@ const CreateOrder = ({...props}) => {
 
     <Form
       className={style.form}
-      value={false}
+      value={id}
       ref={formRef}
       NoButton={false}
       api={ApiConfig}
@@ -179,11 +184,6 @@ const CreateOrder = ({...props}) => {
             });
             return false;
           }
-        } else {
-          notification.warn({
-            message: '请输入付款批次',
-          });
-          return false;
         }
 
         if (value.detailParams) {
@@ -196,11 +196,6 @@ const CreateOrder = ({...props}) => {
             });
             return false;
           }
-        } else {
-          notification.warn({
-            message: '请添加物料清单!',
-          });
-          return false;
         }
 
         value = {
@@ -260,6 +255,7 @@ const CreateOrder = ({...props}) => {
         });
       }}
       onSuccess={(res) => {
+        setId(res?.data?.orderId);
         setOrder(res.data);
         setLoading(false);
       }}
@@ -269,6 +265,8 @@ const CreateOrder = ({...props}) => {
     >
 
       <FormLayout
+        value={currentStep.step}
+        onChange={setCurrentStep}
         formType="PO"
         fieldRender={(item) => {
           let formItemProps;
@@ -394,7 +392,7 @@ const CreateOrder = ({...props}) => {
             case 'partyBBankAccount':
               formItemProps = {
                 placeholder: '请选择乙方开户账号',
-                component: CustomerSysField.Bank,
+                component: CustomerSysField.BankAccount,
               };
               break;
             case 'partyBLegalPerson':
@@ -740,8 +738,20 @@ const CreateOrder = ({...props}) => {
         style={{height: 47, borderTop: '1px solid #e7e7e7', background: '#fff', textAlign: 'center', paddingTop: 8}}>
         <Space>
           <Button type="primary" onClick={() => {
-            formRef.current.submit();
-          }}>保存</Button>
+            if (id || currentStep.type === 'add') {
+              formRef.current.submit();
+            } else {
+              formRef.current.validate().then(() => {
+                setCurrentStep({
+                  ...currentStep,
+                  step: currentStep.step + 1,
+                  type: isArray(currentStep.steps)[currentStep.step + 1].type
+                });
+              }).catch((error) => {
+                console.log(error);
+              });
+            }
+          }}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
           <Button onClick={() => {
             history.push('/purchase/toBuyPlan');
           }}>取消</Button>

@@ -4,10 +4,12 @@ import ProSkeleton from '@ant-design/pro-skeleton';
 import ProCard from '@ant-design/pro-card';
 import {useRequest} from '@/util/Request';
 import {formList} from '@/pages/Form/url';
-import {isArray, isObject} from '@/util/Tools';
 
 const FormLayout = (
   {
+    value,
+    onChange = () => {
+    },
     formType,
     fieldRender = () => {
       return <></>;
@@ -16,8 +18,7 @@ const FormLayout = (
 ) => {
 
   const [layout, setLayout] = useState({});
-  const [setps, setSetps] = useState([]);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [steps, setSteps] = useState([]);
 
   const {loading: detailLoaidng} = useRequest({
     ...formList,
@@ -26,8 +27,10 @@ const FormLayout = (
     onSuccess: (res) => {
       if (res[0] && res[0].typeSetting) {
         const typeSetting = JSON.parse(res[0].typeSetting) || {};
-        setSetps(typeSetting.steps);
+        const newSteps = typeSetting.steps || [];
+        setSteps(newSteps);
         setLayout({width: typeSetting.width, gutter: typeSetting.gutter, widthUnit: typeSetting.widthUnit});
+        onChange({step: 0, type: newSteps[0].type, steps: newSteps});
       }
     }
   });
@@ -37,16 +40,21 @@ const FormLayout = (
   }
 
   return <>
-    <div hidden={setps.length === 1} style={{marginBottom: 24}}>
+    <div hidden={steps.length === 1} style={{marginBottom: 24}}>
       <Steps
-        current={currentStep}
+        current={value}
         onChange={(step) => {
-          setCurrentStep(step);
-        }}>
+          if (step >= value) {
+            return;
+          }
+          onChange({step, type: steps[step].type, steps});
+        }}
+      >
         {
-          setps.map((item, index) => {
+          steps.map((item, index) => {
             return <Steps.Step
               title={item.title || `步骤${index + 1}`}
+              description={item.type === 'add' && '保存'}
               key={index}
             />;
           })
@@ -54,48 +62,65 @@ const FormLayout = (
       </Steps>
     </div>
     {
-      isArray(isObject(setps[currentStep]).data).map((rows = [], rowIndex) => {
-        return <Row key={rowIndex} style={{width: (layout.width || 100) + (layout.widthUnit || '%')}} gutter={layout.gutter}>
+      steps.map((setpItem, setpIndex) => {
+        const data = setpItem.data || [];
+        const hidden = value !== setpIndex;
+        return <div hidden={hidden} key={setpIndex}>
           {
-            rows.map((columnItem, columnIndex) => {
-              if (columnItem.card) {
-                const table = columnItem.table || [];
-                return <Col key={columnIndex} span={24 / rows.length}>
-                  <ProCard
-                    bodyStyle={{padding: 16}}
-                    className="h2Card"
-                    title={columnItem.title || '无标题'}
-                    headerBordered
-                  >
-                    {
-                      table.map((rows = [], rowIndex) => {
-                        return <Row key={rowIndex} gutter={layout.gutter}>
+            data.map((rows = [], rowIndex) => {
+              return <Row
+                key={rowIndex}
+                style={{width: (layout.width || 100) + (layout.widthUnit || '%')}}
+                gutter={layout.gutter}>
+                {
+                  rows.map((columnItem, columnIndex) => {
+                    if (columnItem.card) {
+                      const table = columnItem.table || [];
+                      return <Col key={columnIndex} span={24 / rows.length}>
+                        <ProCard
+                          bodyStyle={{padding: 16}}
+                          className="h2Card"
+                          title={columnItem.title || '无标题'}
+                          headerBordered
+                        >
                           {
-                            rows.map((columnItem, columnIndex) => {
-                              const data = columnItem.data || [];
-                              return <Col key={columnIndex} span={24 / rows.length}>
-                                {data.map((item, index) => {
-                                  return <div key={index}>{fieldRender(item)}</div>;
-                                })}
-                              </Col>;
+                            table.map((rows = [], rowIndex) => {
+                              return <Row key={rowIndex} gutter={layout.gutter}>
+                                {
+                                  rows.map((columnItem, columnIndex) => {
+                                    const data = columnItem.data || [];
+                                    return <Col key={columnIndex} span={24 / rows.length}>
+                                      {data.map((item, index) => {
+                                        return <div key={index}>{fieldRender({
+                                          ...item,
+                                          required: hidden ? false : item.required
+                                        })}</div>;
+                                      })}
+                                    </Col>;
+                                  })
+                                }
+                              </Row>;
                             })
                           }
-                        </Row>;
-                      })
+                        </ProCard>
+                      </Col>;
+                    } else {
+                      const data = columnItem.data || [];
+                      return <Col key={columnIndex} span={24 / rows.length}>
+                        {data.map((item, index) => {
+                          return <div key={index}>{fieldRender({
+                            ...item,
+                            required: hidden ? false : item.required
+                          })}</div>;
+                        })}
+                      </Col>;
                     }
-                  </ProCard>
-                </Col>;
-              } else {
-                const data = columnItem.data || [];
-                return <Col key={columnIndex} span={24 / rows.length}>
-                  {data.map((item, index) => {
-                    return <div key={index}>{fieldRender(item)}</div>;
-                  })}
-                </Col>;
-              }
+                  })
+                }
+              </Row>;
             })
           }
-        </Row>;
+        </div>;
       })
     }
   </>;
