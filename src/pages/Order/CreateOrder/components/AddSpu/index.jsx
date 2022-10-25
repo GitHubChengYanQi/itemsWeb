@@ -15,6 +15,7 @@ const AddSpu = (
     customerId,
     params,
     supply,
+    manual,
     maxWidth,
     skuResult,
     api,
@@ -147,6 +148,7 @@ const AddSpu = (
       </Descriptions.Item>
       <Descriptions.Item label="物料名称">
         <SelectSku
+          manual={manual}
           skuResult={skuResult}
           api={api}
           noSpu={noSpu}

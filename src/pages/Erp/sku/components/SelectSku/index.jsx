@@ -5,7 +5,6 @@ import {skuDetail, skuList} from '@/pages/Erp/sku/skuUrl';
 import Modal from '@/components/Modal';
 import SkuEdit from '@/pages/Erp/sku/skuEdit';
 import Note from '@/components/Note';
-import {partsList} from '@/pages/Erp/parts/PartsUrl';
 
 
 const SelectSku = (
@@ -13,6 +12,7 @@ const SelectSku = (
     supply,
     value,
     onChange,
+    manual,
     width,
     dropdownMatchSelectWidth,
     placeholder,
@@ -100,6 +100,7 @@ const SelectSku = (
   };
 
   const {loading, data, run} = useRequest({...(api || skuList), data: {skuIds: ids, ...params}}, {
+    manual,
     debounceInterval: 300,
   });
 
@@ -135,7 +136,9 @@ const SelectSku = (
   }, [value]);
 
   useEffect(() => {
-    getSkuList();
+    if (spuClassId){
+      getSkuList();
+    }
   }, [spuClassId]);
 
 
