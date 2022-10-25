@@ -76,6 +76,7 @@ const UserEdit = (props) => {
     >
       <FormItem component={Input} label="账号" required placeholder="请输入账号" name="account" />
       <FormItem component={Input} label="姓名" required placeholder="请输入姓名" name="name" />
+      <FormItem component={Input} label="工号" required placeholder="请输入工号" name="jobNo" />
       <FormItem label="生日" name="birthday" component={DatePicker} />
       {value === false &&
       <FormItem
