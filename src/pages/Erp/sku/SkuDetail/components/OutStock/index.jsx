@@ -36,7 +36,7 @@ const OutStock = ({skuId}) => {
       <Column title="结余" dataIndex="afterNumber" render={(value) => {
         return <Render>{value ||0}</Render>;
       }} />
-      <Column title="人员" dataIndex="userResult" render={(value) => {
+      <Column title="人员" dataIndex="createUserResult" render={(value) => {
         return <>{value?.name || '-'}</>;
       }} />
       <Column title="品牌" dataIndex="brandResult" render={(value) => {
