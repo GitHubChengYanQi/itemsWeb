@@ -9,10 +9,7 @@ export const typeObject = ({type, status = []}) => {
     }).length > 0;
   };
 
-  const publicType = [
-    {label: '撤销', value: 'revoke', disabled: disabled('revoke')},
-    {label: '再次提交', value: 'resubmit', disabled: disabled('resubmit')},
-  ];
+  const publicType = [];
 
   switch (type) {
     case DocumentEnums.purchaseAsk:

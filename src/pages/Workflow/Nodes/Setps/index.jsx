@@ -7,7 +7,7 @@ import {
   Submit,
   FormButtonGroup,
 } from '@formily/antd';
-import {Button, Radio} from 'antd';
+import {Button, Input, Radio} from 'antd';
 import {ActionIds, Actions, Rule, StautsId} from '@/pages/Workflow/Nodes/Setps/components/SetpsField';
 
 const actions = createFormActions();
@@ -39,6 +39,10 @@ const Setps = ({
           });
 
           setFieldState('actionStatuses', state => {
+            state.visible = value === 'status';
+          });
+
+          setFieldState('stepsName', state => {
             state.visible = value === 'status';
           });
 
@@ -83,6 +87,15 @@ const Setps = ({
           {label: '审批', value: 'audit'},
           {label: '状态', value: 'status'},
         ]} />
+      <FormItem
+        type={type}
+        visible={false}
+        label="状态名称"
+        name="stepsName"
+        component={Input}
+        placeholder="请输入状态名称"
+        required
+      />
       <FormItem
         type={type}
         label="单据状态"
