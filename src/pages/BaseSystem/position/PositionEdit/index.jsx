@@ -25,6 +25,7 @@ const PositionForm = (props) => {
     >
       <FormItem component={SysField.Name} name='name' required label='职位名称'  />
       <FormItem component={SysField.Code} name='code' label="职位编码" required />
+      <FormItem component={SysField.Governor} name='governor' label="部门主管" required />
       <FormItem component={SysField.Remark} name='remark' label="备注" />
       <FormItem component={SysField.Sort} name='sort' label="排序" />
     </Form>
