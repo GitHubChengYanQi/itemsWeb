@@ -53,7 +53,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
     manual: true,
     onSuccess: (res) => {
       if (res) {
-        setSku({...sku, ...res});
+        setSku({...sku, ...res,detailId:undefined});
       }
     }
   });
