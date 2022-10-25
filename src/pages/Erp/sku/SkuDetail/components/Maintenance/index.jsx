@@ -25,13 +25,11 @@ const Maintenance = ({skuId}) => {
       bordered={false}
       headStyle={{display: 'none'}}
       api={maintenanceLogList}
-      rowKey="maintenanceLogId"
+      rowKey="maintenanceLogDetailId"
     >
       <Column title="时间" dataIndex="createTime" sorter />
-      <Column title="养护数量" dataIndex="detailResults" render={(value) => {
-        let number = 0;
-        isArray(value).forEach(item => number += item.number);
-        return <Render text={number} />;
+      <Column title="养护数量" dataIndex="number" render={(value) => {
+        return <Render text={value || 0} />;
       }} />
       <Column title="养护内容" dataIndex="brandResult" render={(value) => {
         return <Render text='-' />;

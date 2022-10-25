@@ -24,17 +24,17 @@ const InStock = ({skuId}) => {
       bordered={false}
       headStyle={{display: 'none'}}
       api={instockOrderList}
-      rowKey="supplyId"
+      rowKey="instockListId"
     >
       <Column title="时间" dataIndex="createTime" sorter />
       <Column title="原库存" dataIndex="stockNumber" render={(value) => {
-        return <Render text={value || '-'} />;
+        return <Render>{value || 0}</Render>;
       }} />
-      <Column title="入库数量" dataIndex="inStockNum" render={(value) => {
-        return <Render text={value || '-'} />;
+      <Column title="入库数量" dataIndex="instockNumber" render={(value) => {
+        return <Render>{value || 0}</Render>;
       }} />
       <Column title="应存" dataIndex="realNumber" render={(value) => {
-        return <Render text={value || '-'} />;
+        return <Render>{value || 0}</Render>;
       }} />
       <Column title="人员" dataIndex="user" render={(value) => {
         return <Render text={value || '-'} />;

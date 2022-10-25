@@ -47,7 +47,7 @@ export const outstockListingList = {
 };
 
 export const instockOrderList = {
-  url: '/instockOrder/list',
+  url: '/instockList/list',
   method: 'POST',
   rowKey:'stockId'
 };
@@ -59,7 +59,7 @@ export const allocationLogList = {
 };
 
 export const maintenanceLogList = {
-  url: '/maintenanceLog/list',
+  url: '/maintenanceLogDetail/list',
   method: 'POST',
   rowKey:'stockId'
 };
