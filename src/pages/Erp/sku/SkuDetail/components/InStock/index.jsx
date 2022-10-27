@@ -2,8 +2,9 @@ import React from 'react';
 import {createFormActions} from '@formily/antd';
 import {Table as AntTable} from 'antd';
 import Table from '@/components/Table';
-import {instockOrderList} from '@/pages/Erp/stock/StockUrl';
+import {skuHandleRecord} from '@/pages/Erp/stock/StockUrl';
 import Render from '@/components/Render';
+import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 
 const formActionsPublic = createFormActions();
@@ -16,28 +17,28 @@ const InStock = ({skuId}) => {
   return <>
     <Table
       formSubmit={(value) => {
-        return {...value, skuId};
+        return {...value, skuId, types: [DocumentEnums.instockOrder]};
       }}
       noRowSelection
       formActions={formActionsPublic}
       bodyStyle={{padding: 0}}
       bordered={false}
       headStyle={{display: 'none'}}
-      api={instockOrderList}
-      rowKey="supplyId"
+      api={skuHandleRecord}
+      rowKey="recordId"
     >
-      <Column title="时间" dataIndex="createTime" sorter />
-      <Column title="原库存" dataIndex="stockNumber" render={(value) => {
-        return <Render text={value || '-'} />;
+      <Column title="时间" dataIndex="operationTime" sorter />
+      <Column title="原库存" dataIndex="nowStockNumber" render={(value) => {
+        return <Render>{value || 0}</Render>;
       }} />
-      <Column title="入库数量" dataIndex="inStockNum" render={(value) => {
-        return <Render text={value || '-'} />;
+      <Column title="入库数量" dataIndex="operationNumber" render={(value) => {
+        return <Render>{value || 0}</Render>;
       }} />
-      <Column title="应存" dataIndex="realNumber" render={(value) => {
-        return <Render text={value || '-'} />;
+      <Column title="结余" dataIndex="balanceNumber" render={(value) => {
+        return <Render>{value || 0}</Render>;
       }} />
       <Column title="人员" dataIndex="user" render={(value) => {
-        return <Render text={value || '-'} />;
+        return <Render text={value?.name || '-'} />;
       }} />
       <Column title="品牌" dataIndex="brandResult" render={(value) => {
         return <Render text={value?.brandName || '无品牌'} />;
@@ -45,11 +46,11 @@ const InStock = ({skuId}) => {
       <Column title="供应商" dataIndex="customerResult" render={(value) => {
         return <Render text={value?.customerName || '-'} />;
       }} />
-      <Column title="关联任务" dataIndex="task" render={(value) => {
+      <Column title="关联任务" dataIndex="theme" render={(value) => {
         return <Render text={value || '-'} />;
       }} />
-      <Column title="关联单据" dataIndex="order" render={(value) => {
-        return <Render text={value || '-'} />;
+      <Column title="关联单据" dataIndex="instockOrderResult" render={(value) => {
+        return <Render text={value?.coding || '-'} />;
       }} />
     </Table>
   </>;

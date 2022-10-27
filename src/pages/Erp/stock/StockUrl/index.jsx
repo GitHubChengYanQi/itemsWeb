@@ -40,12 +40,22 @@ export const outstockOrderList = {
   rowKey:'stockId'
 };
 
+
+export const outstockListingList = {
+  url: '/outstockListing/list',
+  method: 'POST',
+};
+
 export const instockOrderList = {
-  url: '/instockOrder/list',
+  url: '/instockList/list',
   method: 'POST',
   rowKey:'stockId'
 };
 
+export const skuHandleRecord = {
+  url: '/skuHandleRecord/list',
+  method: 'POST'
+};
 export const allocationLogList = {
   url: '/allocationLog/list',
   method: 'POST',
@@ -53,7 +63,7 @@ export const allocationLogList = {
 };
 
 export const maintenanceLogList = {
-  url: '/maintenanceLog/list',
+  url: '/maintenanceLogDetail/list',
   method: 'POST',
   rowKey:'stockId'
 };

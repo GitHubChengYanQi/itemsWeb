@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {Button, Space} from 'antd';
 import Modal from '@/components/Modal';
 import SkuList from '@/pages/Erp/Analysis/SkuList';
