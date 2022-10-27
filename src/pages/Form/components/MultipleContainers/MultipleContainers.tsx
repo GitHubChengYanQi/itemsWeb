@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {
   CancelDrop,
-  closestCenter,
   pointerWithin,
   rectIntersection,
   CollisionDetection,
@@ -160,6 +159,9 @@ export const TRASH_ID = 'void';
 const PLACEHOLDER_ID = 'placeholder';
 const empty: UniqueIdentifier[] = [];
 
+let time = 0;
+let interva;
+
 export function MultipleContainers(
   {
     adjustScale = false,
@@ -185,7 +187,6 @@ export function MultipleContainers(
   }: Props) {
 
   const [items, setItems] = useState<Items>(defaultItems);
-  console.log(items);
 
   const [steps, setSteps] = useState(initSteps);
 
@@ -372,14 +373,16 @@ export function MultipleContainers(
             strategy: MeasuringStrategy.Always,
           },
         }}
-        onDragStart={({active: {id, data: {current}}}) => {
+        onDragStart={async ({active: {id, data: {current}}}) => {
+
           console.log('start');
+          // debugger;
           setActiveId(id);
           setActive(current);
           // setClonedItems(items);
         }}
         onDragOver={({active, over}) => {
-          console.log('over');
+
           const overId = over?.id;
           if (overId === active.id) {
             return;
@@ -440,6 +443,7 @@ export function MultipleContainers(
         }}
         onDragEnd={({active, over}) => {
 
+          console.log('end')
           const activeContainer = findContainer(active.id);
           const overId = over?.id;
           const overContainer = findContainer(overId);
@@ -740,6 +744,9 @@ export function MultipleContainers(
 
             <div style={{width: mobile ? 500 : '100%', margin: 'auto', padding: ' 24px 0'}}>
               <TableConfig
+                activeId={activeId}
+                getIndex={() => {
+                }}
                 mobile={mobile}
                 position={{}}
                 onUp={onUp}

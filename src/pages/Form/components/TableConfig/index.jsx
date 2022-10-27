@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
 import {DownOutlined, UpOutlined} from '@ant-design/icons';
 import {Button, Row} from 'antd';
@@ -6,6 +6,7 @@ import ColumnsConfig from '@/pages/Form/components/ColumnsConfig';
 
 const TableConfig = (
   {
+    activeId,
     position = {},
     gutter,
     widthUnit,
@@ -36,28 +37,40 @@ const TableConfig = (
   }
 ) => {
 
-  const table = [];
-  const cardTable = [];
-  items.forEach((item, index) => {
-    if (index === 0) {
+  const [table, setTable] = useState([]);
+  const [cardTable, setCardTable] = useState([]);
+
+  useEffect(() => {
+    if (activeId) {
       return;
     }
-    if (item.cardTable) {
-      if (item.line === position.line && item.column === position.column) {
-        if (cardTable[item.cardLine]) {
-          const columns = [...cardTable[item.cardLine], item];
-          cardTable[item.cardLine] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
-        } else {
-          cardTable[item.cardLine] = [item];
-        }
+    // setTimeout(() => {
+    const initTable = [];
+    const initCardTable = [];
+    items.forEach((item, index) => {
+      if (index === 0) {
+        return;
       }
-    } else if (table[item.line]) {
-      const columns = [...table[item.line], item];
-      table[item.line] = columns.sort((a, b) => a.column - b.column);
-    } else {
-      table[item.line] = [item];
-    }
-  });
+      if (item.cardTable) {
+        if (item.line === position.line && item.column === position.column) {
+          if (initCardTable[item.cardLine]) {
+            const columns = [...initCardTable[item.cardLine], item];
+            initCardTable[item.cardLine] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
+          } else {
+            initCardTable[item.cardLine] = [item];
+          }
+        }
+      } else if (initTable[item.line]) {
+        const columns = [...initTable[item.line], item];
+        initTable[item.line] = columns.sort((a, b) => a.column - b.column);
+      } else {
+        initTable[item.line] = [item];
+      }
+    });
+    setTable(initTable);
+    setCardTable(initCardTable);
+    // }, 0);
+  }, [items]);
 
   return <>
     {(card ? cardTable : table).map((columns, rowIndex) => {
@@ -103,6 +116,7 @@ const TableConfig = (
             >
               {columns.map((item, index) => {
                   return <ColumnsConfig
+                    activeId={activeId}
                     mobile={mobile}
                     onUp={onUp}
                     onDown={onDown}

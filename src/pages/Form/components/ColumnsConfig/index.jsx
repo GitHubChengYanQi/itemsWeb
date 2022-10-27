@@ -6,6 +6,7 @@ import TableConfig from '@/pages/Form/components/TableConfig';
 
 const ColumnsConfig = (
   {
+    activeId,
     table,
     card,
     cardTable,
@@ -118,6 +119,7 @@ const ColumnsConfig = (
         );
       })}
     </SortableContext> : <TableConfig
+      activeId={activeId}
       position={item}
       onUp={onUp}
       mobile={mobile}
