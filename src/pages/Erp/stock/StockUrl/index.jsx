@@ -52,6 +52,10 @@ export const instockOrderList = {
   rowKey:'stockId'
 };
 
+export const skuHandleRecord = {
+  url: '/skuHandleRecord/list',
+  method: 'POST'
+};
 export const allocationLogList = {
   url: '/allocationLog/list',
   method: 'POST',
