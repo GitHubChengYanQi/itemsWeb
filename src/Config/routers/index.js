@@ -9,7 +9,6 @@ import RepairRouterConfig from '@/pages/Repair/router';
 import ProductionRouterConfig from '@/pages/Production/router';
 import SpuRouterConfig from '@/pages/SPU/router';
 import WorkflowConfig from '@/pages/Workflow/router';
-import FormConfig from '@/pages/Form/router';
 import baseSystem from './baseSystem';
 import PurshaseRouterConfig from '@/pages/Purshase/router';
 import ProcessRouterConfig from '@/pages/Process/route';

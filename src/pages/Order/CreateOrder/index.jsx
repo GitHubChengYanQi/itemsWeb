@@ -33,6 +33,7 @@ import {taxRateListSelect} from '@/pages/Purshase/taxRate/taxRateUrl';
 import FormLayout from '@/components/Form/components/FormLayout';
 import {isArray} from '@/util/Tools';
 import {orderAdd} from '@/pages/Order/url';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 const {FormItem} = Form;
 
@@ -274,7 +275,7 @@ const CreateOrder = ({...props}) => {
         <FormLayout
           value={currentStep.step}
           onChange={setCurrentStep}
-          formType="PO"
+          formType={ReceiptsEnums.purchaseOrder}
           fieldRender={(item) => {
             let formItemProps;
             switch (item.key) {

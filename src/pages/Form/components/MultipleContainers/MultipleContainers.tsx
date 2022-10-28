@@ -175,7 +175,7 @@ export function MultipleContainers(
   }: Props) {
 
   const [items, setItems] = useState<Items>(defaultItems);
-
+  console.log(items)
   const [steps, setSteps] = useState(initSteps);
 
   const [delStep, setDelStep] = useState<number | undefined>();
@@ -351,6 +351,22 @@ export function MultipleContainers(
     });
   }, [items]);
 
+  const endItemsChange = ({activeContainer, newItems, cardPosition}) => {
+    const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
+      if (index === 0) {
+        return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
+      }
+      return item;
+    }), {
+      ...cardPosition,
+      cardLine: 1,
+      cardColumn: 0,
+      cardTable: true,
+      data: cardPosition.data.filter(item => item.key !== 'card')
+    }] : newItems;
+    setItems(array);
+  };
+
   return (
     <>
       <DndContext
@@ -483,19 +499,7 @@ export function MultipleContainers(
               }
               return item;
             });
-            const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
-              if (index === 0) {
-                return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
-              }
-              return item;
-            }), {
-              ...cardPosition,
-              cardLine: 1,
-              cardColumn: 0,
-              cardTable: true,
-              data: cardPosition.data.filter(item => item.key !== 'card')
-            }] : newItems;
-            setItems(array);
+            endItemsChange({newItems, activeContainer, cardPosition});
             setActiveId(null);
             return;
           }
@@ -524,19 +528,7 @@ export function MultipleContainers(
                 }
                 return item;
               });
-              const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
-                if (index === 0) {
-                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
-                }
-                return item;
-              }), {
-                ...cardPosition,
-                cardLine: 1,
-                cardColumn: 0,
-                cardTable: true,
-                data: cardPosition.data.filter(item => item.key !== 'card')
-              }] : newItems;
-              setItems(array);
+              endItemsChange({newItems, activeContainer, cardPosition});
             } else if (active.id === 'card' && activeContainer !== 0) {
               let cardPosition: any = {};
               const newItems = items.map((item, index) => {

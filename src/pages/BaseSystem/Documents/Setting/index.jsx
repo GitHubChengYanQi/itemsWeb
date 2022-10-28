@@ -12,7 +12,7 @@ import Note from '@/components/Note';
 import Message from '@/components/Message';
 import {useRequest} from '@/util/Request';
 import ModalMessage from '@/components/ModalMessage';
-import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 import {typeObject} from '@/pages/BaseSystem/Documents/Config';
 
 const addStatusApi = {url: '/statueAction/addState', method: 'POST'};
@@ -292,31 +292,31 @@ const Setting = ({
                   });
                   let Enums = {};
                   switch (type) {
-                    case DocumentEnums.purchaseAsk:
+                    case ReceiptsEnums.purchaseAsk:
                       Enums = {purchaseActionEnums: enums};
                       break;
-                    case DocumentEnums.purchaseOrder:
+                    case ReceiptsEnums.purchaseOrder:
                       Enums = {poOrderActionEnums: enums};
                       break;
-                    case DocumentEnums.instockOrder:
+                    case ReceiptsEnums.instockOrder:
                       Enums = {inStockActionEnums: enums};
                       break;
-                    case DocumentEnums.instockError:
+                    case ReceiptsEnums.instockError:
                       Enums = {instockErrorActionEnums: enums};
                       break;
-                    case DocumentEnums.outstockOrder:
+                    case ReceiptsEnums.outstockOrder:
                       Enums = {outStockActionEnums: enums};
                       break;
-                    case DocumentEnums.quality:
+                    case ReceiptsEnums.quality:
                       Enums = {qualityActionEnums: enums};
                       break;
-                    case DocumentEnums.stocktaking:
+                    case ReceiptsEnums.stocktaking:
                       Enums = {stocktakingEnums: enums};
                       break;
-                    case DocumentEnums.maintenance:
+                    case ReceiptsEnums.maintenance:
                       Enums = {maintenanceActionEnums: enums};
                       break;
-                    case DocumentEnums.allocation:
+                    case ReceiptsEnums.allocation:
                       Enums = {allocationActionEnums: enums};
                       break;
                     default:
