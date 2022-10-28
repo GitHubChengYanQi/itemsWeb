@@ -126,6 +126,7 @@ export const Item = React.memo(
       }, [dragOverlay]);
 
       return <li
+        key={index}
         className={classNames(
           styles.Wrapper,
           fadeIn && styles.fadeIn,

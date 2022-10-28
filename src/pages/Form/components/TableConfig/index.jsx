@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
+import React, {useEffect, useState,memo } from 'react';
+import {SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
 import {DownOutlined, UpOutlined} from '@ant-design/icons';
 import {Button, Row} from 'antd';
 import ColumnsConfig from '@/pages/Form/components/ColumnsConfig';
@@ -13,20 +13,9 @@ const TableConfig = (
     card,
     mobile,
     width,
-    vertical,
-    PLACEHOLDER_ID,
     configChange,
     items,
-    scrollable,
-    minimal,
     handleRemove,
-    strategy,
-    handle,
-    getItemStyles,
-    wrapperStyle,
-    renderItem,
-    getIndex,
-    empty,
     handleAddColumn,
     handleAddRow,
     handleRemoveRow,
@@ -72,7 +61,7 @@ const TableConfig = (
     // }, 0);
   }, [items]);
 
-  return <>
+  return <div>
     {(card ? cardTable : table).map((columns, rowIndex) => {
       return <div key={rowIndex} style={{display: 'flex', alignItems: 'center'}}>
         <div style={{width: card ? 40 : 64}}>
@@ -107,12 +96,8 @@ const TableConfig = (
             }}
           >
             <SortableContext
-              items={[...columns, PLACEHOLDER_ID]}
-              strategy={
-                vertical
-                  ? verticalListSortingStrategy
-                  : horizontalListSortingStrategy
-              }
+              items={[...columns]}
+              strategy={verticalListSortingStrategy}
             >
               {columns.map((item, index) => {
                   return <ColumnsConfig
@@ -138,19 +123,8 @@ const TableConfig = (
                     index={index}
                     items={items}
                     columns={columns}
-                    scrollable={scrollable}
                     containerStyle={{borderRight: index !== columns.length - 1 ? 'dashed 1px rgba(0,0,0,0.2)' : 'none'}}
-                    minimal={minimal}
                     handleRemove={handleRemove}
-                    strategy={strategy}
-                    handle={handle}
-                    getItemStyles={getItemStyles}
-                    wrapperStyle={wrapperStyle}
-                    renderItem={renderItem}
-                    getIndex={getIndex}
-                    vertical={vertical}
-                    PLACEHOLDER_ID={PLACEHOLDER_ID}
-                    empty={empty}
                     handleAddColumn={handleAddColumn}
                     handleAddRow={handleAddRow}
                     handleRemoveRow={handleRemoveRow}
@@ -163,7 +137,7 @@ const TableConfig = (
         </div>
       </div>;
     })}
-  </>;
+  </div>;
 };
 
-export default TableConfig;
+export default memo(TableConfig);
