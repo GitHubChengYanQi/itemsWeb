@@ -4,7 +4,7 @@ import {Table as AntTable} from 'antd';
 import Table from '@/components/Table';
 import {skuHandleRecord} from '@/pages/Erp/stock/StockUrl';
 import Render from '@/components/Render';
-import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 
 const formActionsPublic = createFormActions();
@@ -17,7 +17,7 @@ const InStock = ({skuId}) => {
   return <>
     <Table
       formSubmit={(value) => {
-        return {...value, skuId, types: [DocumentEnums.instockOrder]};
+        return {...value, skuId, types: [ReceiptsEnums.instockOrder]};
       }}
       noRowSelection
       formActions={formActionsPublic}
