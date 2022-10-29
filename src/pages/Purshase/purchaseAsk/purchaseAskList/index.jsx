@@ -16,7 +16,7 @@ import * as SysField from '../purchaseAskField';
 import Breadcrumb from '@/components/Breadcrumb';
 import Render from '@/components/Render';
 import Documents from '@/pages/Workflow/Documents';
-import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -31,7 +31,7 @@ const PurchaseAskList = ({status, ...props}) => {
     return (
       <>
         <AddButton onClick={() => {
-          documentRef.current.create(DocumentEnums.purchaseAsk);
+          documentRef.current.create(ReceiptsEnums.purchaseAsk);
         }} />
       </>
     );
@@ -63,7 +63,7 @@ const PurchaseAskList = ({status, ...props}) => {
       >
         <Column title="编号" key={1} dataIndex="coding" render={(value, record) => {
           return <Button type="link" onClick={() => {
-            documentRef.current.action(null, record.purchaseAskId, DocumentEnums.purchaseAsk);
+            documentRef.current.action(null, record.purchaseAskId, ReceiptsEnums.purchaseAsk);
           }}>{value}</Button>;
         }} />
         <Column key={2} title="申请类型" dataIndex="type" render={(value) => {
@@ -112,10 +112,10 @@ const PurchaseAskList = ({status, ...props}) => {
             return <>
               <Button type="link">撤回</Button>
               <Button type="link" onClick={() => {
-                documentRef.current.create(DocumentEnums.purchaseAsk, value);
+                documentRef.current.create(ReceiptsEnums.purchaseAsk, value);
               }}>编辑</Button>
               <Button type="link" onClick={() => {
-                documentRef.current.action(null, value, DocumentEnums.purchaseAsk);
+                documentRef.current.action(null, value, ReceiptsEnums.purchaseAsk);
               }}>查看</Button>
             </>;
           }} />}

@@ -1,8 +1,7 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {
   CancelDrop,
-  closestCenter,
   pointerWithin,
   rectIntersection,
   CollisionDetection,
@@ -28,7 +27,6 @@ import {
   arrayMove,
   defaultAnimateLayoutChanges,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
   SortingStrategy,
 } from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
@@ -157,13 +155,10 @@ interface Props {
 }
 
 export const TRASH_ID = 'void';
-const PLACEHOLDER_ID = 'placeholder';
-const empty: UniqueIdentifier[] = [];
 
 export function MultipleContainers(
   {
     adjustScale = false,
-    cancelDrop,
     handle = false,
     items: defaultItems,
     initItems,
@@ -171,13 +166,8 @@ export function MultipleContainers(
     getItemStyles = () => ({}),
     wrapperStyle = () => ({}),
     onSave = () => ({}),
-    minimal = false,
-    modifiers,
     renderItem,
-    strategy = verticalListSortingStrategy,
     trashable = false,
-    vertical = false,
-    scrollable,
     initSteps = [],
     width: defaultWidth,
     gutter: defaultGutter,
@@ -185,8 +175,7 @@ export function MultipleContainers(
   }: Props) {
 
   const [items, setItems] = useState<Items>(defaultItems);
-  console.log(items);
-
+  console.log(items)
   const [steps, setSteps] = useState(initSteps);
 
   const [delStep, setDelStep] = useState<number | undefined>();
@@ -362,6 +351,22 @@ export function MultipleContainers(
     });
   }, [items]);
 
+  const endItemsChange = ({activeContainer, newItems, cardPosition}) => {
+    const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
+      if (index === 0) {
+        return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
+      }
+      return item;
+    }), {
+      ...cardPosition,
+      cardLine: 1,
+      cardColumn: 0,
+      cardTable: true,
+      data: cardPosition.data.filter(item => item.key !== 'card')
+    }] : newItems;
+    setItems(array);
+  };
+
   return (
     <>
       <DndContext
@@ -373,7 +378,9 @@ export function MultipleContainers(
           },
         }}
         onDragStart={({active: {id, data: {current}}}) => {
+
           console.log('start');
+          // debugger;
           setActiveId(id);
           setActive(current);
           // setClonedItems(items);
@@ -440,6 +447,7 @@ export function MultipleContainers(
         }}
         onDragEnd={({active, over}) => {
 
+          console.log('end');
           const activeContainer = findContainer(active.id);
           const overId = over?.id;
           const overContainer = findContainer(overId);
@@ -491,19 +499,7 @@ export function MultipleContainers(
               }
               return item;
             });
-            const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
-              if (index === 0) {
-                return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
-              }
-              return item;
-            }), {
-              ...cardPosition,
-              cardLine: 1,
-              cardColumn: 0,
-              cardTable: true,
-              data: cardPosition.data.filter(item => item.key !== 'card')
-            }] : newItems;
-            setItems(array);
+            endItemsChange({newItems, activeContainer, cardPosition});
             setActiveId(null);
             return;
           }
@@ -532,19 +528,7 @@ export function MultipleContainers(
                 }
                 return item;
               });
-              const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
-                if (index === 0) {
-                  return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
-                }
-                return item;
-              }), {
-                ...cardPosition,
-                cardLine: 1,
-                cardColumn: 0,
-                cardTable: true,
-                data: cardPosition.data.filter(item => item.key !== 'card')
-              }] : newItems;
-              setItems(array);
+              endItemsChange({newItems, activeContainer, cardPosition});
             } else if (active.id === 'card' && activeContainer !== 0) {
               let cardPosition: any = {};
               const newItems = items.map((item, index) => {
@@ -572,13 +556,20 @@ export function MultipleContainers(
             setActiveId(null);
           }
         }}
-        cancelDrop={cancelDrop}
+        // cancelDrop={cancelDrop}
         // onDragCancel={onDragCancel}
-        modifiers={modifiers}
+        // modifiers={modifiers}
       >
+        {createPortal(
+          <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
+            {activeId ? renderSortableItemDragOverlay(activeId, active) : null}
+          </DragOverlay>,
+          document.body
+        )}
         <div style={{display: 'flex', alignItems: 'flex-start'}}>
           <div style={{minWidth: 350, display: 'inline-block'}}>
             <ColumnsConfig
+              activeId={activeId}
               mobile={mobile}
               item
               column
@@ -591,7 +582,6 @@ export function MultipleContainers(
               cardTable
               table
               gutter
-              empty
               handleAddColumn
               handleRemoveColumn
               handleAddRow
@@ -600,7 +590,6 @@ export function MultipleContainers(
               }}
               onDown={() => {
               }}
-              PLACEHOLDER_ID
               ulStyle={{padding: 16}}
               card={false}
               disabled
@@ -608,15 +597,8 @@ export function MultipleContainers(
               id='0-0'
               items={items}
               columns={items}
-              scrollable={scrollable}
-              minimal={minimal}
               handleRemove={() => {
               }}
-              strategy={strategy}
-              handle={handle}
-              getItemStyles={getItemStyles}
-              wrapperStyle={wrapperStyle}
-              renderItem={renderItem}
             />
           </div>
           <div style={{flexGrow: 1, height: '80vh', overflow: 'auto', padding: '20px 40px'}}>
@@ -740,6 +722,7 @@ export function MultipleContainers(
 
             <div style={{width: mobile ? 500 : '100%', margin: 'auto', padding: ' 24px 0'}}>
               <TableConfig
+                activeId={activeId}
                 mobile={mobile}
                 position={{}}
                 onUp={onUp}
@@ -750,17 +733,7 @@ export function MultipleContainers(
                 handleRemove={handleRemoveCard}
                 card={false}
                 width={width}
-                vertical={vertical}
-                PLACEHOLDER_ID={PLACEHOLDER_ID}
                 items={items}
-                scrollable={scrollable}
-                minimal={minimal}
-                strategy={strategy}
-                handle={handle}
-                getItemStyles={getItemStyles}
-                wrapperStyle={wrapperStyle}
-                renderItem={renderItem}
-                empty={empty}
                 handleAddColumn={handleAddColumn}
                 handleAddRow={handleAddRow}
                 handleRemoveRow={handleRemoveRow}
@@ -775,13 +748,6 @@ export function MultipleContainers(
             </div>
           </div>
         </div>
-
-        {createPortal(
-          <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
-            {activeId ? renderSortableItemDragOverlay(activeId, active) : null}
-          </DragOverlay>,
-          document.body
-        )}
         {trashable && activeId ? (
           <Trash id={TRASH_ID} />
         ) : null}
@@ -1105,14 +1071,10 @@ interface SortableItemProps {
 
   getIndex(id: string): number;
 
-  renderItem(): React.ReactElement;
-
   itemChange: Function;
-
-  wrapperStyle({index: any}): React.CSSProperties;
 }
 
-export const SortableItem = (
+export const SortableItem = memo((
   {
     disabled,
     itemChange = () => {
@@ -1120,14 +1082,11 @@ export const SortableItem = (
     id,
     index,
     handle,
-    renderItem,
-    style,
     mobile,
-    containerId,
     item = {},
     cardTable,
-    wrapperStyle,
   }: SortableItemProps) => {
+
   const {
     setNodeRef,
     listeners,
@@ -1137,7 +1096,7 @@ export const SortableItem = (
     transition,
   } = useSortable({
     id,
-    data: {...item, cardTable}
+    data: {...item, cardTable},
   });
 
   const mounted = useMountStatus();
@@ -1145,6 +1104,7 @@ export const SortableItem = (
 
   return (
     <Item
+      key={id}
       mobile={mobile}
       ref={disabled ? undefined : setNodeRef}
       value={item.filedName}
@@ -1153,24 +1113,15 @@ export const SortableItem = (
       sorting={isSorting}
       handle={handle}
       index={index}
-      wrapperStyle={wrapperStyle({index})}
-      style={style({
-        index,
-        value: id,
-        isDragging,
-        isSorting,
-        containerId,
-      })}
       itemChange={itemChange}
       color={getColor(item)}
       transition={transition}
       transform={transform}
       fadeIn={mountedWhileDragging}
       listeners={listeners}
-      renderItem={renderItem}
     />
   );
-};
+});
 
 function useMountStatus() {
   const [isMounted, setIsMounted] = useState(false);

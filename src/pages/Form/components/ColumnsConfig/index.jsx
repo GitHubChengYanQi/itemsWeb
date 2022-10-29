@@ -1,4 +1,4 @@
-import React, {} from 'react';
+import React from 'react';
 import {Typography} from 'antd';
 import {SortableContext} from '@dnd-kit/sortable';
 import {DroppableContainer, SortableItem} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
@@ -6,6 +6,7 @@ import TableConfig from '@/pages/Form/components/TableConfig';
 
 const ColumnsConfig = (
   {
+    activeId,
     table,
     card,
     cardTable,
@@ -14,8 +15,6 @@ const ColumnsConfig = (
     disabled,
     containerId,
 
-    PLACEHOLDER_ID,
-    empty,
     handleAddColumn,
     handleAddRow,
     line,
@@ -23,15 +22,8 @@ const ColumnsConfig = (
     items,
     item,
     columns,
-    scrollable,
     containerStyle,
-    minimal,
     handleRemove,
-    strategy,
-    handle,
-    getItemStyles,
-    wrapperStyle,
-    renderItem,
     configChange = () => {
     },
     gutter,
@@ -92,32 +84,26 @@ const ColumnsConfig = (
       </Typography.Paragraph>
     </>)}
     items={columns[containerId].data.map(item => item.key)}
-    scrollable={scrollable}
     style={disabled ? {border: 'none'} : containerStyle}
-    unstyled={minimal}
     onRemove={disabled ? undefined : () => handleRemove(line, column)}
   >
-    {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)} strategy={strategy}>
+    {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>
       {columns[containerId].data.map((item, index) => {
-        return (
-          <SortableItem
-            mobile={mobile}
-            itemChange={itemChange}
-            disabled={item.disabled}
-            key={item.key}
-            id={item.key}
-            item={item}
-            cardTable={cardTable}
-            index={index}
-            handle={!disabled}
-            style={getItemStyles}
-            wrapperStyle={wrapperStyle}
-            renderItem={renderItem}
-            containerId={containerId}
-          />
-        );
+        return <SortableItem
+          mobile={mobile}
+          itemChange={itemChange}
+          disabled={item.disabled}
+          key={item.key}
+          id={item.key}
+          item={item}
+          cardTable={cardTable}
+          index={index}
+          handle={!disabled}
+          containerId={containerId}
+        />;
       })}
     </SortableContext> : <TableConfig
+      activeId={activeId}
       position={item}
       onUp={onUp}
       mobile={mobile}
@@ -125,19 +111,8 @@ const ColumnsConfig = (
       gutter={gutter}
       itemChange={itemChange}
       card={card}
-      PLACEHOLDER_ID={PLACEHOLDER_ID}
       configChange={configChange}
       items={items}
-      scrollable={scrollable}
-      containerStyle={containerStyle}
-      minimal={minimal}
-      handleRemove={handleRemove}
-      strategy={strategy}
-      handle={handle}
-      getItemStyles={getItemStyles}
-      wrapperStyle={wrapperStyle}
-      renderItem={renderItem}
-      empty={empty}
       handleAddColumn={handleAddColumn}
       handleAddRow={handleAddRow}
       handleRemoveRow={handleRemoveRow}

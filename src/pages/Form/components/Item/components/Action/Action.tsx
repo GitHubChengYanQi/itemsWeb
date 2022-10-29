@@ -12,6 +12,7 @@ export interface Props extends React.HTMLAttributes<HTMLButtonElement> {
 }
 
 export function Action({active, className, cursor, style, ...props}: Props) {
+
   return (
     <button
       {...props}

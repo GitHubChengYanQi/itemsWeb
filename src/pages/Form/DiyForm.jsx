@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {getSearchParams} from 'ice';
-import {Card, message, Spin} from 'antd';
+import {getSearchParams, useHistory} from 'ice';
+import {Button, Card, message, Spin} from 'antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 import {useRequest} from '@/util/Request';
@@ -8,10 +8,13 @@ import {formDetail, formEdit} from '@/pages/Form/url';
 import Empty from '@/components/Empty';
 import {POFormData} from '@/pages/Form/formFileData';
 import {isArray, isObject} from '@/util/Tools';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 const DiyForm = () => {
 
   const searchParams = getSearchParams();
+
+  const history = useHistory();
 
   const [detail, setDetail] = useState();
 
@@ -61,7 +64,7 @@ const DiyForm = () => {
       let newFileData = [];
       let data = [];
       switch (res.formType) {
-        case 'PO':
+        case ReceiptsEnums.purchaseOrder:
           data = POFormData;
           newFileData = POFormData.filter(item => !keys.includes(item.key));
           break;
@@ -82,8 +85,8 @@ const DiyForm = () => {
   });
 
   useEffect(() => {
-    if (searchParams.id) {
-      getDetail({data: {styleId: searchParams.id}});
+    if (searchParams.type) {
+      getDetail({data: {formType: searchParams.type}});
     }
   }, []);
 
@@ -98,7 +101,7 @@ const DiyForm = () => {
   let title = '';
 
   switch (detail.formType) {
-    case 'PO':
+    case ReceiptsEnums.purchaseOrder:
       title = '采购单';
       break;
     default:
@@ -106,7 +109,7 @@ const DiyForm = () => {
   }
 
   return <Spin spinning={editlLoaing}>
-    <Card title={`${title}表单配置`}>
+    <Card title={`${title}表单配置`} extra={<Button onClick={() => history.goBack()}>返回</Button>}>
       <MultipleContainers
         {...config}
         vertical
@@ -114,7 +117,7 @@ const DiyForm = () => {
         items={[{line: 0, column: 0, data: filedData}, ...(isObject(init[0]).data || [])]}
         initItems={initItems}
         onSave={(data) => {
-          edit({data: {styleId: searchParams.id, typeSetting: data}});
+          edit({data: {formType: searchParams.type, typeSetting: data}});
         }}
       />
     </Card>

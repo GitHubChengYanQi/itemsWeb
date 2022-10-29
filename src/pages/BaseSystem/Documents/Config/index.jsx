@@ -1,4 +1,4 @@
-import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 
 export const typeObject = ({type, status = []}) => {
@@ -12,7 +12,7 @@ export const typeObject = ({type, status = []}) => {
   const publicType = [];
 
   switch (type) {
-    case DocumentEnums.purchaseAsk:
+    case ReceiptsEnums.purchaseAsk:
       return {
         title: '采购申请单',
         types: [
@@ -20,11 +20,11 @@ export const typeObject = ({type, status = []}) => {
           ...publicType,
         ]
       };
-    case DocumentEnums.purchaseOrder:
+    case ReceiptsEnums.purchaseOrder:
       return {
         title: '采购单',
       };
-    case DocumentEnums.instockOrder:
+    case ReceiptsEnums.instockOrder:
       return {
         title: '入库单',
         types: [
@@ -33,14 +33,14 @@ export const typeObject = ({type, status = []}) => {
           ...publicType,
         ],
       };
-    case DocumentEnums.instockError:
+    case ReceiptsEnums.instockError:
       return {
         title: '异常单',
         types: [
           {label: '核实', value: 'verify', disabled: disabled('verify')},
         ]
       };
-    case DocumentEnums.outstockOrder:
+    case ReceiptsEnums.outstockOrder:
       return {
         title: '出库单',
         types: [
@@ -48,7 +48,7 @@ export const typeObject = ({type, status = []}) => {
           ...publicType,
         ]
       };
-    case DocumentEnums.stocktaking:
+    case ReceiptsEnums.stocktaking:
       return {
         title: '盘点单',
         types: [
@@ -56,7 +56,7 @@ export const typeObject = ({type, status = []}) => {
           ...publicType,
         ]
       };
-    case DocumentEnums.maintenance:
+    case ReceiptsEnums.maintenance:
       return {
         title: '养护单',
         types: [
@@ -64,7 +64,7 @@ export const typeObject = ({type, status = []}) => {
           ...publicType,
         ]
       };
-    case DocumentEnums.quality:
+    case ReceiptsEnums.quality:
       return {
         title: '质检单',
         types: [
@@ -74,7 +74,7 @@ export const typeObject = ({type, status = []}) => {
           ...publicType,
         ]
       };
-    case DocumentEnums.allocation:
+    case ReceiptsEnums.allocation:
       return {
         title: '调拨单',
         types: [

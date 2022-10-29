@@ -1,31 +1,21 @@
-import React from 'react';
-import {horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
+import React, {useEffect, useState,memo } from 'react';
+import {SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
 import {DownOutlined, UpOutlined} from '@ant-design/icons';
 import {Button, Row} from 'antd';
 import ColumnsConfig from '@/pages/Form/components/ColumnsConfig';
 
 const TableConfig = (
   {
+    activeId,
     position = {},
     gutter,
     widthUnit,
     card,
     mobile,
     width,
-    vertical,
-    PLACEHOLDER_ID,
     configChange,
     items,
-    scrollable,
-    minimal,
     handleRemove,
-    strategy,
-    handle,
-    getItemStyles,
-    wrapperStyle,
-    renderItem,
-    getIndex,
-    empty,
     handleAddColumn,
     handleAddRow,
     handleRemoveRow,
@@ -36,30 +26,42 @@ const TableConfig = (
   }
 ) => {
 
-  const table = [];
-  const cardTable = [];
-  items.forEach((item, index) => {
-    if (index === 0) {
+  const [table, setTable] = useState([]);
+  const [cardTable, setCardTable] = useState([]);
+
+  useEffect(() => {
+    if (activeId) {
       return;
     }
-    if (item.cardTable) {
-      if (item.line === position.line && item.column === position.column) {
-        if (cardTable[item.cardLine]) {
-          const columns = [...cardTable[item.cardLine], item];
-          cardTable[item.cardLine] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
-        } else {
-          cardTable[item.cardLine] = [item];
-        }
+    // setTimeout(() => {
+    const initTable = [];
+    const initCardTable = [];
+    items.forEach((item, index) => {
+      if (index === 0) {
+        return;
       }
-    } else if (table[item.line]) {
-      const columns = [...table[item.line], item];
-      table[item.line] = columns.sort((a, b) => a.column - b.column);
-    } else {
-      table[item.line] = [item];
-    }
-  });
+      if (item.cardTable) {
+        if (item.line === position.line && item.column === position.column) {
+          if (initCardTable[item.cardLine]) {
+            const columns = [...initCardTable[item.cardLine], item];
+            initCardTable[item.cardLine] = columns.sort((a, b) => a.cardColumn - b.cardColumn);
+          } else {
+            initCardTable[item.cardLine] = [item];
+          }
+        }
+      } else if (initTable[item.line]) {
+        const columns = [...initTable[item.line], item];
+        initTable[item.line] = columns.sort((a, b) => a.column - b.column);
+      } else {
+        initTable[item.line] = [item];
+      }
+    });
+    setTable(initTable);
+    setCardTable(initCardTable);
+    // }, 0);
+  }, [items]);
 
-  return <>
+  return <div>
     {(card ? cardTable : table).map((columns, rowIndex) => {
       return <div key={rowIndex} style={{display: 'flex', alignItems: 'center'}}>
         <div style={{width: card ? 40 : 64}}>
@@ -94,15 +96,12 @@ const TableConfig = (
             }}
           >
             <SortableContext
-              items={[...columns, PLACEHOLDER_ID]}
-              strategy={
-                vertical
-                  ? verticalListSortingStrategy
-                  : horizontalListSortingStrategy
-              }
+              items={[...columns]}
+              strategy={verticalListSortingStrategy}
             >
               {columns.map((item, index) => {
                   return <ColumnsConfig
+                    activeId={activeId}
                     mobile={mobile}
                     onUp={onUp}
                     onDown={onDown}
@@ -124,19 +123,8 @@ const TableConfig = (
                     index={index}
                     items={items}
                     columns={columns}
-                    scrollable={scrollable}
                     containerStyle={{borderRight: index !== columns.length - 1 ? 'dashed 1px rgba(0,0,0,0.2)' : 'none'}}
-                    minimal={minimal}
                     handleRemove={handleRemove}
-                    strategy={strategy}
-                    handle={handle}
-                    getItemStyles={getItemStyles}
-                    wrapperStyle={wrapperStyle}
-                    renderItem={renderItem}
-                    getIndex={getIndex}
-                    vertical={vertical}
-                    PLACEHOLDER_ID={PLACEHOLDER_ID}
-                    empty={empty}
                     handleAddColumn={handleAddColumn}
                     handleAddRow={handleAddRow}
                     handleRemoveRow={handleRemoveRow}
@@ -149,7 +137,7 @@ const TableConfig = (
         </div>
       </div>;
     })}
-  </>;
+  </div>;
 };
 
-export default TableConfig;
+export default memo(TableConfig);

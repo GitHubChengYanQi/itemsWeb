@@ -153,11 +153,15 @@ export const Container = forwardRef<HTMLDivElement, Props>(
           <MinusCircleFilled onClick={onRemoveColumn} />
         </div>
         {label ? (
-          <ProCard bodyStyle={{padding: 0}} headerBordered className='h2Card' title={label}
-                   extra={<div className={styles.Actions}>
-                     {onRemove ? <Remove onClick={onRemove} /> : undefined}
-                     {!noNandle && <Handle {...handleProps} />}
-                   </div>} />
+          <ProCard
+            bodyStyle={{padding: 0}}
+            headerBordered
+            className='h2Card'
+            title={label}
+            extra={<div className={styles.Actions}>
+              {onRemove ? <Remove onClick={onRemove} /> : undefined}
+              {!noNandle && <Handle {...handleProps} />}
+            </div>} />
         ) : null}
         {placeholder ? children : <ul style={ulStyle}>{children}</ul>}
       </Col>
