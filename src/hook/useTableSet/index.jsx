@@ -27,20 +27,21 @@ const md5 = require('md5');
 
 const useTableSet = (column, tableKey) => {
 
-  const defaultColumn = Array.isArray(column) && column.map((item) => {
+  const defaultColumn = [];
+
+  Array.isArray(column) && column.forEach((item) => {
     if (!item) {
       return null;
     }
-    return {
+    defaultColumn.push({
       ...item,
       checked: !(item.hidden || item.props?.hidden),
-    };
-  }) || [];
+    });
+  });
 
   const [tableColumn, setTableColumn] = useState(defaultColumn);
 
   const itemsData = [];
-
   tableKey && Array.isArray(tableColumn) && tableColumn.map((items) => {
     const props = items.props || {};
     if (items && items.key && (items.title || props.title)) {
@@ -97,9 +98,10 @@ const useTableSet = (column, tableKey) => {
     onSuccess: () => {
       Message.success('删除成功!');
       setFalse();
+      setTableColumn(defaultColumn);
       refresh();
       setDetail();
-      setTableColumn(defaultColumn);
+      toggle();
     }
   });
 
@@ -168,7 +170,7 @@ const useTableSet = (column, tableKey) => {
     if (detail) {
       Modal.confirm({
         title: '覆盖当前视图',
-        icon: <ExclamationCircleOutlined />,
+        icon: <ExclamationCircleOutlined/>,
         content: `更改视图展现的内容，确定覆盖视图「${detail.name}」？`,
         okText: '确认',
         cancelText: '取消',
@@ -199,10 +201,10 @@ const useTableSet = (column, tableKey) => {
         className={styles.cardTitle}
         title="表头设置"
         headStyle={{textAlign: 'center', padding: 0}}
-        bodyStyle={{maxWidth: 300, padding: 0, borderTop: 'solid 1px #eee', height: 'auto'}}
+        bodyStyle={{maxWidth: 300, padding: 0, borderTop: 'solid 1px #eee', height: '50vh', overflow: 'auto'}}
         extra={<Button icon={<CloseOutlined />} style={{marginRight: 16}} type="text" onClick={() => {
           setVisible(false);
-        }} />}
+        }}/>}
       >
         <Sortable
           handle
@@ -263,8 +265,11 @@ const useTableSet = (column, tableKey) => {
       });
     } else {
       getTableView({data: {tableKey: md5TableKey()}});
+      setTableColumn(defaultColumn);
+      setDetail();
+      toggle();
     }
-  }, []);
+  }, [tableKey]);
 
   return {
     tableColumn,
@@ -279,7 +284,7 @@ const useTableSet = (column, tableKey) => {
         }
         {
           (loading || editLoading || delLoading) ?
-            <Spin />
+            <Spin/>
             :
             <Select
               options={isArray(data)}
@@ -303,7 +308,7 @@ const useTableSet = (column, tableKey) => {
                     }}>{item.label}</div>
                     <DeleteButton onClick={() => {
                       deleteTableView({data: {tableViewId: item.value,}});
-                    }} />
+                    }}/>
                   </div>;
                 });
               }}
@@ -322,7 +327,7 @@ const useTableSet = (column, tableKey) => {
             type="text"
             onClick={() => {
               setVisible(true);
-            }}><Icon type="icon-xitongpeizhi" /></Button>
+            }}><Icon type="icon-xitongpeizhi"/></Button>
         </Dropdown>
 
         <Modal
@@ -357,7 +362,7 @@ const useTableSet = (column, tableKey) => {
             <span style={{color: '#a6a2a2'}}>将当前的展示方式、排序方式保存为视图。</span>
             <Input maxLength={20} style={{width: '100%'}} placeholder="请输入视图名称(最多20字)" onChange={(value) => {
               setName(value.target.value);
-            }} />
+            }}/>
           </Space>
         </Modal>
       </>

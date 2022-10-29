@@ -9,7 +9,7 @@ export const typeObject = ({type, status = []}) => {
     }).length > 0;
   };
 
-  const publicType = [{label: '撤销', value: 'revoke', disabled: disabled('revoke')},];
+  const publicType = [];
 
   switch (type) {
     case ReceiptsEnums.purchaseAsk:

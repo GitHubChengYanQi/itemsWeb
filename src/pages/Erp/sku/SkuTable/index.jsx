@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Button, Space, Table as AntTable, Typography} from 'antd';
+import {Button, Input, Space, Typography} from 'antd';
 import {CopyOutlined} from '@ant-design/icons';
 import {config, useHistory} from 'ice';
 import cookie from 'js-cookie';
@@ -78,8 +78,8 @@ const SkuTable = ({...props}, ref) => {
   }));
 
   useEffect(() => {
-    if (spuClass !== undefined) {
-      tableRef.current.formActions.setFieldValue('spuClass', spuClass);
+    if (spuClass){
+      tableRef.current.formActions.setFieldValue('spuClass', spuClass === '0' ? null : spuClass);
       tableRef.current.submit();
     }
   }, [spuClass]);
@@ -102,33 +102,22 @@ const SkuTable = ({...props}, ref) => {
     return (
       <>
         <FormItem
-          label="编码"
-          placeholder="请输入编码"
-          name="standard"
-          component={SysField.SelectSkuName} />
-        <FormItem
-          label="名称"
-          placeholder="请输入名称"
-          name="spuName"
-          component={SysField.SelectSkuName} />
-        <FormItem
-          label="型号"
-          placeholder="请输入型号"
-          name="name"
-          component={SysField.SelectSkuName} />
+          placeholder="搜索物料"
+          name="skuName"
+          component={Input} />
         <FormItem
           name="spuClass"
           hidden
           component={SysField.SelectSpuClass} />
-        <FormItem
-          name="spuId"
-          hidden
-          value={spuId}
-          component={SysField.SkuName} />
+        <div hidden>
+          <FormItem
+            name="spuId"
+            value={spuId}
+            component={SysField.SkuName} />
+        </div>
       </>
     );
   };
-
 
   const footer = () => {
     return (
@@ -172,7 +161,12 @@ const SkuTable = ({...props}, ref) => {
         );
       }
     },
-    {dataIndex: 'spuResult', title: '产品名称', render: (value) => <Render text={value?.name} />, sorter: true},
+    {
+      dataIndex: 'spuName',
+      title: '产品名称',
+      render: (value, record) => <Render text={record.spuResult?.name} />,
+      sorter: true
+    },
     {dataIndex: 'model', title: '型号', sorter: true,},
     {dataIndex: 'nationalStandard', title: '国家标准', sorter: false,},
     {dataIndex: 'partNo', title: '零件号', sorter: false,},
@@ -233,6 +227,11 @@ const SkuTable = ({...props}, ref) => {
       title: '尺寸',
       render: (value) => <Render text={value && value.split(',').join('×') || '-'} />
     },
+    {dataIndex: 'color', title: '表色',},
+    {dataIndex: 'heatTreatment', title: '热处理',},
+    {dataIndex: 'level', title: '级别',},
+    {dataIndex: 'packaging', title: '包装方式',},
+    {dataIndex: 'viewFrame', title: '图幅',},
     {dataIndex: 'remarks', title: '备注',},
     {dataIndex: 'user', title: '添加人', render: (value) => <Render text={value?.name || '-'} />, sorter: true},
     {dataIndex: 'createTime', title: '添加时间', sorter: true},
@@ -242,7 +241,7 @@ const SkuTable = ({...props}, ref) => {
       title: '操作',
       fixed: 'right',
       sorter: true,
-      width:100,
+      width: 100,
       render: (value, record) => {
         return (
           <>
@@ -268,7 +267,7 @@ const SkuTable = ({...props}, ref) => {
         headStyle={spuId && {display: 'none'}}
         noRowSelection={spuId}
         api={skuList}
-        tableKey="sku"
+        tableKey={`sku${spuClass || '0'}`}
         columns={columns}
         actionButton={<Space size={24}>
           <a>查看日志</a>

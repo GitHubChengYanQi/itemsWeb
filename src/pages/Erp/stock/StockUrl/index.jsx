@@ -34,6 +34,46 @@ export const stockDetail = {
   rowKey:'stockId'
 };
 
+export const outstockOrderList = {
+  url: '/outstockOrder/list',
+  method: 'POST',
+  rowKey:'stockId'
+};
+
+
+export const outstockListingList = {
+  url: '/outstockListing/list',
+  method: 'POST',
+};
+
+export const instockOrderList = {
+  url: '/instockList/list',
+  method: 'POST',
+  rowKey:'stockId'
+};
+
+export const skuHandleRecord = {
+  url: '/skuHandleRecord/list',
+  method: 'POST'
+};
+export const allocationLogList = {
+  url: '/allocationLog/list',
+  method: 'POST',
+  rowKey:'stockId'
+};
+
+export const maintenanceLogList = {
+  url: '/maintenanceLogDetail/list',
+  method: 'POST',
+  rowKey:'stockId'
+};
+
+export const stockDetailList = {
+  url: '/stockDetails/list',
+  method: 'POST',
+  rowKey:'stockId'
+};
+
 export const stockList = {
   url: '/stock/list',
   method: 'POST',

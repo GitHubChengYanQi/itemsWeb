@@ -25,6 +25,7 @@ import store from '@/store';
 import InputNumber from '@/components/InputNumber';
 import SpuClassificationEdit from '@/pages/Erp/spu/components/spuClassification/spuClassificationEdit';
 import UnitEdit from '@/pages/Erp/unit/unitEdit';
+import {materialListSelect} from '@/pages/Erp/material/MaterialUrl';
 
 export const Type = (props) => {
 
@@ -49,7 +50,7 @@ export const SelectSpu = (props) => {
 
 export const SpuId = (props) => {
 
-  const {classId, value, onChange,onBlur} = props;
+  const {classId, value, onChange, onBlur} = props;
 
   const {loading, data, run} = useRequest(spuListSelect, {manual: true});
 
@@ -107,7 +108,49 @@ export const ClassCode = (props) => {
 
 
 export const SkuName = (props) => {
-  return (<Input {...props} />);
+
+  const {value, onChange, disabled, placeholder, fieldName} = props;
+
+  const {loading, data, run} = useRequest({
+    url: '/generalFormData/list',
+    method: 'POST',
+    data: {fieldName},
+  }, {
+    debounceInterval: 300,
+  });
+
+  const options = (!loading && data) ? data.map((value) => {
+    return {
+      label: value.value,
+      value: value.value,
+    };
+  }) : [];
+
+  return <>
+    <AutoComplete
+      disabled={disabled}
+      dropdownMatchSelectWidth={100}
+      notFoundContent={loading && <Spin />}
+      options={options}
+      value={value}
+      onSelect={(value) => {
+        onChange(value);
+      }}
+    >
+      <Input
+        placeholder={placeholder}
+        onChange={(value) => {
+          onChange(value.target.value);
+          run({
+            data: {
+              fieldName,
+              value: value.target.value,
+            }
+          });
+        }}
+      />
+    </AutoComplete>
+  </>;
 };
 
 
@@ -182,6 +225,10 @@ export const SpuClass = (props) => {
 
 export const Note = (props) => {
   return (<Input.TextArea {...props} />);
+};
+
+export const Material = (props) => {
+  return (<Select api={materialListSelect} {...props} />);
 };
 
 export const SkuSize = ({value = '', onChange}) => {

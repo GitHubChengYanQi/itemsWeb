@@ -6,7 +6,7 @@ import {useRequest} from '@/util/Request';
 import Message from '@/components/Message';
 import store from '@/store';
 
-const Analysis = ({type,style}) => {
+const Analysis = ({type, style}) => {
 
   const skuRef = useRef();
 
@@ -29,7 +29,6 @@ const Analysis = ({type,style}) => {
     },
   });
 
-
   return (
     <div>
 
@@ -39,7 +38,7 @@ const Analysis = ({type,style}) => {
 
       <Modal
         width={500}
-        headTitle='物料分析'
+        headTitle="物料分析"
         ref={ref}
         footer={<Space>
           <Button onClick={() => {
@@ -47,7 +46,7 @@ const Analysis = ({type,style}) => {
           }}>关闭</Button>
           <Button
             loading={loading}
-            type='primary'
+            type="primary"
             onClick={() => {
               const skuList = skuRef.current.skuList;
               run({
@@ -65,7 +64,7 @@ const Analysis = ({type,style}) => {
           >开始分析</Button>
         </Space>}
       >
-        <SkuList ref={skuRef}/>
+        <SkuList ref={skuRef} />
       </Modal>
 
     </div>

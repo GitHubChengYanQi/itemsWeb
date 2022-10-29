@@ -55,7 +55,7 @@ const TableWarp = (
     layout,
     listHeader = true,
     labelAlign,
-    loading: getLoading,
+    loading: Loading,
     // m
     maxHeight,
     // n
@@ -208,9 +208,11 @@ const TableWarp = (
   };
 
   const refresh = () => {
-    const values = defaultTableQuery.values || {};
-    formActions.reset();
-    formActions.setFieldValue(Object.keys(values), ...Object.values(values));
+    if (!isModal){
+      const values = defaultTableQuery.values || {};
+      formActions.reset();
+      formActions.setFieldValue(Object.keys(values), ...Object.values(values));
+    }
     formActions.submit();
   };
 
@@ -236,7 +238,8 @@ const TableWarp = (
     ...item,
     key: `${index}`,
     render: (value, record, index) => {
-      return typeof item.render === 'function' ? item.render(value, record, index) : <Render text={typeof value === 'object' ? '' : (value || '-')} />;
+      return typeof item.render === 'function' ? item.render(value, record, index) :
+        <Render text={typeof value === 'object' ? '' : (value || '-')} />;
     }
   }))), tableKey);
 
@@ -269,7 +272,7 @@ const TableWarp = (
                   <FormButtonGroup>
                     <Button
                       id="submit"
-                      loading={getLoading || loading}
+                      loading={Loading || loading}
                       type="primary"
                       htmlType="submit"
                       onClick={() => {
@@ -309,8 +312,8 @@ const TableWarp = (
             <AntdTable
               showTotal
               expandable={expandable}
-              loading={getLoading || loading}
-              dataSource={dataSource || []}
+              loading={Loading || loading}
+              dataSource={dataSources || dataSource || []}
               rowKey={rowKey}
               columns={children ? null : [
                 ...(noSort ? [] : [{
@@ -318,7 +321,7 @@ const TableWarp = (
                   align: 'center',
                   fixed: 'left',
                   dataIndex: '0',
-                  width:40,
+                  width: 40,
                   render: (value, record, index) => <Render text={index + 1} width={40} maxWidth={40} />
                 }]),
                 ...tableColumn.filter((items) => {
@@ -329,7 +332,7 @@ const TableWarp = (
                 }),
               ]}
               pagination={
-                noPagination || {
+                noPagination ? false : {
                   ...pagination,
                   showTotal: (total) => {
                     return `共${total || dataSource.length}条`;

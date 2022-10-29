@@ -7,7 +7,7 @@
 
 import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions, FormEffectHooks} from '@formily/antd';
-import {Alert, notification, Popover, Space, Spin} from 'antd';
+import {Alert, Input, notification, Popover, Space, Spin} from 'antd';
 import {QuestionCircleOutlined} from '@ant-design/icons';
 import Form from '@/components/Form';
 import {skuDetail, skuAdd, skuEdit, skuMarge} from '../skuUrl';
@@ -38,6 +38,8 @@ const SkuEdit = ({...props}, ref) => {
   const [submitValue, setSubmitValue] = useState({});
 
   const [typeSetting, setTypeSetting] = useState([]);
+
+  const [formData, setFormData] = useState([]);
 
   const {loading: skuFormLoading, run: getSkuForm} = useRequest(spuClassificationDetail, {
     manual: true,
@@ -103,9 +105,9 @@ const SkuEdit = ({...props}, ref) => {
           setDetails(res);
           return {
             ...res,
-            materialId: res.materialIdList || [],
+            materialId: isArray(res.materialIdList)[0],
             spu: res.spuResult,
-            brandIds: isArray(res.brandResults).map(item => item.brandId)
+            brandIds: isArray(res.brandResults).map(item => item.brandId),
           };
         }}
         onError={() => {
@@ -128,10 +130,12 @@ const SkuEdit = ({...props}, ref) => {
             ...submitValue,
             type: 0,
             isHidden: true,
+            materialId: submitValue.materialId ? [submitValue.materialId] : [],
             skuId: value.copy ? null : value.skuId,
             oldSkuId: copy ? value.skuId : null,
             spu: {...submitValue.spu, coding: submitValue.spuCoding},
-            skuName: submitValue.nationalStandard || submitValue.model || submitValue.partNo
+            skuName: submitValue.nationalStandard || submitValue.model || submitValue.partNo,
+            generalFormDataParams: formData,
           };
           setSubmitValue(submitValue);
           return submitValue;
@@ -150,6 +154,13 @@ const SkuEdit = ({...props}, ref) => {
                   state.value = spu.unitId;
                 }
               );
+
+              // setFieldState(
+              //   'spuClass',
+              //   state => {
+              //     state.value = spu.spuClassificationId;
+              //   }
+              // );
 
               setFieldState(
                 'spuCoding',
@@ -205,7 +216,7 @@ const SkuEdit = ({...props}, ref) => {
           />
         </Spin> : typeSetting.map((item, index) => {
 
-          if (item.disabled || !item.show) {
+          if (!item.show || item.disabled) {
             return <div key={index} />;
           }
           let formItemProps;
@@ -223,6 +234,7 @@ const SkuEdit = ({...props}, ref) => {
                 copy: value.copy,
                 data: value,
                 module: 0,
+                rules: [{message: '不能输入汉字!', pattern: /[^\u4e00-\u9fa5]+$/}]
               };
               break;
             case 'spu':
@@ -234,7 +246,8 @@ const SkuEdit = ({...props}, ref) => {
               break;
             case 'spuCoding':
               formItemProps = {
-                component: SysField.SpuCoding,
+                component: Input,
+                rules: [{message: '不能输入汉字!', pattern: /[^\u4e00-\u9fa5]+$/}]
               };
               break;
             case 'batch':
@@ -242,11 +255,6 @@ const SkuEdit = ({...props}, ref) => {
                 placeholder: `请选择${item.filedName}`,
                 component: SysField.Batch,
                 required: true,
-              };
-              break;
-            case 'specifications':
-              formItemProps = {
-                component: SysField.Specs,
               };
               break;
             case 'maintenancePeriod':
@@ -280,7 +288,7 @@ const SkuEdit = ({...props}, ref) => {
             case 'materialId':
               formItemProps = {
                 placeholder: `请选择${item.filedName}`,
-                component: MaterialIds,
+                component: SysField.Material,
               };
               break;
             case 'remarks':
@@ -328,8 +336,26 @@ const SkuEdit = ({...props}, ref) => {
               break;
             default:
               formItemProps = {
+                fieldName: item.key,
                 component: SysField.SkuName,
                 required: false,
+                onChange: (value) => {
+
+                  setFormData((formData) => {
+                    let exits = false;
+                    const newFormData = formData.map(formDataItem => {
+                      if (formDataItem.fieldName === item.key) {
+                        exits = true;
+                        return {...formDataItem, value};
+                      }
+                      return formDataItem;
+                    });
+                    if (!exits) {
+                      newFormData.push({fieldName: item.key, value});
+                    }
+                    return newFormData;
+                  });
+                }
               };
               break;
           }

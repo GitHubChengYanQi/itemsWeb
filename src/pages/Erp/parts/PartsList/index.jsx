@@ -34,15 +34,16 @@ const {FormItem} = Form;
 
 const {baseURI} = config;
 
-const PartsList = ({
-  showTable,
-  spuId,
-  spuSkuId,
-  value,
-  getPartsId = () => {
-  },
-  type = 1
-}) => {
+const PartsList = (
+  {
+    showTable,
+    spuId,
+    spuSkuId,
+    value,
+    getPartsId = () => {
+    },
+    type = 1
+  }) => {
 
   const [formActionsPublic, setFormActionsPublic] = useState(createFormActions);
 
@@ -96,7 +97,7 @@ const PartsList = ({
           component={SysField.SkuInput} />
         <FormItem
           hidden
-          name="skuId"
+          name='skuId'
           value={value || null}
           component={SysField.SkuInput} />
         <FormItem
@@ -207,8 +208,8 @@ const PartsList = ({
             }
           }}
         >
-          <Column title={<div style={{marginLeft: 24}}>版本号</div>} key={1} dataIndex="skuResult" render={(value) => {
-            return <div style={{minWidth: 100}}>{value && value.name || '无'}</div>;
+          <Column title={<div style={{marginLeft: 24}}>版本号</div>} key={1} dataIndex="name" render={(value) => {
+            return <div style={{minWidth: 100}}>{value || '无'}</div>;
           }} />
           <Column title="物料编码" key={1} dataIndex="skuResult" render={(value) => {
             return <div style={{minWidth: 100}}>{value && value.standard}</div>;

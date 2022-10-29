@@ -18,6 +18,7 @@ import MaterialEdit from '../MaterialEdit';
 import * as SysField from '../MaterialField';
 import {batchDelete, materialDelete, materialList} from '../MaterialUrl';
 import {createFormActions} from '@formily/antd';
+import Drawer from '@/components/Drawer';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -90,7 +91,7 @@ const MaterialList = () => {
           );
         }} width={100}/>
       </Table>
-      <Modal2 width={800} title="材质" component={MaterialEdit} onSuccess={() => {
+      <Drawer width={800} title="材质" component={MaterialEdit} onSuccess={() => {
         tableRef.current.refresh();
         ref.current.close();
       }} ref={ref}/>

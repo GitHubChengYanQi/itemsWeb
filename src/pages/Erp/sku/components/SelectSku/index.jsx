@@ -12,17 +12,21 @@ const SelectSku = (
     supply,
     value,
     onChange,
+    manual,
     width,
     dropdownMatchSelectWidth,
     placeholder,
     onSpuId = () => {
     },
+    skuResult,
+    noSpu,
     params,
     skuIds,
     noAdd,
     spuClassId,
     ids,
     style,
+    api,
     getDetailLoading = () => {
     },
   }) => {
@@ -48,23 +52,31 @@ const SelectSku = (
     if (!Array.isArray(data)) {
       return [];
     }
+
+
     let spus = [];
+    const skus = [];
     data.map((item) => {
+      const skuItem = (skuResult ? item.skuResult : item) || {};
       const sku = {
         disabled: skuIds && skuIds.filter((value) => {
-          return value === item.skuId;
+          return value === skuItem.skuId;
         }).length > 0,
-        label: skuLabel(item),
-        value: item.skuId,
-        spu: item.spuResult,
-        standard: item.standard,
+        label: skuLabel(skuItem),
+        value: skuItem.skuId,
+        spu: skuItem.spuResult,
+        standard: skuItem.standard,
         type: 'sku',
-        supply: item.inSupply,
+        supply: skuItem.inSupply,
       };
 
-      if (spus.map(item => item.value).includes(item.spuId)) {
+      if (noSpu) {
+        return skus.push(sku);
+      }
+
+      if (spus.map(item => item.value).includes(skuItem.spuId)) {
         return spus = spus.map((spuItem) => {
-          if (spuItem.value === item.spuId) {
+          if (spuItem.value === skuItem.spuId) {
             return {
               ...spuItem,
               options: [...spuItem.options, sku],
@@ -77,17 +89,18 @@ const SelectSku = (
       }
 
       return spus.push({
-        label: item.spuResult && item.spuResult.name,
-        value: item.spuId,
+        label: skuItem.spuResult && skuItem.spuResult.name,
+        value: skuItem.spuId,
         type: 'spu',
         options: [sku]
       });
     });
 
-    return spus;
+    return noSpu ? skus : spus;
   };
 
-  const {loading, data, run} = useRequest({...skuList, data: {skuIds: ids, ...params}}, {
+  const {loading, data, run} = useRequest({...(api || skuList), data: {skuIds: ids, ...params}}, {
+    manual,
     debounceInterval: 300,
   });
 
@@ -123,7 +136,9 @@ const SelectSku = (
   }, [value]);
 
   useEffect(() => {
-    getSkuList();
+    if (spuClassId){
+      getSkuList();
+    }
   }, [spuClassId]);
 
 
@@ -171,7 +186,31 @@ const SelectSku = (
           新增物料
         </a>
       </Select.Option>}
-      {options && options.map((items) => {
+      {options.map((items) => {
+        if (noSpu){
+          return <Select.Option
+            key={items.value}
+            style={{color: 'rgb(113 111 111)'}}
+            disabled={items.disabled}
+            title={items.label}
+            standard={items.standard}
+            value={`${items.label}standard:${items.standard}`}>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+              <div style={{flexGrow: 1, maxWidth: '85%'}}>
+                <Note>
+                  {items.label}
+                </Note>
+              </div>
+              {supply && params && params.customerId && <div style={{textAlign: 'right', width: 100}}>
+                <Button
+                  type="link"
+                  danger={!items.supply}
+                  style={{padding: 0}}>{items.supply ? '供应物料' : '非供应物料'}</Button>
+              </div>}
+            </div>
+
+          </Select.Option>;
+        }
         return (
           <Select.OptGroup key={items.value} label={<Button type="text" style={{padding: 0}} onClick={() => {
             onSpuId(items.value);
