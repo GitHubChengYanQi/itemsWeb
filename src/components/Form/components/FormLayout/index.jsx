@@ -27,9 +27,10 @@ const FormLayout = (
     onSuccess: (res) => {
       if (res[0] && res[0].typeSetting) {
         const typeSetting = JSON.parse(res[0].typeSetting) || {};
-        const newSteps = typeSetting.steps || [];
+        const pc = typeSetting.pc || {};
+        const newSteps = pc.steps || [];
         setSteps(newSteps);
-        setLayout({width: typeSetting.width, gutter: typeSetting.gutter, widthUnit: typeSetting.widthUnit});
+        setLayout({width: pc.width, gutter: pc.gutter, widthUnit: pc.widthUnit});
         onChange({step: 0, type: newSteps[0].type, steps: newSteps});
       }
     }

@@ -20,6 +20,10 @@ const DiyForm = () => {
 
   const [initItems, setInitItems] = useState([]);
 
+  const [module, setModule] = useState('pc');
+
+  const [loading, setLoading] = useState();
+
   const [filedData, setFiledData] = useState([]);
 
   const [config, setConfig] = useState({});
@@ -48,17 +52,23 @@ const DiyForm = () => {
     return column;
   };
 
-  const {loading: detailLoaidng, run: getDetail} = useRequest(formDetail, {
+  const {run: getDetail, refresh} = useRequest(formDetail, {
     manual: true,
     onSuccess: (res) => {
       const keys = [];
+      const mobile = module === 'mobile';
       if (res.typeSetting) {
         const typeSetting = JSON.parse(res.typeSetting) || {};
+        const moduleInfo = typeSetting[module] || {};
         const newInit = [];
-        isArray(typeSetting.steps).forEach(item => {
+        isArray(moduleInfo.steps).forEach(item => {
           newInit.push({...item, data: setTable(item.data, keys)});
         });
-        setConfig({width: typeSetting.width, gutter: typeSetting.gutter, widthUnit: typeSetting.widthUnit});
+        setConfig({
+          width: moduleInfo.width || (mobile ? 400 : 100),
+          gutter: moduleInfo.gutter || (mobile ? 12 : 16),
+          widthUnit: moduleInfo.widthUnit || (mobile ? 'px' : '%'),
+        });
         setInit(newInit);
       }
       let newFileData = [];
@@ -66,7 +76,7 @@ const DiyForm = () => {
       switch (res.formType) {
         case ReceiptsEnums.purchaseOrder:
           data = POFormData;
-          newFileData = POFormData.filter(item => !keys.includes(item.key));
+          newFileData = POFormData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true));
           break;
         default:
           break;
@@ -74,6 +84,7 @@ const DiyForm = () => {
       setInitItems([{line: 0, column: 0, data}, {step: 0, line: 1, column: 0, data: []}]);
       setFiledData(newFileData);
       setDetail(res);
+      setLoading(false);
     }
   });
 
@@ -86,11 +97,12 @@ const DiyForm = () => {
 
   useEffect(() => {
     if (searchParams.type) {
+      setLoading(true);
       getDetail({data: {formType: searchParams.type}});
     }
   }, []);
 
-  if (detailLoaidng) {
+  if (loading) {
     return <ProSkeleton />;
   }
 
@@ -116,8 +128,15 @@ const DiyForm = () => {
         initSteps={init}
         items={[{line: 0, column: 0, data: filedData}, ...(isObject(init[0]).data || [])]}
         initItems={initItems}
+        setModule={(value) => {
+          setModule(value);
+          setLoading(true);
+          refresh();
+        }}
+        module={module}
         onSave={(data) => {
-          edit({data: {formType: searchParams.type, typeSetting: data}});
+          const typeSetting = JSON.parse(detail.typeSetting) || {};
+          edit({data: {formType: searchParams.type, typeSetting: {...typeSetting, [module]: data}}});
         }}
       />
     </Card>

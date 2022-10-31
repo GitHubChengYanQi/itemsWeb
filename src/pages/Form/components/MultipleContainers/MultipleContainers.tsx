@@ -136,11 +136,13 @@ interface Props {
 
   wrapperStyle?: (styles: any) => {};
   onSave: (data: any) => {};
+  setModule: (data: any) => {};
 
   itemCount?: number;
   width?: number;
   gutter?: number;
   widthUnit?: string;
+  module?: string;
   items: Items;
   initItems: Items;
   initSteps: any;
@@ -172,15 +174,15 @@ export function MultipleContainers(
     width: defaultWidth,
     gutter: defaultGutter,
     widthUnit: defaultWidthUnit,
+    module,
+    setModule,
   }: Props) {
 
   const [items, setItems] = useState<Items>(defaultItems);
-  console.log(items)
+
   const [steps, setSteps] = useState(initSteps);
 
   const [delStep, setDelStep] = useState<number | undefined>();
-
-  const [module, setModule] = useState('pc');
 
   const mobile = module === 'mobile';
 
@@ -314,7 +316,7 @@ export function MultipleContainers(
         }
       }
     });
-    return submitData.slice(1, items.length);
+    return submitData.slice(1, submitData.length);
   };
 
   const submit = () => {
@@ -378,15 +380,12 @@ export function MultipleContainers(
           },
         }}
         onDragStart={({active: {id, data: {current}}}) => {
-
-          console.log('start');
           // debugger;
           setActiveId(id);
           setActive(current);
           // setClonedItems(items);
         }}
         onDragOver={({active, over}) => {
-          console.log('over');
           const overId = over?.id;
           if (overId === active.id) {
             return;
@@ -446,8 +445,6 @@ export function MultipleContainers(
           }
         }}
         onDragEnd={({active, over}) => {
-
-          console.log('end');
           const activeContainer = findContainer(active.id);
           const overId = over?.id;
           const overContainer = findContainer(overId);
@@ -601,7 +598,7 @@ export function MultipleContainers(
               }}
             />
           </div>
-          <div style={{flexGrow: 1, height: '80vh', overflow: 'auto', padding: '20px 40px'}}>
+          <div style={{flexGrow: 1, height: 'calc(100vh - 176px)', overflow: 'auto', padding: '20px 40px'}}>
             <Tabs
               tabBarExtraContent={
                 <div>
@@ -625,6 +622,7 @@ export function MultipleContainers(
                     <Space>
                       间距:
                       <InputNumber
+                        disabled={mobile}
                         max={100}
                         min={8}
                         value={gutter}
@@ -645,18 +643,7 @@ export function MultipleContainers(
               }
               activeKey={module}
               items={[{key: 'pc', label: 'PC端'}, {key: 'mobile', label: '移动端'}]}
-              onChange={(key) => {
-                if (key === 'mobile') {
-                  setWidth(400);
-                  setWidthUnit('px');
-                } else {
-                  setWidth(100);
-                  setWidthUnit('%');
-                }
-                setItems(initItems);
-                setSteps([{type: 'add', title: '', data: [{step: 0, line: 1, column: 0, data: []}],}]);
-                setModule(key);
-              }}
+              onChange={setModule}
             />
             <div hidden={steps.length === 1} style={{marginBottom: 24}}>
               <Steps
@@ -933,6 +920,7 @@ export function MultipleContainers(
   }
 
   function handleRemoveColumn(line, column, cardTable, cardPosition) {
+    console.log(line, column, cardTable, cardPosition)
     const files: any = [];
     const newItems: any = [];
     items.forEach(item => {
@@ -947,7 +935,8 @@ export function MultipleContainers(
             newItems.push({...item, cardColumn: (item.cardColumn || 0) - 1});
             return;
           }
-          if (column === 0 && (item.cardLine || 0) > line) {
+          const columns = items.filter(item => item.line === cardPosition.line && item.column === cardPosition.column && item.cardLine === line);
+          if (columns.length === 1 && (item.cardLine || 0) > line) {
             newItems.push({...item, cardLine: (item.cardLine || 0) - 1});
           } else {
             newItems.push(item);
@@ -965,7 +954,8 @@ export function MultipleContainers(
           newItems.push({...item, column: item.column - 1});
           return;
         }
-        if (column === 0 && item.line > line) {
+        const columns = items.filter(item => item.line === line);
+        if (columns.length === 1 && item.line > line) {
           newItems.push({...item, line: item.line - 1});
         } else {
           newItems.push(item);
