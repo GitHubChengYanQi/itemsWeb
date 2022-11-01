@@ -1,4 +1,4 @@
-export const DocumentEnums = {
+export const ReceiptsEnums = {
   instockOrder: 'INSTOCK',
   purchaseAsk: 'PURCHASE',
   purchaseOrder: 'PURCHASEORDER',

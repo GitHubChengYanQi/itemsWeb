@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import { lazy } from 'react';
 import BaseSystem from '@/pages/BaseSystem';
 import { GenRouter } from '@/pages/BaseSystem/gen/GenRouter';
 import { LoginLogRouter } from '@/pages/BaseSystem/loginLog/loginLogRouter';
@@ -7,7 +7,7 @@ import {ConfigRouter} from '@/pages/BaseSystem/config/configRouter';
 import {CodingRulesRouter} from '@/pages/BaseSystem/codingRules/codingRulesRouter';
 import {OperationLogRouter} from '@/pages/BaseSystem/operationLog/operationLogRouter';
 import {ProductionStationRouter} from '@/pages/BaseSystem/productionStation/productionStationRouter';
-import {DocumentsRouter} from '@/pages/BaseSystem/Documents/Routers';
+import DesignConfig from '@/pages/Design/router';
 
 const systemConfig = [
 
@@ -23,7 +23,7 @@ const systemConfig = [
       ...CodingRulesRouter,
       ...OperationLogRouter,
       ...ProductionStationRouter,
-      ...DocumentsRouter,
+      ...DesignConfig,
       {
         path: '/enterprise',
         name: '企业信息',

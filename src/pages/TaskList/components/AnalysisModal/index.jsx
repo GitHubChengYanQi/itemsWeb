@@ -4,7 +4,7 @@ import {useHistory} from 'ice';
 import Modal from '@/components/Modal';
 import AnalysisDetail from '@/pages/Erp/Analysis/AnalysisDetail';
 import Documents from '@/pages/Workflow/Documents';
-import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 const AnalysisModal = ({showRef}) => {
 
@@ -34,7 +34,7 @@ const AnalysisModal = ({showRef}) => {
             };
           });
           showRef.current.close();
-          documentRef.current.create(DocumentEnums.purchaseAsk, null, {skus});
+          documentRef.current.create(ReceiptsEnums.purchaseAsk, null, {skus});
         }}>发起采购</Button>
       </Space>}
       ref={showRef}
