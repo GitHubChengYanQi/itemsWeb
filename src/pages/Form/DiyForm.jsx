@@ -6,7 +6,7 @@ import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/Mul
 import {useRequest} from '@/util/Request';
 import {formDetail, formEdit} from '@/pages/Form/url';
 import Empty from '@/components/Empty';
-import {POFormData} from '@/pages/Form/formFileData';
+import {POFormData, ProductionFormData} from '@/pages/Form/formFileData';
 import {isArray, isObject} from '@/util/Tools';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
@@ -73,17 +73,21 @@ const DiyForm = () => {
       }
       let newFileData = [];
       let data = [];
-      switch (res.formType) {
+      switch (searchParams.type) {
         case ReceiptsEnums.purchaseOrder:
           data = POFormData;
           newFileData = POFormData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true));
+          break;
+        case ReceiptsEnums.production:
+          data = ProductionFormData;
+          newFileData = ProductionFormData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true));
           break;
         default:
           break;
       }
       setInitItems([{line: 0, column: 0, data}, {step: 0, line: 1, column: 0, data: []}]);
       setFiledData(newFileData);
-      setDetail(res);
+      setDetail(res || {});
       setLoading(false);
     }
   });
@@ -112,9 +116,12 @@ const DiyForm = () => {
 
   let title = '';
 
-  switch (detail.formType) {
+  switch (searchParams.type) {
     case ReceiptsEnums.purchaseOrder:
       title = '采购单';
+      break;
+    case ReceiptsEnums.production:
+      title = '生产计划';
       break;
     default:
       break;
@@ -135,7 +142,7 @@ const DiyForm = () => {
         }}
         module={module}
         onSave={(data) => {
-          const typeSetting = JSON.parse(detail.typeSetting) || {};
+          const typeSetting = detail.typeSetting ? JSON.parse(detail.typeSetting) : {};
           edit({data: {formType: searchParams.type, typeSetting: {...typeSetting, [module]: data}}});
         }}
       />

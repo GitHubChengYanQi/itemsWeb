@@ -109,7 +109,7 @@ const FormLayout = (
                       const data = columnItem.data || [];
                       return <Col key={columnIndex} span={24 / rows.length}>
                         {data.map((item, index) => {
-                          return <div key={index}>{fieldRender({
+                          return <div key={index}>1{fieldRender({
                             ...item,
                             required: hidden ? false : item.required
                           })}</div>;

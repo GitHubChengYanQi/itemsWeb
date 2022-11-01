@@ -353,7 +353,7 @@ export function MultipleContainers(
     });
   }, [items]);
 
-  const endItemsChange = ({activeContainer, newItems, cardPosition}) => {
+  const endItemsChange = ({active,activeContainer, newItems, cardPosition}) => {
     const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
       if (index === 0) {
         return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
@@ -496,7 +496,7 @@ export function MultipleContainers(
               }
               return item;
             });
-            endItemsChange({newItems, activeContainer, cardPosition});
+            endItemsChange({active,newItems, activeContainer, cardPosition});
             setActiveId(null);
             return;
           }
@@ -525,7 +525,7 @@ export function MultipleContainers(
                 }
                 return item;
               });
-              endItemsChange({newItems, activeContainer, cardPosition});
+              endItemsChange({active,newItems, activeContainer, cardPosition});
             } else if (active.id === 'card' && activeContainer !== 0) {
               let cardPosition: any = {};
               const newItems = items.map((item, index) => {
@@ -920,7 +920,6 @@ export function MultipleContainers(
   }
 
   function handleRemoveColumn(line, column, cardTable, cardPosition) {
-    console.log(line, column, cardTable, cardPosition)
     const files: any = [];
     const newItems: any = [];
     items.forEach(item => {

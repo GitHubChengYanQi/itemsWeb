@@ -20,7 +20,7 @@ const Select = (
     },
     onSearch = () => {
     },
-    addLabel,
+    addLabel = false,
     width: wid,
     ...other
   }

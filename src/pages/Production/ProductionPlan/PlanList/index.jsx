@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {Button, Card, List, Pagination, Space} from 'antd';
 import {useHistory} from 'ice';
@@ -9,10 +9,14 @@ import Label from '@/components/Label';
 import styles from './index.module.less';
 import {productionPlanList} from '@/pages/Production/Url';
 import Empty from '@/components/Empty';
+import Modal from '@/components/Modal';
+import AddProductionPlan from '@/pages/Production/ProductionPlan/AddProductionPlan';
 
 const PlanList = () => {
 
   const history = useHistory();
+
+  const ref = useRef();
 
   const {loading, data, run} = useRequest({...productionPlanList, response: true});
 
@@ -25,7 +29,7 @@ const PlanList = () => {
   }
 
   return <>
-    <Card title={<Breadcrumb />}>
+    <Card title={<Breadcrumb />} extra={<Button type="primary" onClick={() => ref.current.open(false)}>增加生产计划</Button>}>
       <div className="div_center">
         <List
           bordered={false}
@@ -119,6 +123,17 @@ const PlanList = () => {
         showTotal={total => `共${total}条`}
       />
     </div>
+
+    <Modal
+      title="生产计划"
+      width="auto"
+      ref={ref}
+      component={AddProductionPlan}
+      footer={<Space>
+        <Button>取消</Button>
+        <Button type="primary">保存</Button>
+      </Space>}
+    />
   </>;
 };
 
