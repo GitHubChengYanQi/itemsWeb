@@ -15,6 +15,12 @@ export const productionPlanList = {
 };
 
 
+export const createProductionPlan = {
+  url: '/productionPlan/add',
+  method: 'POST'
+};
+
+
 export const pendingProductionByOrder = {
   url: '/order/pendingProductionPlanByContracts',
   method: 'POST'

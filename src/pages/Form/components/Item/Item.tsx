@@ -84,7 +84,7 @@ export const Item = React.memo(
           case 'date':
             return <DatePicker disabled />;
           case 'select':
-            return <Input disabled placeholder='请选择' />;
+            return <Select disabled placeholder='请选择' />;
           case 'upload':
             return <Upload disabled>
               <Button icon={<UploadOutlined />}>上传</Button>

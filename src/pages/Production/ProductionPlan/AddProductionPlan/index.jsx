@@ -1,29 +1,39 @@
-import React, {useState} from 'react';
+import React, {useImperativeHandle, useRef, useState} from 'react';
+import {Input} from 'antd';
+import moment from 'moment';
 import Form from '@/components/Form';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 import FormLayout from '@/components/Form/components/FormLayout';
 import Coding from '@/pages/Erp/tool/components/Coding';
 import style from '@/pages/Order/CreateOrder/index.module.less';
-import {DatePicker, Input} from 'antd';
-import moment from 'moment';
 import Select from '@/components/Select';
 import {UserIdSelect} from '@/pages/Crm/business/BusinessUrl';
+import AddSku from '@/pages/Production/ProductionPlan/AddProductionPlan/components/AddSku';
+import {createProductionPlan} from '@/pages/Production/Url';
+import DatePicker from '@/components/DatePicker';
 
 
 const {FormItem} = Form;
 
-const AddProductionPlan = () => {
+const AddProductionPlan = ({...props}, ref) => {
 
   const [currentStep, setCurrentStep] = useState({});
+  const formRef = useRef();
+
+  useImperativeHandle(ref, () => ({
+    submit: formRef.current.submit
+  }));
 
   return <div style={{minWidth: 800, padding: 24}}>
     <Form
+      {...props}
+      ref={formRef}
       className={style.form}
       wrapperCol={24}
       NoButton={false}
       value={false}
       api={{
-        add: {},
+        add: createProductionPlan,
       }}
     >
       <FormLayout
@@ -73,7 +83,8 @@ const AddProductionPlan = () => {
               break;
             case 'orderDetailParams':
               formItemProps = {
-                component: Input,
+                component: AddSku,
+                label: null,
               };
               break;
             default:
@@ -91,4 +102,4 @@ const AddProductionPlan = () => {
   </div>;
 };
 
-export default AddProductionPlan;
+export default React.forwardRef(AddProductionPlan);

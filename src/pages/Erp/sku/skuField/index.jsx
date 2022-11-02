@@ -26,6 +26,7 @@ import InputNumber from '@/components/InputNumber';
 import SpuClassificationEdit from '@/pages/Erp/spu/components/spuClassification/spuClassificationEdit';
 import UnitEdit from '@/pages/Erp/unit/unitEdit';
 import {materialListSelect} from '@/pages/Erp/material/MaterialUrl';
+import MaterialEdit from '@/pages/Erp/material/MaterialEdit';
 
 export const Type = (props) => {
 
@@ -192,7 +193,7 @@ export const Codings = (props) => {
   </div>);
 };
 export const UnitId = (props) => {
-  return (<SetSelectOrCascader api={unitListSelect} width={200} title="设置单位" component={UnitEdit} {...props} />);
+  return (<SetSelectOrCascader api={unitListSelect} width={200} title="新增单位" component={UnitEdit} {...props} />);
 };
 
 export const Standard = (props) => {
@@ -228,7 +229,7 @@ export const Note = (props) => {
 };
 
 export const Material = (props) => {
-  return (<Select api={materialListSelect} {...props} />);
+  return (<SetSelectOrCascader api={materialListSelect} width={200} title="添加材质" component={MaterialEdit} {...props} />);
 };
 
 export const SkuSize = ({value = '', onChange}) => {

@@ -15,6 +15,7 @@ import Select from '@/components/Select';
 import {UserIdSelect} from '@/pages/Erp/instock/InstockUrl';
 import PlanList from '@/pages/Production/PreProduction/List/components/PlanList';
 import OrderList from '@/pages/Production/PreProduction/List/components/OrderList';
+import {createProductionPlan} from '@/pages/Production/Url';
 
 const {Column} = Table;
 
@@ -36,10 +37,7 @@ const List = () => {
 
   const [refresh, {setTrue, setFalse}] = useBoolean();
 
-  const {run} = useRequest({
-    url: '/productionPlan/add',
-    method: 'POST'
-  }, {
+  const {run} = useRequest(createProductionPlan, {
     manual: true,
     onSuccess: () => {
       setCheckedSkus([]);
@@ -178,6 +176,10 @@ const List = () => {
     <Card title={<Breadcrumb />}>
       <div style={{position: 'sticky', top: 0, zIndex: 999, backgroundColor: '#fff',}}>
         <Tabs
+          items={[
+            {key: 'order', label: '订单式生产'},
+            {key: 'plan', label: '计划式生产'},
+          ]}
           centered
           activeKey={type}
           destroyInactiveTabPane
@@ -185,10 +187,7 @@ const List = () => {
             setType(key);
             setCheckedSkus([]);
           }}
-        >
-          <Tabs.TabPane tab="订单式生产" key="order" />
-          <Tabs.TabPane tab="计划式生产" key="plan" />
-        </Tabs>
+        />
       </div>
 
       {module()}

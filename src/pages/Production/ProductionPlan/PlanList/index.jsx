@@ -17,6 +17,7 @@ const PlanList = () => {
   const history = useHistory();
 
   const ref = useRef();
+  const formRef = useRef();
 
   const {loading, data, run} = useRequest({...productionPlanList, response: true});
 
@@ -125,13 +126,23 @@ const PlanList = () => {
     </div>
 
     <Modal
+      compoentRef={formRef}
       title="生产计划"
       width="auto"
       ref={ref}
       component={AddProductionPlan}
+      onSuccess={() => {
+        ref.current.close();
+        run({
+          params: {
+            limit: 10,
+            page: 1
+          }
+        });
+      }}
       footer={<Space>
-        <Button>取消</Button>
-        <Button type="primary">保存</Button>
+        <Button onClick={() => ref.current.close()}>取消</Button>
+        <Button type="primary" onClick={() => formRef.current.submit()}>保存</Button>
       </Space>}
     />
   </>;
