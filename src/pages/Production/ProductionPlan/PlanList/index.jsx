@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {Button, Card, List, Pagination, Space} from 'antd';
 import {useHistory} from 'ice';
@@ -11,10 +11,13 @@ import {productionPlanList} from '@/pages/Production/Url';
 import Empty from '@/components/Empty';
 import Modal from '@/components/Modal';
 import AddProductionPlan from '@/pages/Production/ProductionPlan/AddProductionPlan';
+import {isArray} from '@/util/Tools';
 
 const PlanList = () => {
 
   const history = useHistory();
+
+  const [currentStep, setCurrentStep] = useState({});
 
   const ref = useRef();
   const formRef = useRef();
@@ -126,6 +129,8 @@ const PlanList = () => {
     </div>
 
     <Modal
+      currentStep={currentStep}
+      setCurrentStep={setCurrentStep}
       compoentRef={formRef}
       title="生产计划"
       width="auto"
@@ -142,7 +147,7 @@ const PlanList = () => {
       }}
       footer={<Space>
         <Button onClick={() => ref.current.close()}>取消</Button>
-        <Button type="primary" onClick={() => formRef.current.submit()}>保存</Button>
+        <Button type="primary" onClick={() => formRef.current.submit()}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
       </Space>}
     />
   </>;

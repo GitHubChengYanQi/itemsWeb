@@ -9,7 +9,6 @@ const AddSku = ({value = [], onChange}) => {
   const ref = useRef();
 
   const addSkuRef = useRef();
-  console.log(value);
 
   return (<>
 

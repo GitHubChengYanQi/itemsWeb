@@ -99,9 +99,10 @@ const AddSkuTable = (
           />
         </Render>;
       }} />
-      <Table.Column title="交付日期" dataIndex="deliveryDate" render={(value, record, index) => {
+      <Table.Column title="交付日期(天)" dataIndex="deliveryDate" render={(value, record, index) => {
         return <Render>
-          <Date
+          <InputNumber
+            placeholder="交付日期"
             value={value}
             onChange={(value) => {
               setValue({deliveryDate: value}, index);

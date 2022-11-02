@@ -1,9 +1,9 @@
 import React, {useImperativeHandle, useRef, useState} from 'react';
-import {Input} from 'antd';
+import {Input, message} from 'antd';
 import moment from 'moment';
 import Form from '@/components/Form';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
-import FormLayout from '@/components/Form/components/FormLayout';
+import FormLayout, {FormLayoutSubmit} from '@/components/Form/components/FormLayout';
 import Coding from '@/pages/Erp/tool/components/Coding';
 import style from '@/pages/Order/CreateOrder/index.module.less';
 import Select from '@/components/Select';
@@ -15,16 +15,19 @@ import DatePicker from '@/components/DatePicker';
 
 const {FormItem} = Form;
 
-const AddProductionPlan = ({...props}, ref) => {
+const AddProductionPlan = ({currentStep,setCurrentStep,...props}, ref) => {
 
-  const [currentStep, setCurrentStep] = useState({});
   const formRef = useRef();
 
+  const submit = () => {
+    FormLayoutSubmit({currentStep, setCurrentStep, formRef});
+  };
+
   useImperativeHandle(ref, () => ({
-    submit: formRef.current.submit
+    submit
   }));
 
-  return <div style={{minWidth: 800, padding: 24}}>
+  return <div style={{minWidth: 1000, padding: 24}}>
     <Form
       {...props}
       ref={formRef}
@@ -34,6 +37,21 @@ const AddProductionPlan = ({...props}, ref) => {
       value={false}
       api={{
         add: createProductionPlan,
+      }}
+      onSubmit={(value) => {
+        const orderDetailParams = value.orderDetailParams || [];
+        const orderDetail = orderDetailParams.filter(item => item.skuId && item.purchaseNumber && item.deliveryDate);
+
+        if (orderDetailParams.length === 0 || orderDetail.length !== orderDetailParams.length) {
+          message.warn('请完善生产物料信息');
+          return false;
+        }
+
+        return {
+          ...value,
+          executionTime: value.time[0],
+          endTime: value.time[1],
+        };
       }}
     >
       <FormLayout
@@ -85,6 +103,7 @@ const AddProductionPlan = ({...props}, ref) => {
               formItemProps = {
                 component: AddSku,
                 label: null,
+                itemClassName: style.itemClassName
               };
               break;
             default:
