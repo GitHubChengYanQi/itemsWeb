@@ -88,6 +88,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
   ) => {
 
     const [over, setOver] = useState(true);
+
     return (
       <Col
         span={parseInt(`${24 / columns}`, 0)}
@@ -163,7 +164,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
               {!noNandle && <Handle {...handleProps} />}
             </div>} />
         ) : null}
-        {placeholder ? children : <ul style={ulStyle}>{children}</ul>}
+        <ul style={ulStyle}>{children}</ul>
       </Col>
     );
   }

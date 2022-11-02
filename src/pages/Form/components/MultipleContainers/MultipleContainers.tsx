@@ -67,7 +67,7 @@ export const DroppableContainer = (
     items: string[];
     style?: React.CSSProperties;
   }) => {
-  console.log(1)
+
   const {
     active,
     attributes,
