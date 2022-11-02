@@ -72,7 +72,7 @@ const FormLayout = (
           steps.map((item, index) => {
             return <Steps.Step
               title={item.title || `步骤${index + 1}`}
-              description={item.type === 'add' && '保存'}
+              // description={item.type === 'add' && '保存'}
               key={index}
             />;
           })

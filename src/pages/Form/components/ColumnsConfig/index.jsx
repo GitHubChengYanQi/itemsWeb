@@ -90,6 +90,7 @@ const ColumnsConfig = (
     {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>
       {columns[containerId].data.map((item, index) => {
         return <SortableItem
+          activeId={activeId}
           mobile={mobile}
           itemChange={itemChange}
           disabled={item.disabled}

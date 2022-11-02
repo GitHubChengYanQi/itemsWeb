@@ -18,8 +18,6 @@ const DiyForm = () => {
 
   const [detail, setDetail] = useState();
 
-  const [initItems, setInitItems] = useState([]);
-
   const [module, setModule] = useState('pc');
 
   const [loading, setLoading] = useState();
@@ -28,7 +26,13 @@ const DiyForm = () => {
 
   const [config, setConfig] = useState({});
 
-  const [init, setInit] = useState([{type: 'add', title: '', data: [{step: 0, line: 1, column: 0, data: []}],}]);
+  const defaultInit = [{
+    type: 'add',
+    title: '',
+    data: [{step: 0, line: 1, column: 0, data: []}],
+  }];
+
+  const [init, setInit] = useState(defaultInit);
 
   const setTable = (data = [], keys) => {
     const column = [];
@@ -69,23 +73,21 @@ const DiyForm = () => {
           gutter: moduleInfo.gutter || (mobile ? 12 : 16),
           widthUnit: moduleInfo.widthUnit || (mobile ? 'px' : '%'),
         });
-        setInit(newInit);
+        setInit(newInit.length === 0 ? defaultInit : newInit);
+      } else {
+        setInit(defaultInit);
       }
       let newFileData = [];
-      let data = [];
       switch (searchParams.type) {
         case ReceiptsEnums.purchaseOrder:
-          data = POFormData;
           newFileData = POFormData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true));
           break;
         case ReceiptsEnums.production:
-          data = ProductionFormData;
           newFileData = ProductionFormData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true));
           break;
         default:
           break;
       }
-      setInitItems([{line: 0, column: 0, data}, {step: 0, line: 1, column: 0, data: []}]);
       setFiledData(newFileData);
       setDetail(res || {});
       setLoading(false);
@@ -134,7 +136,6 @@ const DiyForm = () => {
         vertical
         initSteps={init}
         items={[{line: 0, column: 0, data: filedData}, ...(isObject(init[0]).data || [])]}
-        initItems={initItems}
         setModule={(value) => {
           setModule(value);
           setLoading(true);

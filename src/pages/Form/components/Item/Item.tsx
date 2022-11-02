@@ -172,7 +172,7 @@ export const Item = React.memo(
           {...props}
           tabIndex={!handle ? 0 : undefined}
         >
-           <span hidden={!handle} className={styles.Actions}>
+           <span hidden={!handle || disabled} className={styles.Actions}>
             <Handle {...listeners} />
             </span>
           {handle ? (

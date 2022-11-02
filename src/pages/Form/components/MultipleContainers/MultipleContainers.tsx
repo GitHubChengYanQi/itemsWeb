@@ -14,7 +14,6 @@ import {
   MouseSensor,
   TouchSensor,
   Modifiers,
-  useDroppable,
   UniqueIdentifier,
   useSensors,
   useSensor,
@@ -34,6 +33,7 @@ import {Button, Checkbox, InputNumber, Modal, Select, Space, Steps, Tabs, Typogr
 import {DeleteOutlined} from '@ant-design/icons';
 import ColumnsConfig from '../ColumnsConfig';
 import TableConfig from '../TableConfig';
+import wxHead from '../../../../asseset/imgs/wxHead.jpg';
 
 
 import {Item} from '../Item';
@@ -67,7 +67,7 @@ export const DroppableContainer = (
     items: string[];
     style?: React.CSSProperties;
   }) => {
-
+  console.log(1)
   const {
     active,
     attributes,
@@ -144,7 +144,6 @@ interface Props {
   widthUnit?: string;
   module?: string;
   items: Items;
-  initItems: Items;
   initSteps: any;
   handle?: boolean;
   renderItem?: any;
@@ -163,13 +162,11 @@ export function MultipleContainers(
     adjustScale = false,
     handle = false,
     items: defaultItems,
-    initItems,
     coordinateGetter = sortableKeyboardCoordinates,
     getItemStyles = () => ({}),
     wrapperStyle = () => ({}),
     onSave = () => ({}),
     renderItem,
-    trashable = false,
     initSteps = [],
     width: defaultWidth,
     gutter: defaultGutter,
@@ -353,7 +350,7 @@ export function MultipleContainers(
     });
   }, [items]);
 
-  const endItemsChange = ({active,activeContainer, newItems, cardPosition}) => {
+  const endItemsChange = ({active, activeContainer, newItems, cardPosition}) => {
     const array: any = (active.id === 'card' && activeContainer !== 0) ? [...newItems.map((item, index) => {
       if (index === 0) {
         return {...item, data: [{key: 'card', filedName: 'Card'}, ...item.data]};
@@ -380,12 +377,14 @@ export function MultipleContainers(
           },
         }}
         onDragStart={({active: {id, data: {current}}}) => {
+          console.log('start')
           // debugger;
           setActiveId(id);
           setActive(current);
           // setClonedItems(items);
         }}
         onDragOver={({active, over}) => {
+          console.log('over')
           const overId = over?.id;
           if (overId === active.id) {
             return;
@@ -496,7 +495,7 @@ export function MultipleContainers(
               }
               return item;
             });
-            endItemsChange({active,newItems, activeContainer, cardPosition});
+            endItemsChange({active, newItems, activeContainer, cardPosition});
             setActiveId(null);
             return;
           }
@@ -525,7 +524,7 @@ export function MultipleContainers(
                 }
                 return item;
               });
-              endItemsChange({active,newItems, activeContainer, cardPosition});
+              endItemsChange({active, newItems, activeContainer, cardPosition});
             } else if (active.id === 'card' && activeContainer !== 0) {
               let cardPosition: any = {};
               const newItems = items.map((item, index) => {
@@ -707,7 +706,21 @@ export function MultipleContainers(
               </Steps>
             </div>
 
-            <div style={{width: mobile ? 500 : '100%', margin: 'auto', padding: ' 24px 0'}}>
+            <div style={{
+              width: mobile ? 400 : '100%',
+              margin: 'auto',
+              height: mobile ? 800 : 'auto',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              padding: mobile ? '0 8px 8px 8px' : '24px 0',
+              boxShadow: mobile ? '0 0 14px 0 rgb(0 0 0 / 10%)' : '',
+              background: mobile ? '#E1EBF6' : '#fff',
+            }}>
+              {mobile && <img
+                src={wxHead}
+                width={400}
+                style={{position: 'sticky', top: 0, zIndex: 1, margin: '0 -8px 8px'}} alt=''
+              />}
               <TableConfig
                 activeId={activeId}
                 mobile={mobile}
@@ -719,7 +732,7 @@ export function MultipleContainers(
                 widthUnit={widthUnit}
                 handleRemove={handleRemoveCard}
                 card={false}
-                width={width}
+                width={mobile ? '100%' : width}
                 items={items}
                 handleAddColumn={handleAddColumn}
                 handleAddRow={handleAddRow}
@@ -735,9 +748,6 @@ export function MultipleContainers(
             </div>
           </div>
         </div>
-        {trashable && activeId ? (
-          <Trash id={TRASH_ID} />
-        ) : null}
       </DndContext>
 
       <Modal
@@ -1018,34 +1028,6 @@ function getColor(item) {
   return '#7193f1';
 }
 
-function Trash({id}: { id: UniqueIdentifier }) {
-  const {setNodeRef, isOver} = useDroppable({
-    id,
-  });
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'fixed',
-        left: '50%',
-        marginLeft: -150,
-        bottom: 20,
-        width: 300,
-        height: 60,
-        borderRadius: 5,
-        border: '1px solid',
-        borderColor: isOver ? 'red' : '#DDD',
-      }}
-    >
-      Drop here to delete
-    </div>
-  );
-}
-
 interface SortableItemProps {
   containerId: string;
   id: string;
@@ -1055,6 +1037,7 @@ interface SortableItemProps {
   cardTable?: boolean;
   mobile?: boolean;
   item?: any,
+  activeId?: any,
 
   style(args: any): React.CSSProperties;
 
@@ -1065,7 +1048,7 @@ interface SortableItemProps {
 
 export const SortableItem = memo((
   {
-    disabled,
+    activeId,
     itemChange = () => {
     },
     id,
@@ -1075,6 +1058,8 @@ export const SortableItem = memo((
     item = {},
     cardTable,
   }: SortableItemProps) => {
+
+  const wait = activeId ? activeId !== id : false;
 
   const {
     setNodeRef,
@@ -1095,7 +1080,7 @@ export const SortableItem = memo((
     <Item
       key={id}
       mobile={mobile}
-      ref={disabled ? undefined : setNodeRef}
+      ref={wait ? undefined : setNodeRef}
       value={item.filedName}
       item={item}
       dragging={isDragging}
@@ -1107,7 +1092,7 @@ export const SortableItem = memo((
       transition={transition}
       transform={transform}
       fadeIn={mountedWhileDragging}
-      listeners={listeners}
+      listeners={wait ? undefined : listeners}
     />
   );
 });
