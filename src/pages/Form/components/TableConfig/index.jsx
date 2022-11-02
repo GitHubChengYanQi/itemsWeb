@@ -1,4 +1,4 @@
-import React, {useEffect, useState,memo } from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import {SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
 import {DownOutlined, UpOutlined} from '@ant-design/icons';
 import {Button, Row} from 'antd';
@@ -33,7 +33,7 @@ const TableConfig = (
     if (activeId) {
       return;
     }
-    // setTimeout(() => {
+
     const initTable = [];
     const initCardTable = [];
     items.forEach((item, index) => {
@@ -58,12 +58,12 @@ const TableConfig = (
     });
     setTable(initTable);
     setCardTable(initCardTable);
-    // }, 0);
-  }, [items]);
+
+  }, [activeId,items]);
 
   return <div>
     {(card ? cardTable : table).map((columns, rowIndex) => {
-      return <div key={rowIndex} style={{display: 'flex', alignItems: 'center'}}>
+      return <div key={rowIndex} style={{display: 'flex', alignItems: 'center',background:'#fff',marginBottom:3}}>
         <div style={{width: card ? 40 : 64}}>
           <Button
             disabled={rowIndex === 1}
@@ -89,8 +89,8 @@ const TableConfig = (
           <Row
             gutter={gutter}
             style={{
-              border: 'dashed 1px rgba(0,0,0,0.2)',
-              borderBottom: rowIndex === (card ? cardTable : table).length - 1 ? 'dashed 1px rgba(0,0,0,0.2)' : 'none',
+              border: mobile ? 'none' : 'dashed 1px rgba(0,0,0,0.2)',
+              borderBottom: (!mobile && rowIndex === (card ? cardTable : table).length - 1) ? 'dashed 1px rgba(0,0,0,0.2)' : 'none',
               width: card ? '100%' : `${width + widthUnit}`,
               // overflow: 'hidden'
             }}

@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Space, Table} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
-import {BrandId, Date, Note, Time} from '@/pages/Purshase/purchaseAsk/purchaseAskField';
-import {useRequest} from '@/util/Request';
-import {brandIdSelect} from '@/pages/Erp/stock/StockUrl';
+import {Date} from '@/pages/Purshase/purchaseAsk/purchaseAskField';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import Render from '@/components/Render';
 import MyNote from '@/components/Note';
@@ -19,21 +17,12 @@ const AddSkuTable = (
 
   const [keys, setKeys] = useState([]);
 
-  const {data} = useRequest(brandIdSelect);
-
   const dataSources = value.map((item, index) => {
     return {
       ...item,
       key: index
     };
   });
-
-
-  const getValue = (index) => {
-    return dataSources.filter((item) => {
-      return item.key === index;
-    })[0];
-  };
 
   const setValue = (data, index) => {
     const array = dataSources.map((item) => {
@@ -92,59 +81,31 @@ const AddSkuTable = (
         return <Render width={50}>{value + 1}</Render>;
       }} />
       <Table.Column title="物料编号" dataIndex="skuResult" render={(value) => {
-        return <Render width={100}>{value && value.standard}</Render>;
+        return <Render>{value && value.standard}</Render>;
       }} />
       <Table.Column title="物料" dataIndex="skuResult" width={200} render={(value) => {
         return <MyNote maxWidth={200}>
           <SkuResultSkuJsons skuResult={value} />
         </MyNote>;
       }} />
-      <Table.Column title="品牌" dataIndex="skuId" render={(skuId, record, index) => {
-        return <Render width={100}>
-          <BrandId
-            data={data}
-            value={getValue(index).brandId || 0}
-            onChange={(value) => {
-              setValue({brandId: value}, index);
-            }} />
-        </Render>;
-      }} />
-      <Table.Column title="申请数量" dataIndex="applyNumber" render={(value, record, index) => {
+      <Table.Column title="生产数量" dataIndex="purchaseNumber" render={(value, record, index) => {
         return <Render width={50}>
           <InputNumber
+            placeholder="请输入生产数量"
             value={value}
             onChange={(value) => {
-              setValue({applyNumber: value}, index);
+              setValue({purchaseNumber: value}, index);
             }}
           />
         </Render>;
       }} />
-      <Table.Column title="交付日期" dataIndex="deliveryDate" render={(value, record, index) => {
-        return <Render width={100}>
-          <Date
+      <Table.Column title="交付日期(天)" dataIndex="deliveryDate" render={(value, record, index) => {
+        return <Render>
+          <InputNumber
+            placeholder="交付日期"
             value={value}
             onChange={(value) => {
               setValue({deliveryDate: value}, index);
-            }}
-          />
-        </Render>;
-      }} />
-      <Table.Column title="交付时间" dataIndex="deliveryTime" render={(value, record, index) => {
-        return <Render width={100}>
-          <Time
-            value={value}
-            onChange={(value) => {
-              setValue({deliveryTime: value}, index);
-            }}
-          />
-        </Render>;
-      }} />
-      <Table.Column title="备注" dataIndex="note" render={(value, record, index) => {
-        return <Render width={200}>
-          <Note
-            value={getValue(index).note}
-            onChange={(value) => {
-              setValue({note: value.target.value}, index);
             }}
           />
         </Render>;

@@ -50,4 +50,14 @@ export const POFormData = [
   {key: 'contractCoding', filedName: '合同编码', inputType: 'input'},
   {key: 'labelResults', filedName: '合同模板中的其他字段', inputType: 'input'},
   {key: 'note', filedName: '其他约定项', inputType: 'input'},
-]
+];
+
+export const ProductionFormData = [
+  ...otherData,
+  {key: 'coding', filedName: '计划编码', inputType: 'input'},
+  {key: 'theme', filedName: '计划主题', inputType: 'input'},
+  {key: 'time', filedName: '执行时间', inputType: 'select'},
+  {key: 'userId', filedName: '负责人', inputType: 'select'},
+  {key: 'remark', filedName: '备注', inputType: 'input'},
+  {key: 'orderDetailParams', filedName: '生产明细', inputType: 'select'},
+];

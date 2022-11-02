@@ -165,7 +165,7 @@ export const UpdateUser = (props) => {
   return (<Input {...props} />);
 };
 export const Date = (props) => {
-  return (<DatePicker disabledDate={(currentDate) => {
+  return (<DatePicker showTime disabledDate={(currentDate) => {
     return currentDate && currentDate < moment().subtract(1, 'days');
   }} {...props} />);
 };

@@ -30,7 +30,7 @@ import {skuResults} from '@/pages/Erp/sku/skuUrl';
 import Draft from '@/components/Form/components/Draft';
 import style from './index.module.less';
 import {taxRateListSelect} from '@/pages/Purshase/taxRate/taxRateUrl';
-import FormLayout from '@/components/Form/components/FormLayout';
+import FormLayout, {FormLayoutSubmit} from '@/components/Form/components/FormLayout';
 import {isArray} from '@/util/Tools';
 import {orderAdd} from '@/pages/Order/url';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
@@ -746,19 +746,7 @@ const CreateOrder = ({...props}) => {
           style={{height: 47, borderTop: '1px solid #e7e7e7', background: '#fff', textAlign: 'center', paddingTop: 8}}>
           <Space>
             <Button type="primary" onClick={() => {
-              if (currentStep.type === 'add' || currentStep.step === isArray(currentStep.steps).length - 1) {
-                formRef.current.submit();
-              } else {
-                formRef.current.validate().then(() => {
-                  setCurrentStep({
-                    ...currentStep,
-                    step: currentStep.step + 1,
-                    type: isArray(currentStep.steps)[currentStep.step + 1].type
-                  });
-                }).catch((error) => {
-                  console.log(error);
-                });
-              }
+              FormLayoutSubmit({currentStep, setCurrentStep, formRef});
             }}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
             <Button onClick={() => {
               history.push('/purchase/toBuyPlan');

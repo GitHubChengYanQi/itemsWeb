@@ -15,6 +15,7 @@ import Select from '@/components/Select';
 import {UserIdSelect} from '@/pages/Erp/instock/InstockUrl';
 import PlanList from '@/pages/Production/PreProduction/List/components/PlanList';
 import OrderList from '@/pages/Production/PreProduction/List/components/OrderList';
+import {createProductionPlan} from '@/pages/Production/Url';
 
 const {Column} = Table;
 
@@ -36,10 +37,7 @@ const List = () => {
 
   const [refresh, {setTrue, setFalse}] = useBoolean();
 
-  const {run} = useRequest({
-    url: '/productionPlan/add',
-    method: 'POST'
-  }, {
+  const {run} = useRequest(createProductionPlan, {
     manual: true,
     onSuccess: () => {
       setCheckedSkus([]);
@@ -97,19 +95,16 @@ const List = () => {
         return <div>
           <ProCard className="h2Card" title="生产计划信息" headerBordered>
             <Descriptions column={2} labelStyle={{width: 80, padding: 4}}>
-              <Descriptions.Item
-                label="计划编码">
+              <Descriptions.Item label="计划编码">
                 <Coding module={13} value={value.coding} onChange={(coding) => {
                   onChange({...value, coding});
                 }} /></Descriptions.Item>
-              <Descriptions.Item
-                label="计划主题">
+              <Descriptions.Item label="计划主题">
                 <Input placeholder="请输入主题" onChange={(string) => {
                   onChange({...value, theme: string.target.value});
                 }} />
               </Descriptions.Item>
-              <Descriptions.Item
-                label="执行时间">
+              <Descriptions.Item label="执行时间">
                 <DatePicker
                   width="100%"
                   showTime
@@ -121,8 +116,7 @@ const List = () => {
                     onChange({...value, executionTime: time[0], endTime: time[1]});
                   }} />
               </Descriptions.Item>
-              <Descriptions.Item
-                label="负责人">
+              <Descriptions.Item label="负责人">
                 <Select api={UserIdSelect} width="100%" value={value.userId} onChange={(userId) => {
                   onChange({...value, userId});
                 }} />
@@ -182,6 +176,10 @@ const List = () => {
     <Card title={<Breadcrumb />}>
       <div style={{position: 'sticky', top: 0, zIndex: 999, backgroundColor: '#fff',}}>
         <Tabs
+          items={[
+            {key: 'order', label: '订单式生产'},
+            {key: 'plan', label: '计划式生产'},
+          ]}
           centered
           activeKey={type}
           destroyInactiveTabPane
@@ -189,10 +187,7 @@ const List = () => {
             setType(key);
             setCheckedSkus([]);
           }}
-        >
-          <Tabs.TabPane tab="订单式生产" key="order" />
-          <Tabs.TabPane tab="计划式生产" key="plan" />
-        </Tabs>
+        />
       </div>
 
       {module()}

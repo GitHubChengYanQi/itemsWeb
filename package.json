@@ -25,6 +25,7 @@
     "home": "icejs start --port 5555 --mode home",
     "cheng": "icejs start --port 7777 --mode cheng",
     "ren": "icejs start --port 5555 --mode ren",
+    "sun": "icejs start --port 5555 --mode sun",
     "zhu": "icejs start --port 5555 --mode zhu",
     "devOnline": "icejs build --mode devOnline",
     "buildZjzc": "icejs build --mode buildZjzc",

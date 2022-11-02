@@ -4,6 +4,23 @@ import ProSkeleton from '@ant-design/pro-skeleton';
 import ProCard from '@ant-design/pro-card';
 import {useRequest} from '@/util/Request';
 import {formList} from '@/pages/Form/url';
+import {isArray} from '@/util/Tools';
+
+export const FormLayoutSubmit = ({currentStep,formRef,setCurrentStep,}) => {
+  if (currentStep.type === 'add' || currentStep.step === isArray(currentStep.steps).length - 1) {
+    formRef.current.submit();
+  } else {
+    formRef.current.validate().then(() => {
+      setCurrentStep({
+        ...currentStep,
+        step: currentStep.step + 1,
+        type: isArray(currentStep.steps)[currentStep.step + 1].type
+      });
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+};
 
 const FormLayout = (
   {
@@ -55,7 +72,7 @@ const FormLayout = (
           steps.map((item, index) => {
             return <Steps.Step
               title={item.title || `步骤${index + 1}`}
-              description={item.type === 'add' && '保存'}
+              // description={item.type === 'add' && '保存'}
               key={index}
             />;
           })

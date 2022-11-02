@@ -69,7 +69,7 @@ const ColumnsConfig = (
     noNandle
     key={id}
     id={id}
-    disabled={card}
+    disabled={card || (!disabled && columns[containerId].data.length === 1 && activeId !== columns[containerId].data[0].key)}
     label={disabled ? '待选字段' : (card && <>
       <Typography.Paragraph
         style={{margin: 0}}
@@ -90,6 +90,7 @@ const ColumnsConfig = (
     {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>
       {columns[containerId].data.map((item, index) => {
         return <SortableItem
+          activeId={activeId}
           mobile={mobile}
           itemChange={itemChange}
           disabled={item.disabled}

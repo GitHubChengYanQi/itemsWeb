@@ -1,3 +1,4 @@
+
 export const ReceiptsEnums = {
   instockOrder: 'INSTOCK',
   purchaseAsk: 'PURCHASE',
@@ -8,4 +9,5 @@ export const ReceiptsEnums = {
   stocktaking:'Stocktaking',
   maintenance:'MAINTENANCE',
   allocation:'ALLOCATION',
+  production:'PRODUCTION'
 };
