@@ -76,7 +76,7 @@ const Select = (
           <Spin />
           :
           <AntSelect
-            suffixIcon={null}
+            // suffixIcon={null}
             // open
             {...other}
             listHeight={200}

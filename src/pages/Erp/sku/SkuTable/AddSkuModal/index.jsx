@@ -58,6 +58,7 @@ const AddSkuModal = ({
       onSuccess={(res, action) => {
         onSuccess(action);
         if (action) {
+          console.log(1);
           tableRef.current.refresh();
         } else {
           tableRef.current.submit();

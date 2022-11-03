@@ -208,11 +208,11 @@ const TableWarp = (
   };
 
   const refresh = () => {
-    if (!isModal){
-      const values = defaultTableQuery.values || {};
-      formActions.reset();
-      formActions.setFieldValue(Object.keys(values), ...Object.values(values));
-    }
+    // if (!isModal){
+    //   const values = defaultTableQuery.values || {};
+    //   formActions.reset();
+    //   formActions.setFieldValue(Object.keys(values), ...Object.values(values));
+    // }
     formActions.submit();
   };
 

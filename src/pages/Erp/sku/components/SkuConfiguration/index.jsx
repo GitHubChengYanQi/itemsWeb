@@ -235,7 +235,7 @@ const SkuConfiguration = ({
       setDatas({
         data: array
       });
-    }}>{title || '添加描述'}</Button>
+    }}>{title || '添加'}</Button>
   </>;
 };
 
