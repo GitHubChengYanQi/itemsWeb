@@ -1080,7 +1080,7 @@ export const SortableItem = memo((
     <Item
       key={id}
       mobile={mobile}
-      ref={wait ? undefined : setNodeRef}
+      ref={setNodeRef}
       value={item.filedName}
       item={item}
       dragging={isDragging}
@@ -1092,7 +1092,7 @@ export const SortableItem = memo((
       transition={transition}
       transform={transform}
       fadeIn={mountedWhileDragging}
-      listeners={wait ? undefined : listeners}
+      listeners={listeners}
     />
   );
 });
