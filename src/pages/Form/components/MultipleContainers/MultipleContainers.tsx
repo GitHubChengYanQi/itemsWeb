@@ -29,7 +29,7 @@ import {
   SortingStrategy,
 } from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
-import {Button, Checkbox, InputNumber, Modal, Select, Space, Steps, Tabs, Typography} from 'antd';
+import {Affix, Button, Checkbox, InputNumber, Modal, Select, Space, Steps, Tabs, Typography} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
 import ColumnsConfig from '../ColumnsConfig';
 import TableConfig from '../TableConfig';
@@ -85,6 +85,16 @@ export const DroppableContainer = (
     },
     animateLayoutChanges,
   });
+
+  if (disabled) {
+    return <Container
+      columns={columns}
+      {...props}
+    >
+      {children}
+    </Container>;
+  }
+
   const isOverContainer = over
     ? (id === over.id && active?.data.current?.type !== 'container') ||
     items.includes(`${over.id}`)
@@ -377,14 +387,12 @@ export function MultipleContainers(
           },
         }}
         onDragStart={({active: {id, data: {current}}}) => {
-          console.log('start')
           // debugger;
           setActiveId(id);
           setActive(current);
           // setClonedItems(items);
         }}
         onDragOver={({active, over}) => {
-          console.log('over')
           const overId = over?.id;
           if (overId === active.id) {
             return;
@@ -706,16 +714,19 @@ export function MultipleContainers(
               </Steps>
             </div>
 
-            <div style={{
-              width: mobile ? 400 : '100%',
-              margin: 'auto',
-              height: mobile ? 800 : 'auto',
-              overflowY: 'auto',
-              overflowX: 'hidden',
-              padding: mobile ? '0 8px 8px 8px' : '24px 0',
-              boxShadow: mobile ? '0 0 14px 0 rgb(0 0 0 / 10%)' : '',
-              background: mobile ? '#E1EBF6' : '#fff',
-            }}>
+            <div
+              style={{
+                width: mobile ? 400 : '100%',
+                margin: 'auto',
+                height: mobile ? 800 : 'auto',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                padding: mobile ? '0 8px 8px 8px' : '24px 0',
+                boxShadow: mobile ? '0 0 14px 0 rgb(0 0 0 / 10%)' : '',
+                background: mobile ? '#E1EBF6' : '#fff',
+                minHeight: 'calc(100vh - 176px - 62px - 170px)'
+              }}
+            >
               {mobile && <img
                 src={wxHead}
                 width={400}
@@ -741,11 +752,21 @@ export function MultipleContainers(
                 itemChange={itemChange}
               />
             </div>
-            <div style={{paddingTop: 24, textAlign: 'center'}}>
-              <Button type='primary' onClick={() => {
-                onSave(submit());
-              }}>保存</Button>
-            </div>
+            <Affix offsetBottom={0}>
+              <div
+                style={{
+                  height: 47,
+                  borderTop: '1px solid #e7e7e7',
+                  background: '#fff',
+                  textAlign: 'right',
+                  paddingTop: 8
+                }}
+              >
+                <Button type='primary' onClick={() => {
+                  onSave(submit());
+                }}>保存</Button>
+              </div>
+            </Affix>
           </div>
         </div>
       </DndContext>
@@ -1058,8 +1079,6 @@ export const SortableItem = memo((
     item = {},
     cardTable,
   }: SortableItemProps) => {
-
-  const wait = activeId ? activeId !== id : false;
 
   const {
     setNodeRef,

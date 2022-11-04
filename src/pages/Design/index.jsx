@@ -22,6 +22,7 @@ const Design = () => {
     {name: '调拨单', type: ReceiptsEnums.allocation},
     {name: '采购单', type: ReceiptsEnums.purchaseOrder},
     {name: '生产计划', type: ReceiptsEnums.production},
+    {name: '生产任务', type: ReceiptsEnums.productionTask},
   ];
 
   return <>

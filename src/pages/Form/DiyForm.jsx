@@ -6,7 +6,7 @@ import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/Mul
 import {useRequest} from '@/util/Request';
 import {formDetail, formEdit} from '@/pages/Form/url';
 import Empty from '@/components/Empty';
-import {POFormData, ProductionFormData} from '@/pages/Form/formFileData';
+import {POFormData, ProductionFormData, ProductionTaskFormData} from '@/pages/Form/formFileData';
 import {isArray, isObject} from '@/util/Tools';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
@@ -80,15 +80,18 @@ const DiyForm = () => {
       let newFileData = [];
       switch (searchParams.type) {
         case ReceiptsEnums.purchaseOrder:
-          newFileData = POFormData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true));
+          newFileData = POFormData;
           break;
         case ReceiptsEnums.production:
-          newFileData = ProductionFormData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true));
+          newFileData = ProductionFormData;
+          break;
+        case ReceiptsEnums.productionTask:
+          newFileData = ProductionTaskFormData;
           break;
         default:
           break;
       }
-      setFiledData(newFileData);
+      setFiledData(newFileData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true)));
       setDetail(res || {});
       setLoading(false);
     }
@@ -124,6 +127,9 @@ const DiyForm = () => {
       break;
     case ReceiptsEnums.production:
       title = '生产计划';
+      break;
+    case ReceiptsEnums.productionTask:
+      title = '生产任务';
       break;
     default:
       break;

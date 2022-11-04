@@ -61,3 +61,14 @@ export const ProductionFormData = [
   {key: 'remark', filedName: '备注', inputType: 'input'},
   {key: 'orderDetailParams', filedName: '生产明细', inputType: 'select'},
 ];
+
+export const ProductionTaskFormData = [
+  ...otherData,
+  {key: 'coding', filedName: '生产任务编码', inputType: 'input'},
+  {key: 'shipName', filedName: '工序', inputType: 'input'},
+  {key: 'userId', filedName: '负责人', inputType: 'select'},
+  {key: 'date', filedName: '执行时间', inputType: 'select'},
+  {key: 'userIdList', filedName: '成员', inputType: 'select'},
+  {key: 'number', filedName: '生产数量', inputType: 'input'},
+  {key: 'remake', filedName: '备注', inputType: 'input'},
+];
