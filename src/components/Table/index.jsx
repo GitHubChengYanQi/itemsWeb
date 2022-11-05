@@ -310,6 +310,7 @@ const TableWarp = (
           >
             {showCard}
             <AntdTable
+              className={style.table}
               showTotal
               expandable={expandable}
               loading={Loading || loading}
