@@ -18,8 +18,6 @@ const SkuConfiguration = ({
 
   const [datas, setDatas] = useSetState({data: value || []});
 
-  const [visible, setVisible] = useState(-1);
-
   const {run} = useRequest({
     url: '/sku/skuByMd5',
     method: 'POST',
@@ -108,120 +106,124 @@ const SkuConfiguration = ({
           }}
           onFocus={() => {
           }}
-          style={{cursor: 'pointer'}}
-          onMouseOver={() => {
-            setVisible(index);
+          style={{
+            cursor: 'pointer',
+            backgroundColor: '#F7F8FA',
+            marginBottom: 8,
+            borderRadius: 2,
+            width: 300,
+            display: 'flex',
+            alignItems: 'center'
           }}
-          onMouseOut={() => {
-            setVisible(-1);
-          }}>
-          <div style={{backgroundColor: '#f7f8fa', padding: 8}}>
-            <Space>
-              名称：
-              <AutoComplete
-                value={items.label}
-                style={{border: sname(items.label) && 'solid 1px red'}}
-                disabled={items.disabled}
-                filterOption={(inputValue, option) =>
-                  option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                }
-                options={
-                  category
-                    ?
-                    category.map((item) => {
-                      const attribute = item.attribute && item.attribute.attribute;
-                      return {
-                        label: attribute,
-                        value: attribute,
-                        disabled: datas.data.filter((item) => {
-                          return item.label === attribute;
-                        }).length > 0
-                      };
-                    })
-                    : [
-                      {
-                        label: '材质',
-                        value: '材质',
-                        disabled: datas.data.filter((item) => {
-                          return item.label === '材质';
-                        }).length > 0
-                      },
-                      {
-                        label: '长',
-                        value: '长',
-                        disabled: datas.data.filter((item) => {
-                          return item.label === '长';
-                        }).length > 0
-                      },
-                      {
-                        label: '宽',
-                        value: '宽',
-                        disabled: datas.data.filter((item) => {
-                          return item.label === '宽';
-                        }).length > 0
-                      },
-                      {
-                        label: '高',
-                        value: '高',
-                        disabled: datas.data.filter((item) => {
-                          return item.label === '高';
-                        }).length > 0
-                      },
-                      {
-                        label: '重量',
-                        value: '重量',
-                        disabled: datas.data.filter((item) => {
-                          return item.label === '重量';
-                        }).length > 0
-                      },
-                      {
-                        label: '体积',
-                        value: '体积',
-                        disabled: datas.data.filter((item) => {
-                          return item.label === '体积';
-                        }).length > 0
-                      },
-                    ]}
-                onChange={(value) => {
-                  if (value) {
-                    const array = datas.data;
-                    array[index] = {...array[index], label: value};
-                    change(array);
-                  } else {
-                    const array = datas.data;
-                    array[index] = {label: null, value: null};
-                    change(array);
+        >
+          <div style={{flexGrow: 1}}>
+            <div style={{padding: 8}}>
+              <Space>
+                名称：
+                <AutoComplete
+                  value={items.label}
+                  style={{border: sname(items.label) && 'solid 1px red'}}
+                  disabled={items.disabled}
+                  filterOption={(inputValue, option) =>
+                    option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                   }
-                }}
-              >
-                <Input />
-              </AutoComplete>
-
-              <Button type="link" hidden={visible === -1 || visible !== index} style={{padding: 0}} onClick={() => {
-                datas.data.splice(index, 1);
-                change(datas.data);
-              }}>
-                <DeleteOutlined />
-              </Button>
-            </Space>
+                  options={
+                    category
+                      ?
+                      category.map((item) => {
+                        const attribute = item.attribute && item.attribute.attribute;
+                        return {
+                          label: attribute,
+                          value: attribute,
+                          disabled: datas.data.filter((item) => {
+                            return item.label === attribute;
+                          }).length > 0
+                        };
+                      })
+                      : [
+                        {
+                          label: '材质',
+                          value: '材质',
+                          disabled: datas.data.filter((item) => {
+                            return item.label === '材质';
+                          }).length > 0
+                        },
+                        {
+                          label: '长',
+                          value: '长',
+                          disabled: datas.data.filter((item) => {
+                            return item.label === '长';
+                          }).length > 0
+                        },
+                        {
+                          label: '宽',
+                          value: '宽',
+                          disabled: datas.data.filter((item) => {
+                            return item.label === '宽';
+                          }).length > 0
+                        },
+                        {
+                          label: '高',
+                          value: '高',
+                          disabled: datas.data.filter((item) => {
+                            return item.label === '高';
+                          }).length > 0
+                        },
+                        {
+                          label: '重量',
+                          value: '重量',
+                          disabled: datas.data.filter((item) => {
+                            return item.label === '重量';
+                          }).length > 0
+                        },
+                        {
+                          label: '体积',
+                          value: '体积',
+                          disabled: datas.data.filter((item) => {
+                            return item.label === '体积';
+                          }).length > 0
+                        },
+                      ]}
+                  onChange={(value) => {
+                    if (value) {
+                      const array = datas.data;
+                      array[index] = {...array[index], label: value};
+                      change(array);
+                    } else {
+                      const array = datas.data;
+                      array[index] = {label: null, value: null};
+                      change(array);
+                    }
+                  }}
+                >
+                  <Input />
+                </AutoComplete>
+              </Space>
+            </div>
+            <div style={{padding: 8}}>
+              <Space>
+                内容：
+                <AutoComplete
+                  options={optionsValue(items)}
+                  disabled={!items.label}
+                  value={items.value}
+                  onChange={(value) => {
+                    const array = datas.data;
+                    array[index] = {...array[index], value};
+                    change(array);
+                  }}
+                >
+                  <Input />
+                </AutoComplete>
+              </Space>
+            </div>
           </div>
-          <div style={{padding: 8}}>
-            <Space>
-              内容：
-              <AutoComplete
-                options={optionsValue(items)}
-                disabled={!items.label}
-                value={items.value}
-                onChange={(value) => {
-                  const array = datas.data;
-                  array[index] = {...array[index], value};
-                  change(array);
-                }}
-              >
-                <Input />
-              </AutoComplete>
-            </Space>
-          </div>
+          <Button type="link" danger style={{padding: '0 16px 0'}} onClick={() => {
+            datas.data.splice(index, 1);
+            change(datas.data);
+          }}>
+            <DeleteOutlined />
+          </Button>
         </div>;
       })
     }

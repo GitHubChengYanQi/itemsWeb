@@ -48,6 +48,7 @@ const AddSkuModal = ({
 
   return <>
     <Modal
+      width={600}
       title="物料"
       compoentRef={formRef}
       loading={setLoading}

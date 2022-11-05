@@ -229,7 +229,8 @@ export const Note = (props) => {
 };
 
 export const Material = (props) => {
-  return (<SetSelectOrCascader api={materialListSelect} width={200} title="添加材质" component={MaterialEdit} {...props} />);
+  return (
+    <SetSelectOrCascader api={materialListSelect} width={200} title="添加材质" component={MaterialEdit} {...props} />);
 };
 
 export const SkuSize = ({value = '', onChange}) => {
@@ -257,11 +258,11 @@ export const SkuSize = ({value = '', onChange}) => {
   };
   return (<Space>
     长
-    <InputNumber value={size.long} placeholder="长" onChange={(num) => change({long: num})} />
+    <InputNumber value={size.long} placeholder="长" onChange={(num) => change({long: num})} addonAfter="mm" />
     宽
-    <InputNumber value={size.width} placeholder="宽" onChange={(num) => change({width: num})} />
+    <InputNumber value={size.width} placeholder="宽" onChange={(num) => change({width: num})} addonAfter="mm" />
     高
-    <InputNumber value={size.height} placeholder="高" onChange={(num) => change({height: num})} />
+    <InputNumber value={size.height} placeholder="高" onChange={(num) => change({height: num})} addonAfter="mm" />
   </Space>);
 };
 
@@ -274,12 +275,12 @@ export const Specs = (props) => {
 };
 
 export const MaintenancePeriod = (props) => {
-  return (<InputNumber addonAfter={<div>天</div>} {...props} />);
+  return (<InputNumber addonAfter="天" {...props} />);
 };
 
 
 export const Weight = (props) => {
-  return (<InputNumber addonAfter={<div>kg</div>} {...props} />);
+  return (<InputNumber addonAfter="kg" {...props} />);
 };
 
 export const FileId = (props) => {
