@@ -27,6 +27,8 @@ import CheckSku from '@/pages/Erp/sku/components/CheckSku';
 import AddSkuTable from '@/pages/Erp/parts/components/AddSkuTable';
 import {DeleteOutlined} from '@ant-design/icons';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
+import {isArray} from '@/util/Tools';
+import Render from '@/components/Render';
 
 export const BrandId = (props) => {
   return (<Select api={apiUrl.brandIdSelect} {...props} />);
@@ -266,11 +268,11 @@ export const AddSku = (
       footer={<Space>
         <Button onClick={() => {
           const res = addSkuRef.current.check();
-          onChange(res);
+          onChange(isArray(res));
         }}>选中</Button>
         <Button type="primary" onClick={() => {
           const res = addSkuRef.current.change();
-          onChange(res);
+          onChange(isArray(res));
           ref.current.close();
         }}>选中并关闭</Button>
       </Space>}
@@ -341,7 +343,17 @@ export const BackSku = ({
         return <SkuResultSkuJsons skuResult={value} />;
       }} />
       <Table.Column title="数量" width={100} dataIndex="number" render={(value) => {
-        return value;
+        return value || 1;
+      }} />
+      <Table.Column title="是否自动出库" width={100} dataIndex="autoOutstock" render={(value) => {
+        return <Render width={200}>
+          <Radio.Group
+            defaultValue={1}
+            value={value}
+          >
+            <Radio value={1}>是</Radio>
+            <Radio value={0}>否</Radio>
+          </Radio.Group></Render>;
       }} />
       <Table.Column title="备注" dataIndex="note" render={(value) => {
         return value;
