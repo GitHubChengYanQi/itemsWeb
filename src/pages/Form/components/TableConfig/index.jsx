@@ -59,11 +59,11 @@ const TableConfig = (
     setTable(initTable);
     setCardTable(initCardTable);
 
-  }, [activeId,items]);
+  }, [activeId, items]);
 
   return <div>
     {(card ? cardTable : table).map((columns, rowIndex) => {
-      return <div key={rowIndex} style={{display: 'flex', alignItems: 'center',background:'#fff',marginBottom:3}}>
+      return <div key={rowIndex} style={{display: 'flex', alignItems: 'center', background: '#fff', marginBottom: 3}}>
         <div style={{width: card ? 40 : 64}}>
           <Button
             disabled={rowIndex === 1}
@@ -91,6 +91,7 @@ const TableConfig = (
             style={{
               border: mobile ? 'none' : 'dashed 1px rgba(0,0,0,0.2)',
               borderBottom: (!mobile && rowIndex === (card ? cardTable : table).length - 1) ? 'dashed 1px rgba(0,0,0,0.2)' : 'none',
+              // borderRight: !card && 'none',
               width: card ? '100%' : `${width + widthUnit}`,
               // overflow: 'hidden'
             }}

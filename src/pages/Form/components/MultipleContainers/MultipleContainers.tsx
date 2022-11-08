@@ -1099,7 +1099,7 @@ export const SortableItem = memo((
     <Item
       key={id}
       mobile={mobile}
-      ref={setNodeRef}
+      ref={activeId === id ? setNodeRef : undefined}
       value={item.filedName}
       item={item}
       dragging={isDragging}
