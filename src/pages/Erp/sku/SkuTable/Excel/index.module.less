@@ -6,5 +6,16 @@
 .col {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   gap: 8px;
+}
+
+.checkGroup {
+  width: 100%;
+
+  :global {
+    .ant-checkbox-wrapper {
+      margin: 0;
+    }
+  }
 }

@@ -23,12 +23,18 @@ const Excel = (
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
   const onChange = (list) => {
+    let filedLength = 0;
+    fileds.forEach(item => filedLength += item.length);
     setCheckedList(list);
-    setIndeterminate(!!list.length && list.length < fileds.length);
-    setCheckAll(list.length === fileds.length);
+    setIndeterminate(!!list.length && list.length < filedLength);
+    setCheckAll(list.length === filedLength);
   };
   const onCheckAllChange = (e) => {
-    setCheckedList(e.target.checked ? fileds.map(item => item.key) : []);
+    const newCheckedList = [];
+    if (e.target.checked) {
+      fileds.forEach(item => item.forEach(item => newCheckedList.push(item.key)));
+    }
+    setCheckedList(newCheckedList);
     setIndeterminate(false);
     setCheckAll(e.target.checked);
   };
@@ -57,14 +63,14 @@ const Excel = (
           {checkAll ? '取消全选' : '全选'}
         </Checkbox>
         <Button onClick={() => ref.current.close()}>取消</Button>
-        <Button type="primary" onClick={() => {
+        <Button disabled={checkedList.length === 0} type="primary" onClick={() => {
           window.open(`${baseURI}${excelUrl}?authorization=${token}`);
         }}>导出</Button>
       </Space>}
       onClose={() => ref.current.close()}
     >
       <div style={{padding: 24}}>
-        <Checkbox.Group value={checkedList} onChange={onChange}>
+        <Checkbox.Group value={checkedList} onChange={onChange} className={styles.checkGroup}>
           <div className={styles.row}>
             {
               fileds.map((item, index) => {
