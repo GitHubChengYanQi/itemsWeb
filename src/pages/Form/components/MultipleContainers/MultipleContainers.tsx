@@ -88,6 +88,7 @@ export const DroppableContainer = (
 
   if (disabled) {
     return <Container
+      style={style}
       columns={columns}
       {...props}
     >

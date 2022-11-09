@@ -41,7 +41,7 @@ const ColumnsConfig = (
 
   return <DroppableContainer
     columns={fixedFileds ? 1 : columns.length}
-    ulStyle={card ? {fixed: '24px 0', gridGap: 0} : ulStyle}
+    ulStyle={card ? {padding: '24px 0', gridGap: 0} : ulStyle}
     removeRowHidden={fixedFileds || containerId !== 0 || table.length === 1}
     removeColumnHidden={fixedFileds || (table.length === 1 && table[0].length === 1)}
     leftTopHidden={fixedFileds || containerId !== 0}
@@ -84,7 +84,7 @@ const ColumnsConfig = (
       </Typography.Paragraph>
     </>)}
     items={columns[containerId].data.map(item => item.key)}
-    style={fixedFileds ? {border: 'none'} : containerStyle}
+    style={(fixedFileds || mobile) ? {border: 'none'} : containerStyle}
     onRemove={fixedFileds ? undefined : () => handleRemove(line, column)}
   >
     {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>

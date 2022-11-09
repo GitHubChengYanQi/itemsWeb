@@ -32,7 +32,7 @@ const Design = () => {
           orderData.map((item, index) => {
             return <Card.Grid
               key={index}
-              style={{textAlign: 'center', width: '25%', padding: 0, display: 'inline-block'}}
+              style={{textAlign: 'center', width: '33%', padding: 0, display: 'inline-block'}}
             >
               <div style={{padding: 24}}>
                 {item.name}
@@ -62,6 +62,12 @@ const Design = () => {
                   onClick={() => {
                     history.push(`/form/config?type=${item.type}`);
                   }}>表单设置</Button>
+                <Button
+                  type="link"
+                  style={{padding: 0, flexGrow: 1}}
+                  onClick={() => {
+
+                  }}>详情设置</Button>
               </div>
             </Card.Grid>;
           })
