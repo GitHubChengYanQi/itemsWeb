@@ -12,7 +12,7 @@ const ColumnsConfig = (
     cardTable,
     ulStyle,
 
-    disabled,
+    fixedFileds,
     containerId,
 
     handleAddColumn,
@@ -40,14 +40,14 @@ const ColumnsConfig = (
   }) => {
 
   return <DroppableContainer
-    columns={disabled ? 1 : columns.length}
-    ulStyle={card ? {padding: '24px 0', gridGap: 0} : ulStyle}
-    removeRowHidden={disabled || containerId !== 0 || table.length === 1}
-    removeColumnHidden={disabled || (table.length === 1 && table[0].length === 1)}
-    leftTopHidden={disabled || containerId !== 0}
-    leftBottomHidden={disabled || containerId !== 0}
-    topLeftHidden={disabled || mobile}
-    topRightHidden={disabled || mobile}
+    columns={fixedFileds ? 1 : columns.length}
+    ulStyle={card ? {fixed: '24px 0', gridGap: 0} : ulStyle}
+    removeRowHidden={fixedFileds || containerId !== 0 || table.length === 1}
+    removeColumnHidden={fixedFileds || (table.length === 1 && table[0].length === 1)}
+    leftTopHidden={fixedFileds || containerId !== 0}
+    leftBottomHidden={fixedFileds || containerId !== 0}
+    topLeftHidden={fixedFileds || mobile}
+    topRightHidden={fixedFileds || mobile}
     onRemoveColumn={() => {
       handleRemoveColumn(line, column, cardTable, item);
     }}
@@ -69,8 +69,8 @@ const ColumnsConfig = (
     noNandle
     key={id}
     id={id}
-    disabled={card || (!disabled &&  columns[containerId].data.length === 1 && activeId !== columns[containerId].data[0].key)}
-    label={disabled ? '待选字段' : (card && <>
+    disabled={card || (!fixedFileds &&  columns[containerId].data.length === 1 && activeId !== columns[containerId].data[0].key)}
+    label={fixedFileds ? '待选字段' : (card && <>
       <Typography.Paragraph
         style={{margin: 0}}
         editable={{
@@ -84,12 +84,13 @@ const ColumnsConfig = (
       </Typography.Paragraph>
     </>)}
     items={columns[containerId].data.map(item => item.key)}
-    style={disabled ? {border: 'none'} : containerStyle}
-    onRemove={disabled ? undefined : () => handleRemove(line, column)}
+    style={fixedFileds ? {border: 'none'} : containerStyle}
+    onRemove={fixedFileds ? undefined : () => handleRemove(line, column)}
   >
     {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>
       {columns[containerId].data.map((item, index) => {
         return <SortableItem
+          fixedFileds={fixedFileds}
           activeId={activeId}
           mobile={mobile}
           itemChange={itemChange}
@@ -99,7 +100,7 @@ const ColumnsConfig = (
           item={item}
           cardTable={cardTable}
           index={index}
-          handle={!disabled}
+          handle={!fixedFileds}
           containerId={containerId}
         />;
       })}

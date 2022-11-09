@@ -596,7 +596,7 @@ export function MultipleContainers(
               }}
               ulStyle={{padding: 16}}
               card={false}
-              disabled
+              fixedFileds
               containerId={0}
               id='0-0'
               items={items}
@@ -1057,6 +1057,7 @@ interface SortableItemProps {
   disabled?: boolean;
   cardTable?: boolean;
   mobile?: boolean;
+  fixedFileds?: boolean;
   item?: any,
   activeId?: any,
 
@@ -1078,6 +1079,7 @@ export const SortableItem = memo((
     mobile,
     item = {},
     cardTable,
+    fixedFileds,
   }: SortableItemProps) => {
 
   const {
@@ -1099,7 +1101,7 @@ export const SortableItem = memo((
     <Item
       key={id}
       mobile={mobile}
-      ref={activeId === id ? setNodeRef : undefined}
+      ref={(fixedFileds || activeId === id) ? setNodeRef : undefined}
       value={item.filedName}
       item={item}
       dragging={isDragging}
