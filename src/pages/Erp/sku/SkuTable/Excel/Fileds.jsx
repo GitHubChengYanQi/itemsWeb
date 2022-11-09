@@ -1,0 +1,33 @@
+export const SkuFileds = [
+  [
+    {key: 'standard', filedName: '物料编码'},
+    {key: 'spu', filedName: '产品名称'},
+    {key: 'spuClass', filedName: '物料分类'},
+    {key: 'unitId', filedName: '单位'},
+    {key: 'model', filedName: '型号'},
+    {key: 'partNo', filedName: '零件号'},
+    {key: 'nationalStandard', filedName: '国家标准'},
+    {key: 'specifications', filedName: '规格',},
+    {key: 'spuCoding', filedName: '产品码'},
+  ],
+  [
+    {key: 'sku', filedName: '物料描述'},
+    {key: 'materialId', filedName: '材质'},
+    {key: 'level', filedName: '级别'},
+    {key: 'heatTreatment', filedName: '热处理'},
+    {key: 'weight', filedName: '重量'},
+    {key: 'skuSize', filedName: '尺寸'},
+    {key: 'color', filedName: '表色'},
+    {key: 'packaging', filedName: '包装方式'},
+    {key: 'brandIds', filedName: '品牌'},
+  ],
+  [
+    {key: 'remarks', filedName: '备注'},
+    {key: 'maintenancePeriod', filedName: '养护周期'},
+    {key: 'batch', filedName: '二维码生成方式'},
+    {key: 'drawing', filedName: '图纸'},
+    {key: 'images', filedName: '图片'},
+    {key: 'viewFrame', filedName: '图幅'},
+    {key: 'fileId', filedName: '附件'},
+  ],
+];
