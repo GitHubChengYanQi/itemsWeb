@@ -279,7 +279,7 @@ const SkuTable = ({...props}, ref) => {
             templateUrl={`${baseURI}api/SkuExcel`}
           />
           <Excel
-            excelUrl="skuExcel/skuExport"
+            excelUrl="skuExcel/v1.1/skuExport"
             title="导出物料"
             fileds={SkuFileds}
           />

@@ -64,7 +64,7 @@ const Excel = (
         </Checkbox>
         <Button onClick={() => ref.current.close()}>取消</Button>
         <Button disabled={checkedList.length === 0} type="primary" onClick={() => {
-          window.open(`${baseURI}${excelUrl}?authorization=${token}`);
+          window.open(`${baseURI}${excelUrl}?authorization=${token}&${checkedList.map(item=>`columNames=${item}`).join('&')}`);
         }}>导出</Button>
       </Space>}
       onClose={() => ref.current.close()}

@@ -25,9 +25,9 @@ export const SkuFileds = [
     {key: 'remarks', filedName: '备注'},
     {key: 'maintenancePeriod', filedName: '养护周期'},
     {key: 'batch', filedName: '二维码生成方式'},
-    {key: 'drawing', filedName: '图纸'},
-    {key: 'images', filedName: '图片'},
+    // {key: 'drawing', filedName: '图纸'},
+    // {key: 'images', filedName: '图片'},
     {key: 'viewFrame', filedName: '图幅'},
-    {key: 'fileId', filedName: '附件'},
+    // {key: 'fileId', filedName: '附件'},
   ],
 ];
