@@ -92,6 +92,8 @@ const CodingRulesList = () => {
         return '养护任务';
       case 17:
         return '调拨任务';
+      case 18:
+        return '生产任务';
       default:
         break;
     }
