@@ -17,7 +17,6 @@ import {
   PointerActivationConstraint,
   ScreenReaderInstructions,
   TouchSensor,
-  UniqueIdentifier,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -31,15 +30,16 @@ import {
   AnimateLayoutChanges,
 } from '@dnd-kit/sortable';
 
-import {Wrapper} from './Wrapper'
-import {List} from './List'
-import {Item} from './Item'
+import {Wrapper} from './Wrapper';
+import {List} from './List';
+import {Item} from './Item';
 
 export interface ItemData {
   key: string;
   title: string;
   visible?: boolean;
   checked?: boolean;
+  align?: string;
 }
 
 
@@ -66,24 +66,14 @@ export interface Props {
   useDragOverlay?: boolean;
   onDragEnd?: Function;
   onChecked?: Function;
+  onAlign?: Function;
   refresh?: Boolean;
 
-  getItemStyles?(args: {
-    id: UniqueIdentifier;
-    index: number;
-    isSorting: boolean;
-    isDragOverlay: boolean;
-    overIndex: number;
-    isDragging: boolean;
-  }): React.CSSProperties;
+  getItemStyles: ({}) => {};
 
-  wrapperStyle?(args: {
-    index: number;
-    isDragging: boolean;
-    id: string;
-  }): React.CSSProperties;
+  wrapperStyle: ({}) => {};
 
-  isDisabled?(id: UniqueIdentifier): boolean;
+  isDisabled: () => {};
 }
 
 const defaultDropAnimationConfig: DropAnimation = {
@@ -112,15 +102,15 @@ export function Sortable(
     getItemStyles = () => ({}),
     handle = false,
     items: initialItems,
-    isDisabled = () => false,
     measuring,
     liBorder,
     onDragEnd = () => {
     },
     modifiers,
-    removable,
     refresh,
     onChecked = () => {
+    },
+    onAlign = () => {
     },
     renderItem,
     reorderItems = arrayMove,
@@ -128,7 +118,7 @@ export function Sortable(
     style,
     definedItem,
     useDragOverlay = true,
-    wrapperStyle = () => ({}),
+    wrapperStyle = (object) => ({}),
   }: Props) {
 
   const [items, setItems] = useState<ItemData[]>(initialItems || []);
@@ -152,11 +142,11 @@ export function Sortable(
     let current = -1;
     items.map((item, index) => {
       if (item.key === key) {
-        current = index
+        current = index;
       }
       return null;
-    })
-    return current
+    });
+    return current;
   };
   const getPosition = (id: string) => getIndex(id) + 1;
 
@@ -183,7 +173,7 @@ export function Sortable(
         )} of ${items.length}`;
       }
 
-      return;
+      return '';
     },
     onDragEnd(id, overId) {
       if (overId) {
@@ -192,7 +182,7 @@ export function Sortable(
         )} of ${items.length}`;
       }
 
-      return;
+      return '';
     },
     onDragCancel(id) {
       return `Sorting was cancelled. Sortable item ${id} was dropped and returned to position ${getPosition(
@@ -229,15 +219,15 @@ export function Sortable(
           const overIndex = getIndex(over.id);
           if (activeIndex !== overIndex) {
             const itemData = (items) => {
-              return reorderItems(items, activeIndex, overIndex)
-            }
-            onDragEnd(itemData(items),activeIndex,overIndex);
+              return reorderItems(items, activeIndex, overIndex);
+            };
+            onDragEnd(itemData(items), activeIndex, overIndex);
             setItems((items) => reorderItems(items, activeIndex, overIndex));
           }
         }
       }}
       onDragCancel={() => {
-        setActiveId(null)
+        setActiveId(null);
       }}
       measuring={measuring}
       modifiers={modifiers}
@@ -252,6 +242,7 @@ export function Sortable(
                 return null;
               }
               return <SortableItem
+                align={value.align}
                 liBorder={liBorder}
                 key={index}
                 definedItem={definedItem}
@@ -261,12 +252,26 @@ export function Sortable(
                       return {
                         ...item,
                         checked: !item.checked,
-                      }
+                      };
                     } else {
                       return item;
                     }
-                  })
+                  });
                   onChecked(key, index);
+                  setItems(array);
+                }}
+                onAlign={(key,value) => {
+                  const array = items.map((item) => {
+                    if (item.key === key) {
+                      return {
+                        ...item,
+                        align: value,
+                      };
+                    } else {
+                      return item;
+                    }
+                  });
+                  onAlign(key, value);
                   setItems(array);
                 }}
                 id={value.key}
@@ -281,7 +286,7 @@ export function Sortable(
                 renderItem={renderItem}
                 animateLayoutChanges={animateLayoutChanges}
                 useDragOverlay={useDragOverlay}
-              />
+              />;
             })}
           </Container>
         </SortableContext>
@@ -328,29 +333,23 @@ interface SortableItemProps {
   disabled?: boolean;
   liBorder?: boolean;
   id: string;
-  item: object,
+  item: Object,
   index: number;
   definedItem?: Function,
   handle: boolean;
   checked: boolean;
   useDragOverlay?: boolean;
   title: string;
+  align?: string;
   itemData: ItemData[];
   onChecked: Function;
+  onAlign: Function;
 
   style(values: any): React.CSSProperties;
 
   renderItem(args: any): React.ReactElement;
 
-  wrapperStyle({
-                 isDragging,
-                 index,
-                 id,
-               }: {
-    index: number;
-    isDragging: boolean;
-    id: string;
-  }): React.CSSProperties;
+  wrapperStyle: ({}) => {};
 }
 
 export function SortableItem(
@@ -367,6 +366,8 @@ export function SortableItem(
     style,
     onChecked,
     liBorder,
+    onAlign,
+    align,
     checked,
     renderItem,
     useDragOverlay,
@@ -393,11 +394,11 @@ export function SortableItem(
       definedItem={definedItem}
       value={title}
       item={item}
-      onChecked={(value) => {
-        onChecked(value);
-      }}
+      onChecked={onChecked}
+      onAlign={onAlign}
       keys={id}
       itemData={itemData}
+      align={align}
       checked={checked}
       disabled={disabled}
       dragging={isDragging}

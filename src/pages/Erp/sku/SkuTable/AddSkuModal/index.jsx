@@ -48,6 +48,7 @@ const AddSkuModal = ({
 
   return <>
     <Modal
+      width={521}
       title="物料"
       compoentRef={formRef}
       loading={setLoading}
@@ -58,6 +59,7 @@ const AddSkuModal = ({
       onSuccess={(res, action) => {
         onSuccess(action);
         if (action) {
+          console.log(1);
           tableRef.current.refresh();
         } else {
           tableRef.current.submit();

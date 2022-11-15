@@ -94,6 +94,8 @@ const SkuEdit = ({...props}, ref) => {
   return (
     <div style={{padding: 16}}>
       <Form
+        labelCol={6}
+        wrapperCol={18}
         {...other}
         value={value.skuId || false}
         ref={formRef}

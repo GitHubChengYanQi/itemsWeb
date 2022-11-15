@@ -4,6 +4,7 @@ import useUrlState from '@ahooksjs/use-url-state';
 import ListLayout from '@/layouts/ListLayout';
 import SkuTable from '@/pages/Erp/sku/SkuTable';
 import store from '@/store';
+import {isArray} from '@/util/Tools';
 
 
 const SkuList = () => {
@@ -63,7 +64,7 @@ const SkuList = () => {
   };
   return (
     <ListLayout>
-      <SkuTable left={Left()} spuClass={spuClass[0] || null} setSpuClass={setSpuClass} />
+      <SkuTable left={Left()} spuClass={isArray(spuClass.length > 0 ? spuClass : defaultSpuClass)[0] || null} setSpuClass={setSpuClass} />
     </ListLayout>
   );
 };

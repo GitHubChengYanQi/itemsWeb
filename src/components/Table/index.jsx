@@ -208,11 +208,11 @@ const TableWarp = (
   };
 
   const refresh = () => {
-    if (!isModal){
-      const values = defaultTableQuery.values || {};
-      formActions.reset();
-      formActions.setFieldValue(Object.keys(values), ...Object.values(values));
-    }
+    // if (!isModal){
+    //   const values = defaultTableQuery.values || {};
+    //   formActions.reset();
+    //   formActions.setFieldValue(Object.keys(values), ...Object.values(values));
+    // }
     formActions.submit();
   };
 
@@ -310,6 +310,7 @@ const TableWarp = (
           >
             {showCard}
             <AntdTable
+              className={style.table}
               showTotal
               expandable={expandable}
               loading={Loading || loading}

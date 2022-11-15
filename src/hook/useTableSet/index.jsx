@@ -13,7 +13,7 @@ import {
 } from '@/hook/useTableSet/components/TableViewUrl';
 import {Sortable} from '@/components/Table/components/DndKit/Sortable';
 import styles from './index.module.less';
-import {isArray} from '@/util/Tools';
+import {isArray, isObject} from '@/util/Tools';
 import DeleteButton from '@/components/DeleteButton';
 import Message from '@/components/Message';
 
@@ -50,6 +50,7 @@ const useTableSet = (column, tableKey) => {
         key: items.key,
         visible: items.fixed || props.fixed,
         checked: items.checked,
+        align: items.align || props.align || 'left',
       });
     }
     return null;
@@ -150,7 +151,9 @@ const useTableSet = (column, tableKey) => {
                 if (columns && columns[0]) {
                   tableColumns.push({
                     ...columns[0],
-                    checked: items.checked
+                    checked: items.checked,
+                    align: items.align,
+                    props: {...isObject(columns[0].props), align: items.align}
                   });
                 }
                 return null;
@@ -170,7 +173,7 @@ const useTableSet = (column, tableKey) => {
     if (detail) {
       Modal.confirm({
         title: '覆盖当前视图',
-        icon: <ExclamationCircleOutlined/>,
+        icon: <ExclamationCircleOutlined />,
         content: `更改视图展现的内容，确定覆盖视图「${detail.name}」？`,
         okText: '确认',
         cancelText: '取消',
@@ -179,6 +182,7 @@ const useTableSet = (column, tableKey) => {
             return {
               key: items.key,
               checked: items.checked,
+              align: items.align
             };
           });
           run({
@@ -201,10 +205,10 @@ const useTableSet = (column, tableKey) => {
         className={styles.cardTitle}
         title="表头设置"
         headStyle={{textAlign: 'center', padding: 0}}
-        bodyStyle={{maxWidth: 300, padding: 0, borderTop: 'solid 1px #eee', height: '50vh', overflow: 'auto'}}
+        bodyStyle={{maxWidth: 500, padding: 0, borderTop: 'solid 1px #eee', height: '50vh', overflow: 'auto'}}
         extra={<Button icon={<CloseOutlined />} style={{marginRight: 16}} type="text" onClick={() => {
           setVisible(false);
-        }}/>}
+        }} />}
       >
         <Sortable
           handle
@@ -228,6 +232,20 @@ const useTableSet = (column, tableKey) => {
                 return {
                   ...item,
                   checked: !item.checked,
+                };
+              }
+              return item;
+            });
+            setTableColumn(array);
+          }}
+          onAlign={(key, value) => {
+            setTrue();
+            const array = tableColumn.map((item) => {
+              if (item.key === key) {
+                return {
+                  ...item,
+                  align: value,
+                  props: {...isObject(item.props), align: value}
                 };
               }
               return item;
@@ -284,7 +302,7 @@ const useTableSet = (column, tableKey) => {
         }
         {
           (loading || editLoading || delLoading) ?
-            <Spin/>
+            <Spin />
             :
             <Select
               options={isArray(data)}
@@ -308,7 +326,7 @@ const useTableSet = (column, tableKey) => {
                     }}>{item.label}</div>
                     <DeleteButton onClick={() => {
                       deleteTableView({data: {tableViewId: item.value,}});
-                    }}/>
+                    }} />
                   </div>;
                 });
               }}
@@ -327,7 +345,7 @@ const useTableSet = (column, tableKey) => {
             type="text"
             onClick={() => {
               setVisible(true);
-            }}><Icon type="icon-xitongpeizhi"/></Button>
+            }}><Icon type="icon-xitongpeizhi" /></Button>
         </Dropdown>
 
         <Modal
@@ -342,6 +360,7 @@ const useTableSet = (column, tableKey) => {
                   return {
                     key: items.key,
                     checked: items.checked,
+                    align: items.align,
                   };
                 });
                 viewAdd({
@@ -362,7 +381,7 @@ const useTableSet = (column, tableKey) => {
             <span style={{color: '#a6a2a2'}}>将当前的展示方式、排序方式保存为视图。</span>
             <Input maxLength={20} style={{width: '100%'}} placeholder="请输入视图名称(最多20字)" onChange={(value) => {
               setName(value.target.value);
-            }}/>
+            }} />
           </Space>
         </Modal>
       </>
