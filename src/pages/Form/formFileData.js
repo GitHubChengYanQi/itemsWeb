@@ -58,6 +58,7 @@ export const ProductionFormData = [
   {key: 'theme', filedName: '计划主题', inputType: 'input'},
   {key: 'time', filedName: '执行时间', inputType: 'select'},
   {key: 'userId', filedName: '负责人', inputType: 'select'},
+  {key: 'cardCoding', filedName: '产品编号', inputType: 'input'},
   {key: 'remark', filedName: '备注', inputType: 'input'},
   {key: 'orderDetailParams', filedName: '生产明细', inputType: 'select'},
 ];

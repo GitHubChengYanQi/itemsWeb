@@ -135,7 +135,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
             <Descriptions.Item label="品牌 / 厂家" span={3}>
               <CheckBrand
                 getBrands={(brands) => {
-                  if (!sku.brandId){
+                  if (!sku.brandId) {
                     const brand = brands.find(item => item.label === brandName) || {};
                     setSku({...sku, brandId: brand.value});
                   }
@@ -155,7 +155,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
                     });
                   }
                   setSku({...sku, ...record, skuResult: sku.skuResult, brandId, brandResult: option && option.label});
-                }}/>
+                }} />
             </Descriptions.Item>
             <Descriptions.Item label="单位" span={3}>
               <Select
@@ -270,7 +270,7 @@ export const Currency = (props) => {
   });
 
   if (loading) {
-    return <Spin/>;
+    return <Spin />;
   }
   const options = data ? data.map((item) => {
     return {
@@ -324,12 +324,11 @@ export const PayPlan = (props) => {
   const style = {borderTop: 'dashed 1px #d9d9d9'};
 
   if (loading) {
-    return <Spin/>;
+    return <Spin />;
   }
 
   return (<AntSelect
     {...other}
-    placeholder="请选择付款计划"
   >
     {
       data && data.map((item, index) => {
@@ -394,7 +393,7 @@ export const TemplateId = (props) => {
 };
 
 export const Upload = (props) => {
-  return <FileUpload {...props} title="上传合同"/>;
+  return <FileUpload {...props} title="上传合同" />;
 };
 
 export const Freight = (props) => {
@@ -414,7 +413,7 @@ export const GenerateContract = (props) => {
 };
 
 export const PayMethod = (props) => {
-  return (<Input placeholder="请输入 现金/承兑/电汇" {...props} />);
+  return (<Input {...props} />);
 };
 
 export const DateWay = (props) => {
@@ -438,21 +437,22 @@ export const dateNumber = (props) => {
 };
 
 export const DeliveryWay = (props) => {
-  return (<Input placeholder="请输入交货方式" {...props} />);
+  return (<Input {...props} />);
 };
 
 export const LeadTime = (props) => {
-  return (<InputNumber placeholder="请输入交货期" {...props} />);
+  return (<InputNumber {...props} />);
 };
 
 export const Note = (props) => {
   return (<Editor width="100%" {...props} />);
 };
 
-export const AllField = ({
-                           value: values = [], onChange = () => {
+export const AllField = (
+  {
+    value: values = [], onChange = () => {
   }, array
-                         }) => {
+  }) => {
 
   useEffect(() => {
     if (array && Array.isArray(array)) {
@@ -537,13 +537,13 @@ export const AllField = ({
         return <div>
           <UpLoadImg onChange={(value, id) => {
             valuesChange(item.name, id);
-          }}/>
+          }} />
         </div>;
       case 'editor':
         return <div>
           <Editor onChange={(value) => {
             valuesChange(item.name, value);
-          }}/>
+          }} />
         </div>;
       default:
         return <></>;

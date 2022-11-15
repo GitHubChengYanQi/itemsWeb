@@ -305,37 +305,37 @@ const CreateOrder = ({...props}) => {
                   value: params.module === 'PO' ? userInfo.customerId : null,
                   selfEnterprise: params.module === 'PO',
                   supply: params.module === 'PO' ? null : 0,
-                  placeholder: '请选择甲方公司',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Customer,
                 };
                 break;
               case 'partyAAdressId':
                 formItemProps = {
-                  placeholder: '请选择甲方公司地址',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Adress,
                 };
                 break;
               case 'partyAContactsId':
                 formItemProps = {
-                  placeholder: '请选择甲方公司委托代理',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Contacts,
                 };
                 break;
               case 'partyAPhone':
                 formItemProps = {
-                  placeholder: '请选择甲方公司联系电话',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Phone,
                 };
                 break;
               case 'partyABankId':
                 formItemProps = {
-                  placeholder: '请选择甲方开户银行',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Bank,
                 };
                 break;
               case 'partyABankAccount':
                 formItemProps = {
-                  placeholder: '请选择甲方开户账号',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.BankAccount,
                 };
                 break;
@@ -369,67 +369,67 @@ const CreateOrder = ({...props}) => {
                   value: params.module === 'SO' ? userInfo.customerId : null,
                   selfEnterprise: params.module === 'SO',
                   supply: params.module === 'SO' ? null : 1,
-                  placeholder: '请选择乙方公司',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Customer,
                 };
                 break;
               case 'partyBAdressId':
                 formItemProps = {
-                  placeholder: '请选择乙方公司地址',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Adress,
                 };
                 break;
               case 'partyBContactsId':
                 formItemProps = {
-                  placeholder: '请选择乙方公司委托代理',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Contacts,
                 };
                 break;
               case 'partyBPhone':
                 formItemProps = {
-                  placeholder: '请选择乙方公司联系电话',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Phone,
                 };
                 break;
               case 'partyBBankId':
                 formItemProps = {
-                  placeholder: '请选择乙方开户银行',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.Bank,
                 };
                 break;
               case 'partyBBankAccount':
                 formItemProps = {
-                  placeholder: '请选择乙方开户账号',
+                  placeholder: `请选择${item.filedName}`,
                   component: CustomerSysField.BankAccount,
                 };
                 break;
               case 'partyBLegalPerson':
                 formItemProps = {
-                  placeholder: '请选择乙方开户账号',
+                  placeholder: `请选择${item.filedName}`,
                   component: SysField.Show,
                 };
                 break;
               case 'partyBBankNo':
                 formItemProps = {
-                  placeholder: '请选择甲方开户行号',
+                  placeholder: `请选择${item.filedName}`,
                   component: SysField.Show,
                 };
                 break;
               case 'partyBCompanyPhone':
                 formItemProps = {
-                  placeholder: '请选择甲方开户行号',
+                  placeholder: `请选择${item.filedName}`,
                   component: SysField.Show,
                 };
                 break;
               case 'partyBFax':
                 formItemProps = {
-                  placeholder: '请选择甲方开户行号',
+                  placeholder: `请选择${item.filedName}`,
                   component: SysField.Show,
                 };
                 break;
               case 'partyBZipCode':
                 formItemProps = {
-                  placeholder: '请选择甲方开户行号',
+                  placeholder: `请选择${item.filedName}`,
                   component: SysField.Show,
                 };
                 break;
@@ -444,40 +444,36 @@ const CreateOrder = ({...props}) => {
               case 'paperType':
                 formItemProps = {
                   options: [{label: '普票', value: 0}, {label: '专票', value: 1}],
-                  placeholder: '请选择票据类型',
+                  placeholder: `请选择${item.filedName}`,
                   component: Select,
                 };
                 break;
               case 'rate':
                 formItemProps = {
                   options: taxData || [],
-                  placeholder: '请选择税率',
+                  placeholder: `请选择${item.filedName}`,
                   component: Select,
                 };
                 break;
               case 'money':
                 formItemProps = {
                   disabled: true,
-                  placeholder: '请输入总价',
                   component: SysField.Money,
                 };
                 break;
               case 'floatingAmount':
                 formItemProps = {
-                  placeholder: '请输入浮动金额',
                   component: SysField.Float,
                 };
                 break;
               case 'totalAmount':
                 formItemProps = {
-                  placeholder: '请输入总金额',
                   component: SysField.Money,
                 };
                 break;
               case 'freight':
                 formItemProps = {
                   value: 1,
-                  placeholder: '请输入总金额',
                   component: SysField.Freight,
                 };
                 break;
@@ -491,6 +487,7 @@ const CreateOrder = ({...props}) => {
                   data,
                   value: 3,
                   loading: templateLoading,
+                  placeholder: `请选择${item.filedName}`,
                   component: SysField.PayPlan,
                 };
                 break;
@@ -561,7 +558,6 @@ const CreateOrder = ({...props}) => {
                               <Space align="start">
                                 <FormItem
                                   label="款项说明"
-                                  placeholder="请输入款项说明"
                                   rows={1}
                                   name={`paymentDetail.${index}.remark`}
                                   component={SysField.Remark}
@@ -591,7 +587,6 @@ const CreateOrder = ({...props}) => {
                 </FieldList>;
               case 'paymentRemark':
                 formItemProps = {
-                  placeholder: '请输入财务备注',
                   component: SysField.Remark,
                 };
                 break;
@@ -663,6 +658,7 @@ const CreateOrder = ({...props}) => {
                 return <></>;
             }
             return <FormItem
+              placeholder={`请输入${item.filedName}`}
               label={item.filedName}
               name={item.key}
               required={item.required}

@@ -15,7 +15,7 @@ import DatePicker from '@/components/DatePicker';
 
 const {FormItem} = Form;
 
-const AddProductionPlan = ({currentStep,setCurrentStep,...props}, ref) => {
+const AddProductionPlan = ({currentStep, setCurrentStep, ...props}, ref) => {
 
   const formRef = useRef();
 
@@ -70,7 +70,6 @@ const AddProductionPlan = ({currentStep,setCurrentStep,...props}, ref) => {
             case 'theme':
               formItemProps = {
                 component: Input,
-                placeholder: '请输入主题'
               };
               break;
             case 'time':
@@ -89,14 +88,13 @@ const AddProductionPlan = ({currentStep,setCurrentStep,...props}, ref) => {
                 component: Select,
                 api: UserIdSelect,
                 width: '100%',
-                placeholder: '请选择负责人',
+                placeholder: `请选择${item.filedName}`,
               };
               break;
             case 'remark':
               formItemProps = {
                 component: Input.TextArea,
                 rows: 2,
-                placeholder: '请输入生产计划备注',
               };
               break;
             case 'orderDetailParams':
@@ -110,6 +108,7 @@ const AddProductionPlan = ({currentStep,setCurrentStep,...props}, ref) => {
               break;
           }
           return <FormItem
+            placeholder={`请输入${item.filedName}`}
             label={item.filedName}
             name={item.key}
             required={item.required}
