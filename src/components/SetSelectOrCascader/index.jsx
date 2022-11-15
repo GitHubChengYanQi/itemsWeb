@@ -2,7 +2,6 @@ import React, {useRef} from 'react';
 import {useBoolean} from 'ahooks';
 import Cascader from '@/components/Cascader';
 import Select from '@/components/Select';
-import TreeSelect from '@/components/TreeSelect';
 import Drawer from '@/components/Drawer';
 
 

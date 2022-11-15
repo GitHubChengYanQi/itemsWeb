@@ -51,7 +51,7 @@ export const SelectSpu = (props) => {
 
 export const SpuId = (props) => {
 
-  const {classId, value, onChange, onBlur} = props;
+  const {classId, value, onChange, onBlur,placeholder} = props;
 
   const {loading, data, run} = useRequest(spuListSelect, {manual: true});
 
@@ -94,7 +94,7 @@ export const SpuId = (props) => {
       }
       action(value);
     }}
-    placeholder="请输入物料名称"
+    placeholder={placeholder}
   />);
 };
 
@@ -156,7 +156,7 @@ export const SkuName = (props) => {
 
 
 export const SpuCoding = (props) => {
-  return (<Input placeholder="请输入产品码" {...props} />);
+  return (<Input {...props} />);
 };
 
 export const Codings = (props) => {
@@ -193,7 +193,7 @@ export const Codings = (props) => {
   </div>);
 };
 export const UnitId = (props) => {
-  return (<SetSelectOrCascader api={unitListSelect} width={200} title="新增单位" component={UnitEdit} {...props} />);
+  return (<SetSelectOrCascader api={unitListSelect} width={200} title={props.title} component={UnitEdit} {...props} />);
 };
 
 export const Standard = (props) => {
@@ -230,7 +230,7 @@ export const Note = (props) => {
 
 export const Material = (props) => {
   return (
-    <SetSelectOrCascader api={materialListSelect} width={200} title="添加材质" component={MaterialEdit} {...props} />);
+    <SetSelectOrCascader api={materialListSelect} width={200} title={props.title} component={MaterialEdit} {...props} />);
 };
 
 export const SkuSize = ({value = '', onChange}) => {
@@ -288,13 +288,13 @@ export const FileId = (props) => {
 
 export const Img = (props) => {
   return (<div style={{maxWidth: 300}}>
-    <FileUpload {...props} maxCount={5} title="物料图片" />
+    <FileUpload {...props} maxCount={5} title={props.title} />
   </div>);
 };
 
 export const Bind = (props) => {
   return (<div style={{maxWidth: 300}}>
-    <FileUpload {...props} maxCount={5} title="关联图纸" />
+    <FileUpload {...props} maxCount={5} title={props.title} />
   </div>);
 };
 

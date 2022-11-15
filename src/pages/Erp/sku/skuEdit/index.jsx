@@ -227,6 +227,7 @@ const SkuEdit = ({...props}, ref) => {
               formItemProps = {
                 placeholder: `请选择${item.filedName}`,
                 component: SysField.UnitId,
+                title: `添加${item.filedName}`,
                 required: true,
               };
               break;
@@ -291,6 +292,7 @@ const SkuEdit = ({...props}, ref) => {
               formItemProps = {
                 placeholder: `请选择${item.filedName}`,
                 component: SysField.Material,
+                title: `添加${item.filedName}`
               };
               break;
             case 'remarks':
@@ -317,23 +319,25 @@ const SkuEdit = ({...props}, ref) => {
             case 'images':
               formItemProps = {
                 label: <Space>
-                  物料图片
+                  {item.filedName}
                   <Popover content="附件支持类型：JPG/JPEG/PDF/DOC/DOCX/XLSX，最大不超过10MB">
                     <QuestionCircleOutlined style={{cursor: 'pointer'}} />
                   </Popover>
                 </Space>,
                 component: SysField.Img,
+                title: `${item.filedName}`,
               };
               break;
             case 'drawing':
               formItemProps = {
                 label: <Space>
-                  关联图纸
+                  {item.filedName}
                   <Popover content="附件支持类型：JPG/JPEG/PDF/DOC/DOCX/XLSX，最大不超过10MB">
                     <QuestionCircleOutlined style={{cursor: 'pointer'}} />
                   </Popover>
                 </Space>,
                 component: SysField.Bind,
+                title: `添加${item.filedName}`,
               };
               break;
             default:
