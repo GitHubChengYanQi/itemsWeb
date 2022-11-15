@@ -345,15 +345,17 @@ export const BackSku = ({
       <Table.Column title="数量" width={100} dataIndex="number" render={(value) => {
         return value || 1;
       }} />
-      <Table.Column title="是否自动出库" width={100} dataIndex="autoOutstock" render={(value) => {
+      <Table.Column title="投产方式" width={100} dataIndex="autoOutstock" render={(value) => {
         return <Render width={200}>
           <Radio.Group
+            disabled
             defaultValue={1}
             value={value}
           >
-            <Radio value={1}>是</Radio>
-            <Radio value={0}>否</Radio>
-          </Radio.Group></Render>;
+            <Radio value={1}>推式</Radio>
+            <Radio value={0}>拉式</Radio>
+          </Radio.Group>
+        </Render>;
       }} />
       <Table.Column title="备注" dataIndex="note" render={(value) => {
         return value;

@@ -80,19 +80,20 @@ const AddSkuTable = ({
           setValue({number: value}, record.skuId);
         }} />;
       }} />
-      <Table.Column title="是否自动出库" width={150} dataIndex="autoOutstock" render={(value, record) => {
+      <Table.Column title="投产方式" width={150} dataIndex="autoOutstock" render={(value, record) => {
         return <Render width={150}>
           <Radio.Group
             defaultValue={1}
             value={value}
             onChange={({target: {value}}) => setValue({autoOutstock: value}, record.skuId)}
           >
-            <Radio value={1}>是</Radio>
-            <Radio value={0}>否</Radio>
-          </Radio.Group></Render>;
+            <Radio value={1}>推式</Radio>
+            <Radio value={0}>拉式</Radio>
+          </Radio.Group>
+        </Render>;
       }} />
       <Table.Column title="备注" dataIndex="note" render={(value, record, index) => {
-        return <Input.TextArea placeholder='请输入备注' rows={1} value={value} onChange={(value) => {
+        return <Input.TextArea placeholder="请输入备注" rows={1} value={value} onChange={(value) => {
           setValue({note: value.target.value}, record.skuId);
         }} />;
       }} />
