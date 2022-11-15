@@ -1,5 +1,5 @@
 import React, {forwardRef, useImperativeHandle, useState} from 'react';
-import {Button, Card, Col, Layout, Row, Space, Table as AntdTable} from 'antd';
+import {Button, Card, Col, Layout, Row, Space, Spin, Table as AntdTable} from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
 import {createFormActions, Form, FormButtonGroup, useFormTableQuery} from '@formily/antd';
 import useUrlState from '@ahooksjs/use-url-state';
@@ -8,6 +8,8 @@ import style from './index.module.less';
 import useTableSet from '@/hook/useTableSet';
 import TableSort from '@/components/Table/components/TableSort';
 import Render from '@/components/Render';
+import {isArray} from '@/util/Tools';
+import Empty from '@/components/Empty';
 
 
 const {Column} = AntdTable;
@@ -309,90 +311,92 @@ const TableWarp = (
             </Space>}
           >
             {showCard}
-            <AntdTable
-              className={style.table}
-              showTotal
-              expandable={expandable}
-              loading={Loading || loading}
-              dataSource={dataSources || dataSource || []}
-              rowKey={rowKey}
-              columns={children ? null : [
-                ...(noSort ? [] : [{
-                  title: '序号',
-                  align: 'center',
-                  fixed: 'left',
-                  dataIndex: '0',
-                  width: 40,
-                  render: (value, record, index) => <Render text={index + 1} width={40} maxWidth={40} />
-                }]),
-                ...tableColumn.filter((items) => {
+            {isArray(dataSources || dataSource).length === 0 ?
+              <Spin spinning={Loading || loading}><Empty /></Spin> :
+              <AntdTable
+                className={style.table}
+                showTotal
+                expandable={expandable}
+                loading={Loading || loading}
+                dataSource={dataSources || dataSource || []}
+                rowKey={rowKey}
+                columns={children ? null : [
+                  ...(noSort ? [] : [{
+                    title: '序号',
+                    align: 'center',
+                    fixed: 'left',
+                    dataIndex: '0',
+                    width: 40,
+                    render: (value, record, index) => <Render text={index + 1} width={40} maxWidth={40} />
+                  }]),
+                  ...tableColumn.filter((items) => {
+                    if (items && items.props && items.props.visible === false) {
+                      return false;
+                    }
+                    return !(items && (items.checked === false));
+                  }),
+                ]}
+                pagination={
+                  noPagination ? false : {
+                    ...pagination,
+                    showTotal: (total) => {
+                      return `共${total || dataSource.length}条`;
+                    },
+                    showQuickJumper: true,
+                    position: ['bottomRight']
+                  }
+                }
+                rowSelection={!noRowSelection && {
+                  type: selectionType || 'checkbox',
+                  defaultSelectedRowKeys,
+                  selectedRowKeys,
+                  onChange: (selectedRowKeys, selectedRows) => {
+                    typeof onChange === 'function' && onChange(selectedRowKeys, selectedRows);
+                  },
+                  ...rowSelection,
+                  getCheckboxProps,
+                }}
+                footer={footer}
+                layout
+                scroll={{x: 'max-content', y: maxHeight}}
+                sticky={{
+                  getContainer: () => {
+                    return document.getElementById('tableContent');
+                  }
+                }}
+                {...other}
+                {...props}
+              >
+                {noSort || <Column
+                  fixed="left"
+                  title="序号"
+                  dataIndex="sort"
+                  width={80}
+                  align="center"
+                  render={(text, item, index) => {
+                    if (sortAction && (text || text === 0)) {
+                      return <TableSort
+                        rowKey={item[rowKey]}
+                        sorts={sorts}
+                        value={text}
+                        onChange={(value) => {
+                          if (typeof sortList === 'function') {
+                            sortList(value);
+                          }
+                          setSorts(value);
+                        }} />;
+                    } else {
+                      return <>{index + 1}</>;
+                    }
+
+                  }} />}
+                {tableColumn.filter((items) => {
                   if (items && items.props && items.props.visible === false) {
                     return false;
                   }
                   return !(items && (items.checked === false));
-                }),
-              ]}
-              pagination={
-                noPagination ? false : {
-                  ...pagination,
-                  showTotal: (total) => {
-                    return `共${total || dataSource.length}条`;
-                  },
-                  showQuickJumper: true,
-                  position: ['bottomRight']
-                }
-              }
-              rowSelection={!noRowSelection && {
-                type: selectionType || 'checkbox',
-                defaultSelectedRowKeys,
-                selectedRowKeys,
-                onChange: (selectedRowKeys, selectedRows) => {
-                  typeof onChange === 'function' && onChange(selectedRowKeys, selectedRows);
-                },
-                ...rowSelection,
-                getCheckboxProps,
-              }}
-              footer={footer}
-              layout
-              scroll={{x: 'max-content', y: maxHeight}}
-              sticky={{
-                getContainer: () => {
-                  return document.getElementById('tableContent');
-                }
-              }}
-              {...other}
-              {...props}
-            >
-              {noSort || <Column
-                fixed="left"
-                title="序号"
-                dataIndex="sort"
-                width={80}
-                align="center"
-                render={(text, item, index) => {
-                  if (sortAction && (text || text === 0)) {
-                    return <TableSort
-                      rowKey={item[rowKey]}
-                      sorts={sorts}
-                      value={text}
-                      onChange={(value) => {
-                        if (typeof sortList === 'function') {
-                          sortList(value);
-                        }
-                        setSorts(value);
-                      }} />;
-                  } else {
-                    return <>{index + 1}</>;
-                  }
-
-                }} />}
-              {tableColumn.filter((items) => {
-                if (items && items.props && items.props.visible === false) {
-                  return false;
-                }
-                return !(items && (items.checked === false));
-              })}
-            </AntdTable>
+                })}
+              </AntdTable>}
           </Card>
         </Content>
       </Layout>
