@@ -7,7 +7,7 @@ import {Handle} from './components';
 
 // @ts-ignore
 import styles from "./Item.module.scss";
-import {Space} from "antd";
+import {Checkbox, Radio, Select, Space} from "antd";
 import {CheckOutlined} from "@ant-design/icons";
 import {ItemData} from "../Sortable";
 
@@ -30,10 +30,12 @@ export interface Props {
   sorting?: boolean;
   style?: React.CSSProperties;
   transition?: string | null;
+  align?: string | null;
   wrapperStyle?: React.CSSProperties;
   value: React.ReactNode;
   keys: React.ReactNode;
   onChecked?: Function;
+  onAlign?: Function;
 
   onRemove?: Function;
 
@@ -61,10 +63,13 @@ export const Item = React.memo(
         item,
         dragOverlay,
         dragging,
+        align,
         disabled,
         itemData,
         liBorder,
         onChecked = () => {
+        },
+        onAlign = () => {
         },
         fadeIn,
         handle,
@@ -114,9 +119,6 @@ export const Item = React.memo(
         })
       ) : (
         <li
-          onClick={() => {
-            onChecked(keys, item, index);
-          }}
           className={classNames(
             styles.Wrapper,
             fadeIn && styles.fadeIn,
@@ -167,27 +169,38 @@ export const Item = React.memo(
             {
               definedItem
                 ?
-                definedItem({...listeners,value,item,index})
+                definedItem({...listeners, value, item, index})
                 :
                 <>
-                  <Space>
+                  <Space align='center'>
                     <span className={styles.Actions}>
                  {handle ? <Handle {...listeners} /> : null}
                       </span>
-                    {value}
+                    <Checkbox checked={checked} onClick={() => {
+                      onChecked(keys, item, index);
+                    }}>{value}</Checkbox>
                   </Space>
                   <div
                     style={{
                       display: 'flex',
-                      alignSelf: 'flexStart',
+                      alignItems: "center",
                       marginLeft: 'auto',
                       marginRight: 10,
+                      paddingLeft: 24
                     }}
                   >
-                    {checked && <CheckOutlined/>}
+                    对齐：
+                    <Select
+                      value={align}
+                      bordered={false}
+                      onChange={(value) => onAlign(keys, value)}
+                      options={[
+                        {label: '左', value: 'left'},
+                        {label: '中', value: 'center'},
+                        {label: '右', value: 'right'},
+                      ]} />
                   </div>
                 </>
-
             }
           </div>
         </li>

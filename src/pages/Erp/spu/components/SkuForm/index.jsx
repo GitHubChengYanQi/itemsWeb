@@ -23,7 +23,7 @@ const data = [
   {key: 'batch', filedName: '二维码生成方式', show: true, defaultShow: true},
   {key: 'specifications', filedName: '规格', show: true,},
   {key: 'maintenancePeriod', filedName: '养护周期', show: true,},
-  {key: 'sku', filedName: '物料描述', show: true,},
+  {key: 'sku', filedName: '规格参数', show: true,},
   {key: 'brandIds', filedName: '品牌', show: true,},
   {key: 'images', filedName: '图片', show: true,},
   {key: 'drawing', filedName: '图纸', show: true,},

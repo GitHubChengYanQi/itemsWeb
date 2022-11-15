@@ -81,7 +81,7 @@ const AdressList = (props) => {
         }} width={300}/>
       </Table>
       <Modal2 width={800} title="编辑" component={AdressEdit} onSuccess={() => {
-        tableRef.current.refresh();
+        tableRef.current.submit();
         ref.current.close();
       }} ref={ref}/>
     </>

@@ -25,6 +25,8 @@ import store from '@/store';
 import InputNumber from '@/components/InputNumber';
 import SpuClassificationEdit from '@/pages/Erp/spu/components/spuClassification/spuClassificationEdit';
 import UnitEdit from '@/pages/Erp/unit/unitEdit';
+import {materialListSelect} from '@/pages/Erp/material/MaterialUrl';
+import MaterialEdit from '@/pages/Erp/material/MaterialEdit';
 
 export const Type = (props) => {
 
@@ -49,7 +51,7 @@ export const SelectSpu = (props) => {
 
 export const SpuId = (props) => {
 
-  const {classId, value, onChange,onBlur} = props;
+  const {classId, value, onChange, onBlur} = props;
 
   const {loading, data, run} = useRequest(spuListSelect, {manual: true});
 
@@ -107,7 +109,49 @@ export const ClassCode = (props) => {
 
 
 export const SkuName = (props) => {
-  return (<Input {...props} />);
+
+  const {value, onChange, disabled, placeholder, fieldName} = props;
+
+  const {loading, data, run} = useRequest({
+    url: '/generalFormData/list',
+    method: 'POST',
+    data: {fieldName},
+  }, {
+    debounceInterval: 300,
+  });
+
+  const options = (!loading && data) ? data.map((value) => {
+    return {
+      label: value.value,
+      value: value.value,
+    };
+  }) : [];
+
+  return <>
+    <AutoComplete
+      disabled={disabled}
+      dropdownMatchSelectWidth={100}
+      notFoundContent={loading && <Spin />}
+      options={options}
+      value={value}
+      onSelect={(value) => {
+        onChange(value);
+      }}
+    >
+      <Input
+        placeholder={placeholder}
+        onChange={(value) => {
+          onChange(value.target.value);
+          run({
+            data: {
+              fieldName,
+              value: value.target.value,
+            }
+          });
+        }}
+      />
+    </AutoComplete>
+  </>;
 };
 
 
@@ -149,7 +193,7 @@ export const Codings = (props) => {
   </div>);
 };
 export const UnitId = (props) => {
-  return (<SetSelectOrCascader api={unitListSelect} width={200} title="设置单位" component={UnitEdit} {...props} />);
+  return (<SetSelectOrCascader api={unitListSelect} width={200} title="新增单位" component={UnitEdit} {...props} />);
 };
 
 export const Standard = (props) => {
@@ -184,6 +228,11 @@ export const Note = (props) => {
   return (<Input.TextArea {...props} />);
 };
 
+export const Material = (props) => {
+  return (
+    <SetSelectOrCascader api={materialListSelect} width={200} title="添加材质" component={MaterialEdit} {...props} />);
+};
+
 export const SkuSize = ({value = '', onChange}) => {
 
   const [size, setSize] = useState({
@@ -208,12 +257,11 @@ export const SkuSize = ({value = '', onChange}) => {
     onChange(`${newSize.long || 0},${newSize.width || 0},${newSize.height || 0}`);
   };
   return (<Space>
-    长
-    <InputNumber value={size.long} placeholder="长" onChange={(num) => change({long: num})} />
-    宽
-    <InputNumber value={size.width} placeholder="宽" onChange={(num) => change({width: num})} />
-    高
-    <InputNumber value={size.height} placeholder="高" onChange={(num) => change({height: num})} />
+    <InputNumber value={size.long} placeholder="长" onChange={(num) => change({long: num})} addonAfter="mm" />
+    ×
+    <InputNumber value={size.width} placeholder="宽" onChange={(num) => change({width: num})} addonAfter="mm" />
+    ×
+    <InputNumber value={size.height} placeholder="高" onChange={(num) => change({height: num})} addonAfter="mm" />
   </Space>);
 };
 
@@ -226,12 +274,12 @@ export const Specs = (props) => {
 };
 
 export const MaintenancePeriod = (props) => {
-  return (<InputNumber addonAfter={<div>天</div>} {...props} />);
+  return (<InputNumber addonAfter="天" {...props} />);
 };
 
 
 export const Weight = (props) => {
-  return (<InputNumber addonAfter={<div>kg</div>} {...props} />);
+  return (<InputNumber addonAfter="kg" {...props} />);
 };
 
 export const FileId = (props) => {

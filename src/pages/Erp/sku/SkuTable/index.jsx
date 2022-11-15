@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Button, Space, Table as AntTable, Typography} from 'antd';
+import {Button, Input, Space, Typography} from 'antd';
 import {CopyOutlined} from '@ant-design/icons';
 import {config, useHistory} from 'ice';
 import cookie from 'js-cookie';
@@ -78,8 +78,8 @@ const SkuTable = ({...props}, ref) => {
   }));
 
   useEffect(() => {
-    if (spuClass !== undefined) {
-      tableRef.current.formActions.setFieldValue('spuClass', spuClass);
+    if (spuClass) {
+      tableRef.current.formActions.setFieldValue('spuClass', spuClass === '0' ? null : spuClass);
       tableRef.current.submit();
     }
   }, [spuClass]);
@@ -102,33 +102,22 @@ const SkuTable = ({...props}, ref) => {
     return (
       <>
         <FormItem
-          label="编码"
-          placeholder="请输入编码"
-          name="standard"
-          component={SysField.SelectSkuName} />
-        <FormItem
-          label="名称"
-          placeholder="请输入名称"
-          name="spuName"
-          component={SysField.SelectSkuName} />
-        <FormItem
-          label="型号"
-          placeholder="请输入型号"
-          name="name"
-          component={SysField.SelectSkuName} />
+          placeholder="搜索物料"
+          name="skuName"
+          component={Input} />
         <FormItem
           name="spuClass"
           hidden
           component={SysField.SelectSpuClass} />
-        <FormItem
-          name="spuId"
-          hidden
-          value={spuId}
-          component={SysField.SkuName} />
+        <div hidden>
+          <FormItem
+            name="spuId"
+            value={spuId}
+            component={SysField.SkuName} />
+        </div>
       </>
     );
   };
-
 
   const footer = () => {
     return (
@@ -179,22 +168,22 @@ const SkuTable = ({...props}, ref) => {
       sorter: true
     },
     {dataIndex: 'model', title: '型号', sorter: true,},
-    {dataIndex: 'nationalStandard', title: '国家标准', sorter: false,},
-    {dataIndex: 'partNo', title: '零件号', sorter: false,},
+    {dataIndex: 'nationalStandard', title: '国家标准', sorter: true,},
+    {dataIndex: 'partNo', title: '零件号', sorter: true,},
     {
       dataIndex: 'spuResult',
       title: '单位',
       render: (value) => <Render text={value?.unitResult?.unitName || '-'} />,
       sorter: true
     },
-    {dataIndex: 'specifications', title: '规格'},
+    {dataIndex: 'specifications', title: '规格', sorter: true},
     {
-      dataIndex: 'sku', title: '物料描述', render: (value, record) => <Render>
+      dataIndex: 'sku', title: '规格参数', sorter: true, render: (value, record) => <Render>
         <Note width={300} value={<SkuResultSkuJsons describe skuResult={record} />} />
       </Render>
     },
     {
-      dataIndex: 'inBom', title: 'BOM', render: (value, record) => {
+      dataIndex: 'inBom', title: 'BOM', sorter: true, render: (value, record) => {
         return <Render>
           <Button type="link" style={{color: value && 'green', padding: 0}} onClick={() => {
             if (value) {
@@ -208,7 +197,7 @@ const SkuTable = ({...props}, ref) => {
       }
     },
     {
-      dataIndex: 'processResult', title: '工艺路线', render: (value) => {
+      dataIndex: 'processResult', title: '工艺路线', sorter: true, render: (value) => {
         return <Render>
           <Button type="link" style={{color: value && 'green', padding: 0}} onClick={() => {
             if (value) {
@@ -225,20 +214,28 @@ const SkuTable = ({...props}, ref) => {
     {
       dataIndex: 'brandResults',
       title: '品牌',
+      sorter: true,
       render: (value) => <Render text={isArray(value).map(item => item.brandName).join('、') || '-'} />
     },
     {
       dataIndex: 'materialResultList',
       title: '材质',
+      sorter: true,
       render: (value) => <Render text={isArray(value).map(item => item.name).join('、') || '-'} />
     },
     {dataIndex: 'weight', title: '重量(kg)', sorter: true},
     {
       dataIndex: 'skuSize',
       title: '尺寸',
+      sorter: true,
       render: (value) => <Render text={value && value.split(',').join('×') || '-'} />
     },
-    {dataIndex: 'remarks', title: '备注',},
+    {dataIndex: 'color', title: '表色',sorter: true,},
+    {dataIndex: 'heatTreatment', title: '热处理',sorter: true,},
+    {dataIndex: 'level', title: '级别',sorter: true,},
+    {dataIndex: 'packaging', title: '包装方式',sorter: true,},
+    {dataIndex: 'viewFrame', title: '图幅',sorter: true,},
+    {dataIndex: 'remarks', title: '备注',sorter: true,},
     {dataIndex: 'user', title: '添加人', render: (value) => <Render text={value?.name || '-'} />, sorter: true},
     {dataIndex: 'createTime', title: '添加时间', sorter: true},
     {},
@@ -246,7 +243,6 @@ const SkuTable = ({...props}, ref) => {
       dataIndex: 'skuId',
       title: '操作',
       fixed: 'right',
-      sorter: true,
       width: 100,
       render: (value, record) => {
         return (
@@ -273,7 +269,7 @@ const SkuTable = ({...props}, ref) => {
         headStyle={spuId && {display: 'none'}}
         noRowSelection={spuId}
         api={skuList}
-        tableKey="sku"
+        tableKey={`sku${spuClass || '0'}`}
         columns={columns}
         actionButton={<Space size={24}>
           <a>查看日志</a>

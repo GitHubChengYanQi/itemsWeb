@@ -104,6 +104,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
       <Spin spinning={loading}>
         <div style={{padding: '24px 10%'}}>
           <AddSpu
+            noSpu={module === 'PO'}
             supply={module === 'PO'}
             customerId={customerId}
             onChange={async (skuId, sku) => {
@@ -134,8 +135,10 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
             <Descriptions.Item label="品牌 / 厂家" span={3}>
               <CheckBrand
                 getBrands={(brands) => {
-                  const brand = brands.find(item => item.label === brandName) || {};
-                  setSku({...sku, brandId: brand.value});
+                  if (!sku.brandId){
+                    const brand = brands.find(item => item.label === brandName) || {};
+                    setSku({...sku, brandId: brand.value});
+                  }
                 }}
                 placeholder="请选择品牌/厂家"
                 width={200}

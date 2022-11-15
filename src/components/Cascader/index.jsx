@@ -101,8 +101,8 @@ const Cascader = (
   };
 
   return (<AntCascader
-    suffixIcon={null}
-    expandIcon={false}
+    // suffixIcon={null}
+    // expandIcon={false}
     {...other}
     showSearch={{
       filter,

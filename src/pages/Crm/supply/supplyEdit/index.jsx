@@ -21,7 +21,7 @@ const ApiConfig = {
 
 const SupplyEdit = ({...props}) => {
 
-  const {customerId, brandIds, value, ...other} = props;
+  const {customerId, brandName, brandIds, value, ...other} = props;
 
   const formRef = useRef();
 
@@ -33,7 +33,12 @@ const SupplyEdit = ({...props}) => {
       api={ApiConfig}
       fieldKey="supplyId"
       onSubmit={(values) => {
-        return {...values, customerId, brandIds: isArray(values.brandIds).length > 0 ? values.brandIds : [0]};
+        return {
+          ...values,
+          customerId,
+          brandIds: isArray(values.brandIds).length > 0 ? values.brandIds : [0],
+          supplyIds: value ? value.supplyIds : [],
+        };
       }}
     >
       <FormItem
@@ -50,10 +55,11 @@ const SupplyEdit = ({...props}) => {
         }}
       />
       <FormItem
-        initialValue={(value && value.brandId) ? [value.brandId] : []}
+        initialValue={value && isArray(value.brands).map(item => (item.brandId || 0))}
         label="品牌"
         name="brandIds"
         component={SysField.BrandId}
+        brandName={brandName}
         required
       />
       <FormItem label="供应商型号" name="supplierModel" component={SysField.Model} />

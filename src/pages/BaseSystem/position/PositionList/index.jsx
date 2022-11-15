@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
+import {Table as AntTable} from 'antd';
 import {positionDel, positionList} from '@/Config/ApiUrl/system/position';
 import Table from '@/components/Table';
-import {Table as AntTable} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import AddButton from '@/components/AddButton';
 import * as SysField from '@/pages/Erp/brand/BrandField';
@@ -9,13 +9,7 @@ import DelButton from '@/components/DelButton';
 import Form from '@/components/Form';
 import EditButton from '@/components/EditButton';
 import Drawer from '@/components/Drawer';
-import PositionForm from '@/pages/BaseSystem/position/PositionEdit/PositionForm';
 import PositionEdit from '@/pages/BaseSystem/position/PositionEdit';
-
-const ApiConfig = {
-  listApi: positionList,
-  delApi: positionDel,
-};
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -71,6 +65,9 @@ const PositionList = () => {
       >
         <Column title="职位名称" dataIndex="name" width={120} />
         <Column title="职位编码" dataIndex="code" width={120} />
+        <Column title="是否是主管" dataIndex="governor" width={120} render={(value) => {
+          return value ? '是' : '否';
+        }} />
         <Column title="备注" dataIndex="remark" width={200} />
         <Column title="创建时间" dataIndex="createTime" width={200} />
         <Column title="更新时间" dataIndex="updateTime" width={200} />

@@ -74,6 +74,7 @@ export const StautsId = (props) => {
   return (
     <>
       <Select
+        placeholder='请选择单据状态'
         options={[{label: <a>增加状态</a>, value: 'add'}, ...options]}
         value={value && value.value}
         onChange={(value, option) => {
@@ -91,7 +92,7 @@ export const StautsId = (props) => {
 };
 
 export const ActionIds = ({value = [], onChange, actions = [], defaultValue}) => {
-
+  console.log(value);
   useEffect(() => {
     if (defaultValue) {
       onChange(defaultValue);
@@ -104,17 +105,16 @@ export const ActionIds = ({value = [], onChange, actions = [], defaultValue}) =>
 
   const change = (item, checked) => {
     const newActions = actions.map(oldItem => {
-      if (oldItem.actionId === item.actionId) {
+      if (oldItem.action === item.action) {
         return {
-          actionId: item.actionId,
+          ...oldItem,
           checked,
         };
       }
-      return item;
+      return oldItem;
     });
     onChange(newActions);
   };
-
   return <>
     {
       actions.map((item, index) => {
@@ -122,7 +122,7 @@ export const ActionIds = ({value = [], onChange, actions = [], defaultValue}) =>
           <div style={{flexGrow: 1}}>
             {item.name}
           </div>
-          <Checkbox
+          {!['revoke'].includes(item.action) && <Checkbox
             checked={value[index] && value[index].checked}
             key={index}
             onChange={(action) => {
@@ -134,7 +134,7 @@ export const ActionIds = ({value = [], onChange, actions = [], defaultValue}) =>
             }}
           >
             完成之后跳到下个节点
-          </Checkbox>
+          </Checkbox>}
         </div>;
       })
     }

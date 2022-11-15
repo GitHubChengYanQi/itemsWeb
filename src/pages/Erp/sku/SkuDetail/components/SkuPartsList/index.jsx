@@ -98,21 +98,21 @@ const SkuPartsList = ({
         <Column title="版本号" key={1} dataIndex="name" render={(value) => {
           return <Render text={value} />;
         }} />
-        <Column title="配套数量" key={2} dataIndex="number" align="center" render={(value) => {
-          return <Render>{value || 0}</Render>
+        <Column title="配套数量" key={2} dataIndex="bomNum" align="center" render={(value) => {
+          return <Render>{value || 0}</Render>;
         }} />
         <Column title="状态" key={2} dataIndex="number" align="center" render={(value) => {
-          return <Render text='启用' />;
+          return <Render text="启用" />;
         }} />
-        <Column title="创建人" key={4} dataIndex="userResult"  render={(value) => {
+        <Column title="创建人" key={4} dataIndex="userResult" render={(value) => {
           return <Render text={value?.name} />;
-        }}  />
+        }} />
         <Column title="创建时间" key={5} visible={spuSkuId && false} dataIndex="createTime" render={(value) => {
           return <Render text={value} />;
         }} />
         <Column title="备注" key={3} dataIndex="note" render={(value) => {
           return <Render text={value} />;
-        }}  />
+        }} />
 
         <Column
           title="操作"
@@ -121,26 +121,10 @@ const SkuPartsList = ({
           align="center"
           dataIndex="partsId"
           width={150}
-          render={(value, record) => {
-            return record.children && <>
-              {
-                spuSkuId
-                  ?
-                  <Button type="link" onClick={() => {
-                    getPartsId(record.id || value);
-                  }}>拷贝</Button>
-                  :
-                  <>
-                    <EditButton onClick={() => {
-                      refAdd.current.open(record.id || value);
-                    }} />
-                    <Button type="link" onClick={() => {
-                      showRef.current.open(record.id || value);
-                    }}>详情</Button>
-                  </>
-              }
-
-            </>;
+          render={(value) => {
+            return <Button type="link" onClick={() => {
+              showRef.current.open(value);
+            }}>详情</Button>;
           }} />
       </Table>
 
