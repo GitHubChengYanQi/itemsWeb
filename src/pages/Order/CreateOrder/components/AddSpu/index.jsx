@@ -73,8 +73,10 @@ const AddSpu = (
       }
       return null;
     });
-
-    if (onSku.length === 1) {
+    if (!v) {
+      const sku = newConfigList.find(item => Object.keys(item).length === 1 && Object.keys(item)[0] === 'id');
+      change(sku?.id);
+    } else if (onSku.length === 1) {
       change(onSku[0].id);
     } else if (newConfigList.length === 1) {
       if (v) {
@@ -92,6 +94,17 @@ const AddSpu = (
         newCheckConfig = check;
       }
       change(newConfigList[0].id);
+    } else if (newConfigList.length > 0) {
+      console.log(newConfigList,newCheckConfig);
+      const sku = newConfigList.find(item => {
+        if (Object.keys(item).length - 1 !== newCheckConfig.length) {
+          return false;
+        }
+        return newCheckConfig.find(checkedItem => {
+          return item[`s${checkedItem.k}`] === checkedItem.v;
+        });
+      });
+      change(sku?.id);
     } else if (config.list.length > 0 && !newConfigList.map(item => item.id).includes(value)) {
       change(null);
     }
