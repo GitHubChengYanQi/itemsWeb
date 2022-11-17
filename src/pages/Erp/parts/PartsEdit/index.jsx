@@ -19,6 +19,7 @@ import {spuDetail} from '@/pages/Erp/spu/spuUrl';
 import {categoryDetail} from '@/pages/Erp/category/categoryUrl';
 import Modal from '@/components/Modal';
 import PartsList from '@/pages/Erp/parts/PartsList';
+import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
 
@@ -114,13 +115,27 @@ const PartsEdit = ({...props}, ref) => {
               return false;
             }
             const partsArray = value.parts.filter((item) => {
-              return item.number && item.skuId;
+              return item.skuId;
             });
             if (partsArray.length !== value.parts.length) {
               message.warn('请添加物料数量！');
               return false;
             }
-            return {...value, ...value.item,type: 1, batch: 0, status: 0,partsId:value.partsId || '1'};
+            return {
+              ...value,
+              ...value.item,
+              type: 1,
+              batch: 0,
+              status: 0,
+              partsId: value.partsId || '1',
+              parts: isArray(value.parts).map(item => {
+                return {
+                  ...item,
+                  number: item.number || 1,
+                  autoOutstock: typeof item.autoOutstock === 'number' ? item.autoOutstock : 1
+                };
+              })
+            };
           }}
         >
 
