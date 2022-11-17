@@ -54,13 +54,13 @@ export const POFormData = [
 
 export const ProductionFormData = [
   ...otherData,
-  {key: 'coding', filedName: '计划编码', inputType: 'input'},
-  {key: 'theme', filedName: '计划主题', inputType: 'input'},
+  {key: 'coding', filedName: '计划编码', inputType: 'input', required: true, disabled: true},
+  {key: 'theme', filedName: '计划主题', inputType: 'input', required: true, disabled: true},
   {key: 'time', filedName: '执行时间', inputType: 'select'},
   {key: 'userId', filedName: '负责人', inputType: 'select'},
-  {key: 'cardCoding', filedName: '产品编号', inputType: 'input'},
+  {key: 'cardCoding', filedName: '产品编号', inputType: 'input', required: true, disabled: true},
   {key: 'remark', filedName: '备注', inputType: 'input'},
-  {key: 'orderDetailParams', filedName: '生产明细', inputType: 'select'},
+  {key: 'orderDetailParams', filedName: '生产明细', inputType: 'select', required: true, disabled: true},
 ];
 
 export const ProductionTaskFormData = [

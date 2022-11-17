@@ -148,7 +148,13 @@ const DiyForm = () => {
           refresh();
         }}
         module={module}
-        onSave={(data) => {
+        onSave={(data, waitFileds) => {
+          console.log(waitFileds);
+          const disabledFileds = isArray(waitFileds).filter(item => item.disabled);
+          if (disabledFileds.length > 0) {
+            message.warn(`${disabledFileds.map(item => item.filedName).toString()}为必选字段！`);
+            return;
+          }
           const typeSetting = detail.typeSetting ? JSON.parse(detail.typeSetting) : {};
           edit({data: {formType: searchParams.type, typeSetting: {...typeSetting, [module]: data}}});
         }}

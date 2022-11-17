@@ -187,6 +187,7 @@ export const Item = React.memo(
             )
             : value}
           {handle && <Checkbox
+            disabled={item.disabled}
             style={{padding: '0 12px'}}
             checked={item.required}
             onChange={({target: {checked}}) => itemChange({required: checked}, item.key)}

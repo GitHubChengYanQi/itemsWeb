@@ -146,7 +146,7 @@ interface Props {
   getItemStyles?: (styles: any) => {};
 
   wrapperStyle?: (styles: any) => {};
-  onSave: (data: any) => {};
+  onSave: (data: any, waitFileds: any) => {};
   setModule: (data: any) => {};
 
   itemCount?: number;
@@ -764,7 +764,7 @@ export function MultipleContainers(
                 }}
               >
                 <Button type='primary' onClick={() => {
-                  onSave(submit());
+                  onSave(submit(), items[0]?.data);
                 }}>保存</Button>
               </div>
             </Affix>
