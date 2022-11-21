@@ -97,7 +97,7 @@ const CodingRulesList = () => {
       case 19:
         return '型号编码';
       case 20:
-        return '生产卡片编码';
+        return '机床编号';
       default:
         break;
     }

@@ -295,7 +295,7 @@ export const Module = (props) => {
     {label: '调拨任务', value: 17},
     {label: '生产任务', value: 18},
     {label: '型号编码', value: 19},
-    {label: '生产卡片编码', value: 20},
+    {label: '机床编号', value: 20},
   ];
 
   return (<AntdSelect options={options} {...props} />);
