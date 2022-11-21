@@ -96,6 +96,8 @@ const CodingRulesList = () => {
         return '生产任务';
       case 19:
         return '型号编码';
+      case 20:
+        return '生产卡片编码';
       default:
         break;
     }
