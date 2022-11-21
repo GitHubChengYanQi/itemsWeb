@@ -572,7 +572,7 @@ export function MultipleContainers(
           document.body
         )}
         <div style={{display: 'flex', alignItems: 'flex-start'}}>
-          <div style={{minWidth: 350, display: 'inline-block'}}>
+          <div style={{minWidth: 350, padding: '16px 0', display: 'inline-block'}}>
             <ColumnsConfig
               activeId={activeId}
               mobile={mobile}
@@ -609,8 +609,7 @@ export function MultipleContainers(
           <div style={{
             flexGrow: 1,
             height: 'calc(100vh - 176px)',
-            overflowX: 'auto',
-            overflowY: 'hidden',
+            overflow: 'hidden',
             padding: '20px 40px'
           }}>
             <Tabs
@@ -723,61 +722,60 @@ export function MultipleContainers(
 
             <div
               style={{
-                width: mobile ? 400 : `100${widthUnit}`,
+                width: mobile ? 400 : '100%',
                 margin: 'auto',
-                height: mobile ? 800 : 'auto',
-                overflowY: 'auto',
-                overflowX: 'hidden',
-                padding: mobile ? '0 8px 8px 8px' : '24px 0',
+                height: 'calc(100vh - 276px)',
+                overflow: mobile ? 'hidden' : 'auto',
+                padding: mobile ? '0' : '24px 0',
                 boxShadow: mobile ? '0 0 14px 0 rgb(0 0 0 / 10%)' : '',
                 background: mobile ? '#E1EBF6' : '#fff',
-                minHeight: 'calc(100vh - 176px - 62px - 170px)'
               }}
             >
               {mobile && <img
                 src={wxHead}
                 width={400}
-                style={{position: 'sticky', top: 0, zIndex: 1, margin: '0 -8px 8px'}} alt=''
+                style={{position: 'sticky', top: 0, zIndex: 1}} alt=''
               />}
-              <TableConfig
-                activeId={activeId}
-                mobile={mobile}
-                position={{}}
-                onUp={onUp}
-                onDown={onDown}
-                configChange={configChange}
-                gutter={gutter}
-                widthUnit={widthUnit}
-                handleRemove={handleRemoveCard}
-                card={false}
-                width={mobile ? '100%' : width}
-                items={items}
-                handleAddColumn={handleAddColumn}
-                handleAddRow={handleAddRow}
-                handleRemoveRow={handleRemoveRow}
-                handleRemoveColumn={handleRemoveColumn}
-                itemChange={itemChange}
-              />
-            </div>
-            <Affix offsetBottom={0}>
-              <div
-                style={{
-                  height: 47,
-                  borderTop: '1px solid #e7e7e7',
-                  background: '#fff',
-                  textAlign: 'right',
-                  paddingTop: 8
-                }}
-              >
-                <Button type='primary' onClick={() => {
-                  onSave(submit(), items[0]?.data);
-                }}>保存</Button>
+              <div style={{padding: mobile ? 8 : 0,height:'calc(100vh - 360px)',overflow:'auto'}}>
+                <TableConfig
+                  activeId={activeId}
+                  mobile={mobile}
+                  position={{}}
+                  onUp={onUp}
+                  onDown={onDown}
+                  configChange={configChange}
+                  gutter={gutter}
+                  widthUnit={widthUnit}
+                  handleRemove={handleRemoveCard}
+                  card={false}
+                  width={mobile ? '100%' : width}
+                  items={items}
+                  handleAddColumn={handleAddColumn}
+                  handleAddRow={handleAddRow}
+                  handleRemoveRow={handleRemoveRow}
+                  handleRemoveColumn={handleRemoveColumn}
+                  itemChange={itemChange}
+                />
               </div>
-            </Affix>
+            </div>
           </div>
         </div>
       </DndContext>
-
+      <Affix offsetBottom={0}>
+        <div
+          style={{
+            height: 47,
+            borderTop: '1px solid #e7e7e7',
+            background: '#fff',
+            textAlign: 'right',
+            paddingTop: 8
+          }}
+        >
+          <Button type='primary' onClick={() => {
+            onSave(submit(), items[0]?.data);
+          }}>保存</Button>
+        </div>
+      </Affix>
       <Modal
         bodyStyle={{padding: 32}}
         footer={null}

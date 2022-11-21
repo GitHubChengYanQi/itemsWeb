@@ -322,7 +322,6 @@ export const Bank = (props) => {
     <Select options={data || []} {...other} />
 
     <Button type="link" icon={<PlusOutlined />} style={{margin: 0}} onClick={() => {
-      console.log(bankId);
       ref.current.open(false);
     }} />
 

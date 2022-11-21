@@ -136,7 +136,7 @@ const DiyForm = () => {
   }
 
   return <Spin spinning={editlLoaing}>
-    <Card title={`${title}表单配置`} extra={<Button onClick={() => history.goBack()}>返回</Button>}>
+    <Card bodyStyle={{padding:'0px 24px'}} title={`${title}表单配置`} extra={<Button onClick={() => history.goBack()}>返回</Button>}>
       <MultipleContainers
         {...config}
         vertical
