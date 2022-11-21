@@ -606,7 +606,13 @@ export function MultipleContainers(
               }}
             />
           </div>
-          <div style={{flexGrow: 1, height: 'calc(100vh - 176px)', overflow: 'auto', padding: '20px 40px'}}>
+          <div style={{
+            flexGrow: 1,
+            height: 'calc(100vh - 176px)',
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            padding: '20px 40px'
+          }}>
             <Tabs
               tabBarExtraContent={
                 <div>
@@ -717,7 +723,7 @@ export function MultipleContainers(
 
             <div
               style={{
-                width: mobile ? 400 : '100%',
+                width: mobile ? 400 : `100${widthUnit}`,
                 margin: 'auto',
                 height: mobile ? 800 : 'auto',
                 overflowY: 'auto',
@@ -804,7 +810,7 @@ export function MultipleContainers(
                 setItems(newItems);
                 setCurrentStep((currentIndex || 0));
                 setDelStep(undefined);
-              }}>取消</Button>
+              }}>确认</Button>
             </Space>
           </div>
         </div>
