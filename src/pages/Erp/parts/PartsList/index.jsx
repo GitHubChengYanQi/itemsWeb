@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Descriptions, Space} from 'antd';
+import {Button, Descriptions, Space, Spin} from 'antd';
 import {createFormActions} from '@formily/antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {config} from 'ice';
@@ -97,7 +97,7 @@ const PartsList = (
           component={SysField.SkuInput} />
         <FormItem
           hidden
-          name='skuId'
+          name="skuId"
           value={value || null}
           component={SysField.SkuInput} />
         <FormItem
@@ -211,20 +211,20 @@ const PartsList = (
           <Column title={<div style={{marginLeft: 24}}>版本号</div>} key={1} dataIndex="name" render={(value) => {
             return <div style={{minWidth: 100}}>{value || '无'}</div>;
           }} />
-          <Column title="物料编码" key={1} dataIndex="skuResult" render={(value) => {
+          <Column title="物料编码" key={2} dataIndex="skuResult" render={(value) => {
             return <div style={{minWidth: 100}}>{value && value.standard}</div>;
           }} />
-          <Column title="物料" key={1} dataIndex="skuResult" render={(value) => {
+          <Column title="物料" key={3} dataIndex="skuResult" render={(value) => {
             return (<Note width={400}><SkuResultSkuJsons skuResult={value} /></Note>);
           }} />
-          <Column title="数量" key={2} dataIndex="number" align="center" render={(value) => {
+          <Column title="数量" key={4} dataIndex="number" align="center" render={(value) => {
             return <div style={{minWidth: 50}}>{value || null}</div>;
           }} />
-          <Column title="备注" key={3} visible={spuSkuId && false} dataIndex="note" />
-          <Column title="创建人" key={4} visible={spuSkuId && false} dataIndex="userResult" render={(value) => {
+          <Column title="备注" key={5} visible={spuSkuId && false} dataIndex="note" />
+          <Column title="创建人" key={6} visible={spuSkuId && false} dataIndex="userResult" render={(value) => {
             return <>{value && value.name}</>;
           }} />
-          <Column title="创建时间" key={5} visible={spuSkuId && false} dataIndex="createTime" render={(value, record) => {
+          <Column title="创建时间" key={7} visible={spuSkuId && false} dataIndex="createTime" render={(value, record) => {
             return !record.partsDetailId && <>{value}</>;
           }} />
 

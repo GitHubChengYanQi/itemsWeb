@@ -20,7 +20,7 @@ import * as SysField from '../InstockField';
 import Code from '@/pages/Erp/spu/components/Code';
 import Documents from '@/pages/Workflow/Documents';
 import Render from '@/components/Render';
-import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -34,7 +34,7 @@ const InstockList = () => {
     return (
       <>
         <AddButton onClick={() => {
-          ducomentRef.current.create(DocumentEnums.instockOrder);
+          ducomentRef.current.create(ReceiptsEnums.instockOrder);
         }} />
       </>
     );
@@ -99,7 +99,7 @@ const InstockList = () => {
             <>
               <Code source="instock" id={record.instockOrderId} />
               <a onClick={() => {
-                ducomentRef.current.action(false, record.instockOrderId, DocumentEnums.instockOrder);
+                ducomentRef.current.action(false, record.instockOrderId, ReceiptsEnums.instockOrder);
               }}>
                 {text}
               </a>
@@ -134,7 +134,7 @@ const InstockList = () => {
         <Column title="操作" align="center" width={100} dataIndex="instockOrderId" render={(value) => {
           return <Space>
             <Button type="link" onClick={() => {
-              ducomentRef.current.action(false, value, DocumentEnums.instockOrder);
+              ducomentRef.current.action(false, value, ReceiptsEnums.instockOrder);
             }}>查看</Button>
           </Space>;
         }} />

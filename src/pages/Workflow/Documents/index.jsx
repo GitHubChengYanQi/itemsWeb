@@ -16,7 +16,7 @@ import {
 } from '@/pages/Workflow/Documents/components/Module/instock';
 import Comments from '@/pages/Workflow/Documents/components/Comments';
 import {createPurcaseOrder, PurchaseOrderFooter} from '@/pages/Workflow/Documents/components/Module/purchaseOrder';
-import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 const getTaskIdApi = {url: '/activitiProcessTask/getTaskIdByFromId', method: 'GET'};
 const auditDetail = {url: '/audit/detail', method: 'GET'};
@@ -82,14 +82,14 @@ const Documents = ({
         const node = getCurrentNode(res.stepsResult);
         const currentNode = Array.isArray(node) ? node : [node];
         switch (res.type) {
-          case DocumentEnums.purchaseAsk:
+          case ReceiptsEnums.purchaseAsk:
             actionPurchaseAsk({
               setModalProps,
               setDocument,
               res,
             });
             break;
-          case DocumentEnums.instockOrder:
+          case ReceiptsEnums.instockOrder:
             console.log(1);
             actionInstockAsk({
               setModalProps,
@@ -113,7 +113,7 @@ const Documents = ({
   // 创建单据
   const create = (type, value, data) => {
     switch (type) {
-      case DocumentEnums.purchaseAsk:
+      case ReceiptsEnums.purchaseAsk:
         createPurcaseAsk({
           setModalProps,
           setDocument,
@@ -125,7 +125,7 @@ const Documents = ({
           onSuccess
         });
         break;
-      case DocumentEnums.instockOrder:
+      case ReceiptsEnums.instockOrder:
         createInstockAsk({
           setModalProps,
           setDocument,
@@ -184,7 +184,7 @@ const Documents = ({
 
   const footer = () => {
     switch (type) {
-      case DocumentEnums.purchaseAsk:
+      case ReceiptsEnums.purchaseAsk:
         return <PurchaseAskFooter
           value={createData.value}
           addRef={addRef}
@@ -195,7 +195,7 @@ const Documents = ({
           run={run}
           currentNode={actionData.currentNode}
         />;
-      case DocumentEnums.instockOrder:
+      case ReceiptsEnums.instockOrder:
         return <CreateInstockFooter
           value={createData.value}
           addRef={addRef}

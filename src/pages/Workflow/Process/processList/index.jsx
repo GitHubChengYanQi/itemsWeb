@@ -20,7 +20,7 @@ import ProcessEdit from '../processEdit';
 import * as SysField from '../processField';
 import Breadcrumb from '@/components/Breadcrumb';
 import {useRequest} from '@/util/Request';
-import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -115,23 +115,23 @@ const ProcessList = ({noTitle, value}) => {
         }} />
         <Column title="单据" dataIndex="type" render={(value) => {
           switch (value) {
-            case DocumentEnums.purchaseAsk:
+            case ReceiptsEnums.purchaseAsk:
               return <>采购申请单</>;
-            case DocumentEnums.purchaseOrder:
+            case ReceiptsEnums.purchaseOrder:
               return <>采购单</>;
-            case DocumentEnums.instockOrder:
+            case ReceiptsEnums.instockOrder:
               return <>入库单</>;
-            case DocumentEnums.instockError:
+            case ReceiptsEnums.instockError:
               return <>异常单</>;
-            case DocumentEnums.outstockOrder:
+            case ReceiptsEnums.outstockOrder:
               return <>出库单</>;
-            case DocumentEnums.quality:
+            case ReceiptsEnums.quality:
               return <>质检单</>;
-            case DocumentEnums.stocktaking:
+            case ReceiptsEnums.stocktaking:
               return <>盘点单</>;
-            case DocumentEnums.maintenance:
+            case ReceiptsEnums.maintenance:
               return <>养护单</>;
-            case DocumentEnums.allocation:
+            case ReceiptsEnums.allocation:
               return <>调拨单</>;
             default:
               break;

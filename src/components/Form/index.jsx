@@ -154,7 +154,7 @@ const FormWrapper = (
     return () => {
       setFindData(undefined);
     };
-  }, [value]);
+  }, []);
 
   // || value===null || typeof value==='undefined'
   if (findLoad) {

@@ -4,7 +4,7 @@ import {useHistory} from 'ice';
 import Breadcrumb from '@/components/Breadcrumb';
 import Modal from '@/components/Modal';
 import ProcessList from '@/pages/Workflow/Process/processList';
-import {DocumentEnums} from '@/pages/BaseSystem/Documents/Enums';
+import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 
 const List = () => {
 
@@ -13,14 +13,14 @@ const List = () => {
   const processRef = useRef();
 
   const dataSource = [
-    // {name: '采购申请单', type: DocumentEnums.purchaseAsk},
-    // {name: '采购单', type: DocumentEnums.purchaseOrder},
-    {name: '入库单', type: DocumentEnums.instockOrder},
-    {name: '异常单', type: DocumentEnums.instockError},
-    {name: '出库单', type: DocumentEnums.outstockOrder},
-    {name: '盘点单', type: DocumentEnums.stocktaking},
-    {name: '养护单', type: DocumentEnums.maintenance},
-    {name: '调拨单', type: DocumentEnums.allocation},
+    // {name: '采购申请单', type: ReceiptsEnums.purchaseAsk},
+    // {name: '采购单', type: ReceiptsEnums.purchaseOrder},
+    {name: '入库单', type: ReceiptsEnums.instockOrder},
+    {name: '异常单', type: ReceiptsEnums.instockError},
+    {name: '出库单', type: ReceiptsEnums.outstockOrder},
+    {name: '盘点单', type: ReceiptsEnums.stocktaking},
+    {name: '养护单', type: ReceiptsEnums.maintenance},
+    {name: '调拨单', type: ReceiptsEnums.allocation},
   ];
 
   return <>

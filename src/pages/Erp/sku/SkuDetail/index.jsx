@@ -39,14 +39,17 @@ const SkuDetail = ({value}) => {
 
   const [loading, setLoading] = useState();
 
-  const {loading: skuFormLoading, run: getSkuForm} = useRequest(spuClassificationDetail, {
+  const [detailLoading,setDetailLoading] = useState(true);
+
+  const {run: getSkuForm} = useRequest(spuClassificationDetail, {
     manual: true,
     onSuccess: (res) => {
+      setDetailLoading(false);
       setTypeSetting(res && res.typeSetting && JSON.parse(res.typeSetting) || []);
     }
   });
 
-  const {loading: detailLoading, data, refresh} = useRequest(skuDetail, {
+  const {data, refresh} = useRequest(skuDetail, {
     defaultParams: {
       data: {
         skuId: value || params.cid
@@ -60,7 +63,7 @@ const SkuDetail = ({value}) => {
     }
   });
 
-  if (detailLoading || skuFormLoading) {
+  if (detailLoading) {
     return (<ProSkeleton type="descriptions" />);
   }
 
@@ -219,12 +222,12 @@ const SkuDetail = ({value}) => {
             items={[
               {key: '1', label: '关联物料清单', children: <SkuPartsList value={data.skuId} />},
               {key: '2', label: '关联供应商', children: <Supply skuId={data.skuId} />},
-              {key: '3', label: '库存明细', children: <StockDetail />},
-              {key: '4', label: '入库记录', children: <InStock />},
-              {key: '5', label: '出库记录', children: <OutStock />},
-              {key: '6', label: '盘点记录', children: <Stocktaking />},
-              {key: '7', label: '养护记录', children: <Maintenance />},
-              {key: '8', label: '调拨记录', children: <Allocation />},
+              {key: '3', label: '库存明细', children: <StockDetail skuId={data.skuId} />},
+              {key: '4', label: '入库记录', children: <InStock skuId={data.skuId} />},
+              {key: '5', label: '出库记录', children: <OutStock skuId={data.skuId} />},
+              {key: '6', label: '盘点记录', children: <Stocktaking skuId={data.skuId} />},
+              {key: '7', label: '养护记录', children: <Maintenance skuId={data.skuId} />},
+              {key: '8', label: '调拨记录', children: <Allocation skuId={data.skuId} />},
             ]}
           />
         </Card>

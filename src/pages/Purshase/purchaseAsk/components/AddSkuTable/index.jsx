@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {Button, Table} from 'antd';
+import {Button, Space, Table} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
-import { BrandId, Date, Note, Time} from '@/pages/Purshase/purchaseAsk/purchaseAskField';
+import {BrandId, Date, Note, Time} from '@/pages/Purshase/purchaseAsk/purchaseAskField';
 import {useRequest} from '@/util/Request';
 import {brandIdSelect} from '@/pages/Erp/stock/StockUrl';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
@@ -11,6 +11,7 @@ import InputNumber from '@/components/InputNumber';
 
 const AddSkuTable = (
   {
+    footer,
     onChange = () => {
     },
     value = [],
@@ -56,11 +57,12 @@ const AddSkuTable = (
       pagination={false}
       rowKey="key"
       footer={() => {
-        return <>
+        return <Space>
+          {footer}
           <Button
             type="link"
             disabled={keys.length === 0}
-            icon={<DeleteOutlined/>}
+            icon={<DeleteOutlined />}
             onClick={() => {
               const ids = keys.map((item) => {
                 return item.skuId;
@@ -75,7 +77,7 @@ const AddSkuTable = (
           >
             批量删除
           </Button>
-        </>;
+        </Space>;
       }}
       rowSelection={{
         selectedRowKeys: keys.map((item) => {
@@ -88,15 +90,15 @@ const AddSkuTable = (
     >
       <Table.Column title="序号" align="center" dataIndex="key" render={(value) => {
         return <Render width={50}>{value + 1}</Render>;
-      }}/>
+      }} />
       <Table.Column title="物料编号" dataIndex="skuResult" render={(value) => {
         return <Render width={100}>{value && value.standard}</Render>;
-      }}/>
+      }} />
       <Table.Column title="物料" dataIndex="skuResult" width={200} render={(value) => {
         return <MyNote maxWidth={200}>
-          <SkuResultSkuJsons skuResult={value}/>
+          <SkuResultSkuJsons skuResult={value} />
         </MyNote>;
-      }}/>
+      }} />
       <Table.Column title="品牌" dataIndex="skuId" render={(skuId, record, index) => {
         return <Render width={100}>
           <BrandId
@@ -104,9 +106,9 @@ const AddSkuTable = (
             value={getValue(index).brandId || 0}
             onChange={(value) => {
               setValue({brandId: value}, index);
-            }}/>
+            }} />
         </Render>;
-      }}/>
+      }} />
       <Table.Column title="申请数量" dataIndex="applyNumber" render={(value, record, index) => {
         return <Render width={50}>
           <InputNumber
@@ -116,7 +118,7 @@ const AddSkuTable = (
             }}
           />
         </Render>;
-      }}/>
+      }} />
       <Table.Column title="交付日期" dataIndex="deliveryDate" render={(value, record, index) => {
         return <Render width={100}>
           <Date
@@ -126,7 +128,7 @@ const AddSkuTable = (
             }}
           />
         </Render>;
-      }}/>
+      }} />
       <Table.Column title="交付时间" dataIndex="deliveryTime" render={(value, record, index) => {
         return <Render width={100}>
           <Time
@@ -136,7 +138,7 @@ const AddSkuTable = (
             }}
           />
         </Render>;
-      }}/>
+      }} />
       <Table.Column title="备注" dataIndex="note" render={(value, record, index) => {
         return <Render width={200}>
           <Note
@@ -146,19 +148,19 @@ const AddSkuTable = (
             }}
           />
         </Render>;
-      }}/>
+      }} />
 
-      <Table.Column/>
+      <Table.Column />
       <Table.Column
         title="操作"
         dataIndex="skuId"
-        fixed='right'
+        fixed="right"
         align="center"
         width={100}
         render={(value, record, index) => {
           return <><Button
             type="link"
-            icon={<DeleteOutlined/>}
+            icon={<DeleteOutlined />}
             onClick={() => {
               const array = dataSources.filter((item) => {
                 return item.key !== index;
@@ -167,7 +169,7 @@ const AddSkuTable = (
             }}
             danger
           /></>;
-        }}/>
+        }} />
 
     </Table>
   </>;

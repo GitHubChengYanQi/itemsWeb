@@ -9,7 +9,6 @@ import RepairRouterConfig from '@/pages/Repair/router';
 import ProductionRouterConfig from '@/pages/Production/router';
 import SpuRouterConfig from '@/pages/SPU/router';
 import WorkflowConfig from '@/pages/Workflow/router';
-import FormConfig from '@/pages/Form/router';
 import baseSystem from './baseSystem';
 import PurshaseRouterConfig from '@/pages/Purshase/router';
 import ProcessRouterConfig from '@/pages/Process/route';
@@ -31,7 +30,6 @@ const routerConfig = [
     name: 'Home',
     component: BasicLayout,
     children: [
-      ...FormConfig,
       ...WorkflowConfig,
       ...CrmRouterConfig,
       ...ErpRouterConfig,
@@ -49,6 +47,12 @@ const routerConfig = [
         path: '/test',
         component: lazy(() => import('@/pages/Test')),
         fallback: <div>loading...</div>,
+        exact: true,
+      },
+      {
+        path: '/form/config',
+        name: '表单设置',
+        component: lazy(() => import('@/pages/Form/DiyForm')),
         exact: true,
       },
       {
