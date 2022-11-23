@@ -118,6 +118,19 @@ export const Values = (props) => {
           // eslint-disable-next-line no-template-curly-in-string
           value: '${type}'
         }];
+      case 20:
+        // 质检任务
+        return [{
+          // eslint-disable-next-line no-template-curly-in-string
+          label: '产品码',
+          // eslint-disable-next-line no-template-curly-in-string
+          value: '${spuCoding}'
+        }, {
+          // eslint-disable-next-line no-template-curly-in-string
+          label: '型号码',
+          // eslint-disable-next-line no-template-curly-in-string
+          value: '${modelCoding}'
+        }];
       default:
         return [];
     }
@@ -281,6 +294,8 @@ export const Module = (props) => {
     {label: '养护任务', value: 16},
     {label: '调拨任务', value: 17},
     {label: '生产任务', value: 18},
+    {label: '型号编码', value: 19},
+    {label: '机床编号', value: 20},
   ];
 
   return (<AntdSelect options={options} {...props} />);
