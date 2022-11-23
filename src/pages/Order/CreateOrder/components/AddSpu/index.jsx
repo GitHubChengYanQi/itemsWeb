@@ -175,7 +175,7 @@ const AddSpu = (
           skuIds={noSkuIds}
           onChange={(id, sku) => {
             change(id, sku);
-            if (sku) {
+            if (sku && !noSpu) {
               const array = [];
               if (sku.spuId) {
                 detailRun({

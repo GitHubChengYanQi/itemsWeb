@@ -780,7 +780,7 @@ export function MultipleContainers(
         closable={false}
       >
         <div>
-          是否确认删除步骤?
+          确认删除步骤?
           <div style={{textAlign: 'right', marginTop: 24}}>
             <Space>
               <Button onClick={() => setDelStep(undefined)}>取消</Button>
