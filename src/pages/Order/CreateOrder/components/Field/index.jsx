@@ -171,7 +171,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
             <Descriptions.Item label={<div><span className="red">*</span>{module === 'SO' ? '销售数量' : '采购数量'}</div>}>
               <InputNumber
                 width={100}
-                status={required.purchaseNumber}
+                status={required.purchaseNumber || ''}
                 placeholder="请输入数量"
                 value={sku.purchaseNumber}
                 min={0}
@@ -211,7 +211,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
                 min={1}
                 value={sku.totalPrice}
                 onChange={(value) => {
-                  setSku({...sku, totalPrice: value});
+                  setSku({...sku, totalPrice: value, onePrice: value / (sku.purchaseNumber || 0)});
                 }}
               />
             </Descriptions.Item>
@@ -450,8 +450,10 @@ export const Note = (props) => {
 
 export const AllField = (
   {
-    value: values = [], onChange = () => {
-  }, array
+    value: values = [],
+    onChange = () => {
+    },
+    array
   }) => {
 
   useEffect(() => {

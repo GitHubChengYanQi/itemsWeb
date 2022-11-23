@@ -149,7 +149,6 @@ const DiyForm = () => {
         }}
         module={module}
         onSave={(data, waitFileds) => {
-          console.log(waitFileds);
           const disabledFileds = isArray(waitFileds).filter(item => item.disabled);
           if (disabledFileds.length > 0) {
             message.warn(`${disabledFileds.map(item => item.filedName).toString()}为必选字段！`);

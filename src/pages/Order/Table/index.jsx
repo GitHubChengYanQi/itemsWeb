@@ -77,6 +77,7 @@ const OrderTable = (props) => {
         title={<Breadcrumb />}
         api={orderList}
         rowKey="orderId"
+        tableKey='order'
         searchForm={searchForm}
         actions={actions()}
         ref={tableRef}
@@ -95,7 +96,7 @@ const OrderTable = (props) => {
             }
           }}>{value}</Button>;
         }} />
-        <Column title="甲方" dataIndex="acustomer" render={(value) => {
+        <Column hidden title="甲方" dataIndex="acustomer" render={(value) => {
           return value && value.customerName;
         }} />
         <Column title="乙方" dataIndex="bcustomer" render={(value) => {
