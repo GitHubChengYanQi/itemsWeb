@@ -215,17 +215,6 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
                 }}
               />
             </Descriptions.Item>
-            <Descriptions.Item label="交货期(天)" span={3}>
-              <InputNumber
-                width={100}
-                placeholder="请输入交货期"
-                min={1}
-                value={sku.deliveryDate}
-                onChange={(value) => {
-                  setSku({...sku, deliveryDate: value});
-                }}
-              />
-            </Descriptions.Item>
           </Descriptions>}
         </div>
       </Spin>

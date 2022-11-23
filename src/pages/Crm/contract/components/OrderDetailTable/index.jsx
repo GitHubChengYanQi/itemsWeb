@@ -38,9 +38,6 @@ const OrderDetailTable = ({orderId}) => {
     {title: '单位', dataIndex: 'unit', render: (value) => <Render text={value && value.unitName} />},
     {title: '单价', dataIndex: 'onePrice', render: (value) => <ThousandsSeparator value={value} />},
     {title: '总价', dataIndex: 'totalPrice', render: (value) => <ThousandsSeparator value={value} />},
-    {title: '票据类型', dataIndex: 'paperType', render: (value) => <Render text={value ? '专票' : '普票'} />},
-    {title: '税率', dataIndex: 'taxRate',render:(taxRate)=><Render text={`${taxRate.taxRateValue || 0}%`} />},
-    {title: '交货期', dataIndex: 'deliveryDate'},
   ];
 
   return (

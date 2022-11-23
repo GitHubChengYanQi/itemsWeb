@@ -24,7 +24,7 @@ const formActionsPublic = createFormActions();
 
 const PhoneEdit = ({...props}, ref) => {
 
-  const {contactsId,NoButton, ...other} = props;
+  const {contactsId, NoButton, ...other} = props;
   const formRef = useRef();
 
   useImperativeHandle(ref, () => ({
@@ -54,11 +54,8 @@ const PhoneEdit = ({...props}, ref) => {
         label="电话号码"
         name="phoneNumber"
         component={SysField.PhoneNumber}
-        rules={[{
-          required: true,
-          message: '请输入正确的手机号码!',
-          pattern: /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/
-        }]} />
+        required
+      />
     </Form>
   </div>;
 };
