@@ -88,7 +88,7 @@ const Detail = ({id}) => {
         }
         <Button
           onClick={() => {
-            history.back();
+            history.goBack();
           }}><Icon type="icon-back" />返回</Button>
       </Space>}>
         <Descriptions column={2}>
