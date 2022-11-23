@@ -224,21 +224,6 @@ const AddSkuTable = ({
           />;
         }} />
       <Table.Column
-        title="交货期(天)"
-        width={100}
-        onCell={sharedOnCell}
-        dataIndex="deliveryDate"
-        render={(value, record, index) => {
-          return <InputNumber
-            min={1}
-            placeholder="请输入交货期"
-            value={value}
-            onChange={(value) => {
-              setValue({deliveryDate: value}, index);
-            }}
-          />;
-        }} />
-      <Table.Column
         title="备注"
         width={100}
         onCell={sharedOnCell}
