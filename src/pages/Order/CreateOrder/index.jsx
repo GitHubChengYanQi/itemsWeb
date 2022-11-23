@@ -736,7 +736,6 @@ const CreateOrder = ({...props}) => {
             />
         }
       </AntModal>
-
       <Affix offsetBottom={0}>
         <div
           style={{height: 47, borderTop: '1px solid #e7e7e7', background: '#fff', textAlign: 'center', paddingTop: 8}}>
@@ -745,7 +744,7 @@ const CreateOrder = ({...props}) => {
               FormLayoutSubmit({currentStep, setCurrentStep, formRef});
             }}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
             <Button onClick={() => {
-              history.push('/purchase/toBuyPlan');
+              history.goBack();
             }}>取消</Button>
             <Draft
               disabled={!draftName}

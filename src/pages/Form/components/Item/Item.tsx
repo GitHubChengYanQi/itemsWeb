@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import classNames from 'classnames';
 import type {DraggableSyntheticListeners} from '@dnd-kit/core';
 import type {Transform} from '@dnd-kit/utilities';
@@ -77,6 +77,8 @@ export const Item = React.memo(
       ref
     ) => {
 
+      const [clientWidth, setClientWidth] = useState(0)
+
       const inputType = () => {
         switch (item.inputType) {
           case 'input':
@@ -99,7 +101,8 @@ export const Item = React.memo(
       const label = () => {
         return <div style={{flexGrow: 1, marginLeft: 16}}>
           <Typography.Paragraph
-            style={{margin: 0, display: 'inline-block'}}
+            style={{margin: 0, display: 'inline-block',maxWidth:clientWidth / 2}}
+            ellipsis
             editable={{
               tooltip: '点击自定义字段名',
               onChange: (filedName) => {
@@ -114,6 +117,7 @@ export const Item = React.memo(
       }
 
       useEffect(() => {
+        setClientWidth(document.getElementById(`formItem${item.key}`)?.clientWidth || 0)
         if (!dragOverlay) {
           return;
         }
@@ -175,20 +179,22 @@ export const Item = React.memo(
            <span hidden={!handle || disabled} className={styles.Actions}>
             <Handle {...listeners} />
             </span>
-          {handle ? (
-              mobile ? label() : <Form.Item
-                className={styles.formItem}
-                style={{margin: 0, flexGrow: 1}}
-                labelCol={{span: 12}}
-                wrapperCol={{span: 12}}
-                label={label()}>
-                {inputType()}
-              </Form.Item>
-            )
-            : value}
+          <div id={`formItem${item.key}`} style={{width:'100%'}}>
+            {handle ? (
+                mobile ? label() : <Form.Item
+                  className={styles.formItem}
+                  style={{margin: 0, flexGrow: 1}}
+                  labelCol={{span: 12}}
+                  wrapperCol={{span: 12}}
+                  label={label()}>
+                  {inputType()}
+                </Form.Item>
+              )
+              : value}
+          </div>
           {handle && <Checkbox
             disabled={item.disabled}
-            style={{padding: '0 12px'}}
+            style={{padding: '0px 0 0 12px'}}
             checked={item.required}
             onChange={({target: {checked}}) => itemChange({required: checked}, item.key)}
           >必填</Checkbox>}
