@@ -10,7 +10,7 @@ import {invoiceDetail} from '@/pages/Crm/invoice/invoiceUrl';
 import {selfEnterpriseDetail, supplierDetail} from '@/pages/Purshase/Supply/SupplyUrl';
 import {isObject} from '@/util/Tools';
 
-const customerAAction = (setFieldState,getCustomer) => {
+const customerAAction = (setFieldState, getCustomer) => {
 
   const params = getSearchParams();
 
@@ -25,7 +25,7 @@ const customerAAction = (setFieldState,getCustomer) => {
     let customer = {};
     if (value) {
       customer = await request({...api, data: {customerId: value}});
-      if (params.module === 'SO'){
+      if (params.module === 'SO') {
         getCustomer(customer);
       }
     }
@@ -170,7 +170,7 @@ const customerAAction = (setFieldState,getCustomer) => {
   });
 };
 
-const customerBAction = (setFieldState,getCustomer) => {
+const customerBAction = (setFieldState, getCustomer) => {
 
   const params = getSearchParams();
   let api = {};
@@ -184,7 +184,7 @@ const customerBAction = (setFieldState,getCustomer) => {
     let customer = {};
     if (value) {
       customer = await request({...api, data: {customerId: value}});
-      if (params.module === 'PO'){
+      if (params.module === 'PO') {
         getCustomer(customer);
       }
     }
@@ -332,7 +332,10 @@ const paymentAction = (setFieldState, getFieldState) => {
     });
   });
 
-  FormEffectHooks.onFieldValueChange$('floatingAmount').subscribe(async ({value}) => {
+  FormEffectHooks.onFieldValueChange$('floatingAmount').subscribe(async ({value, inputed}) => {
+    if (!inputed) {
+      return;
+    }
     const money = await new Promise((resolve) => {
       resolve(getFieldState('money'));
     }) || {};
@@ -341,7 +344,10 @@ const paymentAction = (setFieldState, getFieldState) => {
     });
   });
 
-  FormEffectHooks.onFieldValueChange$('totalAmount').subscribe(async ({value}) => {
+  FormEffectHooks.onFieldValueChange$('totalAmount').subscribe(async ({value, inputed}) => {
+    if (!inputed) {
+      return;
+    }
     const money = await new Promise((resolve) => {
       resolve(getFieldState('money'));
     }) || {};
@@ -523,22 +529,22 @@ const contractAction = (setFieldState) => {
 };
 
 const ordedrAction = (setFieldState) => {
-  FormEffectHooks.onFieldValueChange$(' currency').subscribe(({value}) => {
+  FormEffectHooks.onFieldValueChange$('currency').subscribe(({value}) => {
     setFieldState('detailParams', (state) => {
       state.props.currency = value;
     });
   });
 
-  FormEffectHooks.onFieldValueChange$('leadTime').subscribe(({value,inputed}) => {
-    if (inputed){
+  FormEffectHooks.onFieldValueChange$('leadTime').subscribe(({value, inputed}) => {
+    if (inputed) {
       setFieldState('deliveryDate', (state) => {
         state.value = new Date(moment(new Date()).add(value, 'day'));
       });
     }
   });
 
-  FormEffectHooks.onFieldValueChange$('deliveryDate').subscribe(({value,inputed}) => {
-    if (inputed){
+  FormEffectHooks.onFieldValueChange$('deliveryDate').subscribe(({value, inputed}) => {
+    if (inputed) {
       setFieldState('leadTime', (state) => {
         state.value = moment(value).diff(new Date(), 'day');
       });
@@ -547,9 +553,9 @@ const ordedrAction = (setFieldState) => {
 
 };
 
-export const EffectsAction = (setFieldState, getFieldState,getCustomer) => {
-  customerAAction(setFieldState,getCustomer);
-  customerBAction(setFieldState,getCustomer);
+export const EffectsAction = (setFieldState, getFieldState, getCustomer) => {
+  customerAAction(setFieldState, getCustomer);
+  customerBAction(setFieldState, getCustomer);
   paymentAction(setFieldState, getFieldState);
   contractAction(setFieldState);
   ordedrAction(setFieldState);

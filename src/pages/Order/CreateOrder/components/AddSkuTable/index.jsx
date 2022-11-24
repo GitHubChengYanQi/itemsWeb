@@ -1,13 +1,11 @@
 import React, {useState} from 'react';
-import {Button, Table, Select as AntSelect, Space, Spin, Input} from 'antd';
+import {Button, Table, Space, Spin, Input} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
 import {useRequest} from '@/util/Request';
-import {brandIdSelect} from '@/pages/Erp/stock/StockUrl';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import Select from '@/components/Select';
 import {unitListSelect} from '@/pages/Erp/spu/spuUrl';
 import InputNumber from '@/components/InputNumber';
-import {taxRateListSelect} from '@/pages/Purshase/taxRate/taxRateUrl';
 import CheckBrand from '@/pages/Erp/brand/components/CheckBrand';
 
 const AddSkuTable = ({
