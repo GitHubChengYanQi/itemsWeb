@@ -13,7 +13,7 @@ import {
 } from 'antd';
 import {FormEffectHooks, InternalFieldList as FieldList} from '@formily/antd';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
-import {getSearchParams, Link, useHistory, useLocation} from 'ice';
+import {getSearchParams, useHistory, useLocation} from 'ice';
 import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
 import * as SysField from './components/Field';
@@ -715,7 +715,6 @@ const CreateOrder = ({...props}) => {
             <Result
               status={success ? 'success' : 'error'}
               title={success ? '创建订单成功！' : '创建订单失败！'}
-              // subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
               extra={[
                 !success && <Button key="buy" onClick={() => {
                   setResultVisible(false);
@@ -723,12 +722,14 @@ const CreateOrder = ({...props}) => {
                   取消
                 </Button>,
                 <Button type="primary" key="console" onClick={() => {
-                  window.history.go(-1);
+                  history.goBack();
                 }}>
                   返回订单列表
                 </Button>,
-                success && <Button key="buy">
-                  <Link to={`/purchase/order/detail?id=${success.orderId}`}>查看详情</Link>
+                success && <Button key="buy" onClick={() => {
+                  history.push(`/purchase/order/detail?id=${success.orderId}`);
+                }}>
+                  查看详情
                 </Button>
               ]}
             />
