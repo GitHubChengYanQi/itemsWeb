@@ -14,7 +14,6 @@ import {DataRouter} from '@/pages/Crm/data/dataRouter';
 import {SpeechcraftRouter} from '@/pages/Crm/speechcraft/speechcraftRouter';
 import {OutstockApplyRouter} from '@/pages/Erp/outstockApply/outstockApplyRouter';
 import {BusinessTrackRouter} from '@/pages/Crm/Track/businessTrackRouter';
-import {OrderRouter} from '@/pages/Order/router';
 
 
 const CrmRouterConfig = [
@@ -37,22 +36,23 @@ const CrmRouterConfig = [
       ...SpeechcraftRouter,
       ...OutstockApplyRouter,
       ...BusinessTrackRouter,
+      // {
+      //   path: '/order',
+      //   component: lazy(() => import('../../Order/Table/index')),
+      //   fallback: <div>loading...</div>,
+      //   exact: true,
+      // }, {
+      //   path: '/order/createOrder',
+      //   component: lazy(() => import('../../Order/CreateOrder/index')),
+      //   fallback: <div>loading...</div>,
+      //   exact: true,
+      // }, {
+      //   path: '/order/detail',
+      //   component: lazy(() => import('../../Order/Detail')),
+      //   fallback: <div>loading...</div>,
+      //   exact: true,
+      // },
       {
-        path: '/order',
-        component: lazy(() => import('../../Order/Table/index')),
-        fallback: <div>loading...</div>,
-        exact: true,
-      }, {
-        path: '/order/createOrder',
-        component: lazy(() => import('../../Order/CreateOrder/index')),
-        fallback: <div>loading...</div>,
-        exact: true,
-      }, {
-        path: '/order/detail',
-        component: lazy(() => import('../../Order/Detail')),
-        fallback: <div>loading...</div>,
-        exact: true,
-      },{
         redirect: '/CRM/customer',
       },
     ]
