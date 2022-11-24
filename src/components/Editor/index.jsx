@@ -10,6 +10,7 @@ const Editor = ({
   module,
   width,
   change,
+  id,
 }, ref) => {
 
   const editorRef = useRef(null);
@@ -47,7 +48,7 @@ const Editor = ({
   return (
     <div style={{width}}>
       <TinymceEditor
-        id="editor"
+        id={id || 'editor'}
         apiKey="no-api-key"
         onInit={(evt, editor) => {
           editorRef.current = editor;
