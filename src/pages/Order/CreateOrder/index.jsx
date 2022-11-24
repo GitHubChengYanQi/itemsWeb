@@ -9,7 +9,7 @@ import {
   Row,
   Space,
   Spin,
-  Modal as AntModal, Alert, Select
+  Modal as AntModal, Alert, Select, Input
 } from 'antd';
 import {FormEffectHooks, InternalFieldList as FieldList} from '@formily/antd';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
@@ -283,6 +283,11 @@ const CreateOrder = ({...props}) => {
                 formItemProps = {
                   module: 11,
                   component: SysField.Codings
+                };
+                break;
+              case 'theme':
+                formItemProps = {
+                  component: Input
                 };
                 break;
               case 'date':

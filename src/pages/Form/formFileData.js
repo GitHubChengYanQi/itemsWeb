@@ -3,6 +3,7 @@ const otherData = [{key: 'card', filedName: 'Card'}];
 export const POFormData = [
   ...otherData,
   {key: 'coding', filedName: '采购单编号', inputType: 'input'},
+  {key: 'theme', filedName: '订单主题', inputType: 'input'},
   {key: 'date', filedName: '采购日期', inputType: 'date'},
   {key: 'currency', filedName: '币种', inputType: 'select'},
   {key: 'remark', filedName: '采购单备注', inputType: 'input'},
