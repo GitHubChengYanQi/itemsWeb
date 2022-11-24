@@ -13,7 +13,7 @@ import {
 } from 'antd';
 import {FormEffectHooks, InternalFieldList as FieldList} from '@formily/antd';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
-import {getSearchParams, useHistory, useLocation} from 'ice';
+import {getSearchParams, Link, useHistory, useLocation} from 'ice';
 import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
 import * as SysField from './components/Field';
@@ -723,14 +723,12 @@ const CreateOrder = ({...props}) => {
                   取消
                 </Button>,
                 <Button type="primary" key="console" onClick={() => {
-                  history.goBack();
+                  window.history.go(-1);
                 }}>
                   返回订单列表
                 </Button>,
-                success && <Button key="buy" onClick={() => {
-                  history.push(`/purchase/order/detail?id=${success.orderId}`);
-                }}>
-                  查看详情
+                success && <Button key="buy">
+                  <Link to={`/purchase/order/detail?id=${success.orderId}`}>查看详情</Link>
                 </Button>
               ]}
             />

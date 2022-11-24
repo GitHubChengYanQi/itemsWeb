@@ -96,10 +96,10 @@ const OrderTable = (props) => {
             }
           }}>{value}</Button>;
         }} />
-        <Column hidden title="甲方" dataIndex="acustomer" render={(value) => {
+        <Column hidden={module().module === 'PO'} title="甲方" dataIndex="acustomer" render={(value) => {
           return value && value.customerName;
         }} />
-        <Column title="乙方" dataIndex="bcustomer" render={(value) => {
+        <Column hidden={module().module === 'SO'} title="乙方" dataIndex="bcustomer" render={(value) => {
           return value && value.customerName;
         }} />
         <Column title="类型" dataIndex="type" render={(value) => {
@@ -123,9 +123,9 @@ const OrderTable = (props) => {
           align="right"
           render={(value, record) => {
             return <>
-              {!record.contractId && !record.fileId && <Button type="link" onClick={() => {
+              <Button disabled={record.contractId || record.fileId} type="link" onClick={() => {
                 createContractRef.current.open(record.orderId);
-              }}>创建合同</Button>}
+              }}>创建合同</Button>
               <Button type="link" onClick={() => {
                 switch (props.location.pathname) {
                   case '/CRM/order':
