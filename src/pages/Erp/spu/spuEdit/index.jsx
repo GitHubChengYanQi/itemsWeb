@@ -71,7 +71,7 @@ const SpuEdit = (props) => {
       <Card title={params ? '编辑物料信息' : '添加物料信息'} bordered={false}>
         <div style={{maxWidth: 1200, margin: 'auto'}}>
           <Form
-            NoButton={false}
+            noButton
             value={params || false}
             ref={formRef}
             api={ApiConfig}

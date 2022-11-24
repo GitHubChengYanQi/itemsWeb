@@ -42,7 +42,7 @@ const ContactsEdit = ({...props}, ref) => {
         <Form
           {...other}
           value={value ? value.contactsId : false}
-          NoButton={false}
+          noButton
           formActions={formActionsPublic}
           ref={formRef}
           api={ApiConfig}

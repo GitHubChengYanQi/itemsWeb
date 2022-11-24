@@ -1,4 +1,4 @@
-import React, {useImperativeHandle, useRef, useState} from 'react';
+import React, {useImperativeHandle, useRef} from 'react';
 import {Input, message} from 'antd';
 import moment from 'moment';
 import Form from '@/components/Form';
@@ -33,7 +33,7 @@ const AddProductionPlan = ({currentStep, setCurrentStep, ...props}, ref) => {
       ref={formRef}
       className={style.form}
       wrapperCol={24}
-      NoButton={false}
+      noButton
       value={false}
       api={{
         add: createProductionPlan,

@@ -41,7 +41,7 @@ const CompetitorEdit = ({onChange, ...props}, ref) => {
         {...props}
         value={value ? value.competitorId : false}
         ref={formRef}
-        NoButton={false}
+        noButton
         api={ApiConfig}
         formActions={formActionsPublic}
         onSuccess={(res) => {

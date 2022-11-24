@@ -57,7 +57,7 @@ const AddItem = (props, ref) => {
     <>
       <Form
         formActions={formActionsPublic}
-        NoButton={false}
+        noButton
         {...props}
         ref={formRef}
         api={ApiConfig}

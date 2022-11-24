@@ -72,3 +72,12 @@ export const ProductionTaskFormData = [
   {key: 'number', filedName: '生产数量', inputType: 'input'},
   {key: 'remake', filedName: '备注', inputType: 'input'},
 ];
+
+export const InvoiceFormData = [
+  ...otherData,
+  {key: 'money', filedName: '金额', inputType: 'input', required: true, disabled: true},
+  {key: 'enclosureId', filedName: '附件', inputType: 'input', required: true, disabled: true},
+  {key: 'name', filedName: '发票名称', inputType: 'select'},
+  {key: 'InvoiceDate', filedName: '发票日期', inputType: 'date'},
+  {key: 'orderId', filedName: '关联订单', inputType: 'select'},
+];

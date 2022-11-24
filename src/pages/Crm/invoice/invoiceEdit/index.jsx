@@ -34,7 +34,7 @@ const InvoiceEdit = ({...props}, ref) => {
         {...other}
         ref={formRef}
         api={ApiConfig}
-        NoButton={NoButton}
+        noButton={!NoButton}
         fieldKey="invoiceId"
         onSubmit={(value) => {
           return {...value, customerId};

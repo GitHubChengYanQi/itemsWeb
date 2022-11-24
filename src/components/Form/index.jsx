@@ -32,7 +32,7 @@ const FormWrapper = (
     labelAlign,
     formatResult,
     initialValues,
-    NoButton = true,
+    noButton,
     formActions = null,
     className,
     onSubmit = (values) => {
@@ -191,7 +191,7 @@ const FormWrapper = (
   >
     {children}
 
-    {NoButton && <FormButtonGroup offset={11} className={boxShadow && style.bottom}>
+    {!noButton && <FormButtonGroup offset={11} className={boxShadow && style.bottom}>
       <Submit showLoading>保存</Submit>
       <Reset>重置</Reset>
       <Draft

@@ -81,7 +81,7 @@ const CustomerEdit = (
           value={params.id || false}
           ref={formRef}
           defaultValue={{...paramData}}
-          NoButton={false}
+          noButton
           api={ApiConfig}
           labelAlign="right"
           wrapperCol={24}

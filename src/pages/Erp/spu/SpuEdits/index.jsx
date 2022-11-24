@@ -61,7 +61,7 @@ const SpuEdits = (props) => {
       <Card bordered={false}>
         <div style={{maxWidth: 1200, margin: 'auto'}}>
           <Form
-            NoButton={false}
+            noButton
             {...props}
             ref={formRef}
             api={ApiConfig}

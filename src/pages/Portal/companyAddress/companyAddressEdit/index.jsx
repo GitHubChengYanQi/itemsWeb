@@ -50,7 +50,7 @@ const CompanyAddressEdit = ({...props}) => {
   return (
     <Form
       {...props}
-      NoButton={false}
+      noButton
       value={data.length === 0 ? false : data[0].companyId}
       ref={formRef}
       api={ApiConfig}

@@ -9,5 +9,6 @@ export const ReceiptsEnums = {
   maintenance: 'MAINTENANCE',
   allocation: 'ALLOCATION',
   production: 'PRODUCTION',
-  productionTask: 'PRODUCTIONTASK'
+  productionTask: 'PRODUCTIONTASK',
+  invoice: 'INVOICE'
 };
