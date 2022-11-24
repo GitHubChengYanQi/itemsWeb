@@ -15,6 +15,7 @@ import {orderList} from '@/pages/Erp/order/OrderUrl';
 import * as SysField from '../SysField/index';
 import Modal from '@/components/Modal';
 import CreateContract from '@/pages/Order/CreateContract';
+import Render from '@/components/Render';
 
 const {Column} = AntTable;
 const {FormItem} = Form;
@@ -28,7 +29,7 @@ const OrderTable = (props) => {
 
   const compoentRef = useRef();
 
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const module = () => {
     switch (props.location.pathname) {
@@ -70,20 +71,20 @@ const OrderTable = (props) => {
     );
   };
 
-  return (
-    <>
-      <Table
-        noRowSelection
-        title={<Breadcrumb />}
-        api={orderList}
-        rowKey="orderId"
-        tableKey='order'
-        searchForm={searchForm}
-        actions={actions()}
-        ref={tableRef}
-      >
-        <Column title="采购单编号" dataIndex="coding" render={(value, record) => {
-          return <Button type="link" onClick={() => {
+  const columns = [
+    {title: '采购单编号', dataIndex: 'coding'},
+    {title: '主题', dataIndex: 'theme', render: (value) => <Render text={value || '-'} />},
+    {title: '甲方', dataIndex: 'acustomer', render: (value) => <Render text={value?.customerName || '-'} />},
+    {title: '乙方', dataIndex: 'bcustomer', render: (value) => <Render text={value?.customerName || '-'} />},
+    {title: '创建人', dataIndex: 'user', render: (value) => <Render text={value?.name || '-'} />},
+    {title: '创建时间', dataIndex: 'createTime'},
+    {
+      title: '操作',width:200,align:'center', dataIndex: 'theme', render: (value, record) => {
+        return <>
+          <Button disabled={record.contractId || record.fileId} type="link" onClick={() => {
+            createContractRef.current.open(record.orderId);
+          }}>创建合同</Button>
+          <Button type="link" onClick={() => {
             switch (props.location.pathname) {
               case '/CRM/order':
                 history.push(`/CRM/order/detail?id=${record.orderId}`);
@@ -94,57 +95,29 @@ const OrderTable = (props) => {
               default:
                 break;
             }
-          }}>{value}</Button>;
-        }} />
-        <Column hidden={module().module === 'PO'} title="甲方" dataIndex="acustomer" render={(value) => {
-          return value && value.customerName;
-        }} />
-        <Column hidden={module().module === 'SO'} title="乙方" dataIndex="bcustomer" render={(value) => {
-          return value && value.customerName;
-        }} />
-        <Column title="类型" dataIndex="type" render={(value) => {
-          switch (value) {
-            case 1:
-              return '采购订单';
-            case 2:
-              return '销售订单';
-            default:
-              return '';
-          }
-        }} />
-        <Column title="创建人" dataIndex="user" render={(value) => {
-          return value && value.name;
-        }} />
-        <Column title="创建时间" dataIndex="createTime" />
-        <Column />
-        <Column
-          title={<div style={{textAlign: 'center'}}>操作</div>}
-          width={200}
-          align="right"
-          render={(value, record) => {
-            return <>
-              <Button disabled={record.contractId || record.fileId} type="link" onClick={() => {
-                createContractRef.current.open(record.orderId);
-              }}>创建合同</Button>
-              <Button type="link" onClick={() => {
-                switch (props.location.pathname) {
-                  case '/CRM/order':
-                    history.push(`/CRM/order/detail?id=${record.orderId}`);
-                    break;
-                  case '/purchase/order':
-                    history.push(`/purchase/order/detail?id=${record.orderId}`);
-                    break;
-                  default:
-                    break;
-                }
-              }}>详情</Button>
-            </>;
-          }} />
-      </Table>
+          }}>详情</Button>
+        </>;
+      }
+    },
+  ];
+
+  return (
+    <>
+      <Table
+        columns={columns}
+        noRowSelection
+        title={<Breadcrumb />}
+        api={orderList}
+        rowKey="orderId"
+        tableKey="order"
+        searchForm={searchForm}
+        actions={actions()}
+        ref={tableRef}
+      />
 
       <Modal
         headTitle="创建合同"
-        width='auto'
+        width="auto"
         loading={setLoading}
         ref={createContractRef}
         compoentRef={compoentRef}
