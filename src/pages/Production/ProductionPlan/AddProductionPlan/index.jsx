@@ -1,4 +1,4 @@
-import React, {useImperativeHandle, useRef, useState} from 'react';
+import React, {useImperativeHandle, useRef} from 'react';
 import {Input, message} from 'antd';
 import moment from 'moment';
 import Form from '@/components/Form';
@@ -15,7 +15,7 @@ import DatePicker from '@/components/DatePicker';
 
 const {FormItem} = Form;
 
-const AddProductionPlan = ({currentStep, setCurrentStep, ...props}, ref) => {
+const AddProductionPlan = ({previewData, currentStep = {}, setCurrentStep, ...props}, ref) => {
 
   const formRef = useRef();
 
@@ -27,7 +27,7 @@ const AddProductionPlan = ({currentStep, setCurrentStep, ...props}, ref) => {
     submit
   }));
 
-  return <div style={{minWidth: 1000, padding: 24}}>
+  return <div style={{minWidth: 1000, padding: 24, display: 'inline-block'}}>
     <Form
       {...props}
       ref={formRef}
@@ -55,6 +55,7 @@ const AddProductionPlan = ({currentStep, setCurrentStep, ...props}, ref) => {
       }}
     >
       <FormLayout
+        previewData={previewData}
         value={currentStep.step}
         onChange={setCurrentStep}
         formType={ReceiptsEnums.production}

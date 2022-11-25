@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {Select as AntSelect, Spin} from 'antd';
 import {useRequest} from '@/util/Request';
+import {isArray} from '@/util/Tools';
 
 const Select = (
   {
@@ -84,7 +85,7 @@ const Select = (
             options={[...(addLabel ? [{
               label: <a>{addLabel}</a>,
               value: 'add',
-            }] : []), ...(options || data && data.map((items) => {
+            }] : []), ...(options || isArray(data).map((items) => {
               return {
                 label: items.label || items.title,
                 value: items.value

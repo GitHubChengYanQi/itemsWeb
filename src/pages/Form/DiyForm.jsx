@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {getSearchParams, useHistory} from 'ice';
-import {Button, Card, message, Spin} from 'antd';
+import {Button, Card, Drawer, message, Spin} from 'antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
+import {CloseOutlined} from '@ant-design/icons';
 import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 import {useRequest} from '@/util/Request';
 import {formDetail, formEdit} from '@/pages/Form/url';
@@ -9,6 +10,8 @@ import Empty from '@/components/Empty';
 import {POFormData, ProductionFormData, ProductionTaskFormData} from '@/pages/Form/formFileData';
 import {isArray, isObject} from '@/util/Tools';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
+import CreateOrder from '@/pages/Order/CreateOrder';
+import AddProductionPlan from '@/pages/Production/ProductionPlan/AddProductionPlan';
 
 const DiyForm = () => {
 
@@ -25,6 +28,10 @@ const DiyForm = () => {
   const [filedData, setFiledData] = useState([]);
 
   const [config, setConfig] = useState({});
+
+  const [openPreview, setOpenPreview] = useState(false);
+
+  const [currentStep, setCurrentStep] = useState({});
 
   const defaultInit = [{
     type: 'add',
@@ -122,13 +129,21 @@ const DiyForm = () => {
   }
 
   let title = '';
+  let PreviewDom;
+  let previewDomProps = {};
 
   switch (searchParams.type) {
     case ReceiptsEnums.purchaseOrder:
       title = '采购单';
+      PreviewDom = CreateOrder;
       break;
     case ReceiptsEnums.production:
       title = '生产计划';
+      PreviewDom = AddProductionPlan;
+      previewDomProps = {
+        currentStep,
+        setCurrentStep
+      };
       break;
     case ReceiptsEnums.productionTask:
       title = '生产任务';
@@ -138,8 +153,10 @@ const DiyForm = () => {
   }
 
   return <Spin spinning={editlLoaing}>
-    <Card bodyStyle={{padding: '0px 24px'}} title={`${title}表单配置`}
-          extra={<Button onClick={() => history.goBack()}>返回</Button>}>
+    <Card
+      title={`${title}表单配置`}
+      extra={<Button onClick={() => history.goBack()}>返回</Button>}
+    >
       <MultipleContainers
         {...config}
         vertical
@@ -151,6 +168,7 @@ const DiyForm = () => {
           refresh();
         }}
         module={module}
+        onPreview={setOpenPreview}
         onSave={(data, waitFileds) => {
           const disabledFileds = isArray(waitFileds).filter(item => item.disabled);
           if (disabledFileds.length > 0) {
@@ -162,6 +180,23 @@ const DiyForm = () => {
         }}
       />
     </Card>
+
+
+    <Drawer
+      destroyOnClose
+      height="100%"
+      placement="top"
+      title={`${title}表单配置`}
+      open={openPreview}
+      onClose={() => setOpenPreview(null)}
+      extra={<CloseOutlined style={{cursor: 'pointer'}} onClick={() => setOpenPreview(false)} />}
+    >
+      <div style={{textAlign: 'center'}}>
+        <div style={{textAlign: 'initial',display:'inline-block'}}>
+          {PreviewDom ? <PreviewDom previewData={openPreview} {...previewDomProps} /> : <Empty />}
+        </div>
+      </div>
+    </Drawer>
   </Spin>;
 };
 

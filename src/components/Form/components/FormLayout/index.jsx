@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Col, Row, Steps} from 'antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import ProCard from '@ant-design/pro-card';
@@ -6,7 +6,7 @@ import {useRequest} from '@/util/Request';
 import {formList} from '@/pages/Form/url';
 import {isArray} from '@/util/Tools';
 
-export const FormLayoutSubmit = ({currentStep,formRef,setCurrentStep,}) => {
+export const FormLayoutSubmit = ({currentStep, formRef, setCurrentStep,}) => {
   if (currentStep.type === 'add' || currentStep.step === isArray(currentStep.steps).length - 1) {
     formRef.current.submit();
   } else {
@@ -24,6 +24,7 @@ export const FormLayoutSubmit = ({currentStep,formRef,setCurrentStep,}) => {
 
 const FormLayout = (
   {
+    previewData,
     value,
     onChange = () => {
     },
@@ -41,6 +42,7 @@ const FormLayout = (
     ...formList,
     data: {formType}
   }, {
+    manual: previewData,
     onSuccess: (res) => {
       if (res[0] && res[0].typeSetting) {
         const typeSetting = JSON.parse(res[0].typeSetting) || {};
@@ -53,6 +55,15 @@ const FormLayout = (
     }
   });
 
+  useEffect(() => {
+    if (previewData){
+      const newSteps = previewData.steps || [];
+      setSteps(newSteps);
+      setLayout({width: previewData.width, gutter: previewData.gutter, widthUnit: previewData.widthUnit});
+      onChange({step: 0, type: newSteps[0].type, steps: newSteps});
+    }
+  }, []);
+
   if (detailLoaidng) {
     return <ProSkeleton />;
   }
@@ -62,7 +73,7 @@ const FormLayout = (
       <Steps
         current={value}
         onChange={(step) => {
-          if (step >= value) {
+          if (!previewData && step >= value) {
             return;
           }
           onChange({step, type: steps[step].type, steps});

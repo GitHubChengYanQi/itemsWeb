@@ -8,7 +8,7 @@ import {contactsDetail} from '@/pages/Crm/contacts/contactsUrl';
 import {templateGetLabel} from '@/pages/Crm/template/TemplateUrl';
 import {invoiceDetail} from '@/pages/Crm/invoice/invoiceUrl';
 import {selfEnterpriseDetail, supplierDetail} from '@/pages/Purshase/Supply/SupplyUrl';
-import {isObject} from '@/util/Tools';
+import {isArray, isObject} from '@/util/Tools';
 
 const customerAAction = (setFieldState, getCustomer) => {
 
@@ -153,8 +153,8 @@ const customerAAction = (setFieldState, getCustomer) => {
       }
       setFieldState('partyAPhone', (state) => {
         state.props.contactsId = value;
-        state.props.defaultValue = isObject(res.phoneParams[0]).phoneId;
-        state.props.options = res.phoneParams && res.phoneParams.map((item) => {
+        state.props.defaultValue = isObject(isArray(res.phoneParams)[0]).phoneId;
+        state.props.options = isArray(res.phoneParams).map((item) => {
           return {
             label: item.phone,
             value: item.phoneId,

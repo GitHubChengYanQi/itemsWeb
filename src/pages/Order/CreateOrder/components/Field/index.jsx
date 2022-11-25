@@ -478,7 +478,7 @@ export const AllField = (
     onChange(newValues);
   };
 
-  const replaceDom = (item) => {
+  const replaceDom = (item, index) => {
 
     const detail = item.detail || [];
 
@@ -532,7 +532,7 @@ export const AllField = (
         </div>;
       case 'editor':
         return <div>
-          <Editor onChange={(value) => {
+          <Editor id={`allFieldEditor${index}`} onChange={(value) => {
             valuesChange(item.name, value);
           }} />
         </div>;

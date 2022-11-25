@@ -35,7 +35,6 @@ import ColumnsConfig from '../ColumnsConfig';
 import TableConfig from '../TableConfig';
 import wxHead from '../../../../asseset/imgs/wxHead.jpg';
 
-
 import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
 import {isObject} from '@/util/Tools';
@@ -146,7 +145,8 @@ interface Props {
   getItemStyles?: (styles: any) => {};
 
   wrapperStyle?: (styles: any) => {};
-  onSave: (data: any, waitFileds: any) => {};
+  onSave: (data: any, waitFileds: any) => void;
+  onPreview: (data: any) => void;
   setModule: (data: any) => {};
 
   itemCount?: number;
@@ -170,13 +170,16 @@ export const TRASH_ID = 'void';
 
 export function MultipleContainers(
   {
+    onPreview = () => {
+    },
     adjustScale = false,
     handle = false,
     items: defaultItems,
     coordinateGetter = sortableKeyboardCoordinates,
     getItemStyles = () => ({}),
     wrapperStyle = () => ({}),
-    onSave = () => ({}),
+    onSave = () => {
+    },
     renderItem,
     initSteps = [],
     width: defaultWidth,
@@ -344,16 +347,6 @@ export function MultipleContainers(
     };
   };
 
-  // const onDragCancel = () => {
-  //   if (clonedItems) {
-  //     // Reset items to their original state in case items have been
-  //     // Dragged across containers
-  //     setItems(clonedItems);
-  //   }
-  //
-  //   setActiveId(null);
-  //   setClonedItems(null);
-  // };
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -771,9 +764,12 @@ export function MultipleContainers(
             paddingTop: 8
           }}
         >
-          <Button type='primary' onClick={() => {
-            onSave(submit(), items[0]?.data);
-          }}>保存</Button>
+          <Space>
+            <Button disabled={module === 'mobile'} onClick={() => onPreview(submit())}>预览</Button>
+            <Button type='primary' onClick={() => {
+              onSave(submit(), items[0]?.data);
+            }}>保存</Button>
+          </Space>
         </div>
       </Affix>
       <Modal
