@@ -37,6 +37,10 @@ const InvoiceEdit = (props) => {
 
   const [id, setId] = useState(props.value || false);
 
+  const money = (props) => {
+    return <InputNumber addonAfter="人民币" {...props} />;
+  };
+
   return <>
     <Form
       noButton
@@ -67,7 +71,7 @@ const InvoiceEdit = (props) => {
           switch (item.key) {
             case 'money':
               formItemProps = {
-                component: InputNumber,
+                component: money,
               };
               break;
             case 'enclosureId':
@@ -105,8 +109,11 @@ const InvoiceEdit = (props) => {
     </Form>
 
     <FormButtonGroup offset={11} className={style.bottom}>
-      <Button type="primary"
-              onClick={() => formRef.current.submit()}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
+      <Button
+        type="primary"
+        onClick={() => formRef.current.submit()}>
+        {currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}
+      </Button>
       <Reset>取消</Reset>
     </FormButtonGroup>
   </>;

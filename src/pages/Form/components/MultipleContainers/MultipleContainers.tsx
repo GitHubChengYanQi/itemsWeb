@@ -35,7 +35,6 @@ import ColumnsConfig from '../ColumnsConfig';
 import TableConfig from '../TableConfig';
 import wxHead from '../../../../asseset/imgs/wxHead.jpg';
 
-
 import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
 import {isObject} from '@/util/Tools';
