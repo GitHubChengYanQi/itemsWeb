@@ -14,7 +14,7 @@ const SkuResultSkuJsons = ({skuResult, describe}) => {
       skuResult.skuJsons[0].values.attributeValues
       &&
       skuResult.skuJsons.map((items) => {
-        return `${items.attribute.attribute}:${items.values.attributeValues}`;
+        return `${items.attribute.attribute || '无'}:${items.values.attributeValues || '无'}`;
       }).join(' ; ') || '无';
   }
 
