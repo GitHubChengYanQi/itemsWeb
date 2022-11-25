@@ -20,7 +20,7 @@ const ApiConfig = {
 
 const formActionsPublic = createFormActions();
 
-const AddSku = ({spuId,skuId,setSkuId, ...props}, ref) => {
+const AddSku = ({spuId, skuId, setSkuId, ...props}, ref) => {
 
   const formRef = useRef();
 
@@ -54,7 +54,7 @@ const AddSku = ({spuId,skuId,setSkuId, ...props}, ref) => {
         });
       }}
       onSubmit={(value) => {
-        return {...value,skuId};
+        return {...value, skuId};
       }}
     >
 
@@ -82,12 +82,18 @@ const AddSku = ({spuId,skuId,setSkuId, ...props}, ref) => {
         required
       />
 
-      <FormItem label="编码" name="standard" module={0} component={Codings} required />
+      <FormItem label="编码" name="standard" module={0} component={Codings} />
       <FormItem
         label="型号"
         name="skuName"
         component={SysField.SkuName}
         required
+      />
+      <FormItem
+        label="型号编码"
+        name="modelCoding"
+        module={19}
+        component={Codings}
       />
       <FormItem
         label="规格"

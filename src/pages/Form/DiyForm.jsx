@@ -41,7 +41,7 @@ const DiyForm = () => {
 
   const [init, setInit] = useState(defaultInit);
 
-  const setTable = (data = [], keys) => {
+  const setTable = (data = [], keys, formFiled) => {
     const column = [];
     data.forEach((rows = []) => {
       rows.forEach(item => {
@@ -51,12 +51,12 @@ const DiyForm = () => {
           table.forEach(tableRows => {
             tableRows.forEach(item => {
               isArray(item.data).forEach(item => keys.push(item.key));
-              column.push(item);
+              column.push({...item, data: isArray(item.data).filter(item => formFiled.includes(item.key))});
             });
           });
         } else {
           isArray(item.data).forEach(item => keys.push(item.key));
-          column.push(item);
+          column.push({...item, data: isArray(item.data).filter(item => formFiled.includes(item.key))});
         }
       });
     });
@@ -68,27 +68,6 @@ const DiyForm = () => {
     onSuccess: (res) => {
       const keys = [];
       const mobile = module === 'mobile';
-      if (res.typeSetting) {
-        let typeSetting = {};
-        try {
-          typeSetting = JSON.parse(res.typeSetting) || {};
-        } catch (e) {
-          console.log(e);
-        }
-        const moduleInfo = typeSetting[module] || {};
-        const newInit = [];
-        isArray(moduleInfo.steps).forEach(item => {
-          newInit.push({...item, data: setTable(item.data, keys)});
-        });
-        setConfig({
-          width: moduleInfo.width || (mobile ? 400 : 100),
-          gutter: moduleInfo.gutter || (mobile ? 12 : 16),
-          widthUnit: moduleInfo.widthUnit || (mobile ? 'px' : '%'),
-        });
-        setInit(newInit.length === 0 ? defaultInit : newInit);
-      } else {
-        setInit(defaultInit);
-      }
       let newFileData = [];
       switch (searchParams.type) {
         case ReceiptsEnums.purchaseOrder:
@@ -102,6 +81,24 @@ const DiyForm = () => {
           break;
         default:
           break;
+      }
+      const formFileds = newFileData.map(item => item.key);
+
+      if (res.typeSetting) {
+        const typeSetting = JSON.parse(res.typeSetting) || {};
+        const moduleInfo = typeSetting[module] || {};
+        const newInit = [];
+        isArray(moduleInfo.steps).forEach(item => {
+          newInit.push({...item, data: setTable(item.data, keys,formFileds)});
+        });
+        setConfig({
+          width: moduleInfo.width || (mobile ? 400 : 100),
+          gutter: moduleInfo.gutter || (mobile ? 12 : 16),
+          widthUnit: moduleInfo.widthUnit || (mobile ? 'px' : '%'),
+        });
+        setInit(newInit.length === 0 ? defaultInit : newInit);
+      } else {
+        setInit(defaultInit);
       }
       setFiledData(newFileData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true)));
       setDetail(res || {});

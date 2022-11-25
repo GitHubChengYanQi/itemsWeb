@@ -94,6 +94,10 @@ const CodingRulesList = () => {
         return '调拨任务';
       case 18:
         return '生产任务';
+      case 19:
+        return '型号编码';
+      case 20:
+        return '机床编号';
       default:
         break;
     }

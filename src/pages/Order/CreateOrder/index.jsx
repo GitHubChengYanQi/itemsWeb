@@ -750,7 +750,7 @@ const CreateOrder = ({previewData, ...props}) => {
               FormLayoutSubmit({currentStep, setCurrentStep, formRef});
             }}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
             <Button onClick={() => {
-              history.push('/purchase/toBuyPlan');
+              history.goBack();
             }}>取消</Button>
             <Draft
               disabled={!draftName}
