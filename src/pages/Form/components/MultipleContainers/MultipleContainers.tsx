@@ -347,7 +347,6 @@ export function MultipleContainers(
     };
   };
 
-
   useEffect(() => {
     requestAnimationFrame(() => {
       recentlyMovedToNewContainer.current = false;
