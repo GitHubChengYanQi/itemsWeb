@@ -23,6 +23,7 @@ const FormWrapper = (
     formStyle,
     fieldKey,
     value,
+    preview,
     defaultValue,
     details = () => {
     },
@@ -47,6 +48,10 @@ const FormWrapper = (
     },
     ...props
   }, ref) => {
+
+  if (preview) {
+    api = {add: {}, view: {}, save: {}};
+  }
 
   if (!api) {
     throw new Error('Table component: api cannot be empty,But now it doesn\'t exist!');

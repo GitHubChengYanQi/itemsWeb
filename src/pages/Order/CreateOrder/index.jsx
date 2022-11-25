@@ -46,7 +46,7 @@ const ApiConfig = {
 const span = 6;
 const labelWidth = 128;
 
-const CreateOrder = ({...props}) => {
+const CreateOrder = ({previewData, ...props}) => {
 
   const params = getSearchParams();
 
@@ -156,7 +156,7 @@ const CreateOrder = ({...props}) => {
   return <div style={{padding: 16}}>
     <Spin spinning={resultVisible ? false : loading}>
 
-      <div style={{padding: '16px 0'}}>
+      <div hidden={previewData} style={{padding: '16px 0'}}>
         <Breadcrumb title={module().title} />
       </div>
 
@@ -273,6 +273,7 @@ const CreateOrder = ({...props}) => {
       >
 
         <FormLayout
+          previewData={previewData}
           value={currentStep.step}
           onChange={setCurrentStep}
           formType={ReceiptsEnums.purchaseOrder}
@@ -741,7 +742,7 @@ const CreateOrder = ({...props}) => {
         }
       </AntModal>
 
-      <Affix offsetBottom={0}>
+      {!previewData && <Affix offsetBottom={0}>
         <div
           style={{height: 47, borderTop: '1px solid #e7e7e7', background: '#fff', textAlign: 'center', paddingTop: 8}}>
           <Space>
@@ -764,7 +765,7 @@ const CreateOrder = ({...props}) => {
             />
           </Space>
         </div>
-      </Affix>
+      </Affix>}
     </Spin>
   </div>;
 };
