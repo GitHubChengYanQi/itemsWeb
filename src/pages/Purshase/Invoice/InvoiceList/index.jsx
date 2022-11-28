@@ -36,7 +36,7 @@ const InvoiceList = () => {
     {dataIndex: 'InvoiceDate', title: '发票日期'},
     {dataIndex: 'money', title: '金额(人民币)'},
     {dataIndex: 'enclosureId', title: '附件'},
-    {dataIndex: 'orderId', title: '关联订单'},
+    {dataIndex: 'coding', title: '关联订单'},
     {
       dataIndex: 'orderId', title: '操作', render: (value, record) => {
         return <>

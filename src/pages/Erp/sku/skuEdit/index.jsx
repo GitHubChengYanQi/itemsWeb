@@ -17,7 +17,6 @@ import {spuDetail} from '@/pages/Erp/spu/spuUrl';
 import BrandIds from '@/pages/Erp/brand/components/BrandIds';
 import {isArray, isObject} from '@/util/Tools';
 import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
-import MaterialIds from '@/pages/Erp/material/MaterialIds';
 
 const {FormItem} = Form;
 
@@ -48,7 +47,7 @@ const SkuEdit = ({...props}, ref) => {
     }
   });
 
-  let save = '';
+  let save;
 
   if (value.copy) {
     save = skuAdd;
@@ -128,7 +127,7 @@ const SkuEdit = ({...props}, ref) => {
           }
         }}
         onSubmit={(submitValue) => {
-          submitValue = {
+          const newValue = {
             ...submitValue,
             type: 0,
             isHidden: true,
@@ -139,14 +138,14 @@ const SkuEdit = ({...props}, ref) => {
             skuName: submitValue.nationalStandard || submitValue.model || submitValue.partNo,
             generalFormDataParams: formData,
           };
-          setSubmitValue(submitValue);
-          return submitValue;
+          setSubmitValue(newValue);
+          return newValue;
         }}
         effects={async () => {
 
           const {setFieldState} = createFormActions();
 
-          FormEffectHooks.onFieldValueChange$('spu').subscribe(async ({value, inputed}) => {
+          FormEffectHooks.onFieldValueChange$('spu').subscribe(async ({value}) => {
             if (value && value.spuId) {
               const spu = await request({...spuDetail, data: {spuId: value.spuId}});
 
