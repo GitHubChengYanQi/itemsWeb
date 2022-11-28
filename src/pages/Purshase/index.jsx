@@ -12,6 +12,8 @@ import CrmCustomerLevelList from '@/pages/Crm/customer/crmCustomerLevel/crmCusto
 import PaymentTemplateList from '@/pages/Purshase/paymentTemplate/paymentTemplateList';
 import CrmIndustryList from '@/pages/Crm/crmIndustry/crmIndustryList';
 import BankList from '@/pages/Purshase/bank/bankList';
+import InvoiceList from '@/pages/Purshase/Invoice/InvoiceList';
+import PaymentList from '@/pages/Purshase/Payment/PaymentList';
 
 
 const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) => {
@@ -40,6 +42,10 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
         return <CrmIndustryList />;
       case '银行管理':
         return <BankList />;
+      case '发票管理':
+        return <InvoiceList />;
+      case '付款管理':
+        return <PaymentList />;
       default:
         return null;
     }
@@ -70,6 +76,8 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             {key: '行业管理', label: '行业管理'},
             {key: '付款计划模板', label: '付款计划模板'},
             {key: '银行管理', label: '银行管理'},
+            {key: '发票管理', label: '发票管理'},
+            {key: '付款管理', label: '付款管理'},
           ]}
         />} />
       <Modal headTitle={type} footer={[]} width={1200} ref={ref}>{RenderComponent()}</Modal>

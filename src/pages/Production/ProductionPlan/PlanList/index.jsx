@@ -12,6 +12,7 @@ import Empty from '@/components/Empty';
 import Modal from '@/components/Modal';
 import AddProductionPlan from '@/pages/Production/ProductionPlan/AddProductionPlan';
 import {isArray} from '@/util/Tools';
+import {FormLayoutSubmit} from '@/components/Form/components/FormLayout';
 
 const PlanList = () => {
 
@@ -147,7 +148,11 @@ const PlanList = () => {
       }}
       footer={<Space>
         <Button onClick={() => ref.current.close()}>取消</Button>
-        <Button type="primary" onClick={() => formRef.current.submit()}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
+        <Button type="primary" onClick={() => FormLayoutSubmit({
+          currentStep,
+          setCurrentStep,
+          formRef
+        })}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
       </Space>}
     />
   </>;

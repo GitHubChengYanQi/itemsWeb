@@ -23,6 +23,8 @@ const Design = () => {
     {name: '采购单', type: ReceiptsEnums.purchaseOrder},
     {name: '生产计划', type: ReceiptsEnums.production},
     {name: '生产任务', type: ReceiptsEnums.productionTask},
+    {name: '发票管理', type: ReceiptsEnums.invoice},
+    {name: '付款管理', type: ReceiptsEnums.payment},
   ];
 
   return <>
@@ -62,12 +64,6 @@ const Design = () => {
                   onClick={() => {
                     history.push(`/form/config?type=${item.type}`);
                   }}>表单设置</Button>
-                <Button
-                  type="link"
-                  style={{padding: 0, flexGrow: 1}}
-                  onClick={() => {
-
-                  }}>详情设置</Button>
               </div>
             </Card.Grid>;
           })

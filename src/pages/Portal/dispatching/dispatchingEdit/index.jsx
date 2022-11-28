@@ -50,7 +50,7 @@ const DispatchingEdit = ({...props}) => {
         </Card>
         <Card title="派工信息" bordered={false}>
           <Form
-            NoButton={false}
+            noButton
             {...props}
             value={false}
             ref={formRef}

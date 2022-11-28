@@ -101,7 +101,7 @@ const SkuEdit = ({...props}, ref) => {
         ref={formRef}
         formActions={formActionsPublic}
         api={ApiConfig}
-        NoButton={false}
+        noButton
         fieldKey="skuId"
         formatDetail={(res) => {
           setDetails(res);

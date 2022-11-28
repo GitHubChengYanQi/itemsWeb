@@ -261,7 +261,7 @@ const Quote = ({...props}, ref) => {
           value={false}
           ref={formRef}
           api={ApiConfig}
-          NoButton={false}
+          noButton
           fieldKey="purchaseAskId"
           onSubmit={(value) => {
             if (skus && !supply.customerId) {

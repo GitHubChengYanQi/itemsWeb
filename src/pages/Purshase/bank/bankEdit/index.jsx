@@ -34,7 +34,7 @@ const BankEdit = ({NoButton,...props}, ref) => {
       {...props}
       ref={formRef}
       formActions={formActionsPublic}
-      NoButton={NoButton}
+      noButton={!NoButton}
       api={ApiConfig}
       fieldKey="bankId"
     >

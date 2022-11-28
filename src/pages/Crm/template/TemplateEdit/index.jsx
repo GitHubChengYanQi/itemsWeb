@@ -61,7 +61,7 @@ const TemplateEdit = ({module, ...props}, ref) => {
     <div style={{padding: 16}}>
       <Form
         {...props}
-        NoButton={false}
+        noButton
         ref={formRef}
         formActions={formActionsPublic}
         details={(detail) => {

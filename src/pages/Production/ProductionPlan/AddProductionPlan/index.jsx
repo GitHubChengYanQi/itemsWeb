@@ -33,7 +33,7 @@ const AddProductionPlan = ({previewData, currentStep = {}, setCurrentStep, ...pr
       ref={formRef}
       className={style.form}
       wrapperCol={24}
-      NoButton={false}
+      noButton
       value={false}
       api={{
         add: createProductionPlan,

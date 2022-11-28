@@ -29,7 +29,7 @@ const ContractContent = ({value,...props},ref) => {
       formActions={formActionsPublic}
       ref={formRef}
       api={ApiConfig}
-      NoButton={false}
+      noButton
       fieldKey="contractId"
       onSuccess={() => {
         props.onSuccess();

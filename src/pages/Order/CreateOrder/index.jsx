@@ -164,7 +164,7 @@ const CreateOrder = ({previewData, ...props}) => {
         className={style.form}
         value={id}
         ref={formRef}
-        NoButton={false}
+        noButton
         api={ApiConfig}
         labelAlign="right"
         wrapperCol={24}
@@ -263,7 +263,7 @@ const CreateOrder = ({previewData, ...props}) => {
             });
           }
 
-          setId(res?.data?.orderId);
+          setId(res?.data?.orderId || false);
           setOrder(res.data);
           setLoading(false);
         }}

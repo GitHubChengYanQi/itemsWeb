@@ -55,7 +55,7 @@ const PurchaseAskEdit = ({
         defaultValue={{
           purchaseListings: skus
         }}
-        NoButton={false}
+        noButton
         fieldKey="purchaseAskId"
         wrapperCol={24}
         onSuccess={() => {

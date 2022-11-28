@@ -47,7 +47,7 @@ const SpuEdit = ({...props}, ref) => {
   return (
     <div style={{padding: 16}}>
       <Form
-        NoButton={false}
+        noButton
         {...other}
         value={value && value.spuId}
         ref={formRef}

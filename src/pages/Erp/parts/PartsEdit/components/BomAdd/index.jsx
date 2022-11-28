@@ -25,7 +25,7 @@ const BomAdd = ({...props}, ref) => {
         <Form
           {...props}
           ref={formRef}
-          NoButton={false}
+          noButton
           api={ApiConfig}
           fieldKey="partsId"
           onError={() => {

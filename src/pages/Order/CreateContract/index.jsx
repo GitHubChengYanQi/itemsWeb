@@ -33,7 +33,7 @@ const CreateContract = ({
 
   return <div style={{padding: 24,minWidth:500}}>
     <Form
-      NoButton={false}
+      noButton
       value={false}
       ref={formRef}
       api={ApiConfig}

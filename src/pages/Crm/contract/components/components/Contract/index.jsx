@@ -18,7 +18,7 @@ const Contract = (props) => {
   return (
     <div style={{padding:20}}>
       <Form
-        NoButton={false}
+        noButton
         {...props}
         api={ApiConfig}
         fieldKey="contractId"

@@ -68,7 +68,7 @@ const CrmBusinessTrackEdit = (props, ref) => {
         ref={formRef}
         api={ApiConfig}
         fieldKey="trackMessageId"
-        NoButton={false}
+        noButton
         wrapperCol={24}
         effects={() => {
           onFieldChange$('businessTrackParams.*.classify').subscribe(({value}) => {
