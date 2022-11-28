@@ -33,16 +33,16 @@ const PaymentList = () => {
 
   const columns = [
     {dataIndex: 'paymentAmount', title: '金额(人民币)'},
-    {dataIndex: 'remark', title: '备注'},
-    {dataIndex: 'orderId', title: '关联订单'},
+    {dataIndex: 'coding', title: '关联订单'},
     {dataIndex: 'createTime', title: '创建时间'},
+    {dataIndex: 'remark', title: '备注'},
     {
       dataIndex: 'orderId', title: '操作', render: (value, record) => {
         return <>
           <EditButton onClick={() => {
-            ref.current.open(record.invoiceBillId);
+            ref.current.open(record.recordId);
           }} />
-          <DelButton api={paymentDelete} value={record.invoiceBillId} onSuccess={() => {
+          <DelButton api={paymentDelete} value={record.recordId} onSuccess={() => {
             tableRef.current.refresh();
           }} />
         </>;
