@@ -36,22 +36,22 @@ const CrmRouterConfig = [
       ...SpeechcraftRouter,
       ...OutstockApplyRouter,
       ...BusinessTrackRouter,
-      // {
-      //   path: '/order',
-      //   component: lazy(() => import('../../Order/Table/index')),
-      //   fallback: <div>loading...</div>,
-      //   exact: true,
-      // }, {
-      //   path: '/order/createOrder',
-      //   component: lazy(() => import('../../Order/CreateOrder/index')),
-      //   fallback: <div>loading...</div>,
-      //   exact: true,
-      // }, {
-      //   path: '/order/detail',
-      //   component: lazy(() => import('../../Order/Detail')),
-      //   fallback: <div>loading...</div>,
-      //   exact: true,
-      // },
+      {
+        path: '/order',
+        component: lazy(() => import('../../Order/Table/index')),
+        fallback: <div>loading...</div>,
+        exact: true,
+      }, {
+        path: '/order/createOrder',
+        component: lazy(() => import('../../Order/CreateOrder/index')),
+        fallback: <div>loading...</div>,
+        exact: true,
+      }, {
+        path: '/order/detail',
+        component: lazy(() => import('../../Order/Detail')),
+        fallback: <div>loading...</div>,
+        exact: true,
+      },
       {
         redirect: '/CRM/customer',
       },

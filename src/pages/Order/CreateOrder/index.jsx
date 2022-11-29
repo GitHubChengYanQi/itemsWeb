@@ -91,31 +91,17 @@ const CreateOrder = ({previewData, ...props}) => {
         return {
           type: 2,
           title: '创建销售单',
-          success: '创建销售单成功!',
-          error: '创建销售单失败!',
-          coding: '销售单编号',
-          dateTitle: '销售日期',
-          noteTitle: '销售单备注',
-          moneyTitle: '销售总价',
-          detailTitle: '销售明细',
-          goodTitle: '交货信息',
           addCustomer: '创建客户',
           supply: 0,
+          formType: ReceiptsEnums.saleOrder
         };
       case 'PO':
         return {
           type: 1,
           title: '创建采购单',
-          error: '创建采购单失败!',
-          success: '创建采购单成功!',
-          coding: '采购单编号',
-          dateTitle: '采购日期',
-          noteTitle: '采购单备注',
-          moneyTitle: '采购总价',
-          detailTitle: '采购明细',
-          goodTitle: '收货信息',
           addCustomer: '创建供应商',
-          supply: 1
+          supply: 1,
+          formType: ReceiptsEnums.purchaseOrder
         };
       default:
         return {};
@@ -276,7 +262,7 @@ const CreateOrder = ({previewData, ...props}) => {
           previewData={previewData}
           value={currentStep.step}
           onChange={setCurrentStep}
-          formType={ReceiptsEnums.purchaseOrder}
+          formType={module().formType}
           fieldRender={(item) => {
             let formItemProps;
             switch (item.key) {
