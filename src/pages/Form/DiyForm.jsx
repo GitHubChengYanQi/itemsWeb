@@ -7,7 +7,7 @@ import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/Mul
 import {useRequest} from '@/util/Request';
 import {formDetail, formEdit} from '@/pages/Form/url';
 import Empty from '@/components/Empty';
-import {POFormData, ProductionFormData, ProductionTaskFormData} from '@/pages/Form/formFileData';
+import {POFormData, ProductionFormData, ProductionTaskFormData, SOFormData} from '@/pages/Form/formFileData';
 import {isArray, isObject} from '@/util/Tools';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 import CreateOrder from '@/pages/Order/CreateOrder';
@@ -73,6 +73,9 @@ const DiyForm = () => {
         case ReceiptsEnums.purchaseOrder:
           newFileData = POFormData;
           break;
+        case ReceiptsEnums.saleOrder:
+          newFileData = SOFormData;
+          break;
         case ReceiptsEnums.production:
           newFileData = ProductionFormData;
           break;
@@ -89,7 +92,7 @@ const DiyForm = () => {
         const moduleInfo = typeSetting[module] || {};
         const newInit = [];
         isArray(moduleInfo.steps).forEach(item => {
-          newInit.push({...item, data: setTable(item.data, keys,formFileds)});
+          newInit.push({...item, data: setTable(item.data, keys, formFileds)});
         });
         setConfig({
           width: moduleInfo.width || (mobile ? 400 : 100),
@@ -135,6 +138,10 @@ const DiyForm = () => {
   switch (searchParams.type) {
     case ReceiptsEnums.purchaseOrder:
       title = '采购单';
+      PreviewDom = CreateOrder;
+      break;
+    case ReceiptsEnums.saleOrder:
+      title = '销售单';
       PreviewDom = CreateOrder;
       break;
     case ReceiptsEnums.production:
@@ -192,7 +199,7 @@ const DiyForm = () => {
       extra={<CloseOutlined style={{cursor: 'pointer'}} onClick={() => setOpenPreview(false)} />}
     >
       <div style={{textAlign: 'center'}}>
-        <div style={{textAlign: 'initial',display:'inline-block'}}>
+        <div style={{textAlign: 'initial', display: 'inline-block'}}>
           {PreviewDom ? <PreviewDom previewData={openPreview} {...previewDomProps} /> : <Empty />}
         </div>
       </div>

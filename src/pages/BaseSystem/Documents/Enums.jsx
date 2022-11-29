@@ -2,6 +2,7 @@ export const ReceiptsEnums = {
   instockOrder: 'INSTOCK',
   purchaseAsk: 'PURCHASE',
   purchaseOrder: 'PURCHASEORDER',
+  saleOrder: 'SALEORDER',
   instockError: 'ERROR',
   outstockOrder: 'OUTSTOCK',
   quality: 'QUALITY',
