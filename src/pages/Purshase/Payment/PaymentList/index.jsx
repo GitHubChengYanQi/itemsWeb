@@ -5,15 +5,16 @@
  * @Date 2022-02-24 14:55:10
  */
 
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {createFormActions} from '@formily/antd';
+import {Button} from 'antd';
 import Table from '@/components/Table';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
 import EditButton from '@/components/EditButton';
-import DelButton from '@/components/DelButton';
 import PaymentEdit from '@/pages/Purshase/Payment/PaymentEdit';
-import {paymentDelete, paymentList} from '@/pages/Purshase/Payment/PaymentUrl';
+import {paymentList} from '@/pages/Purshase/Payment/PaymentUrl';
+import {useRequest} from '@/util/Request';
 
 const formActionsPublic = createFormActions();
 
@@ -21,30 +22,44 @@ const PaymentList = () => {
 
   const ref = useRef(null);
   const tableRef = useRef(null);
+
+  const {loading, run} = useRequest({
+    url: '/paymentRecord/obsolete',
+    method: 'POST',
+  }, {
+    manual: true,
+    onSuccess: (result, params) => {
+
+    },
+    onError: () => {
+
+    }
+  });
+
   const actions = () => {
     return (
       <>
         <AddButton onClick={() => {
           ref.current.open(false);
-        }} />
+        }}/>
       </>
     );
   };
-
   const columns = [
     {dataIndex: 'paymentAmount', title: '金额(人民币)'},
     {dataIndex: 'coding', title: '关联订单'},
     {dataIndex: 'createTime', title: '创建时间'},
     {dataIndex: 'remark', title: '备注'},
     {
-      dataIndex: 'orderId', title: '操作', render: (value, record) => {
+      dataIndex: 'orderId', title: '操作', render: (value, record,index) => {
         return <>
           <EditButton onClick={() => {
             ref.current.open(record.recordId);
-          }} />
-          <DelButton api={paymentDelete} value={record.recordId} onSuccess={() => {
-            tableRef.current.refresh();
-          }} />
+          }}/>
+          <Button loading={loading} type='link' danger onClick={() => {
+            run({data: {recordId: record.recordId}});
+          }}>作废</Button>
+
         </>;
       }
     },
@@ -69,7 +84,7 @@ const PaymentList = () => {
       <Drawer width={800} title="付款记录" component={PaymentEdit} onSuccess={() => {
         tableRef.current.refresh();
         ref.current.close();
-      }} ref={ref} />
+      }} ref={ref}/>
     </>
   );
 };

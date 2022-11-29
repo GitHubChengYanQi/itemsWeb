@@ -17,8 +17,8 @@ export const paymentEdit = {
   rowKey: 'recordId'
 };
 
-export const paymentDelete = {
-  url: '/paymentRecord/delete',
+export const paymentObsolete = {
+  url: '/paymentRecord/obsolete',
   method: 'POST',
   rowKey: 'recordId',
 };
