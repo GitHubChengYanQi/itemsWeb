@@ -54,6 +54,10 @@ const PhoneEdit = ({...props}, ref) => {
         label="电话号码"
         name="phoneNumber"
         component={SysField.PhoneNumber}
+        rules={[
+          {required: true,message:'请输入手机号或座机号！'},
+          {pattern:'^((0\\d{2,3}-\\d{7,8})|(1[3456789]\\d{9}))$',message:'请输入正确的手机号或座机号!'}
+        ]}
         required
       />
     </Form>

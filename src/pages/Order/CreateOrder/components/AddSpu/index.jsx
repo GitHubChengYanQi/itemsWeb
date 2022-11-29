@@ -73,7 +73,7 @@ const AddSpu = (
       }
       return null;
     });
-    if (!v) {
+    if (!v && !value) {
       const sku = newConfigList.find(item => Object.keys(item).length === 1 && Object.keys(item)[0] === 'id');
       change(sku?.id);
     } else if (onSku.length === 1) {
