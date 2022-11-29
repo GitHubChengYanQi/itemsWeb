@@ -18,6 +18,8 @@ import {isArray, isObject} from '@/util/Tools';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 import CreateOrder from '@/pages/Order/CreateOrder';
 import AddProductionPlan from '@/pages/Production/ProductionPlan/AddProductionPlan';
+import InvoiceEdit from '@/pages/Purshase/Invoice/InvoiceEdit';
+import PaymentEdit from '@/pages/Purshase/Payment/PaymentEdit';
 
 const DiyForm = () => {
 
@@ -133,11 +135,11 @@ const DiyForm = () => {
   }, []);
 
   if (loading) {
-    return <ProSkeleton/>;
+    return <ProSkeleton />;
   }
 
   if (!detail) {
-    return <Empty/>;
+    return <Empty />;
   }
 
   let title = '';
@@ -162,9 +164,11 @@ const DiyForm = () => {
       break;
     case ReceiptsEnums.invoice:
       title = '发票管理';
+      PreviewDom = InvoiceEdit;
       break;
     case ReceiptsEnums.payment:
       title = '付款管理';
+      PreviewDom = PaymentEdit;
       break;
     default:
       break;
@@ -207,11 +211,11 @@ const DiyForm = () => {
       title={`${title}表单配置`}
       open={openPreview}
       onClose={() => setOpenPreview(null)}
-      extra={<CloseOutlined style={{cursor: 'pointer'}} onClick={() => setOpenPreview(false)}/>}
+      extra={<CloseOutlined style={{cursor: 'pointer'}} onClick={() => setOpenPreview(false)} />}
     >
       <div style={{textAlign: 'center'}}>
         <div style={{textAlign: 'initial', display: 'inline-block'}}>
-          {PreviewDom ? <PreviewDom previewData={openPreview} {...previewDomProps} /> : <Empty/>}
+          {PreviewDom ? <PreviewDom previewData={openPreview} {...previewDomProps} /> : <Empty />}
         </div>
       </div>
     </Drawer>

@@ -13,7 +13,7 @@ import {invoiceAdd, invoiceDetail, invoiceEdit} from '@/pages/Purshase/Invoice/I
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 import DatePicker from '@/components/DatePicker';
 import style from '@/pages/Order/CreateOrder/index.module.less';
-import FormLayout from '@/components/Form/components/FormLayout';
+import FormLayout, {FormLayoutSubmit} from '@/components/Form/components/FormLayout';
 import {isArray} from '@/util/Tools';
 import InputNumber from '@/components/InputNumber';
 import FileUpload from '@/components/FileUpload';
@@ -29,7 +29,7 @@ const ApiConfig = {
   save: invoiceEdit
 };
 
-const InvoiceEdit = (props) => {
+const InvoiceEdit = ({previewData, ...props}) => {
 
   const formRef = useRef();
 
@@ -63,6 +63,7 @@ const InvoiceEdit = (props) => {
       }}
     >
       <FormLayout
+        previewData={previewData}
         value={currentStep.step}
         onChange={setCurrentStep}
         formType={ReceiptsEnums.invoice}
@@ -108,14 +109,14 @@ const InvoiceEdit = (props) => {
       />
     </Form>
 
-    <FormButtonGroup offset={11} className={style.bottom}>
+    {!previewData && <FormButtonGroup offset={11} className={style.bottom}>
       <Button
         type="primary"
-        onClick={() => formRef.current.submit()}>
+        onClick={() =>   FormLayoutSubmit({currentStep, setCurrentStep, formRef})}>
         {currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}
       </Button>
       <Reset>取消</Reset>
-    </FormButtonGroup>
+    </FormButtonGroup>}
   </>;
 };
 
