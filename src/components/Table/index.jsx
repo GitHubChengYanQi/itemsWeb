@@ -61,11 +61,11 @@ const TableWarp = (
     // m
     maxHeight,
     // n
+    noTableColumnSet,
     NoChildren,
     noPagination,
     noSort,
     noRowSelection,
-    noTableColumn,
     // o
     onChange = () => {
     },
@@ -236,14 +236,18 @@ const TableWarp = (
     );
   };
 
-  const {tableColumn, setButton} = useTableSet(children || (columns.map((item, index) => ({
-    ...item,
-    key: `${index}`,
-    render: (value, record, index) => {
-      return typeof item.render === 'function' ? item.render(value, record, index) :
-        <Render text={typeof value === 'object' ? '' : (value || '-')} />;
-    }
-  }))), tableKey);
+  const columnsFormat = () => {
+    return columns.map((item, index) => ({
+      ...item,
+      key: `${index}`,
+      render: (value, record, index) => {
+        return typeof item.render === 'function' ? item.render(value, record, index) :
+          <Render text={typeof value === 'object' ? '' : (value || '-')} />;
+      }
+    }));
+  };
+
+  const {tableColumn, setButton} = useTableSet(children || columnsFormat(), tableKey);
 
   return (
     <div className={style.tableWarp} id="listLayout" style={{height: '100%', overflowX: 'hidden'}}>
@@ -307,7 +311,7 @@ const TableWarp = (
             bodyStyle={bodyStyle}
             extra={<Space>
               {actionButton}
-              {!headStyle && !noTableColumn && setButton}
+              {!headStyle && !noTableColumnSet && setButton}
             </Space>}
           >
             {showCard}
@@ -329,12 +333,12 @@ const TableWarp = (
                     width: 40,
                     render: (value, record, index) => <Render text={index + 1} width={40} maxWidth={40} />
                   }]),
-                  ...tableColumn.filter((items) => {
+                  ...(noTableColumnSet ? columnsFormat() : tableColumn.filter((items) => {
                     if (items && items.props && items.props.visible === false) {
                       return false;
                     }
                     return !(items && (items.checked === false));
-                  }),
+                  })),
                 ]}
                 pagination={
                   noPagination ? false : {
@@ -390,7 +394,7 @@ const TableWarp = (
                     }
 
                   }} />}
-                {tableColumn.filter((items) => {
+                {noTableColumnSet ? children : tableColumn.filter((items) => {
                   if (items && items.props && items.props.visible === false) {
                     return false;
                   }
