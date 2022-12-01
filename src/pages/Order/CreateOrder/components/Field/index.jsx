@@ -422,7 +422,7 @@ export const DateWay = (props) => {
 };
 
 export const dateNumber = (props) => {
-  return (<InputNumber min={1} {...props} />);
+  return (<InputNumber min={1} {...props} style={{minWidth:50}} />);
 };
 
 export const DeliveryWay = (props) => {

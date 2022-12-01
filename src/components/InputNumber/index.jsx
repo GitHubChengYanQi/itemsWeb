@@ -15,6 +15,7 @@ const InputNumber = (
     min,
     addonAfter,
     status,
+    style = {},
     ...props
   }) => {
 
@@ -26,7 +27,7 @@ const InputNumber = (
     addonAfter={addonAfter}
     controls={false}
     min={min === undefined ? 1 : min}
-    style={{width: width || '100%'}}
+    style={{width: width || '100%', ...style}}
     value={value}
     placeholder={placeholder}
     {...props}
