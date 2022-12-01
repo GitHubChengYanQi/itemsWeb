@@ -12,6 +12,7 @@ import Empty from '@/components/Empty';
 import Modal from '@/components/Modal';
 import AddProductionPlan from '@/pages/Production/ProductionPlan/AddProductionPlan';
 import {isArray} from '@/util/Tools';
+import Note from '@/components/Note';
 
 const PlanList = () => {
 
@@ -61,38 +62,39 @@ const PlanList = () => {
                   bordered={false}
                   dataSource={[1]}
                   renderItem={() => {
-                    return planItem.planDetailResults && (
-                      <div className={styles.parent}>
-                        <div className={styles.leftDiv}>
-                          {
-                            planItem.planDetailResults.map((rowItem, index) => {
-                              const skuResult = rowItem.skuResult || {};
-                              return <div key={index} style={{padding: 24, borderBottom: 'solid #eee 1px'}}>
-                                <Space size={24}>
-                                  <Space direction="vertical">
-                                    <div>
-                                      <Label>物料编码：</Label>{skuResult && skuResult.standard}
-                                    </div>
-                                    <Button type="link" style={{padding: 0}}>
-                                      <SkuResultSkuJsons skuResult={skuResult} />
-                                    </Button>
-                                  </Space>
+                    const details = isArray(planItem.planDetailResults);
+                    return <div className={styles.parent}>
+                      <div className={styles.leftDiv}>
+                        {details.length === 0 && <Empty />}
+                        {
+                          details.map((rowItem, index) => {
+                            const skuResult = rowItem.skuResult || {};
+                            return <div key={index} style={{padding: 24, borderBottom: 'solid #eee 1px'}}>
+                              <Space size={24}>
+                                <Space direction="vertical">
                                   <div>
-                                    × {rowItem.planNumber}
+                                    <Label>物料编码：</Label>{skuResult && skuResult.standard}
                                   </div>
+                                  <Button type="link" style={{padding: 0}}>
+                                    <SkuResultSkuJsons skuResult={skuResult} />
+                                  </Button>
                                 </Space>
-                                <div style={{float: 'right', lineHeight: '62px'}}>
-                                  <Label>物料描述：</Label><SkuResultSkuJsons describe skuResult={skuResult} />
+                                <div>
+                                  × {rowItem.planNumber}
                                 </div>
-                              </div>;
-                            })
-                          }</div>
-                        <div className={styles.rightDiv} onClick={() => {
-                          history.push(`/production/productionPlan/detail?id=${planItem.productionPlanId}`);
-                        }}>详情
-                        </div>
+                              </Space>
+                              <div style={{float: 'right', lineHeight: '62px', display: 'flex'}}>
+                                <Label>物料描述：</Label>
+                                <Note maxWidth={300}><SkuResultSkuJsons describe skuResult={skuResult} /></Note>
+                              </div>
+                            </div>;
+                          })
+                        }</div>
+                      <div className={styles.rightDiv} onClick={() => {
+                        history.push(`/production/productionPlan/detail?id=${planItem.productionPlanId}`);
+                      }}>详情
                       </div>
-                    );
+                    </div>;
                   }} />
               </Card>
             </div>
@@ -147,7 +149,12 @@ const PlanList = () => {
       }}
       footer={<Space>
         <Button onClick={() => ref.current.close()}>取消</Button>
-        <Button type="primary" onClick={() => formRef.current.submit()}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
+        <Button
+          type="primary"
+          onClick={() => formRef.current.submit()}
+        >
+          {currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}
+        </Button>
       </Space>}
     />
   </>;

@@ -20,7 +20,6 @@ const PlanDetail = () => {
   const history = useHistory();
 
   const {loading, data, run} = useRequest(productionPlanDetail, {manual: true});
-  console.log(data);
 
   useEffect(() => {
     if (params.id) {
