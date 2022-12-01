@@ -87,6 +87,7 @@ const InvoiceEdit = (props) => {
             case 'InvoiceDate':
               formItemProps = {
                 component: DatePicker,
+                showTime: true,
               };
               break;
             case 'orderId':
