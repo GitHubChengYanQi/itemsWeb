@@ -43,14 +43,14 @@ const StorehouseList = (props) => {
   const actions = () => {
     return (
       <Space>
-        <AddButton onClick={() => {
-          ref.current.open(false);
-        }} />
         <Import
           url={`${baseURI}Excel/importPosition`}
           title="导入库位"
           module="position"
         />
+        <AddButton onClick={() => {
+          ref.current.open(false);
+        }} />
       </Space>
     );
   };
@@ -87,7 +87,8 @@ const StorehouseList = (props) => {
           <Button type="link" title={search ? '收起高级搜索' : '展开高级搜索'} onClick={() => {
             toggle();
           }}>
-            <Icon type={search ? 'icon-shouqi' : 'icon-gaojisousuo'} />{search ? '收起' : '高级'}</Button>
+            <Icon type={search ? 'icon-shouqi' : 'icon-gaojisousuo'} />{search ? '收起' : '高级'}
+          </Button>
         </FormButtonGroup>
       </>
     );
@@ -110,6 +111,8 @@ const StorehouseList = (props) => {
   return (
     <>
       <Table
+        listHeader={false}
+        cardHeaderStyle={{display:'none'}}
         contentHeight
         title={<Breadcrumb title="仓库管理" />}
         api={storehouseList}

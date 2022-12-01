@@ -96,10 +96,12 @@ const ProcessList = ({noTitle, value}) => {
   return (
     <>
       <Table
+        noRowSelection
         title={!noTitle && <Breadcrumb />}
         contentHeight={noTitle}
         api={processList}
         rowKey="processId"
+        headStyle={{display:value && 'none'}}
         searchForm={searchForm}
         actions={actions()}
         ref={tableRef}

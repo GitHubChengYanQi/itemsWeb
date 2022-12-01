@@ -186,7 +186,7 @@ const DiyForm = () => {
       destroyOnClose
       height="100%"
       placement="top"
-      title={`${title}表单配置`}
+      title={`${title}表单预览`}
       open={openPreview}
       onClose={() => setOpenPreview(null)}
       extra={<CloseOutlined style={{cursor: 'pointer'}} onClick={() => setOpenPreview(false)} />}
