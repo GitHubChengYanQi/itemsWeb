@@ -7,7 +7,7 @@
 
 import React, {useRef, useState} from 'react';
 import {createFormActions} from '@formily/antd';
-import {Button,message} from 'antd';
+import {Button, message} from 'antd';
 import Table from '@/components/Table';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
@@ -22,15 +22,15 @@ const PaymentList = () => {
   const ref = useRef(null);
   const tableRef = useRef(null);
 
-  const {run,fetches} = useRequest({
+  const {run, fetches} = useRequest({
     url: '/paymentRecord/obsolete',
     method: 'POST',
   }, {
     manual: true,
     fetchKey: ({data: {recordId}}) => recordId,
     onSuccess: () => {
-        message.success('作废成功');
-        tableRef.current.refresh();
+      message.success('作废成功');
+      tableRef.current.refresh();
     },
     onError: () => {
 
@@ -42,7 +42,7 @@ const PaymentList = () => {
       <>
         <AddButton onClick={() => {
           ref.current.open(false);
-        }}/>
+        }} />
       </>
     );
   };
@@ -57,11 +57,17 @@ const PaymentList = () => {
         return <>
           <EditButton onClick={() => {
             ref.current.open(record.recordId);
-          }}/>
-          <Button disabled={record.status === 50} loading={fetches[record.recordId]?.loading} type='link' danger
-                  onClick={() => {run({data: {recordId: record.recordId}});}}
+          }} />
+          <Button
+            disabled={record.status === 50}
+            loading={fetches[record.recordId]?.loading}
+            type="link"
+            danger
+            onClick={() => {
+              run({data: {recordId: record.recordId}});
+            }}
           >
-            {fetches[{data: {recordId: record.recordId}}]?.loading ? 'loading' : '作废'}
+            作废
           </Button>
         </>;
       }
@@ -88,7 +94,7 @@ const PaymentList = () => {
       <Drawer width={800} title="付款记录" component={PaymentEdit} onSuccess={() => {
         tableRef.current.refresh();
         ref.current.close();
-      }} ref={ref}/>
+      }} ref={ref} />
     </>
   );
 };
