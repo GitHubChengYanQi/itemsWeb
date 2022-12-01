@@ -35,7 +35,7 @@ const InvoiceList = () => {
 
   const columns = [
     {dataIndex: 'name', title: '发票名称'},
-    {dataIndex: 'InvoiceDate', title: '发票日期'},
+    {dataIndex: 'invoiceDate', title: '发票日期'},
     {dataIndex: 'money', title: '金额(人民币)'},
     {
       dataIndex: 'enclosureId', title: '附件', align: 'center', render: (value, record) => {
