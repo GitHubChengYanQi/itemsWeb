@@ -112,7 +112,15 @@ const TableWarp = (
     },
   );
 
-  const defaultTableQuery = state.params && JSON.parse(state.params) || {};
+  let defaultTableQuery =  {};
+
+  if (!isModal) {
+    try {
+      defaultTableQuery = state.params && JSON.parse(state.params);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   if (!formActions) {
     formActions = formActionsPublic;
