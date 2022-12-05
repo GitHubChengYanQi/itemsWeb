@@ -59,7 +59,7 @@ const PaymentList = (
       <>
         <AddButton onClick={() => {
           ref.current.open(false);
-        }}/>
+        }} />
       </>
     );
   };
@@ -119,7 +119,7 @@ const PaymentList = (
       <Drawer width={800} title="付款记录" component={PaymentEdit} onSuccess={() => {
         tableRef.current.refresh();
         ref.current.close();
-      }} ref={ref}/>
+      }} ref={ref} />
     </>
   );
 };
