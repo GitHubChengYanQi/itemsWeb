@@ -11,7 +11,7 @@ export const StockForewarnRouter = [
   {
     path: '/stockForewarn',
     name: '库存预警',
-    component: lazy(() => import('../Set/index')),
+    component: lazy(() => import('../List/index')),
     fallback: <div>loading...</div>,
     exact: true,
   }

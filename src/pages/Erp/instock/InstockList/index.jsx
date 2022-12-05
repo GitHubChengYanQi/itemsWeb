@@ -54,12 +54,12 @@ const InstockList = () => {
 
     return (
       <Space wrap>
-          <FormItem
-            mega-props={{span: 1}}
-            placeholder="仓库名称"
-            name="storehouseId"
-            component={SysField.StoreHouseSelect} />
-          {search ? formItem() : null}
+        <FormItem
+          mega-props={{span: 1}}
+          placeholder="仓库名称"
+          name="storehouseId"
+          component={SysField.StoreHouseSelect} />
+        {search ? formItem() : null}
       </Space>
     );
   };
@@ -67,13 +67,13 @@ const InstockList = () => {
   const Search = () => {
     return (
       <>
-          <FormButtonGroup>
-            <Submit><SearchOutlined />查询</Submit>
-            <Button type="link" title={search ? '收起高级搜索' : '展开高级搜索'} onClick={() => {
-              toggle();
-            }}>
-              <Icon type={search ? 'icon-shouqi' : 'icon-gaojisousuo'} />{search ? '收起' : '高级'}</Button>
-          </FormButtonGroup>
+        <FormButtonGroup>
+          <Submit><SearchOutlined />查询</Submit>
+          <Button type="link" title={search ? '收起高级搜索' : '展开高级搜索'} onClick={() => {
+            toggle();
+          }}>
+            <Icon type={search ? 'icon-shouqi' : 'icon-gaojisousuo'} />{search ? '收起' : '高级'}</Button>
+        </FormButtonGroup>
       </>
     );
   };
