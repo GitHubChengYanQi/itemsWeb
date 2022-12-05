@@ -27,11 +27,12 @@ export const Palce = (props) => {
 };
 
 export const Position = (props) => {
-  const {value, onChange, id} = props;
+  const {value, onChange, id,placeholder} = props;
   return <Cascader
     width={200}
     value={value}
     resh={id}
+    placeholder={placeholder}
     api={storehousePositionsTreeView}
     defaultParams={{params: {ids: id}}}
     onChange={onChange} />;
