@@ -112,11 +112,11 @@ const TableWarp = (
     },
   );
 
-  let defaultTableQuery =  {};
+  let defaultTableQuery = {};
 
   if (!isModal) {
     try {
-      defaultTableQuery = state.params && JSON.parse(state.params);
+      defaultTableQuery = state.params && JSON.parse(state.params) || {};
     } catch (e) {
       console.log(e);
     }
@@ -171,6 +171,11 @@ const TableWarp = (
           },
           ...other,
           params: page
+        }).catch(() => {
+          format({});
+          return {
+            dataSource: []
+          };
         });
       }
       response.data = format(response.data);

@@ -116,7 +116,6 @@ const StockTable = (props) => {
 
   return (
     <Table
-      isModal={false}
       ref={tableRef}
       noRowSelection
       actionButton={actions()}
