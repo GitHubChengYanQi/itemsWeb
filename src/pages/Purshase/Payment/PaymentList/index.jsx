@@ -5,9 +5,10 @@
  * @Date 2022-02-24 14:55:10
  */
 
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {createFormActions} from '@formily/antd';
-import {Button,message} from 'antd';
+import {Button, message} from 'antd';
+import {useHistory} from "ice";
 import Table from '@/components/Table';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
@@ -15,27 +16,43 @@ import EditButton from '@/components/EditButton';
 import PaymentEdit from '@/pages/Purshase/Payment/PaymentEdit';
 import {paymentList} from '@/pages/Purshase/Payment/PaymentUrl';
 import {useRequest} from '@/util/Request';
+import Form from '@/components/Form';
+import {Money, Status} from '@/pages/Purshase/Payment/PaymentField';
 
 const formActionsPublic = createFormActions();
+const {FormItem} = Form;
 
-const PaymentList = () => {
+const PaymentList = (
+  {
+    onClose = () => {
+    }
+  }) => {
   const ref = useRef(null);
   const tableRef = useRef(null);
 
-  const {run,fetches} = useRequest({
+  const history = useHistory();
+
+  const {run, fetches} = useRequest({
     url: '/paymentRecord/obsolete',
     method: 'POST',
   }, {
     manual: true,
     fetchKey: ({data: {recordId}}) => recordId,
     onSuccess: () => {
-        message.success('作废成功');
-        tableRef.current.refresh();
+      message.success('作废成功');
+      tableRef.current.refresh();
     },
     onError: () => {
 
     }
   });
+
+  const searchForm = () => {
+    return <>
+      <FormItem label="金额" name="money" component={Money}/>
+      <FormItem label="订单状态" name="status" component={Status}/>
+    </>;
+  };
 
   const actions = () => {
     return (
@@ -49,7 +66,16 @@ const PaymentList = () => {
 
   const columns = [
     {dataIndex: 'paymentAmount', title: '金额(人民币)'},
-    {dataIndex: 'coding', title: '关联订单'},
+    {
+      dataIndex: 'coding', title: '关联订单', render: (value, record) => {
+        return <>
+          <Button type="link" onClick={() => {
+            onClose();
+            history.push(`/purchase/order/detail?id=${record.orderId}`);
+          }}>{value}</Button>
+        </>;
+      }
+    },
     {dataIndex: 'createTime', title: '创建时间'},
     {dataIndex: 'remark', title: '备注'},
     {
@@ -58,10 +84,16 @@ const PaymentList = () => {
           <EditButton onClick={() => {
             ref.current.open(record.recordId);
           }}/>
-          <Button disabled={record.status === 50} loading={fetches[record.recordId]?.loading} type='link' danger
-                  onClick={() => {run({data: {recordId: record.recordId}});}}
+          <Button
+            disabled={record.status === 50}
+            loading={fetches[record.recordId]?.loading}
+            type='link'
+            danger
+            onClick={() => {
+              run({data: {recordId: record.recordId}});
+            }}
           >
-            {fetches[{data: {recordId: record.recordId}}]?.loading ? 'loading' : '作废'}
+            作废
           </Button>
         </>;
       }
@@ -75,11 +107,10 @@ const PaymentList = () => {
         columns={columns}
         listHeader={false}
         cardHeaderStyle={{display: 'none'}}
-        SearchButton
-        searchForm
         formActions={formActionsPublic}
         api={paymentList}
         rowKey="recordId"
+        searchForm={searchForm}
         noRowSelection
         contentHeight
         actions={actions()}

@@ -21,31 +21,35 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
   const [type, setType] = useState(null);
 
   const ref = useRef();
+  const setRef = useRef();
 
   const RenderComponent = () => {
     switch (type) {
       case '黑名单管理':
-        return <SupplierBlacklistList />;
+        return <SupplierBlacklistList/>;
       case '税率管理':
-        return <TaxRateList />;
+        return <TaxRateList/>;
       case '品牌管理':
-        return <BrandList />;
+        return <BrandList/>;
       case '合同分类管理':
-        return <ContractClassList />;
+        return <ContractClassList/>;
       case '合同模板管理':
-        return <TemplateList />;
+        return <TemplateList/>;
       case '供应商级别管理':
-        return <CrmCustomerLevelList />;
+        return <CrmCustomerLevelList/>;
       case '付款计划模板':
-        return <PaymentTemplateList />;
+        return <PaymentTemplateList/>;
       case '行业管理':
-        return <CrmIndustryList />;
+        return <CrmIndustryList/>;
       case '银行管理':
-        return <BankList />;
+        return <BankList/>;
       case '发票管理':
-        return <InvoiceList />;
+        return <InvoiceList/>;
       case '付款管理':
-        return <PaymentList />;
+        return <PaymentList onClose={() => {
+          setRef.current.close();
+          ref.current.close();
+        }}/>;
       default:
         return null;
     }
@@ -54,6 +58,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
   return (
     <>
       <SetView
+        ref={setRef}
         mode={mode}
         theme={theme}
         width={width}
@@ -79,7 +84,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             {key: '发票管理', label: '发票管理'},
             {key: '付款管理', label: '付款管理'},
           ]}
-        />} />
+        />}/>
       <Modal headTitle={type} footer={[]} width={1200} ref={ref}>{RenderComponent()}</Modal>
     </>
   );

@@ -1,11 +1,19 @@
 import {Drawer, Menu} from 'antd';
-import React, {useState} from 'react';
+import React, {useImperativeHandle, useState} from 'react';
 import Icon from '@/components/Icon';
 import styles from './index.module.scss';
 
-const SetView = ({mode = 'horizontal', theme, width = '50%', buttons = [], SetMenu}) => {
+const SetView = ({mode = 'horizontal', theme, width = '50%', buttons = [], SetMenu}, ref) => {
 
   const [drawerIsShow, showDrawer] = useState(false);
+
+  const close = () => {
+    showDrawer(false);
+  };
+
+  useImperativeHandle(ref, () => ({
+    close
+  }));
 
   return (
     <>
@@ -17,7 +25,7 @@ const SetView = ({mode = 'horizontal', theme, width = '50%', buttons = [], SetMe
         items={[
           {
             key: 'setting',
-            label: <Icon type="icon-xitongpeizhi" />,
+            label: <Icon type="icon-xitongpeizhi"/>,
             onClick: () => showDrawer(true),
             style: {width, textAlign: 'center'}
           },
@@ -44,4 +52,4 @@ const SetView = ({mode = 'horizontal', theme, width = '50%', buttons = [], SetMe
     </>
   );
 };
-export default SetView;
+export default React.forwardRef(SetView);

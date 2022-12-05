@@ -273,7 +273,7 @@ const TableWarp = (
                   {...form}
                   actions={formActions}
                 >
-                  {typeof searchForm === 'function' && searchForm()}
+                  {typeof  searchForm === 'function' && searchForm()}
                   {SearchButton ||
                   <FormButtonGroup>
                     <Button
