@@ -16,10 +16,12 @@ const Tree = (props) => {
   if (data) {
     return (<AntdTree
       onCheck={(values,checkInfo) => {
-        onChange(values,checkInfo.checkedNodes);
+        const halfCheckedKeys = checkInfo.halfCheckedKeys || [];
+        console.log([...values,...halfCheckedKeys]);
+        onChange([...values,...halfCheckedKeys],checkInfo.checkedNodes);
       }}
       defaultExpandedKeys={['0']}
-      selectable={false}
+      // selectable={false}
       checkable
       checkedKeys={value}
       treeData={data}

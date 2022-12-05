@@ -25,6 +25,7 @@ import {skuList} from '@/pages/Erp/sku/skuUrl';
 import Render from '@/components/Render';
 import Note from '@/components/Note';
 import {useRequest} from '@/util/Request';
+import {isArray} from '@/util/Tools';
 
 const {baseURI} = config;
 const {FormItem} = Form;
@@ -86,9 +87,9 @@ const StockTable = (props) => {
           name="selectBom"
           component={SelectBom} />
         <FormItem
-          visible={storeHouse || false}
+          visible={isArray(storeHouse)[0] || false}
           label="库位"
-          id={storeHouse && storeHouse[0]}
+          id={isArray(storeHouse)[0]}
           placeholder="搜索库位"
           name="storehousePositionsId"
           component={Position} />
@@ -116,7 +117,6 @@ const StockTable = (props) => {
 
   return (
     <Table
-      isModal={false}
       ref={tableRef}
       noRowSelection
       actionButton={actions()}
