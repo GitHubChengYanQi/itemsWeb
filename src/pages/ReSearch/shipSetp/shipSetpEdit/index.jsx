@@ -41,6 +41,7 @@ const ShipSetpEdit = ({...props}, ref) => {
         labelCol={5}
         onError={() => {
         }}
+        formatDetail={(detail) => ({...detail, sopId: detail?.sopResult?.sopId})}
         onSuccess={() => {
           props.onSuccess();
         }}
