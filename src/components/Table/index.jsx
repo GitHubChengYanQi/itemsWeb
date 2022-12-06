@@ -77,6 +77,7 @@ const TableWarp = (
     rowSelection,
     rowKey,
     // s
+    searchStyle,
     submitValues = {},
     sortAction,
     showCard,
@@ -260,7 +261,7 @@ const TableWarp = (
           style={{height: contentHeight || 'calc(100vh - 128px)', overflow: 'auto'}}
           id="tableContent"
         >
-          {searchForm ? <div className="search" style={headStyle}>
+          {searchForm ? <div className="search" style={headStyle || searchStyle}>
             <Row justify="space-between">
               <Col>
                 <Form

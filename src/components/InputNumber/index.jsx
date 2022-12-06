@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {InputNumber as AntInputNumber} from 'antd';
-import styles from './index.module.less';
 import classNames from 'classnames';
+import styles from './index.module.less';
 
 const InputNumber = (
   {
@@ -12,6 +12,7 @@ const InputNumber = (
     width,
     onChange = () => {
     },
+    style = {},
     min,
     addonAfter,
     status,
@@ -26,7 +27,7 @@ const InputNumber = (
     addonAfter={addonAfter}
     controls={false}
     min={min === undefined ? 1 : min}
-    style={{width: width || '100%'}}
+    style={{width: width || '100%', ...style}}
     value={value}
     placeholder={placeholder}
     {...props}
