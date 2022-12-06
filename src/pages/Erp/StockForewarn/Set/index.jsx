@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import ProCard from '@ant-design/pro-card';
-import {Button, Input, message, Radio, Space} from 'antd';
+import {Button, Input, message, Modal, Radio, Space} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import styles from './index.module.less';
 import SelectSku from '@/pages/Erp/sku/components/SelectSku';
@@ -27,10 +27,28 @@ const Set = () => {
   const [data, setData] = useState({type: 'sku'});
 
   const {addLoading, run: add} = useRequest(stockForewarnAdd, {
+    response: true,
     manual: true,
-    onSuccess: () => {
-      message.success('添加成功!');
-      tableRef.current.submit();
+    onSuccess: (res) => {
+      if (res.errCode === 1001) {
+        Modal.warn({
+          content: '此条件已设置，是否更新预警条件？',
+          onOk: () => {
+            return add({
+              data: {
+                type: data.type,
+                forewarnContextId: data.id,
+                inventoryFloor: data.min,
+                inventoryCeiling: data.max,
+              }
+            });
+          }
+        });
+      } else {
+        message.success('添加成功!');
+        tableRef.current.submit();
+        setData({type: 'sku'});
+      }
     }
   });
 
