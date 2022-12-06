@@ -15,6 +15,7 @@ import {storehousePositionsTreeView} from '@/pages/Erp/storehouse/components/sto
 import {useRequest} from '@/util/Request';
 import {stockForewarnAdd, stockForewarnDelete, stockForewarnList} from '@/pages/Erp/StockForewarn/url';
 import Form from '@/components/Form';
+import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 
 const {FormItem} = Form;
 
@@ -31,13 +32,14 @@ const Set = () => {
     manual: true,
     onSuccess: (res) => {
       if (res.errCode === 1001) {
-        Modal.warn({
-          content: '此条件已设置，是否更新预警条件？',
+        Modal.confirm({
+          content: res.message,
           onOk: () => {
             return add({
               data: {
+                update: true,
                 type: data.type,
-                forewarnContextId: data.id,
+                formId: data.id,
                 inventoryFloor: data.min,
                 inventoryCeiling: data.max,
               }
@@ -64,7 +66,20 @@ const Set = () => {
         return types.find(item => item.value === value)?.label || '-';
       }
     },
-    {title: '内容', dataIndex: 'forewarnContextId'},
+    {
+      title: '内容', dataIndex: 'formId', render: (value, record) => {
+        switch (record.type) {
+          case 'sku':
+            return SkuResultSkuJsons({skuResult: record.skuResult});
+          case 'skuClass':
+            return record.spuClassificationResult?.name;
+          case 'position':
+            return record.storehousePositionsResult?.name;
+          default:
+            break;
+        }
+      }
+    },
     {title: '库存下限', dataIndex: 'inventoryFloor'},
     {title: '库存上限', dataIndex: 'inventoryCeiling'},
     {title: '添加人', dataIndex: 'createUser'},
@@ -170,7 +185,7 @@ const Set = () => {
               add({
                 data: {
                   type: data.type,
-                  forewarnContextId: data.id,
+                  formId: data.id,
                   inventoryFloor: data.min,
                   inventoryCeiling: data.max,
                 }
