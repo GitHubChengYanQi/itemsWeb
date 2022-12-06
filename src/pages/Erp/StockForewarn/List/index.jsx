@@ -84,8 +84,6 @@ const List = () => {
         }}>导出全部</Button>
         <Button type='link' onClick={() => {
         }}>导出选中</Button>
-        <Button type='link' onClick={() => {
-        }}>不确定</Button>
       </>}
     >
       <Column title="物料编码" dataIndex="standard"/>
