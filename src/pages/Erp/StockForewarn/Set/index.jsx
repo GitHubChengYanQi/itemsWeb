@@ -32,11 +32,12 @@ const Set = () => {
     manual: true,
     onSuccess: (res) => {
       if (res.errCode === 1001) {
-        Modal.warn({
-          content: '此条件已设置，是否更新预警条件？',
+        Modal.confirm({
+          content: res.message,
           onOk: () => {
             return add({
               data: {
+                update: true,
                 type: data.type,
                 formId: data.id,
                 inventoryFloor: data.min,
