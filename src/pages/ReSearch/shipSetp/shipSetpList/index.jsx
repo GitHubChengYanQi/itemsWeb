@@ -93,12 +93,12 @@ const ShipSetpList = () => {
       </Table>
       <Modal
         width={600}
-        title="编辑工序"
+        title="工序"
         loading={setLoading}
         compoentRef={addRef}
         footer={<Button loading={loading} type="primary" onClick={() => {
           addRef.current.submit();
-        }}>创建工序</Button>}
+        }}>确点</Button>}
         component={ShipSetpEdit}
         onSuccess={() => {
           tableRef.current.refresh();
