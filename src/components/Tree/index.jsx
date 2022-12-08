@@ -16,9 +16,7 @@ const Tree = (props) => {
   if (data) {
     return (<AntdTree
       onCheck={(values,checkInfo) => {
-        const halfCheckedKeys = checkInfo.halfCheckedKeys || [];
-        console.log([...values,...halfCheckedKeys]);
-        onChange([...values,...halfCheckedKeys],checkInfo.checkedNodes);
+        onChange(values,checkInfo.checkedNodes);
       }}
       defaultExpandedKeys={['0']}
       // selectable={false}
