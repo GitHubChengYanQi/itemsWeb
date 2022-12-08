@@ -42,7 +42,7 @@ export default {
   cheng: {
     logLevel: 'info',
     component: 'ant',
-    baseURI: 'http://192.168.0.111/',
+    baseURI: 'http://192.168.0.144/',
     // baseURI: 'http://10.147.20.68:8881/',
     // baseURI: 'http://10.147.20.68:8891/',
     // baseURI: 'https://api.hh.gf2025.com/',
