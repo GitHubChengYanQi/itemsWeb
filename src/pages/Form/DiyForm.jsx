@@ -12,7 +12,8 @@ import {
   PaymentFormData,
   POFormData,
   ProductionFormData,
-  ProductionTaskFormData
+  ProductionTaskFormData,
+  SOFormData
 } from '@/pages/Form/formFileData';
 import {isArray, isObject} from '@/util/Tools';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
@@ -80,6 +81,9 @@ const DiyForm = () => {
       switch (searchParams.type) {
         case ReceiptsEnums.purchaseOrder:
           newFileData = POFormData;
+          break;
+        case ReceiptsEnums.saleOrder:
+          newFileData = SOFormData;
           break;
         case ReceiptsEnums.production:
           newFileData = ProductionFormData;
@@ -151,6 +155,10 @@ const DiyForm = () => {
       title = '采购单';
       PreviewDom = CreateOrder;
       break;
+    case ReceiptsEnums.saleOrder:
+      title = '销售单';
+      PreviewDom = CreateOrder;
+      break;
     case ReceiptsEnums.production:
       title = '生产计划';
       PreviewDom = AddProductionPlan;
@@ -176,6 +184,7 @@ const DiyForm = () => {
 
   return <Spin spinning={editlLoaing}>
     <Card
+      bodyStyle={{padding:'0px 24px'}}
       title={`${title}表单配置`}
       extra={<Button onClick={() => history.goBack()}>返回</Button>}
     >

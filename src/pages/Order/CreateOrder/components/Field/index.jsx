@@ -36,6 +36,7 @@ import CheckBrand from '@/pages/Erp/brand/components/CheckBrand';
 import Message from '@/components/Message';
 import SelectCreate from '@/components/SelectCreate';
 import FileUpload from '@/components/FileUpload';
+import Empty from '@/components/Empty';
 
 export const orderDetailRecord = {url: '/orderDetail/record', method: 'POST'};
 
@@ -543,7 +544,6 @@ export const AllField = (
   if (!array) {
     return <></>;
   }
-
   return (<div>
     <Descriptions style={{width: '85vw'}} bordered column={2} labelStyle={{minWidth: 150}} title="合同模板中的其他字段">
       {
@@ -554,6 +554,7 @@ export const AllField = (
         })
       }
     </Descriptions>
+    {values.length === 0 && <Empty />}
   </div>);
 };
 

@@ -17,7 +17,6 @@ import Modal from '@/components/Modal';
 import CreateContract from '@/pages/Order/CreateContract';
 import Render from '@/components/Render';
 
-const {Column} = AntTable;
 const {FormItem} = Form;
 
 const OrderTable = (props) => {
@@ -74,12 +73,22 @@ const OrderTable = (props) => {
   const columns = [
     {title: '采购单编号', dataIndex: 'coding'},
     {title: '主题', dataIndex: 'theme', render: (value) => <Render text={value || '-'} />},
-    {title: '甲方', dataIndex: 'acustomer', render: (value) => <Render text={value?.customerName || '-'} />},
-    {title: '乙方', dataIndex: 'bcustomer', render: (value) => <Render text={value?.customerName || '-'} />},
+    {
+      title: '甲方',
+      dataIndex: 'acustomer',
+      hidden: module().type === 1,
+      render: (value) => <Render text={value?.customerName || '-'} />
+    },
+    {
+      title: '乙方',
+      dataIndex: 'bcustomer',
+      hidden: module().type === 2,
+      render: (value) => <Render text={value?.customerName || '-'} />
+    },
     {title: '创建人', dataIndex: 'user', render: (value) => <Render text={value?.name || '-'} />},
     {title: '创建时间', dataIndex: 'createTime'},
     {
-      title: '操作',width:200,align:'center', dataIndex: 'theme', render: (value, record) => {
+      title: '操作', width: 200, align: 'center', dataIndex: 'theme', render: (value, record) => {
         return <>
           <Button disabled={record.contractId || record.fileId} type="link" onClick={() => {
             createContractRef.current.open(record.orderId);

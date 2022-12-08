@@ -8,7 +8,7 @@ import {contactsDetail} from '@/pages/Crm/contacts/contactsUrl';
 import {templateGetLabel} from '@/pages/Crm/template/TemplateUrl';
 import {invoiceDetail} from '@/pages/Crm/invoice/invoiceUrl';
 import {selfEnterpriseDetail, supplierDetail} from '@/pages/Purshase/Supply/SupplyUrl';
-import {isArray, isObject} from '@/util/Tools';
+import {isArray, isObject, MathCalc} from '@/util/Tools';
 
 const customerAAction = (setFieldState, getCustomer) => {
 
@@ -312,7 +312,7 @@ const paymentAction = (setFieldState, getFieldState) => {
     if (value && inputed) {
       value.map((item) => {
         if (item && item.totalPrice) {
-          money += item.totalPrice;
+          money = MathCalc(money, item.totalPrice, 'jia');
         }
         return null;
       });
@@ -340,7 +340,7 @@ const paymentAction = (setFieldState, getFieldState) => {
       resolve(getFieldState('money'));
     }) || {};
     setFieldState('totalAmount', (state) => {
-      state.value = (money.value || 0) + (value || 0);
+      state.value = MathCalc(money.value, value, 'jia');
     });
   });
 
@@ -352,7 +352,7 @@ const paymentAction = (setFieldState, getFieldState) => {
       resolve(getFieldState('money'));
     }) || {};
     setFieldState('floatingAmount', (state) => {
-      state.value = (value || 0) - (money.value || 0);
+      state.value = MathCalc(value,money.value,'jian');
     });
 
     const paymentDetail = await new Promise((resolve) => {
@@ -364,7 +364,7 @@ const paymentAction = (setFieldState, getFieldState) => {
           if (item) {
             return {
               ...item,
-              money: (((item.percentum || 0) / 100) * (value || 0)).toFixed(2),
+              money: MathCalc(MathCalc(item.percentum,100,'chu'),value,'cheng'),
             };
           }
           return item;
@@ -402,7 +402,7 @@ const paymentAction = (setFieldState, getFieldState) => {
       let percentum = 0;
       paymentDetail.value.map((item) => {
         if (item) {
-          return percentum += item.percentum;
+          return percentum = MathCalc(percentum, item.percentum, 'jia');
         }
         return true;
       });
@@ -419,13 +419,13 @@ const paymentAction = (setFieldState, getFieldState) => {
     setFieldState(FormPath.transform(name, /\d/, ($1) => {
       return paymentDetail.value[$1] && `paymentDetail.${$1}.money`;
     }), (state) => {
-      state.value = (money.value * (value / 100)).toFixed(2);
+      state.value = MathCalc(money.value,(value / 100),'cheng');
     });
     if (paymentDetail.value) {
       let percentum = 0;
       paymentDetail.value.map((item, index) => {
         if (item && item.percentum) {
-          percentum += item.percentum;
+          percentum = MathCalc(percentum, item.percentum, 'jia');
         } else if (index !== paymentDetail.value.length - 1) {
           percentum = 0;
         }
@@ -434,7 +434,7 @@ const paymentAction = (setFieldState, getFieldState) => {
 
       if (percentum && !(paymentDetail.value[paymentDetail.value.length - 1] && paymentDetail.value[paymentDetail.value.length - 1].percentum)) {
         setFieldState(`paymentDetail.${paymentDetail.value.length - 1}.percentum`, (state) => {
-          state.value = 100 - percentum;
+          state.value = MathCalc(100,percentum,'jian');
         });
       }
     }
@@ -467,7 +467,7 @@ const paymentAction = (setFieldState, getFieldState) => {
       let number = 0;
       paymentDetail.value.map((item) => {
         if (item) {
-          return number += item.money;
+          return number = MathCalc(number, item.money, 'jia');
         }
         return true;
       });
@@ -486,7 +486,7 @@ const paymentAction = (setFieldState, getFieldState) => {
       if (!value) {
         return state.value = 0;
       }
-      state.value = (((value) / money.value).toFixed(4)) * 100;
+      state.value = MathCalc(MathCalc(value,money.value,'chu'),100,'cheng');
     });
   });
 };
