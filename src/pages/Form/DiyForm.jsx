@@ -7,11 +7,19 @@ import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/Mul
 import {useRequest} from '@/util/Request';
 import {formDetail, formEdit} from '@/pages/Form/url';
 import Empty from '@/components/Empty';
-import {POFormData, ProductionFormData, ProductionTaskFormData} from '@/pages/Form/formFileData';
+import {
+  InvoiceFormData,
+  PaymentFormData,
+  POFormData,
+  ProductionFormData,
+  ProductionTaskFormData
+} from '@/pages/Form/formFileData';
 import {isArray, isObject} from '@/util/Tools';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 import CreateOrder from '@/pages/Order/CreateOrder';
 import AddProductionPlan from '@/pages/Production/ProductionPlan/AddProductionPlan';
+import InvoiceEdit from '@/pages/Purshase/Invoice/InvoiceEdit';
+import PaymentEdit from '@/pages/Purshase/Payment/PaymentEdit';
 
 const DiyForm = () => {
 
@@ -79,6 +87,12 @@ const DiyForm = () => {
         case ReceiptsEnums.productionTask:
           newFileData = ProductionTaskFormData;
           break;
+        case ReceiptsEnums.invoice:
+          newFileData = InvoiceFormData;
+          break;
+        case ReceiptsEnums.payment:
+          newFileData = PaymentFormData;
+          break;
         default:
           break;
       }
@@ -89,7 +103,7 @@ const DiyForm = () => {
         const moduleInfo = typeSetting[module] || {};
         const newInit = [];
         isArray(moduleInfo.steps).forEach(item => {
-          newInit.push({...item, data: setTable(item.data, keys,formFileds)});
+          newInit.push({...item, data: setTable(item.data, keys, formFileds)});
         });
         setConfig({
           width: moduleInfo.width || (mobile ? 400 : 100),
@@ -148,6 +162,14 @@ const DiyForm = () => {
     case ReceiptsEnums.productionTask:
       title = '生产任务';
       break;
+    case ReceiptsEnums.invoice:
+      title = '发票管理';
+      PreviewDom = InvoiceEdit;
+      break;
+    case ReceiptsEnums.payment:
+      title = '付款管理';
+      PreviewDom = PaymentEdit;
+      break;
     default:
       break;
   }
@@ -192,7 +214,7 @@ const DiyForm = () => {
       extra={<CloseOutlined style={{cursor: 'pointer'}} onClick={() => setOpenPreview(false)} />}
     >
       <div style={{textAlign: 'center'}}>
-        <div style={{textAlign: 'initial',display:'inline-block'}}>
+        <div style={{textAlign: 'initial', display: 'inline-block'}}>
           {PreviewDom ? <PreviewDom previewData={openPreview} {...previewDomProps} /> : <Empty />}
         </div>
       </div>

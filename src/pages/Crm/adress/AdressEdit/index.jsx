@@ -48,7 +48,7 @@ const AdressEdit = ({...props}, ref) => {
         ref={formRef}
         formActions={formActionsPublic}
         api={ApiConfig}
-        NoButton={NoButton}
+        noButton={!NoButton}
         fieldKey="adressId"
         onSubmit={(value) => {
           if (!customer) {

@@ -36,7 +36,7 @@ const ShipSetpEdit = ({...props}, ref) => {
       <Form
         {...props}
         ref={formRef}
-        NoButton={false}
+        noButton
         api={ApiConfig}
         labelCol={5}
         onError={() => {

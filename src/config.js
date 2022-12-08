@@ -42,6 +42,7 @@ export default {
   cheng: {
     logLevel: 'info',
     component: 'ant',
+    // baseURI: 'http://172.16.0.243/',
     baseURI: 'http://192.168.0.111/',
     // baseURI: 'http://10.147.20.68:8881/',
     // baseURI: 'http://10.147.20.68:8891/',
@@ -52,10 +53,20 @@ export default {
     wxBind: 'https://wx.daoxin.gf2025.com',
     wxCp: 'https://wx.daoxin.gf2025.com/cp/#/',
   },
+  jin: {
+    logLevel: 'info',
+    component: 'ant',
+    baseURI: 'http://192.168.0.144/',
+    projectName: '道昕云',
+    AMAP_KEY: '',
+    AMAP_VERSION: '2.0',
+    wxBind: 'https://wx.daoxin.gf2025.com',
+    wxCp: 'https://wx.daoxin.gf2025.com/cp/#/',
+  },
   ren: {
     logLevel: 'info',
     component: 'ant',
-    baseURI: 'http://192.168.0.111/',
+    baseURI: 'http://192.168.0.100/',
     projectName: '道昕云',
     AMAP_KEY: '',
     AMAP_VERSION: '2.0'

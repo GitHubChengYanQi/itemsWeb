@@ -32,7 +32,7 @@ const ErpPackageEdit = ({...props}) => {
       content:
         <>
           <Form
-            NoButton={false}
+            noButton
             {...props}
             value={result}
             ref={formRef}

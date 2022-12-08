@@ -44,7 +44,7 @@ const InstockEdit = ({
     <div style={{padding: 16}}>
       <Form
         value={value || false}
-        NoButton={false}
+        noButton
         ref={formRef}
         api={ApiConfig}
         loading={loading}

@@ -40,7 +40,7 @@ const BusinessEdit = (props,ref) => {
   return (
 
     <Form
-      NoButton={false}
+      noButton
       {...other}
       value={result}
       ref={tableRef}

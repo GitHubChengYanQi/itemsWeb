@@ -110,7 +110,7 @@ const AddContractEdit = ({
   return (
     <div style={{padding: 16}}>
       <Form
-        NoButton={false}
+        noButton
         formActions={formActionsPublic}
         defaultValue={defaultValue}
         value={value}

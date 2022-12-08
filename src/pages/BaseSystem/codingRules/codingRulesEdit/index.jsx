@@ -35,7 +35,7 @@ const CodingRulesEdit = ({...props},ref) => {
       <Form
         {...props}
         labelCol={5}
-        NoButton={false}
+        noButton
         ref={formRef}
         api={ApiConfig}
         fieldKey="codingRulesId"

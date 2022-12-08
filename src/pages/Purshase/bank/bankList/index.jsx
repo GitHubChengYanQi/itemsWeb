@@ -15,13 +15,12 @@ import AddButton from '@/components/AddButton';
 import EditButton from '@/components/EditButton';
 import {bankDelete, bankList} from '../bankUrl';
 import BankEdit from '../bankEdit';
-import Breadcrumb from '@/components/Breadcrumb';
 
 const {Column} = AntTable;
 
 const formActionsPublic = createFormActions();
 
-const BankList = (props) => {
+const BankList = () => {
   const ref = useRef(null);
   const tableRef = useRef(null);
   const actions = () => {
@@ -42,7 +41,6 @@ const BankList = (props) => {
         cardHeaderStyle={{display:'none'}}
         SearchButton
         searchForm
-        title={props.tableTitle || <Breadcrumb />}
         formActions={formActionsPublic}
         api={bankList}
         rowKey="bankId"

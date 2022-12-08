@@ -52,7 +52,7 @@ const TableDetailEdit = (props,ref) => {
   return (
 
     <Form
-      NoButton={false}
+      noButton
       {...props}
       value={result}
       ref={formRef}

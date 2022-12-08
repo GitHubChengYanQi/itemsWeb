@@ -57,7 +57,7 @@ const QualityTaskEdit = ({...props}, ref) => {
         {...props}
         ref={formRef}
         api={ApiConfig}
-        NoButton={false}
+        noButton
         fieldKey="qualityTaskId"
         onSuccess={() => {
           props.onSuccess();

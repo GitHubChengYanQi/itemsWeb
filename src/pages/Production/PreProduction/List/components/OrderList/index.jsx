@@ -165,7 +165,7 @@ const OrderList = ({checkedSkus, setCheckedSkus, refresh}) => {
       skuId={skuId}
       component={Detail}
       ref={showShip}
-      onSuccess={(res) => {
+      onSuccess={() => {
         setSkuId(null);
         showShip.current.close();
         orderResh();

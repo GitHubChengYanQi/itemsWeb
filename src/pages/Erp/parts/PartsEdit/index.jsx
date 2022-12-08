@@ -61,7 +61,7 @@ const PartsEdit = ({...props}, ref) => {
           {...other}
           value={value}
           ref={formRef}
-          NoButton={false}
+          noButton
           api={ApiConfig}
           formActions={formActionsPublic}
           fieldKey="partsId"

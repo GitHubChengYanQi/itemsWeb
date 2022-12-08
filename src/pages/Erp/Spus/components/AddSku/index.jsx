@@ -33,7 +33,7 @@ const AddSku = ({spuId, skuId, setSkuId, ...props}, ref) => {
     <Form
       {...props}
       ref={formRef}
-      NoButton={false}
+      noButton
       api={ApiConfig}
       formActions={formActionsPublic}
       fieldKey="partsId"
