@@ -51,7 +51,7 @@ const SopEdit = ({...props}, ref) => {
       >
         <ProCard title="基本信息" className="h2Card" headerBordered>
 
-          <FormItem label="编号" name="coding" component={SysField.Codings} module={8} required />
+          <FormItem label="编号" name="coding" component={SysField.Codings} module={8} />
           <FormItem label="名称" name="name" component={SysField.Name} required />
 
           <FormItem label="版本号" name="versionNumber" module={9} component={SysField.Codings} required />
