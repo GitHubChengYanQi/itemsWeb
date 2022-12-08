@@ -12,12 +12,12 @@ import Table from '@/components/Table';
 import AddButton from '@/components/AddButton';
 import EditButton from '@/components/EditButton';
 import Form from '@/components/Form';
-import {sopList} from '../sopUrl';
+import {sopDelete, sopList} from '../sopUrl';
 import SopEdit from '../sopEdit';
 import * as SysField from '../sopField';
 import Modal from '@/components/Modal';
 import Breadcrumb from '@/components/Breadcrumb';
-import {Name} from '../sopField';
+import DelButton from '@/components/DelButton';
 
 
 const {Column} = AntTable;
@@ -80,13 +80,16 @@ const SopList = () => {
               <EditButton onClick={() => {
                 ref.current.open(record.sopId);
               }} />
+              <DelButton api={sopDelete} value={record.shipSetpId} onSuccess={() => {
+                tableRef.current.refresh();
+              }} />
             </>
           );
         }} width={300} />
       </Table>
       <Modal
         width={700}
-        title="编辑作业指导"
+        title="作业指导"
         component={SopEdit}
         loading={setLoading}
         compoentRef={addRef}
