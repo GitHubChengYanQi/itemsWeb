@@ -12,3 +12,8 @@ export const stockForewarnList = {
   url: '/stockForewarn/list',
   method: 'POST'
 };
+
+export const warningSku = {
+  url: '/stockForewarn/warningSku',
+  method: 'POST'
+};

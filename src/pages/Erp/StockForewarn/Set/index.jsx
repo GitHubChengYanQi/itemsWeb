@@ -42,6 +42,7 @@ const Set = () => {
                 formId: data.id,
                 inventoryFloor: data.min,
                 inventoryCeiling: data.max,
+
               }
             });
           }
@@ -82,7 +83,9 @@ const Set = () => {
     },
     {title: '库存下限', dataIndex: 'inventoryFloor'},
     {title: '库存上限', dataIndex: 'inventoryCeiling'},
-    {title: '添加人', dataIndex: 'createUser'},
+    {title: '添加人', dataIndex: 'createUserResult',render:(value)=>{
+      return value?.name;
+    }},
     {title: '添加时间', dataIndex: 'createTime'},
     {
       title: '操作', dataIndex: 'forewarnId', render: (value) => {
@@ -204,6 +207,7 @@ const Set = () => {
           searchStyle={{margin: 0, padding: '0 0 16px'}}
           rowKey="forewarnId"
           columns={columns}
+          noRowSelection
         />
       </ProCard>
     </div>
