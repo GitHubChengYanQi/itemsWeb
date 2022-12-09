@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import ProCard from '@ant-design/pro-card';
-import {Button, Input, message, Modal, Radio, Space} from 'antd';
+import {Button, Input, message, Modal, Radio, Space, Tabs} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import styles from './index.module.less';
 import SelectSku from '@/pages/Erp/sku/components/SelectSku';
@@ -55,16 +55,47 @@ const Set = () => {
     }
   });
 
+
+  let Content = <></>;
+  let contentProps = {};
+
+  switch (data.type) {
+    case 'sku':
+      Content = SelectSku;
+      contentProps = {
+        noSpu: true,
+      };
+      break;
+    case 'skuClass':
+      Content = Select;
+      contentProps = {
+        placeholder: '搜索物料分类',
+        width: 200,
+        options: state.skuClass,
+      };
+      break;
+    case 'position':
+      Content = Cascader;
+      contentProps = {
+        placeholder: '搜索仓库库位',
+        width: 200,
+        api: storehousePositionsTreeView,
+      };
+      break;
+    default:
+      break;
+  }
+
   const types = [
-    {value: 'sku', label: '指定物料'},
-    {value: 'skuClass', label: '物料分类'},
-    {value: 'position', label: '仓库库位'},
+    {key: 'sku', label: '指定物料'},
+    {key: 'skuClass', label: '物料分类'},
+    {key: 'position', label: '仓库库位'},
   ];
 
   const columns = [
     {
       title: '类型', dataIndex: 'type', render: (value) => {
-        return types.find(item => item.value === value)?.label || '-';
+        return types.find(item => item.key === value)?.label || '-';
       }
     },
     {
@@ -102,35 +133,6 @@ const Set = () => {
     },
   ];
 
-  let Content = <></>;
-  let contentProps = {};
-
-  switch (data.type) {
-    case 'sku':
-      Content = SelectSku;
-      contentProps = {
-        noSpu: true,
-      };
-      break;
-    case 'skuClass':
-      Content = Select;
-      contentProps = {
-        placeholder: '搜索物料分类',
-        width: 200,
-        options: state.skuClass,
-      };
-      break;
-    case 'position':
-      Content = Cascader;
-      contentProps = {
-        placeholder: '搜索仓库库位',
-        width: 200,
-        api: storehousePositionsTreeView,
-      };
-      break;
-    default:
-      break;
-  }
 
   const searchForm = () => {
     return <>
@@ -144,14 +146,18 @@ const Set = () => {
       <Breadcrumb title="预警设置" />
     </div>
     <div className={styles.set}>
-      <ProCard title="预警条件" className="h2Card" headerBordered extra={<BackButton />}>
-        <Space size={40} align="center">
-          <div>
-            条件类型：
-            <Radio.Group options={types} value={data.type} onChange={({target: {value}}) => {
-              setData({...data, id: null, type: value});
-            }} />
-          </div>
+      <ProCard
+        title="预警条件"
+        className="h2Card"
+        headerBordered
+        extra={<BackButton />}
+        bodyStyle={{padding: '12px 24px 24px'}}
+      >
+        <Tabs
+          items={types}
+          onChange={(value) => setData({...data, id: null, type: value})}
+        />
+        <Space>
           <Space>
             预警内容：
             <Content
