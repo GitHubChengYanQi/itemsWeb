@@ -242,7 +242,8 @@ const TableWarp = (
     key: `${index}`,
     render: (value, record, index) => {
       return typeof item.render === 'function' ? item.render(value, record, index) :
-        <Render text={typeof value === 'object' ? '' : (value || '-')} />;
+        // eslint-disable-next-line no-nested-ternary
+        <Render text={typeof value === 'object' ? '' : (typeof value === 'number' ? value : (value || '-'))} />;
     }
   }))), tableKey);
 
