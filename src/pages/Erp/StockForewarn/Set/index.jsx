@@ -89,7 +89,7 @@ const Set = () => {
   const types = [
     {value: 'sku', key: 'sku', label: '指定物料'},
     {value: 'skuClass', key: 'skuClass', label: '物料分类'},
-    {value: 'position', key: 'position', label: '仓库库位'},
+    // {value: 'position', key: 'position', label: '仓库库位'},
   ];
 
   const columns = [

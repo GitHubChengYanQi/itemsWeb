@@ -6,18 +6,12 @@ import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
 import {warningSku} from '@/pages/Erp/StockForewarn/url';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-
-
-const footer = () => {
-  return (
-    <Button type='link'>
-      申请采购
-    </Button>
-  );
-};
+import store from '@/store';
+import Cascader from '@/components/Cascader';
 
 const {FormItem} = Form;
 const searchForm = () => {
+  const [state] = store.useModel('dataSource');
   return (
     <>
       <FormItem
@@ -28,10 +22,11 @@ const searchForm = () => {
         component={Input}/>
       <FormItem
         label="物料分类："
-        name="classification"
-        style={{width: '300px'}}
+        name="classId"
+        width={200}
         placeholder="请选择"
-        component={Select}/>
+        options={state.skuClass}
+        component={Cascader}/>
       <FormItem
         label="预警状态："
         name="earlyWarning"
@@ -77,7 +72,7 @@ const List = () => {
     }},
     {title: '库存下限',width:'12%', dataIndex: 'inventoryFloor'},
     {title: '库存上限',width:'12%',dataIndex: 'inventoryCeiling'},
-    {title: '报警时间',width:'14%', dataIndex: 'createTime'},
+    // {title: '报警时间',width:'14%', dataIndex: 'createTime'},
     // {
     //   title: '操作',width:'10%', dataIndex: '', align: 'center', render: () => {
     //     // return (
