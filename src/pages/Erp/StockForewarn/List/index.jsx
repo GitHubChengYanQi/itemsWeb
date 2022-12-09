@@ -18,30 +18,30 @@ const footer = () => {
 
 const {FormItem} = Form;
 const searchForm = () => {
+  const types=[
+    {value: 'all', label: '全部'},
+    {value: 'min', label: '下限预警'},
+    {value: 'max', label: '上限预警'},
+  ];
   return (
     <>
       <FormItem
-        label="物料："
+        label="物料"
         placeholder="请输入"
         style={{width: '300px'}}
-        name="material"
+        name="keyWords"
         component={Input}/>
       <FormItem
-        label="物料分类："
+        label="物料分类"
         name="classification"
         style={{width: '300px'}}
         placeholder="请选择"
         component={Select}/>
       <FormItem
-        label="预警状态："
-        name="earlyWarning"
-        style={{width: '300px'}}
-        placeholder="请选择"
-        component={Select}/>
-      <FormItem
-        label="采购状态："
-        name="purchase"
-        style={{width: '300px'}}
+        label="预警状态"
+        name="forewarnStatus"
+        style={{width:'300px'}}
+        options={types}
         placeholder="请选择"
         component={Select}/>
     </>
@@ -55,11 +55,11 @@ const List = () => {
 
   const columns = [
     {
-      title: '物料编码',width:'15%',dataIndex: 'number', render: (value, record) => {
+      title: '物料编码',width:200,dataIndex: 'number', render: (value, record) => {
         return (<>{record.skuResult.standard}</>);
       }
     },
-    {title: '物料分类',width:'10%',dataIndex: 'name',render:(value,record)=>{
+    {title: '物料分类',width:140,dataIndex: 'name',render:(value,record)=>{
       try {
         return (record.skuResult.spuResult.spuClassificationResult.name);
       }catch (e){
@@ -67,17 +67,17 @@ const List = () => {
       }
     }},
     {
-      title: '物料',width:'25%',dataIndex: 'skuResult', render: (value) => {
+      title: '物料',dataIndex: 'skuResult', render: (value) => {
         return SkuResultSkuJsons({skuResult:value});
 
       }
     },
-    {title: '库存数量',width:'12%',dataIndex: 'number',render(value,record){
+    {title: '库存数量',width:100,dataIndex: 'number',render(value,record){
       return record.number;
     }},
-    {title: '库存下限',width:'12%', dataIndex: 'inventoryFloor'},
-    {title: '库存上限',width:'12%',dataIndex: 'inventoryCeiling'},
-    {title: '报警时间',width:'14%', dataIndex: 'createTime'},
+    {title: '库存下限',width:100,dataIndex: 'inventoryFloor'},
+    {title: '库存上限',width:100,dataIndex: 'inventoryCeiling'},
+    {title: '报警时间', dataIndex: 'createTime'},
     // {
     //   title: '操作',width:'10%', dataIndex: '', align: 'center', render: () => {
     //     // return (
