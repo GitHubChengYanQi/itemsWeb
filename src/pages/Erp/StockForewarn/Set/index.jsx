@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import ProCard from '@ant-design/pro-card';
-import {Button, Input, message, Modal, Radio, Space, Tabs} from 'antd';
+import {Button, Input, message, Modal, Space, Tabs} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import styles from './index.module.less';
 import SelectSku from '@/pages/Erp/sku/components/SelectSku';
@@ -87,9 +87,9 @@ const Set = () => {
   }
 
   const types = [
-    {key: 'sku', label: '指定物料'},
-    {key: 'skuClass', label: '物料分类'},
-    {key: 'position', label: '仓库库位'},
+    {value: 'sku', key: 'sku', label: '指定物料'},
+    {value: 'skuClass', key: 'skuClass', label: '物料分类'},
+    {value: 'position', key: 'position', label: '仓库库位'},
   ];
 
   const columns = [
@@ -114,9 +114,11 @@ const Set = () => {
     },
     {title: '库存下限', dataIndex: 'inventoryFloor'},
     {title: '库存上限', dataIndex: 'inventoryCeiling'},
-    {title: '添加人', dataIndex: 'createUserResult',render:(value)=>{
-      return value?.name;
-    }},
+    {
+      title: '添加人', dataIndex: 'createUserResult', render: (value) => {
+        return value?.name;
+      }
+    },
     {title: '添加时间', dataIndex: 'createTime'},
     {
       title: '操作', dataIndex: 'forewarnId', render: (value) => {
