@@ -111,8 +111,16 @@ const Set = () => {
         }
       }
     },
-    {title: '库存下限', dataIndex: 'inventoryFloor'},
-    {title: '库存上限', dataIndex: 'inventoryCeiling'},
+    {
+      title: '库存下限', dataIndex: 'inventoryFloor', render: (value) => {
+        return <>{value || '未设置'}</>;
+      }
+    },
+    {
+      title: '库存上限', dataIndex: 'inventoryCeiling', render: (value) => {
+        return <>{value || '未设置'}</>;
+      }
+    },
     {
       title: '添加人', dataIndex: 'createUserResult', render: (value) => {
         return value?.name;
