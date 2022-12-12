@@ -12,7 +12,7 @@ import Cascader from '@/components/Cascader';
 const {FormItem} = Form;
 const searchForm = () => {
   const [state] = store.useModel('dataSource');
-  const types=[
+  const types = [
     {value: 'all', label: '全部'},
     {value: 'min', label: '下限预警'},
     {value: 'max', label: '上限预警'},
@@ -22,7 +22,7 @@ const searchForm = () => {
       <FormItem
         label="物料"
         placeholder="请输入"
-        style={{width: '300px'}}
+        style={{width: '200px'}}
         name="keyWords"
         component={Input}/>
       <FormItem
@@ -35,7 +35,7 @@ const searchForm = () => {
       <FormItem
         label="预警状态"
         name="forewarnStatus"
-        style={{width:'300px'}}
+        style={{width: '200px'}}
         options={types}
         placeholder="请选择"
         component={Select}/>
@@ -50,28 +50,41 @@ const List = () => {
 
   const columns = [
     {
-      title: '物料编码',width:200,dataIndex: 'number', render: (value, record) => {
+      title: '物料编码', width: 200, dataIndex: 'number', render: (value, record) => {
         return (<>{record.skuResult.standard}</>);
       }
     },
-    {title: '物料分类',width:140,dataIndex: 'name',render:(value,record)=>{
-      try {
-        return (record.skuResult.spuResult.spuClassificationResult.name);
-      }catch (e){
-        return null;
-      }
-    }},
     {
-      title: '物料',dataIndex: 'skuResult', render: (value) => {
-        return SkuResultSkuJsons({skuResult:value});
+      title: '物料分类', width: 140, dataIndex: 'name', render: (value, record) => {
+        try {
+          return (record.skuResult.spuResult.spuClassificationResult.name);
+        } catch (e) {
+          return null;
+        }
+      }
+    },
+    {
+      title: '物料', dataIndex: 'skuResult', render: (value) => {
+        return SkuResultSkuJsons({skuResult: value});
 
       }
     },
-    {title: '库存数量',width:100,dataIndex: 'number',render(value,record){
-      return record.number;
-    }},
-    {title: '库存下限',width:'12%', dataIndex: 'inventoryFloor'},
-    {title: '库存上限',width:'12%',dataIndex: 'inventoryCeiling'},
+    {
+      title: '库存数量', width: 100, dataIndex: 'number', render(value, record) {
+        return record.number;
+      }
+    },
+    {
+      title: '库存下限', width: '140', dataIndex: 'inventoryFloor', render: (text, record) => {
+        return (
+          <div style={{color: record.number < record.inventoryFloor ? 'red' : ''}}>{text}</div>);
+      }
+    },
+    {title: '库存上限', width: '140', dataIndex: 'inventoryCeiling', render: (text, record) => {
+      return (
+        <div style={{color: record.number > record.inventoryCeiling ? 'red' : ''}}>{text}</div>);
+    }
+    },
     // {title: '报警时间',width:'14%', dataIndex: 'createTime'},
     // {
     //   title: '操作',width:'10%', dataIndex: '', align: 'center', render: () => {
@@ -95,7 +108,6 @@ const List = () => {
   };
 
   return <>
-
     <Table
       api={warningSku}
       title={<Breadcrumb/>}
@@ -111,6 +123,7 @@ const List = () => {
         }}>导出选中</Button>
       </>}
     />
+
   </>;
 };
 
