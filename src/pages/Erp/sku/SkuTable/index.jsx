@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Button, Input, Space, Typography} from 'antd';
+import {Button, Input, message, Space, Typography} from 'antd';
 import {CopyOutlined} from '@ant-design/icons';
 import {config, useHistory} from 'ice';
 import cookie from 'js-cookie';
@@ -30,6 +30,7 @@ import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
 import Render from '@/components/Render';
 import {isArray} from '@/util/Tools';
+import UsePartsList from '@/pages/Erp/sku/SkuTable/UsePartsList';
 
 const {FormItem} = Form;
 
@@ -59,6 +60,8 @@ const SkuTable = ({...props}, ref) => {
   const addParts = useRef(null);
   const tableRef = useRef(null);
   const editParts = useRef(null);
+
+  const partsListRef = useRef(null);
 
   const history = useHistory(null);
 
@@ -230,12 +233,12 @@ const SkuTable = ({...props}, ref) => {
       sorter: true,
       render: (value) => <Render text={value && value.split(',').join('×') || '-'} />
     },
-    {dataIndex: 'color', title: '表色',sorter: true,},
-    {dataIndex: 'heatTreatment', title: '热处理',sorter: true,},
-    {dataIndex: 'level', title: '级别',sorter: true,},
-    {dataIndex: 'packaging', title: '包装方式',sorter: true,},
-    {dataIndex: 'viewFrame', title: '图幅',sorter: true,},
-    {dataIndex: 'remarks', title: '备注',sorter: true,},
+    {dataIndex: 'color', title: '表色', sorter: true,},
+    {dataIndex: 'heatTreatment', title: '热处理', sorter: true,},
+    {dataIndex: 'level', title: '级别', sorter: true,},
+    {dataIndex: 'packaging', title: '包装方式', sorter: true,},
+    {dataIndex: 'viewFrame', title: '图幅', sorter: true,},
+    {dataIndex: 'remarks', title: '备注', sorter: true,},
     {dataIndex: 'user', title: '添加人', render: (value) => <Render text={value?.name || '-'} />, sorter: true},
     {dataIndex: 'createTime', title: '添加时间', sorter: true},
     {},
@@ -252,7 +255,18 @@ const SkuTable = ({...props}, ref) => {
               setCopy(false);
               setEdit(true);
             }} />
-            <DelButton api={skuDelete} value={value} onSuccess={() => {
+            <DelButton api={skuDelete} value={value} onSuccess={(res) => {
+              if (res.errCode === 1001) {
+                let partsList = [];
+                try {
+                  partsList = JSON.parse(res.message);
+                } catch (e) {
+
+                }
+                message.error('当前物料已被使用!');
+                partsListRef.current.open(partsList);
+                return;
+              }
               tableRef.current.refresh();
             }} />
           </>
@@ -358,6 +372,8 @@ const SkuTable = ({...props}, ref) => {
           showShip.current.close();
         }}
       />
+
+      <Modal width={1200} headTitle="关联物料清单" ref={partsListRef} component={UsePartsList} />
 
     </>
   );

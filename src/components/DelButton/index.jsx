@@ -28,9 +28,10 @@ const DelButton = ({
     rowKey = api.rowKey || 'id';
   }
 
-  const {run} = useRequest(api, {
+  const {run} = useRequest({...api, response: true}, {
+    response: true,
     manual: true,
-    onError(err){
+    onError(err) {
       // message.error(err.message);
     }
   });
@@ -44,11 +45,11 @@ const DelButton = ({
         const params = {};
         params[rowKey] = value;
         try {
-          await run({
-            data: api.method==='POST' && params,
-            params: api.method==='GET' && params,
+          const res = await run({
+            data: api.method === 'POST' && params,
+            params: api.method === 'GET' && params,
           });
-          onSuccess();
+          onSuccess(res);
           return new Promise((resolve, reject) => {
             resolve();
           });
@@ -67,7 +68,7 @@ const DelButton = ({
   return (
     <Button
       disabled={disabled}
-      size="small" danger onClick={onClick}  icon={icon || <DeleteOutlined />}
+      size="small" danger onClick={onClick} icon={icon || <DeleteOutlined />}
       type="text" {...props} >{children}</Button>
   );
 };

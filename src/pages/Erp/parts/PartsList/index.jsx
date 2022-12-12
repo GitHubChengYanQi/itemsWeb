@@ -9,7 +9,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, Descriptions, Space, Spin} from 'antd';
 import {createFormActions} from '@formily/antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
-import {config} from 'ice';
+import {config, useLocation} from 'ice';
 import cookie from 'js-cookie';
 import {backDetails, partsList} from '../PartsUrl';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -44,6 +44,8 @@ const PartsList = (
     },
     type = 1
   }) => {
+
+  const {state = {}} = useLocation();
 
   const [formActionsPublic, setFormActionsPublic] = useState(createFormActions);
 
@@ -99,6 +101,11 @@ const PartsList = (
           hidden
           name="skuId"
           value={value || null}
+          component={SysField.SkuInput} />
+        <FormItem
+          hidden
+          name="partsId"
+          value={state.partsId || null}
           component={SysField.SkuInput} />
         <FormItem
           hidden
