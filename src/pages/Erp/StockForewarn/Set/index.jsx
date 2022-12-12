@@ -49,7 +49,7 @@ const Set = () => {
       } else {
         message.success('添加成功!');
         tableRef.current.submit();
-        setData({type: 'sku'});
+        setData({type: data.type});
       }
     }
   });
@@ -163,6 +163,7 @@ const Set = () => {
         bodyStyle={{padding: '12px 24px 24px'}}
       >
         <Tabs
+          activeKey={data.type}
           items={types}
           onChange={(value) => setData({...data, id: null, type: value})}
         />
