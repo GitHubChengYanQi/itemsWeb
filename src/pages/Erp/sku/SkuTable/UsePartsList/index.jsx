@@ -1,19 +1,21 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {Button, Table} from 'antd';
-import {useHistory} from 'ice';
 import Render from '@/components/Render';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import Note from '@/components/Note';
+import Drawer from '@/components/Drawer';
+import ShowBOM from '@/pages/Erp/parts/components/ShowBOM';
+import {isArray} from '@/util/Tools';
 
 const {Column} = Table;
 
 const UsePartsList = ({value}) => {
 
-  const history = useHistory();
+  const showRef = useRef();
 
   return <div style={{padding: 18}}>
     <Table
-      dataSource={value}
+      dataSource={value.map(item => ({...item, children: null}))}
       rowKey="partsId"
       pagination={false}
     >
@@ -25,9 +27,6 @@ const UsePartsList = ({value}) => {
       }} />
       <Column title="版本号" key={1} dataIndex="name" render={(value) => {
         return <Render text={value} />;
-      }} />
-      <Column title="配套数量" key={2} dataIndex="bomNum" align="center" render={(value) => {
-        return <Render>{value || 0}</Render>;
       }} />
       <Column title="状态" key={2} dataIndex="number" align="center" render={(value) => {
         return <Render text="启用" />;
@@ -51,15 +50,20 @@ const UsePartsList = ({value}) => {
         width={150}
         render={(value) => {
           return <Button type="link" onClick={() => {
-            history.push({
-              pathname: '/SPU/parts',
-              state: {
-                partsId: value + ''
-              }
-            });
+            showRef.current.open(value);
           }}>详情</Button>;
         }} />
     </Table>
+
+    <Drawer
+      extra
+      height="100%"
+      placement="top"
+      headTitle="物料清单"
+      width={1000}
+      component={ShowBOM}
+      ref={showRef}
+    />
   </div>;
 };
 
