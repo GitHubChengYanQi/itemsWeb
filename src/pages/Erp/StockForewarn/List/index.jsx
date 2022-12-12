@@ -24,21 +24,21 @@ const searchForm = () => {
         placeholder="请输入"
         style={{width: '200px'}}
         name="keyWords"
-        component={Input}/>
+        component={Input} />
       <FormItem
         label="物料分类："
         name="classId"
         width={200}
         placeholder="请选择"
         options={state.skuClass}
-        component={Cascader}/>
+        component={Cascader} />
       <FormItem
         label="预警状态"
         name="forewarnStatus"
         style={{width: '200px'}}
         options={types}
         placeholder="请选择"
-        component={Select}/>
+        component={Select} />
     </>
   );
 };
@@ -101,7 +101,7 @@ const List = () => {
 
   const actions = () => {
     return <>
-      <Button type='primary' onClick={() => {
+      <Button type="primary" onClick={() => {
         history.push('/ERP/stockForewarn/Set');
       }}>预警设置</Button>
     </>;
@@ -110,16 +110,16 @@ const List = () => {
   return <>
     <Table
       api={warningSku}
-      title={<Breadcrumb/>}
+      title={<Breadcrumb />}
       columns={columns}
       rowKey="skuId"
       searchForm={searchForm}
       actions={actions()}
       // footer={footer}
       actionButton={<>
-        <Button type='link' onClick={() => {
+        <Button type="link" onClick={() => {
         }}>导出全部</Button>
-        <Button type='link' onClick={() => {
+        <Button type="link" onClick={() => {
         }}>导出选中</Button>
       </>}
     />

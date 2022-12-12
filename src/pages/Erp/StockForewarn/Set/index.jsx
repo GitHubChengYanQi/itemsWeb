@@ -42,7 +42,6 @@ const Set = () => {
                 formId: data.id,
                 inventoryFloor: data.min,
                 inventoryCeiling: data.max,
-
               }
             });
           }
@@ -112,8 +111,16 @@ const Set = () => {
         }
       }
     },
-    {title: '库存下限', dataIndex: 'inventoryFloor'},
-    {title: '库存上限', dataIndex: 'inventoryCeiling'},
+    {
+      title: '库存下限', dataIndex: 'inventoryFloor', render: (value) => {
+        return <>{value || '未设置'}</>;
+      }
+    },
+    {
+      title: '库存上限', dataIndex: 'inventoryCeiling', render: (value) => {
+        return <>{value || '未设置'}</>;
+      }
+    },
     {
       title: '添加人', dataIndex: 'createUserResult', render: (value) => {
         return value?.name;
@@ -188,10 +195,8 @@ const Set = () => {
           </div>
           <div>
             <Button loading={addLoading} type="primary" onClick={() => {
-              if (!data.id || typeof data.max !== 'number' || typeof data.min !== 'number') {
+              if (!data.id) {
                 return message.warn('请输入完整报警规则!');
-              } else if (data.max <= data.min) {
-                return message.warn('库存上限不能低于库存下限!');
               }
               add({
                 data: {
