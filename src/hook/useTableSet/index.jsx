@@ -97,6 +97,7 @@ const useTableSet = (column, tableKey) => {
   const {loading: delLoading, run: deleteTableView} = useRequest(tableViewDelete, {
     manual: true,
     onSuccess: () => {
+      localStorage.removeItem(md5TableKey());
       Message.success('删除成功!');
       setFalse();
       setTableColumn(defaultColumn);
