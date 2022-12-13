@@ -80,22 +80,12 @@ const List = () => {
           <div style={{color: record.number < record.inventoryFloor ? 'red' : ''}}>{text}</div>);
       }
     },
-    {title: '库存上限', width: '140', dataIndex: 'inventoryCeiling', render: (text, record) => {
-      return (
-        <div style={{color: record.number > record.inventoryCeiling ? 'red' : ''}}>{text}</div>);
-    }
+    {
+      title: '库存上限', width: '140', dataIndex: 'inventoryCeiling', render: (text, record) => {
+        return (
+          <div style={{color: record.number > record.inventoryCeiling ? 'red' : ''}}>{text}</div>);
+      }
     },
-    // {title: '报警时间',width:'14%', dataIndex: 'createTime'},
-    // {
-    //   title: '操作',width:'10%', dataIndex: '', align: 'center', render: () => {
-    //     // return (
-    //     //   <>
-    //     //     <Button type='link' onClick={() => {
-    //     //     }}>申请采购</Button>
-    //     //   </>
-    //     // );
-    //   }
-    // }
 
   ];
 
