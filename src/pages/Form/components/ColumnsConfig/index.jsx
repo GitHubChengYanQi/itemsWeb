@@ -1,5 +1,5 @@
-import React from 'react';
-import {Typography} from 'antd';
+import React, {useState} from 'react';
+import {Input, Typography} from 'antd';
 import {SortableContext} from '@dnd-kit/sortable';
 import {DroppableContainer, SortableItem} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 import TableConfig from '@/pages/Form/components/TableConfig';
@@ -39,6 +39,8 @@ const ColumnsConfig = (
     id
   }) => {
 
+  const [searchValue, setSearchValue] = useState('');
+
   return <DroppableContainer
     columns={fixedFileds ? 1 : columns.length}
     ulStyle={card ? {padding: '24px 0', gridGap: 0} : ulStyle}
@@ -69,7 +71,7 @@ const ColumnsConfig = (
     noNandle
     key={id}
     id={id}
-    disabled={card || (!fixedFileds &&  columns[containerId].data.length === 1 && activeId !== columns[containerId].data[0].key)}
+    disabled={card || (!fixedFileds && columns[containerId].data.length === 1 && activeId !== columns[containerId].data[0].key)}
     label={fixedFileds ? '待选字段' : (card && <>
       <Typography.Paragraph
         style={{margin: 0}}
@@ -87,6 +89,7 @@ const ColumnsConfig = (
     style={(fixedFileds || mobile) ? {border: 'none'} : containerStyle}
     onRemove={fixedFileds ? undefined : () => handleRemove(line, column)}
   >
+    {fixedFileds && <Input placeholder="搜索字段" />}
     {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>
       {columns[containerId].data.map((item, index) => {
         return <SortableItem
