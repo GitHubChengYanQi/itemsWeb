@@ -3,7 +3,7 @@ import {Input, Typography} from 'antd';
 import {SortableContext} from '@dnd-kit/sortable';
 import {DroppableContainer, SortableItem} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 import TableConfig from '@/pages/Form/components/TableConfig';
-import {queryString} from '@/util/Tools';
+import {isArray, queryString} from '@/util/Tools';
 
 const ColumnsConfig = (
   {
@@ -41,9 +41,9 @@ const ColumnsConfig = (
   }) => {
 
   const [searchValue, setSearchValue] = useState('');
-  if (fixedFileds) {
-    console.log(columns[containerId].data);
-  }
+
+  const columnsData = isArray(columns[containerId].data);
+
   return <DroppableContainer
     columns={fixedFileds ? 1 : columns.length}
     ulStyle={card ? {padding: '24px 0', gridGap: 0} : ulStyle}
@@ -74,7 +74,7 @@ const ColumnsConfig = (
     noNandle
     key={id}
     id={id}
-    disabled={card || (!fixedFileds && columns[containerId].data.length === 1 && activeId !== columns[containerId].data[0].key)}
+    disabled={card || (!fixedFileds && columnsData.length === 1 && activeId !== columnsData[0].key)}
     label={fixedFileds ? '待选字段' : (card && <>
       <Typography.Paragraph
         style={{margin: 0}}
@@ -88,13 +88,13 @@ const ColumnsConfig = (
         {item.title || '无标题'}
       </Typography.Paragraph>
     </>)}
-    items={columns[containerId].data.map(item => item.key)}
+    items={columnsData.map(item => item.key)}
     style={(fixedFileds || mobile) ? {border: 'none'} : containerStyle}
     onRemove={fixedFileds ? undefined : () => handleRemove(line, column)}
   >
     {fixedFileds && <Input placeholder="搜索字段" onChange={({target: {value}}) => setSearchValue(value)} />}
-    {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>
-      {columns[containerId].data.filter(item => queryString(searchValue, item.filedName)).map((item, index) => {
+    {!card ? <SortableContext items={columnsData.map(item => item.key)}>
+      {(fixedFileds ? columnsData.filter(item => queryString(searchValue, item.filedName)) : columnsData).map((item, index) => {
         return <SortableItem
           fixedFileds={fixedFileds}
           activeId={activeId}
