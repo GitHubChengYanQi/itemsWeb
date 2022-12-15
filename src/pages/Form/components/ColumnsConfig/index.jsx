@@ -3,6 +3,7 @@ import {Input, Typography} from 'antd';
 import {SortableContext} from '@dnd-kit/sortable';
 import {DroppableContainer, SortableItem} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 import TableConfig from '@/pages/Form/components/TableConfig';
+import {queryString} from '@/util/Tools';
 
 const ColumnsConfig = (
   {
@@ -40,7 +41,9 @@ const ColumnsConfig = (
   }) => {
 
   const [searchValue, setSearchValue] = useState('');
-
+  if (fixedFileds) {
+    console.log(columns[containerId].data);
+  }
   return <DroppableContainer
     columns={fixedFileds ? 1 : columns.length}
     ulStyle={card ? {padding: '24px 0', gridGap: 0} : ulStyle}
@@ -89,9 +92,9 @@ const ColumnsConfig = (
     style={(fixedFileds || mobile) ? {border: 'none'} : containerStyle}
     onRemove={fixedFileds ? undefined : () => handleRemove(line, column)}
   >
-    {fixedFileds && <Input placeholder="搜索字段" />}
+    {fixedFileds && <Input placeholder="搜索字段" onChange={({target: {value}}) => setSearchValue(value)} />}
     {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>
-      {columns[containerId].data.map((item, index) => {
+      {columns[containerId].data.filter(item => queryString(searchValue, item.filedName)).map((item, index) => {
         return <SortableItem
           fixedFileds={fixedFileds}
           activeId={activeId}
