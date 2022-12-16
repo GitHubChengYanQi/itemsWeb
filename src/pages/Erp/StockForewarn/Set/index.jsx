@@ -52,13 +52,17 @@ const Set = () => {
       dataIndex: 'inventoryFloor',
       render: (text, record, index) => {
         return <InputNumber
-          value={text}
+          value={data[index].inventoryFloor}
           width={140}
           placeholder="请输入"
           onChange={(inventoryFloor) => {
             const newData = data.map((item, key) => {
               if (key === index) {
-                return {...item, inventoryFloor};
+                return {
+                  ...item,
+                  inventoryFloor,
+                  inventoryCeiling: item.inventoryCeiling <= inventoryFloor ? null : item.inventoryCeiling
+                };
               }
               return item;
             });
@@ -71,7 +75,8 @@ const Set = () => {
       title: '库存上限', width: 140, align: 'center', dataIndex: 'inventoryCeiling', render: (text, record, index) => {
         return <InputNumber
           width={140}
-          value={text}
+          value={data[index].inventoryCeiling}
+          min={data[index].inventoryFloor + 1}
           placeholder="请输入"
           onChange={(inventoryCeiling) => {
             const newData = data.map((item, key) => {
@@ -90,12 +95,12 @@ const Set = () => {
           type="link"
           disabled={record.inventoryFloor === data[index].inventoryFloor && record.inventoryCeiling === data[index].inventoryCeiling}
           onClick={() => {
-            return;
             add({
               data: {
                 type: 'sku',
                 formId: record.skuId,
-                ...data[index]
+                inventoryFloor: data[index].inventoryFloor,
+                inventoryCeiling: data[index].inventoryCeiling
               }
             });
           }}
@@ -134,8 +139,13 @@ const Set = () => {
       <Table
         noTableColumn
         format={(data) => {
-          setData(data);
-          return data;
+          const newData = data.map(item => ({
+            ...item,
+            inventoryCeiling: item.stockForewarnResult?.inventoryCeiling,
+            inventoryFloor: item.stockForewarnResult?.inventoryFloor
+          }));
+          setData(newData);
+          return newData;
         }}
         loading={addLoading}
         searchForm={searchForm}
