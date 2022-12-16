@@ -51,8 +51,9 @@ const Set = () => {
       align: 'center',
       dataIndex: 'inventoryFloor',
       render: (text, record, index) => {
+        const sku = data[index] || {};
         return <InputNumber
-          value={data[index].inventoryFloor}
+          value={sku.inventoryFloor}
           width={140}
           placeholder="请输入"
           onChange={(inventoryFloor) => {
@@ -73,10 +74,11 @@ const Set = () => {
     },
     {
       title: '库存上限', width: 140, align: 'center', dataIndex: 'inventoryCeiling', render: (text, record, index) => {
+        const sku = data[index] || {};
         return <InputNumber
           width={140}
-          value={data[index].inventoryCeiling}
-          min={data[index].inventoryFloor + 1}
+          value={sku.inventoryCeiling}
+          min={sku.inventoryFloor + 1}
           placeholder="请输入"
           onChange={(inventoryCeiling) => {
             const newData = data.map((item, key) => {
@@ -91,9 +93,10 @@ const Set = () => {
     },
     {
       title: '操作', width: 70, align: 'center', dataIndex: 'action', render: (text, record, index) => {
+        const sku = data[index] || {};
         return <Button
           type="link"
-          disabled={record.inventoryFloor === data[index].inventoryFloor && record.inventoryCeiling === data[index].inventoryCeiling}
+          disabled={record.inventoryFloor === sku.inventoryFloor && record.inventoryCeiling === sku.inventoryCeiling}
           onClick={() => {
             add({
               data: {
