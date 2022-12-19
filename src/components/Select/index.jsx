@@ -7,6 +7,7 @@ const Select = (
   {
     value,
     api,
+    allowClear,
     border,
     data: param,
     resh,
@@ -105,7 +106,7 @@ const Select = (
               onChange(value, option);
             }}
             onSearch={onSearch}
-            allowClear={false}
+            allowClear={allowClear}
             showSearch
             filterOption={(input, option) => {
               if (typeof option.label !== 'string') {

@@ -28,9 +28,10 @@ const CommonMediaList = ({
 
   const {loading, data, refresh, run} = useRequest({
     ...commonMediaList,
-    response: true,
     params: {limit: 10, page: 1},
     data: {types: ['png', 'PNG', 'jpeg', 'JPEG', 'jpg', 'JPG', 'gif', 'GIF']}
+  },{
+    response: true,
   });
 
   const {loading: insertLoading, run: insertRun} = useRequest(getMediaPath,

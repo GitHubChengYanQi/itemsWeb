@@ -77,6 +77,7 @@ const TableWarp = (
     rowSelection,
     rowKey,
     // s
+    searchStyle,
     submitValues = {},
     sortAction,
     showCard,
@@ -178,8 +179,8 @@ const TableWarp = (
           };
         });
       }
-      response.data = format(response.data);
       return new Promise((resolve) => {
+        response.data = format(response.data);
         resolve({
           dataSource: Array.isArray(response.data) ? response.data.map((items) => {
             return isChildren ? items : dataSourcedChildren(items);
@@ -231,14 +232,19 @@ const TableWarp = (
     formActions.submit();
   };
 
+  const {loading, dataSource, pagination, ...other} = tableProps;
+
+  const getDataSource = () => {
+    return dataSource;
+  };
+
   useImperativeHandle(ref, () => ({
     refresh,
     submit,
     reset,
+    getDataSource,
     formActions,
   }));
-
-  const {loading, dataSource, pagination, ...other} = tableProps;
 
   const footer = () => {
     return (
@@ -277,7 +283,7 @@ const TableWarp = (
           style={{height: contentHeight || 'calc(100vh - 128px)', overflow: 'auto'}}
           id="tableContent"
         >
-          {searchForm ? <div className="search" style={headStyle}>
+          {searchForm ? <div className="search" style={headStyle || searchStyle}>
             <Row justify="space-between">
               <Col>
                 <Form
@@ -346,12 +352,7 @@ const TableWarp = (
                     width: 40,
                     render: (value, record, index) => <Render text={index + 1} width={40} maxWidth={40} />
                   }]),
-                  ...(noTableColumnSet ? columnsFormat() : tableColumn.filter((items) => {
-                    if (items && items.props && items.props.visible === false) {
-                      return false;
-                    }
-                    return !(items && (items.checked === false));
-                  })),
+                  ...(noTableColumnSet ? columns : tableColumn.filter(item => !(item && (item.checked === false)))),
                 ]}
                 pagination={
                   noPagination ? false : {

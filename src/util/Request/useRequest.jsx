@@ -1,15 +1,15 @@
-import { useRequest as ahooksRequest } from 'ahooks';
+import {useRequest as ahooksRequest} from 'ahooks';
 import Service from '@/util/Service';
 
 const useRequest = (config, options) => {
-  const { ajaxService } = Service();
+  const {ajaxService} = Service();
 
   const requestService = (params) => {
     return params || {};
   };
 
   const formatResult = (response) => {
-    if (typeof response.data === 'undefined' || config.response) {
+    if (typeof response.data === 'undefined' || options && options.response) {
       return response;
     }
     return response.data;

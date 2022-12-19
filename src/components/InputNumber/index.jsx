@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {InputNumber as AntInputNumber} from 'antd';
-import styles from './index.module.less';
 import classNames from 'classnames';
+import styles from './index.module.less';
 
 const InputNumber = (
   {
