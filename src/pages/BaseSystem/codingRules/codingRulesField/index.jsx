@@ -15,7 +15,7 @@ import {
 import InputNumber from '@/components/InputNumber';
 
 export const Name = (props) => {
-  return (<Input {...props} />);
+  return (<Input {...props} placeholder="请输入规则名称" />);
 };
 export const CreateUser = (props) => {
   return (<Input {...props} />);
@@ -204,7 +204,6 @@ export const Values = (props) => {
                 ]
               },
             ]}
-            allowClear
             showSearch
             value="流水号"
             filterOption={(input, option) => option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -298,5 +297,5 @@ export const Module = (props) => {
     {label: '机床编号', value: 20},
   ];
 
-  return (<AntdSelect options={options} {...props} />);
+  return (<AntdSelect options={options} {...props} placeholder="请选择对应模块" />);
 };

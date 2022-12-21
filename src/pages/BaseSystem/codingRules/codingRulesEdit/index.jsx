@@ -6,13 +6,14 @@
  */
 
 import React, {useImperativeHandle, useRef} from 'react';
-import {Button} from 'antd';
-import { MinusOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, message} from 'antd';
+import {MinusOutlined, PlusOutlined} from '@ant-design/icons';
 import {createFormActions, FieldList, FormEffectHooks} from '@formily/antd';
 import ProCard from '@ant-design/pro-card';
 import Form from '@/components/Form';
 import {codingRulesDetail, codingRulesAdd, codingRulesEdit} from '../codingRulesUrl';
 import * as SysField from '../codingRulesField';
+import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
 
@@ -22,11 +23,11 @@ const ApiConfig = {
   save: codingRulesEdit
 };
 
-const CodingRulesEdit = ({...props},ref) => {
+const CodingRulesEdit = ({...props}, ref) => {
 
   const formRef = useRef();
 
-  useImperativeHandle(ref,()=>({
+  useImperativeHandle(ref, () => ({
     formRef,
   }));
 
@@ -39,6 +40,17 @@ const CodingRulesEdit = ({...props},ref) => {
         ref={formRef}
         api={ApiConfig}
         fieldKey="codingRulesId"
+        onSubmit={(values) => {
+          const codings = isArray(values.codings).filter(item => item && item.values);
+          if (codings.length === 0) {
+            message.warn('请配置规则!');
+            return false;
+          }
+          return {
+            ...values,
+            codings
+          };
+        }}
         effects={() => {
 
           const {setFieldState} = createFormActions();
@@ -73,12 +85,11 @@ const CodingRulesEdit = ({...props},ref) => {
                     {state.value.map((item, index) => {
                       const onRemove = index => mutators.remove(index);
                       return (
-                        <div key={index} style={{display: 'block', marginRight: 8,textAlign:'center'}}>
+                        <div key={index} style={{display: 'block', marginRight: 8, textAlign: 'center'}}>
                           <div style={{display: 'inline-block', marginRight: 8,}}>
                             <FormItem
                               name={`codings.${index}.values`}
                               component={SysField.Values}
-                              required
                             />
                           </div>
                           <Button
@@ -93,7 +104,7 @@ const CodingRulesEdit = ({...props},ref) => {
                     })}
                     <Button
                       type="text"
-                      style={{width:'100%'}}
+                      style={{width: '100%'}}
                       icon={<PlusOutlined />}
                       onClick={onAdd} />
                   </div>
