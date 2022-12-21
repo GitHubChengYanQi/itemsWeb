@@ -335,7 +335,7 @@ const useTableSet = (column, tableKey) => {
         }
         <Dropdown
           overlay={menu}
-          overlayStyle={{backgroundColor: '#fff', zIndex: 99}}
+          overlayStyle={{backgroundColor: '#fff', zIndex: 99, boxShadow: '0 6px 24px 0 rgb(0 0 0 / 10%)'}}
           onOpenChange={(value) => {
             setVisible(value);
           }}
