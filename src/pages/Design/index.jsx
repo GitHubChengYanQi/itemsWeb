@@ -29,8 +29,29 @@ const Design = () => {
   ];
 
   return <>
-    <Card title={<Breadcrumb />} bodyStyle={{overflow:'auto'}}>
+    <Card title={<Breadcrumb />} bodyStyle={{overflow: 'auto'}}>
       <div style={{width: 1200, margin: 'auto'}}>
+        <Card.Grid
+          style={{textAlign: 'center', width: '33%', padding: 0, display: 'inline-block'}}
+        >
+          <div style={{padding: 24}}>
+            统计图表
+          </div>
+          <div style={{display: 'flex'}}>
+            <Button
+              type="link"
+              style={{padding: 0, flexGrow: 1}}
+              onClick={() => {
+                history.push(`/BASE_SYSTEM/Design/permissions?type=${ReceiptsEnums.report}`);
+              }}>权限设置</Button>
+            <Button
+              type="link"
+              style={{padding: 0, flexGrow: 1}}
+              onClick={() => {
+                history.push(`/report/reportSetting?type=${ReceiptsEnums.report}`);
+              }}>显示设置</Button>
+          </div>
+        </Card.Grid>
         {
           orderData.map((item, index) => {
             return <Card.Grid

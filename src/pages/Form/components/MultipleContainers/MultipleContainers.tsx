@@ -164,6 +164,7 @@ interface Props {
   trashable?: boolean;
   scrollable?: boolean;
   vertical?: boolean;
+  report?: boolean;
 }
 
 export const TRASH_ID = 'void';
@@ -186,6 +187,7 @@ export function MultipleContainers(
     gutter: defaultGutter,
     widthUnit: defaultWidthUnit,
     module,
+    report,
     setModule,
   }: Props) {
 
@@ -195,7 +197,7 @@ export function MultipleContainers(
 
   const [delStep, setDelStep] = useState<number | undefined>();
 
-  const mobile = module === 'mobile';
+  const mobile = report || module === 'mobile';
 
   const [width, setWidth] = useState(defaultWidth || 100);
   const [gutter, setGutter] = useState(defaultGutter || 16);
@@ -604,113 +606,119 @@ export function MultipleContainers(
             overflow: 'hidden',
             padding: '20px 40px'
           }}>
-            <Tabs
-              tabBarExtraContent={
-                <div>
-                  <Space align='center' size={16}>
-                    <Space>
-                      页面宽:
-                      <InputNumber
-                        min={30}
-                        disabled={mobile}
-                        value={width}
-                        onChange={(number) => setWidth(number)}
-                        addonAfter={<Select
+            {!report && <>
+              <Tabs
+                tabBarExtraContent={
+                  <div>
+                    <Space align='center' size={16}>
+                      <Space>
+                        页面宽:
+                        <InputNumber
+                          min={30}
                           disabled={mobile}
-                          value={widthUnit}
-                          onChange={(number) => setWidthUnit(number)}
-                          options={[{label: '%', value: '%'}, {label: 'vw', value: 'vw'}, {label: 'px', value: 'px'},]}
-                        />}
-                      />
-                    </Space>
+                          value={width}
+                          onChange={(number) => setWidth(number)}
+                          addonAfter={<Select
+                            disabled={mobile}
+                            value={widthUnit}
+                            onChange={(number) => setWidthUnit(number)}
+                            options={[{label: '%', value: '%'}, {label: 'vw', value: 'vw'}, {
+                              label: 'px',
+                              value: 'px'
+                            },]}
+                          />}
+                        />
+                      </Space>
 
-                    <Space>
-                      间距:
-                      <InputNumber
-                        disabled={mobile}
-                        max={100}
-                        min={8}
-                        value={gutter}
-                        onChange={(number) => setGutter(number)}
-                        addonAfter='px'
-                      />
-                    </Space>
+                      <Space>
+                        间距:
+                        <InputNumber
+                          disabled={mobile}
+                          max={100}
+                          min={8}
+                          value={gutter}
+                          onChange={(number) => setGutter(number)}
+                          addonAfter='px'
+                        />
+                      </Space>
 
-                    <Button onClick={() => {
-                      setSteps([...steps, {
-                        data: [{step: steps.length, line: 1, column: 0, data: []}],
-                        type: 'edit',
-                        title: ''
-                      }]);
-                    }}>增加步骤</Button>
-                  </Space>
-                </div>
-              }
-              activeKey={module}
-              items={[{key: 'pc', label: 'PC端'}, {key: 'mobile', label: '移动端'}]}
-              onChange={setModule}
-            />
-            <div hidden={steps.length === 1} style={{marginBottom: 24}}>
-              <Steps
-                current={currentStep}
-                onChange={(step) => {
-                  const newSteps: any = steps.map((item, index) => {
-                    if (index === currentStep) {
-                      return {...item, data: items.filter((item, index) => index !== 0)};
-                    }
-                    return item;
-                  });
-                  setSteps(newSteps);
-                  const newItems: any = [items[0], ...steps[step].data];
-                  setItems(newItems);
-                  setCurrentStep(step);
-                }}>
-                {
-                  steps.map((item, index) => {
-                    return <Steps.Step
-                      title={<div>
-                        <Typography.Paragraph
-                          style={{margin: '0 8px', display: 'inline-block'}}
-                          editable={{
-                            tooltip: '点击自定义步骤名',
-                            onChange: (filedName) => {
-                              const newSteps = steps.map((stepItem, stepIndex) => {
-                                if (stepIndex === index) {
-                                  return {...stepItem, title: filedName};
-                                }
-                                return stepItem;
-                              });
-                              setSteps(newSteps);
-                            },
-                          }}
-                        >
-                          {item.title || `步骤${index + 1}`}
-                        </Typography.Paragraph>
-                        <Button onClick={() => {
-                          setDelStep(index);
-                        }} type='link' danger><DeleteOutlined /></Button>
-                      </div>}
-                      key={index}
-                      description={<Space align='center'>保存表单内容<Checkbox
-                        checked={item.type === 'add'}
-                        style={{color: 'rgba(0,0,0,0.5)'}}
-                        onChange={({target: {checked}}) => {
-                          if (!checked) {
-                            return;
-                          }
-                          const newSteps = steps.map((item, stepIndex) => {
-                            if (stepIndex === index) {
-                              return {...item, type: 'add'};
-                            }
-                            return {...item, type: 'edit'};
-                          });
-                          setSteps(newSteps);
-                        }}
-                      /></Space>} />;
-                  })
+                      <Button onClick={() => {
+                        setSteps([...steps, {
+                          data: [{step: steps.length, line: 1, column: 0, data: []}],
+                          type: 'edit',
+                          title: ''
+                        }]);
+                      }}>增加步骤</Button>
+                    </Space>
+                  </div>
                 }
-              </Steps>
-            </div>
+                activeKey={module}
+                items={[{key: 'pc', label: 'PC端'}, {key: 'mobile', label: '移动端'}]}
+                onChange={setModule}
+              />
+              <div hidden={steps.length === 1} style={{marginBottom: 24}}>
+                <Steps
+                  current={currentStep}
+                  onChange={(step) => {
+                    const newSteps: any = steps.map((item, index) => {
+                      if (index === currentStep) {
+                        return {...item, data: items.filter((item, index) => index !== 0)};
+                      }
+                      return item;
+                    });
+                    setSteps(newSteps);
+                    const newItems: any = [items[0], ...steps[step].data];
+                    setItems(newItems);
+                    setCurrentStep(step);
+                  }}>
+                  {
+                    steps.map((item, index) => {
+                      return <Steps.Step
+                        title={<div>
+                          <Typography.Paragraph
+                            style={{margin: '0 8px', display: 'inline-block'}}
+                            editable={{
+                              tooltip: '点击自定义步骤名',
+                              onChange: (filedName) => {
+                                const newSteps = steps.map((stepItem, stepIndex) => {
+                                  if (stepIndex === index) {
+                                    return {...stepItem, title: filedName};
+                                  }
+                                  return stepItem;
+                                });
+                                setSteps(newSteps);
+                              },
+                            }}
+                          >
+                            {item.title || `步骤${index + 1}`}
+                          </Typography.Paragraph>
+                          <Button onClick={() => {
+                            setDelStep(index);
+                          }} type='link' danger><DeleteOutlined /></Button>
+                        </div>}
+                        key={index}
+                        description={<Space align='center'>保存表单内容<Checkbox
+                          checked={item.type === 'add'}
+                          style={{color: 'rgba(0,0,0,0.5)'}}
+                          onChange={({target: {checked}}) => {
+                            if (!checked) {
+                              return;
+                            }
+                            const newSteps = steps.map((item, stepIndex) => {
+                              if (stepIndex === index) {
+                                return {...item, type: 'add'};
+                              }
+                              return {...item, type: 'edit'};
+                            });
+                            setSteps(newSteps);
+                          }}
+                        /></Space>} />;
+                    })
+                  }
+                </Steps>
+              </div>
+            </>}
+
 
             <div
               style={{
@@ -728,8 +736,9 @@ export function MultipleContainers(
                 width={400}
                 style={{position: 'sticky', top: 0, zIndex: 1}} alt=''
               />}
-              <div style={{padding: mobile ? 8 : 0,height:'calc(100vh - 360px)',overflow:'auto'}}>
+              <div style={{padding: mobile ? 8 : 0, height: 'calc(100vh - 360px)', overflow: 'auto'}}>
                 <TableConfig
+                  report
                   activeId={activeId}
                   mobile={mobile}
                   position={{}}
@@ -764,7 +773,7 @@ export function MultipleContainers(
           }}
         >
           <Space>
-            <Button disabled={module === 'mobile'} onClick={() => onPreview(submit())}>预览</Button>
+            <Button hidden={report} disabled={module === 'mobile'} onClick={() => onPreview(submit())}>预览</Button>
             <Button type='primary' onClick={() => {
               onSave(submit(), items[0]?.data);
             }}>保存</Button>
@@ -1058,6 +1067,7 @@ interface SortableItemProps {
   cardTable?: boolean;
   mobile?: boolean;
   fixedFileds?: boolean;
+  report?: boolean;
   item?: any,
   activeId?: any,
 
@@ -1070,6 +1080,7 @@ interface SortableItemProps {
 
 export const SortableItem = memo((
   {
+    report,
     activeId,
     itemChange = () => {
     },
@@ -1099,9 +1110,10 @@ export const SortableItem = memo((
 
   return (
     <Item
+      report={report}
       key={id}
       mobile={mobile}
-      ref={(fixedFileds || activeId === id) ? setNodeRef : undefined}
+      ref={(fixedFileds || activeId === id || report) ? setNodeRef : undefined}
       value={item.filedName}
       item={item}
       dragging={isDragging}

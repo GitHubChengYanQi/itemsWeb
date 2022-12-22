@@ -142,3 +142,22 @@ export const PaymentFormData = [
   {key: 'remark', filedName: '备注', inputType: 'input'},
   {key: 'orderId', filedName: '关联订单', inputType: 'select'},
 ];
+
+export const inStockReportData = [
+  {filedName: '到货量统计', key: 'Arrival'},
+  {filedName: '到货量排行', key: 'ArrivalRanking'},
+  {filedName: '入库汇总', key: 'Summary'},
+  {filedName: '入库数量排行', key: 'NumberRanking'},
+  {filedName: '工作量对比', key: 'Work'},
+  {filedName: '任务统计', key: 'TaskStatistics'},
+  {filedName: '排行对比', key: 'Contrast'},
+];
+
+export const outStockReportData = [
+  {filedName: '出库汇总', key: 'Summary'},
+  {filedName: '出库数量排行', key: 'NumberRanking'},
+  {filedName: '出库用排行料', key: 'OutStockRanking'},
+  {filedName: '工作量对比', key: 'Work'},
+  {filedName: '任务统计', key: 'TaskStatistics'},
+  {filedName: '排行对比', key: 'Contrast'},
+];
