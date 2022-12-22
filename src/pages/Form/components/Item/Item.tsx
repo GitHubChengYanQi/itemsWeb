@@ -29,23 +29,13 @@ export interface Props {
   value: string;
   item: any;
 
-  onRemove?(): void;
+  onRemove:()=>{},
 
   itemChange?: Function;
 
-  renderItem?(args: {
-    dragOverlay: boolean;
-    dragging: boolean;
-    sorting: boolean;
-    index: number | undefined;
-    fadeIn: boolean;
-    listeners: DraggableSyntheticListeners;
-    ref: React.Ref<HTMLElement>;
-    style: React.CSSProperties | undefined;
-    transform: Props['transform'];
-    transition: Props['transition'];
-    value: Props['value'];
-  }): React.ReactElement;
+  renderItem:()=>{
+
+  }
 }
 
 export const Item = React.memo(

@@ -6,7 +6,9 @@ import {isArray, isObject} from '@/util/Tools';
 import {useRequest} from '@/util/Request';
 import {formDetail, formEdit} from '@/pages/Form/url';
 import {
-  inStockReportData, outStockReportData
+  AllocationReportData,
+  ComprehensiveReportData,
+  inStockReportData, MaintenanceReportData, outStockReportData
 } from '@/pages/Form/formFileData';
 import Empty from '@/components/Empty';
 import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
@@ -73,13 +75,13 @@ const ReportSetting = () => {
           newFileData = [];
           break;
         case 'curring':
-          newFileData = [];
+          newFileData = MaintenanceReportData;
           break;
         case 'allocation':
-          newFileData = [];
+          newFileData = AllocationReportData;
           break;
         case 'comprehensive':
-          newFileData = [];
+          newFileData = ComprehensiveReportData;
           break;
         default:
           break;

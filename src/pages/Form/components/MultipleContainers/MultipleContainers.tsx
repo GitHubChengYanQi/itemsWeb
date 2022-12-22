@@ -33,7 +33,7 @@ import {Affix, Button, Checkbox, InputNumber, Modal, Select, Space, Steps, Tabs,
 import {DeleteOutlined} from '@ant-design/icons';
 import ColumnsConfig from '../ColumnsConfig';
 import TableConfig from '../TableConfig';
-import wxHead from '../../../../asseset/imgs/wxHead.jpg';
+import wxHead from '../../../../asseset/imgs/wxHead.png';
 
 import {Item} from '../Item';
 import {Container, ContainerProps} from '../Container';
@@ -568,6 +568,7 @@ export function MultipleContainers(
         <div style={{display: 'flex', alignItems: 'flex-start'}}>
           <div style={{minWidth: 350, padding: '16px 0', display: 'inline-block'}}>
             <ColumnsConfig
+              report={false}
               activeId={activeId}
               mobile={mobile}
               item
@@ -729,6 +730,7 @@ export function MultipleContainers(
                 padding: mobile ? '0' : '24px 0',
                 boxShadow: mobile ? '0 0 14px 0 rgb(0 0 0 / 10%)' : '',
                 background: mobile ? '#E1EBF6' : '#fff',
+                maxHeight: mobile ? 800 : 'calc(100vh - 276px)'
               }}
             >
               {mobile && <img
@@ -736,7 +738,12 @@ export function MultipleContainers(
                 width={400}
                 style={{position: 'sticky', top: 0, zIndex: 1}} alt=''
               />}
-              <div style={{padding: mobile ? 8 : 0, height: 'calc(100vh - 360px)', overflow: 'auto'}}>
+              <div style={{
+                padding: mobile ? 8 : 0,
+                height: 'calc(100vh - 360px)',
+                overflow: 'auto',
+                maxHeight: mobile ? 700 : 'calc(100vh - 360px)'
+              }}>
                 <TableConfig
                   report
                   activeId={activeId}
