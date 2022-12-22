@@ -168,10 +168,10 @@ export const Values = (props) => {
         {label: '当前季度', value: '${quarter}'},
       ]
     },
-    {
+    ...(modules().length > 0 ? [{
       label: '模块',
       options: modules()
-    },
+    }] : []),
   ];
 
   const options = [
