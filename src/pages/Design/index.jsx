@@ -42,12 +42,6 @@ const Design = () => {
               type="link"
               style={{padding: 0, flexGrow: 1}}
               onClick={() => {
-                history.push(`/BASE_SYSTEM/Design/permissions?type=${ReceiptsEnums.report}`);
-              }}>权限设置</Button>
-            <Button
-              type="link"
-              style={{padding: 0, flexGrow: 1}}
-              onClick={() => {
                 history.push(`/report/reportSetting?type=${ReceiptsEnums.report}`);
               }}>显示设置</Button>
           </div>
