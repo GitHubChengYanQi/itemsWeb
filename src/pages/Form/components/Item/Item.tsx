@@ -21,6 +21,7 @@ export interface Props {
   transform?: Transform | null;
   listeners?: DraggableSyntheticListeners;
   sorting?: boolean;
+  report?: boolean;
   mobile?: boolean;
   style?: React.CSSProperties;
   transition?: string | null;
@@ -28,29 +29,20 @@ export interface Props {
   value: string;
   item: any;
 
-  onRemove?(): void;
+  onRemove:()=>{},
 
   itemChange?: Function;
 
-  renderItem?(args: {
-    dragOverlay: boolean;
-    dragging: boolean;
-    sorting: boolean;
-    index: number | undefined;
-    fadeIn: boolean;
-    listeners: DraggableSyntheticListeners;
-    ref: React.Ref<HTMLElement>;
-    style: React.CSSProperties | undefined;
-    transform: Props['transform'];
-    transition: Props['transition'];
-    value: Props['value'];
-  }): React.ReactElement;
+  renderItem:()=>{
+
+  }
 }
 
 export const Item = React.memo(
   React.forwardRef<HTMLLIElement, Props>(
     (
       {
+        report,
         itemChange = () => {
         },
         color,
@@ -101,7 +93,7 @@ export const Item = React.memo(
       const label = () => {
         return <div style={{flexGrow: 1, marginLeft: 16}}>
           <Typography.Paragraph
-            style={{margin: 0, display: 'inline-block',maxWidth:clientWidth / 2}}
+            style={{margin: 0, display: 'inline-block', maxWidth: clientWidth / 2}}
             ellipsis
             editable={{
               tooltip: '点击自定义字段名',
@@ -176,10 +168,10 @@ export const Item = React.memo(
           {...props}
           tabIndex={!handle ? 0 : undefined}
         >
-           <span hidden={!handle || disabled} className={styles.Actions}>
+           <span hidden={!handle || disabled || report} className={styles.Actions}>
             <Handle {...listeners} />
             </span>
-          <div id={`formItem${item.key}`} style={{width:'100%'}}>
+          <div id={`formItem${item.key}`} style={{width: '100%'}}>
             {handle ? (
                 mobile ? label() : <Form.Item
                   className={styles.formItem}
@@ -192,12 +184,15 @@ export const Item = React.memo(
               )
               : value}
           </div>
-          {handle && <Checkbox
+          {handle && !report && <Checkbox
             disabled={item.disabled}
-            style={{padding: '0px 0 0 12px'}}
+            style={{padding: '0 0 0 12px'}}
             checked={item.required}
             onChange={({target: {checked}}) => itemChange({required: checked}, item.key)}
           >必填</Checkbox>}
+          <span style={{paddingRight: 12}} hidden={!report} className={styles.Actions}>
+            <Handle {...listeners} />
+            </span>
         </div>
       </li>
     }

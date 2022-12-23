@@ -12,5 +12,6 @@ export const ReceiptsEnums = {
   production: 'PRODUCTION',
   productionTask: 'PRODUCTIONTASK',
   invoice: 'INVOICE',
-  payment: 'PAYMENT'
+  payment: 'PAYMENT',
+  report: 'REPORT'
 };

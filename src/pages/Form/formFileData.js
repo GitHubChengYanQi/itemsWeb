@@ -142,3 +142,38 @@ export const PaymentFormData = [
   {key: 'remark', filedName: '备注', inputType: 'input'},
   {key: 'orderId', filedName: '关联订单', inputType: 'select'},
 ];
+
+export const inStockReportData = [
+  {filedName: '到货量统计', key: 'Arrival'},
+  {filedName: '入库汇总', key: 'Summary'},
+  {filedName: '工作量对比', key: 'Work'},
+  {filedName: '任务统计', key: 'TaskStatistics'},
+];
+
+export const outStockReportData = [
+  {filedName: '出库汇总', key: 'Summary'},
+  {filedName: '出库供应商排行', key: 'OutStockRanking'},
+  {filedName: '工作量对比', key: 'Work'},
+  {filedName: '任务统计', key: 'TaskStatistics'},
+];
+
+
+export const MaintenanceReportData = [
+  {filedName: '任务统计', key: 'TaskStatistics'},
+  {filedName: '养护数量排行', key: 'Number'},
+  {filedName: '物料养护排行', key: 'Maintenance'},
+];
+
+export const AllocationReportData = [
+  {filedName: '任务统计', key: 'TaskStatistics'},
+  {filedName: '物料调拨排行', key: 'Allocation'},
+  {filedName: '仓库调拨排行', key: 'StoreAllocation'},
+];
+
+export const ComprehensiveReportData = [
+  {filedName: '库存统计', key: 'StockStatistics'},
+  {filedName: '库存周期占比', key: 'CycleStatistics'},
+  {filedName: '缺欠排行', key: 'LackRanking'},
+  {filedName: '任务统计', key: 'TaskStatistics'},
+  {filedName: '工作量对比', key: 'Work'},
+];

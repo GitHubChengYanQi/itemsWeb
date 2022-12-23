@@ -6,6 +6,7 @@ import ColumnsConfig from '@/pages/Form/components/ColumnsConfig';
 
 const TableConfig = (
   {
+    report,
     activeId,
     position = {},
     gutter,
@@ -102,6 +103,7 @@ const TableConfig = (
             >
               {columns.map((item, index) => {
                   return <ColumnsConfig
+                    report={report}
                     activeId={activeId}
                     mobile={mobile}
                     onUp={onUp}
