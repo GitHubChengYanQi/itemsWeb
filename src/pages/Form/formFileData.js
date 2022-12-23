@@ -44,7 +44,7 @@ export const POFormData = [
   {key: 'adressId', filedName: '交货地址', inputType: 'select'},
   {key: 'userId', filedName: '收货人', inputType: 'select'},
   {key: 'leadTime', filedName: '交货期(天)', inputType: 'input'},
-  {key: 'deliveryDate', filedName: '交货日期', inputType: 'input'},
+  {key: 'deliveryDate', filedName: '交货日期', inputType: 'date'},
   {key: 'generateContract', filedName: '是否需要合同', inputType: 'radio'},
   {key: 'fileId', filedName: '上传合同', inputType: 'upload'},
   {key: 'templateId', filedName: '合同模板', inputType: 'select'},

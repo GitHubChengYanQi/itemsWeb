@@ -535,21 +535,21 @@ const ordedrAction = (setFieldState) => {
     });
   });
 
-  FormEffectHooks.onFieldValueChange$('leadTime').subscribe(({value, inputed}) => {
-    if (inputed) {
-      setFieldState('deliveryDate', (state) => {
-        state.value = new Date(moment(new Date()).add(value, 'day'));
-      });
-    }
-  });
-
-  FormEffectHooks.onFieldValueChange$('deliveryDate').subscribe(({value, inputed}) => {
-    if (inputed) {
-      setFieldState('leadTime', (state) => {
-        state.value = moment(value).diff(new Date(), 'day');
-      });
-    }
-  });
+  // FormEffectHooks.onFieldValueChange$('leadTime').subscribe(({value, inputed}) => {
+  //   if (inputed) {
+  //     setFieldState('deliveryDate', (state) => {
+  //       state.value = new Date(moment(new Date()).add(value, 'day'));
+  //     });
+  //   }
+  // });
+  //
+  // FormEffectHooks.onFieldValueChange$('deliveryDate').subscribe(({value, inputed}) => {
+  //   if (inputed) {
+  //     setFieldState('leadTime', (state) => {
+  //       state.value = moment(value).diff(new Date(), 'day');
+  //     });
+  //   }
+  // });
 
 };
 
