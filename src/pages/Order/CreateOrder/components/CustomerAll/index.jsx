@@ -80,7 +80,7 @@ export const Adress = (props) => {
         }}
         value={false}
         customer={customerId}
-        noButton
+        NoButton
       />
     </Modal>
   </>;
@@ -205,7 +205,7 @@ export const Phone = (props) => {
       </>}
     >
       <PhoneEdit
-        noButton
+        NoButton
         ref={submitRef}
         onSuccess={(res) => {
           ref.current.close();
@@ -288,7 +288,7 @@ export const BankAccount = (props) => {
         ref={submitRef}
         bankId={bankId}
         value={false}
-        noButton
+        NoButton
         customerId={customerId}
         onSuccess={(res) => {
           ref.current.close();
@@ -342,12 +342,15 @@ export const Bank = (props) => {
         </Button>
       </>}
     >
-      <BankEdit ref={submitRef} value={false} noButton onSuccess={(res) => {
-        refresh();
-        if (res && res.data) {
-          props.onChange(res.data.bankId);
-        }
-      }} />
+      <div style={{paddingTop:12}}>
+        <BankEdit ref={submitRef} value={false} NoButton onSuccess={(res) => {
+          refresh();
+          if (res && res.data) {
+            props.onChange(res.data.bankId);
+          }
+        }} />
+      </div>
+
     </Modal>
   </>;
 };

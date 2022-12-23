@@ -39,7 +39,7 @@ const PhoneEdit = ({...props}, ref) => {
       }}
       formActions={formActionsPublic}
       ref={formRef}
-      noButton={!NoButton}
+      noButton={NoButton}
       api={ApiConfig}
       onSubmit={(value) => {
         if (!contactsId) {
