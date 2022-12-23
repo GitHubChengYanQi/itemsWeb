@@ -745,7 +745,7 @@ export function MultipleContainers(
                 maxHeight: mobile ? 700 : 'calc(100vh - 360px)'
               }}>
                 <TableConfig
-                  report
+                  report={report}
                   activeId={activeId}
                   mobile={mobile}
                   position={{}}
