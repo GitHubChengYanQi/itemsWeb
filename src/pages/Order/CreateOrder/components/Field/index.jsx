@@ -559,7 +559,7 @@ export const AllField = (
 };
 
 export const Time = (props) => {
-  return <DatePicker showTime {...props} />;
+  return <DatePicker {...props} />;
 };
 
 
