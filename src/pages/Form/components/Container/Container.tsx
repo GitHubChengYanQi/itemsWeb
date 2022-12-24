@@ -120,36 +120,42 @@ export const Container = forwardRef<HTMLDivElement, Props>(
         <div
           hidden={over || leftTopHidden}
           className={classNames(styles.add, styles.leftTop)}
+          title='向上添加行'
         >
           <PlusCircleFilled onClick={onLeftTop} />
         </div>
         <div
           hidden={over || leftBottomHidden}
           className={classNames(styles.add, styles.leftBottom)}
+          title='向下添加行'
         >
           <PlusCircleFilled onClick={onLeftBottom} />
         </div>
         <div
           hidden={over || topLeftHidden}
           className={classNames(styles.add, styles.topLeft)}
+          title='向左添加列'
         >
           <PlusCircleFilled onClick={onTopLeft} />
         </div>
         <div
           hidden={over || topRightHidden}
           className={classNames(styles.add, styles.topRight)}
+          title='向右添加列'
         >
           <PlusCircleFilled onClick={onTopRight} />
         </div>
         <div
           hidden={over || removeRowHidden}
           className={classNames(styles.add, styles.removeRow)}
+          title='移除行'
         >
           <MinusCircleFilled onClick={onRemoveRow} />
         </div>
         <div
           hidden={over || removeColumnHidden}
           className={classNames(styles.add, styles.removeColumn)}
+          title='移除列'
         >
           <MinusCircleFilled onClick={onRemoveColumn} />
         </div>
