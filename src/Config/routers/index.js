@@ -13,6 +13,7 @@ import baseSystem from './baseSystem';
 import PurshaseRouterConfig from '@/pages/Purshase/router';
 import ProcessRouterConfig from '@/pages/Process/route';
 import ResearchRouterConfig from '@/pages/ReSearch/route';
+import ReportConfig from '@/pages/Design/Report/routes';
 
 
 const routerConfig = [
@@ -30,6 +31,7 @@ const routerConfig = [
     name: 'Home',
     component: BasicLayout,
     children: [
+      ...ReportConfig,
       ...WorkflowConfig,
       ...CrmRouterConfig,
       ...ErpRouterConfig,

@@ -6,6 +6,7 @@ import TableConfig from '@/pages/Form/components/TableConfig';
 
 const ColumnsConfig = (
   {
+    report,
     activeId,
     table,
     card,
@@ -69,7 +70,7 @@ const ColumnsConfig = (
     noNandle
     key={id}
     id={id}
-    disabled={card || (!fixedFileds &&  columns[containerId].data.length === 1 && activeId !== columns[containerId].data[0].key)}
+    disabled={card || !report && (!fixedFileds && columns[containerId].data.length === 1 && activeId !== columns[containerId].data[0].key)}
     label={fixedFileds ? '待选字段' : (card && <>
       <Typography.Paragraph
         style={{margin: 0}}
@@ -90,6 +91,7 @@ const ColumnsConfig = (
     {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>
       {columns[containerId].data.map((item, index) => {
         return <SortableItem
+          report={report}
           fixedFileds={fixedFileds}
           activeId={activeId}
           mobile={mobile}
@@ -105,6 +107,7 @@ const ColumnsConfig = (
         />;
       })}
     </SortableContext> : <TableConfig
+      report={report}
       activeId={activeId}
       position={item}
       onUp={onUp}
