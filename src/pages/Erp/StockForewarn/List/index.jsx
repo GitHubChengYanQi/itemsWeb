@@ -77,13 +77,13 @@ const List = () => {
     {
       title: '库存下限', width: '140', dataIndex: 'inventoryFloor', render: (text, record) => {
         return (
-          <div style={{color: record.number < record.inventoryFloor ? 'red' : ''}}>{text}</div>);
+          <div style={{color: record.number <= record.inventoryFloor ? 'red' : ''}}>{text}</div>);
       }
     },
     {
       title: '库存上限', width: '140', dataIndex: 'inventoryCeiling', render: (text, record) => {
         return (
-          <div style={{color: record.number > record.inventoryCeiling ? 'red' : ''}}>{text}</div>);
+          <div style={{color: record.number >= record.inventoryCeiling ? 'red' : ''}}>{text}</div>);
       }
     },
 
