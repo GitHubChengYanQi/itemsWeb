@@ -7,14 +7,15 @@
 
 import React from 'react';
 import {Input,Radio} from 'antd';
-import Select from '@/components/Select';
 import {bankListSelect} from '@/pages/Purshase/bank/bankUrl';
+import SetSelectOrCascader from '@/components/SetSelectOrCascader';
+import BankEdit from '@/pages/Purshase/bank/bankEdit';
 
 export const CustomerId = (props) =>{
   return (<Input {...props}/>);
 };
 export const Bank = (props) =>{
-  return (<Select api={bankListSelect} {...props}/>);
+  return (<SetSelectOrCascader api={bankListSelect} title="新增银行" component={BankEdit} {...props} />);
 };
 export const BankAccount = (props) =>{
   return (<Input {...props}/>);

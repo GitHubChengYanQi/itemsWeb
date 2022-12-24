@@ -1120,7 +1120,7 @@ export const SortableItem = memo((
       report={report}
       key={id}
       mobile={mobile}
-      ref={(fixedFileds || activeId === id || report) ? setNodeRef : undefined}
+      ref={setNodeRef}
       value={item.filedName}
       item={item}
       dragging={isDragging}
