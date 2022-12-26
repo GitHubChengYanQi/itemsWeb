@@ -6,7 +6,7 @@
  */
 
 import React, {useRef, useState} from 'react';
-import {Button, message, Space, Table as AntTable} from 'antd';
+import {Button, Input, message, Space, Table as AntTable} from 'antd';
 import {useHistory} from 'ice';
 import Table from '@/components/Table';
 import Form from '@/components/Form';
@@ -16,6 +16,7 @@ import * as SysField from '../SysField/index';
 import Modal from '@/components/Modal';
 import CreateContract from '@/pages/Order/CreateContract';
 import Render from '@/components/Render';
+import {Customer} from '@/pages/Order/CreateOrder/components/CustomerAll';
 
 const {FormItem} = Form;
 
@@ -30,33 +31,34 @@ const OrderTable = (props) => {
 
   const [loading, setLoading] = useState(false);
 
-  const module = () => {
-    switch (props.location.pathname) {
-      case '/CRM/order':
-        return {
-          createTitle: '创建销售单',
-          createRoute: '/CRM/order/createOrder?module=SO',
-          module: 'SO',
-          type: 2,
-        };
-      case '/purchase/order':
-        return {
-          createTitle: '创建采购单',
-          createRoute: '/purchase/order/createOrder?module=PO',
-          module: 'PO',
-          type: 1,
-        };
-      default:
-        break;
-    }
-  };
+  let module = {};
+  switch (props.location.pathname) {
+    case '/CRM/order':
+      module = {
+        createTitle: '创建销售单',
+        createRoute: '/CRM/order/createOrder?module=SO',
+        module: 'SO',
+        type: 2,
+      };
+      break;
+    case '/purchase/order':
+      module = {
+        createTitle: '创建采购单',
+        createRoute: '/purchase/order/createOrder?module=PO',
+        module: 'PO',
+        type: 1,
+      };
+      break;
+    default:
+      break;
+  }
 
   const actions = () => {
     return (
       <>
         <Button type="primary" onClick={() => {
-          history.push(module().createRoute || '/');
-        }}>{module().createTitle || '创建'}</Button>
+          history.push(module.createRoute || '/');
+        }}>{module.createTitle || '创建'}</Button>
       </>
     );
   };
@@ -64,8 +66,10 @@ const OrderTable = (props) => {
   const searchForm = () => {
     return (
       <>
-        <FormItem label="单号" name="coding" component={SysField.Coding} />
-        <FormItem hidden name="type" value={module().type} component={SysField.Coding} />
+        <FormItem label="主题" name="theme" placeholder="请输入主题" component={Input} />
+        <FormItem label="编号" name="coding" placeholder="请输入编号" component={Input} />
+        <FormItem hidden={module.type !== 1} label="供应商" name="sellerId" placeholder="请选择供应商" supply={1} component={Customer} width={200} />
+        <FormItem hidden name="type" value={module.type} component={Input} />
       </>
     );
   };
