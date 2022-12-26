@@ -108,12 +108,14 @@ export const SOFormData = [
 
 export const ProductionFormData = [
   ...otherData,
-  {key: 'coding', filedName: '计划编码', inputType: 'input', required: true, disabled: true},
-  {key: 'theme', filedName: '计划主题', inputType: 'input', required: true, disabled: true},
+  {key: 'coding', filedName: '计划编码', inputType: 'input'},
+  {key: 'type', filedName: '类型', inputType: 'select'},
+  {key: 'theme', filedName: '计划主题', inputType: 'input'},
   {key: 'time', filedName: '执行时间', inputType: 'select'},
-  {key: 'userId', filedName: '负责人', inputType: 'select'},
+  {key: 'userId', filedName: '执行人', inputType: 'select'},
   {key: 'remark', filedName: '备注', inputType: 'input'},
-  {key: 'orderDetailParams', filedName: '生产明细', inputType: 'select', required: true, disabled: true},
+  {key: 'orderDetailParams', filedName: '物料清单', inputType: 'select', required: true, disabled: true},
+  {key: 'files', filedName: '附件', inputType: 'select'},
 ];
 
 export const ProductionTaskFormData = [
