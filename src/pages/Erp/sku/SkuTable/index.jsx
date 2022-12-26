@@ -9,7 +9,6 @@ import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Button, Input, Space, Typography} from 'antd';
 import {CopyOutlined} from '@ant-design/icons';
 import {config, useHistory} from 'ice';
-import cookie from 'js-cookie';
 import Table from '@/components/Table';
 import DelButton from '@/components/DelButton';
 import AddButton from '@/components/AddButton';
@@ -20,7 +19,6 @@ import * as SysField from '../skuField';
 import Modal from '@/components/Modal';
 import Breadcrumb from '@/components/Breadcrumb';
 import Code from '@/pages/Erp/spu/components/Code';
-import Icon from '@/components/Icon';
 import PartsEdit from '@/pages/Erp/parts/PartsEdit';
 import Drawer from '@/components/Drawer';
 import Detail from '@/pages/ReSearch/Detail';
@@ -30,15 +28,15 @@ import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
 import Render from '@/components/Render';
 import {isArray} from '@/util/Tools';
+import Excel from '@/pages/Erp/sku/SkuTable/Excel';
+import {SkuFileds} from '@/pages/Erp/sku/SkuTable/Excel/Fileds';
 
 const {FormItem} = Form;
-
-const {baseURI} = config;
 
 
 const SkuTable = ({...props}, ref) => {
 
-  const token = cookie.get('tianpeng-token');
+  const {baseURI} = config;
 
   const {spuClass, spuId, isModal, setSpuClass, ...other} = props;
 
@@ -282,19 +280,11 @@ const SkuTable = ({...props}, ref) => {
             }}
             templateUrl={`${baseURI}api/SkuExcel`}
           />
-          <div>
-            <a
-              href={`${baseURI}skuExcel/skuExport?authorization=${token}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Space>
-                <Icon type="icon-daoru" />
-                导出物料
-              </Space>
-            </a>
-          </div>
-
+          <Excel
+            excelUrl="skuExcel/v1.1/skuExport"
+            title="导出物料"
+            fileds={SkuFileds}
+          />
         </Space>}
         rowKey="skuId"
         isModal={isModal || false}
@@ -308,7 +298,7 @@ const SkuTable = ({...props}, ref) => {
         }}
         {...other}
       />
-
+{/* 一键生成出库单，分配出库单 */}
       <AddSkuModal addRef={addRef} tableRef={tableRef} copy={copy} edit={edit} />
 
       <Modal
