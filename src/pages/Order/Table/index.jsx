@@ -80,13 +80,13 @@ const OrderTable = (props) => {
     {
       title: '甲方',
       dataIndex: 'acustomer',
-      hidden: module().type === 1,
+      hidden: module.type === 1,
       render: (value) => <Render text={value?.customerName || '-'} />
     },
     {
       title: '乙方',
       dataIndex: 'bcustomer',
-      hidden: module().type === 2,
+      hidden: module.type === 2,
       render: (value) => <Render text={value?.customerName || '-'} />
     },
     {title: '创建人', dataIndex: 'user', render: (value) => <Render text={value?.name || '-'} />},
