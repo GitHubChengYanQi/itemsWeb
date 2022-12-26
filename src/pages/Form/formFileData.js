@@ -114,7 +114,7 @@ export const ProductionFormData = [
   {key: 'time', filedName: '执行时间', inputType: 'select'},
   {key: 'userId', filedName: '执行人', inputType: 'select'},
   {key: 'remark', filedName: '备注', inputType: 'input'},
-  {key: 'orderDetailParams', filedName: '物料清单', inputType: 'select', required: true, disabled: true},
+  {key: 'orderDetailParams', filedName: '产品', inputType: 'select', required: true, disabled: true},
   {key: 'files', filedName: '附件', inputType: 'select'},
 ];
 
