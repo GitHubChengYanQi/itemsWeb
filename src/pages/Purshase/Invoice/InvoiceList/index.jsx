@@ -7,10 +7,11 @@
 
 import React, {useRef} from 'react';
 import {createFormActions} from '@formily/antd';
+import {Button} from 'antd';
 import Table from '@/components/Table';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
-import {invoiceList,invoiceDelete} from '@/pages/Purshase/Invoice/InvoiceUrl';
+import {invoiceList, invoiceDelete} from '@/pages/Purshase/Invoice/InvoiceUrl';
 import InvoiceEdit from '@/pages/Purshase/Invoice/InvoiceEdit';
 import EditButton from '@/components/EditButton';
 import DelButton from '@/components/DelButton';
@@ -21,6 +22,7 @@ const InvoiceList = () => {
 
   const ref = useRef(null);
   const tableRef = useRef(null);
+
   const actions = () => {
     return (
       <>
@@ -33,10 +35,16 @@ const InvoiceList = () => {
 
   const columns = [
     {dataIndex: 'name', title: '发票名称'},
-    {dataIndex: 'InvoiceDate', title: '发票日期'},
+    {dataIndex: 'invoiceDate', title: '发票日期'},
     {dataIndex: 'money', title: '金额(人民币)'},
-    {dataIndex: 'enclosureId', title: '附件'},
-    {dataIndex: 'orderId', title: '关联订单'},
+    {
+      dataIndex: 'enclosureId', title: '附件', align: 'center', render: (value, record) => {
+        return <Button type="link" onClick={() => {
+          window.open(record?.mediaUrlResult?.url);
+        }}>查看</Button>;
+      }
+    },
+    {dataIndex: 'coding', title: '关联订单'},
     {
       dataIndex: 'orderId', title: '操作', render: (value, record) => {
         return <>
