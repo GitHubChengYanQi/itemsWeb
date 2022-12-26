@@ -119,7 +119,7 @@ export const Values = (props) => {
           value: '${type}'
         }];
       case 20:
-        // 质检任务
+        // 机床编号
         return [{
           // eslint-disable-next-line no-template-curly-in-string
           label: '产品码',
@@ -130,7 +130,12 @@ export const Values = (props) => {
           label: '型号码',
           // eslint-disable-next-line no-template-curly-in-string
           value: '${modelCoding}'
-        }];
+        }, {
+          // eslint-disable-next-line no-template-curly-in-string
+          label: '合同码',
+          // eslint-disable-next-line no-template-curly-in-string
+          value: '${contractCoding}'
+        },];
       default:
         return [];
     }
