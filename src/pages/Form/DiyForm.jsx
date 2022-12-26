@@ -121,6 +121,9 @@ const DiyForm = () => {
       setFiledData(newFileData.filter(item => !keys.includes(item.key) && (mobile ? item.key !== 'card' : true)));
       setDetail(res || {});
       setLoading(false);
+    },
+    onError: () => {
+      setLoading(false);
     }
   });
 
@@ -184,7 +187,7 @@ const DiyForm = () => {
 
   return <Spin spinning={editlLoaing}>
     <Card
-      bodyStyle={{padding:'0px 24px'}}
+      bodyStyle={{padding: '0px 24px'}}
       title={`${title}表单配置`}
       extra={<Button onClick={() => history.goBack()}>返回</Button>}
     >

@@ -91,10 +91,20 @@ const MathCalc = (a, b, type) => {// 加减乘除
   return Number(r.toFixed(2));
 };
 
+// 查找字符串返回 true / false
+const queryString = (value = '', string) => {
+  if (value.includes('\\')) {
+    value = value.replaceAll('\\', '|');
+  }
+  const patt = new RegExp(value, 'i');
+  return patt.test(string);
+};
+
 
 export {
   randomString,
   isObject,
   isArray,
   MathCalc,
+  queryString,
 };

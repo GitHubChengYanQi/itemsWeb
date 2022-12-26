@@ -1,8 +1,9 @@
-import React from 'react';
-import {Typography} from 'antd';
+import React, {useState} from 'react';
+import {Input, Typography} from 'antd';
 import {SortableContext} from '@dnd-kit/sortable';
 import {DroppableContainer, SortableItem} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
 import TableConfig from '@/pages/Form/components/TableConfig';
+import {isArray, queryString} from '@/util/Tools';
 
 const ColumnsConfig = (
   {
@@ -39,6 +40,10 @@ const ColumnsConfig = (
     handleRemoveColumn,
     id
   }) => {
+
+  const [searchValue, setSearchValue] = useState('');
+
+  const columnsData = isArray(columns[containerId].data);
 
   return <DroppableContainer
     columns={fixedFileds ? 1 : columns.length}
@@ -84,12 +89,13 @@ const ColumnsConfig = (
         {item.title || '无标题'}
       </Typography.Paragraph>
     </>)}
-    items={columns[containerId].data.map(item => item.key)}
+    items={columnsData.map(item => item.key)}
     style={(fixedFileds || mobile) ? {border: 'none'} : containerStyle}
     onRemove={fixedFileds ? undefined : () => handleRemove(line, column)}
   >
-    {!card ? <SortableContext items={columns[containerId].data.map(item => item.key)}>
-      {columns[containerId].data.map((item, index) => {
+    {fixedFileds && <Input placeholder="搜索字段" onChange={({target: {value}}) => setSearchValue(value)} />}
+    {!card ? <SortableContext items={columnsData.map(item => item.key)}>
+      {(fixedFileds ? columnsData.filter(item => queryString(searchValue, item.filedName)) : columnsData).map((item, index) => {
         return <SortableItem
           report={report}
           fixedFileds={fixedFileds}
