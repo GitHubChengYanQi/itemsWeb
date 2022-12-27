@@ -9,7 +9,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, Descriptions, Space, Spin} from 'antd';
 import {createFormActions} from '@formily/antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
-import {config} from 'ice';
+import {config, useLocation} from 'ice';
 import cookie from 'js-cookie';
 import {backDetails, partsList} from '../PartsUrl';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -45,6 +45,8 @@ const PartsList = (
     type = 1
   }) => {
 
+  const {state = {}} = useLocation();
+
   const [formActionsPublic, setFormActionsPublic] = useState(createFormActions);
 
   const refAdd = useRef();
@@ -53,8 +55,6 @@ const PartsList = (
   const showRef = useRef();
 
   const token = cookie.get('tianpeng-token');
-
-  const [radio, setRadio] = useState('1');
 
   const [loading, setLoading] = useState();
 
@@ -99,6 +99,11 @@ const PartsList = (
           hidden
           name="skuId"
           value={value || null}
+          component={SysField.SkuInput} />
+        <FormItem
+          hidden
+          name="partsId"
+          value={state.partsId || null}
           component={SysField.SkuInput} />
         <FormItem
           hidden
@@ -264,7 +269,7 @@ const PartsList = (
       <Modal
         width={1200}
         type={type}
-        headTitle="创建物料清单"
+        title="物料清单"
         bom={bom}
         loading={setLoading}
         compoentRef={formRef}
@@ -274,7 +279,6 @@ const PartsList = (
         }}
         onSuccess={() => {
           if (bom && bom.type) {
-            setRadio(bom.type);
             tableRef.current.formActions.setFieldValue('type', bom.type);
           }
           setBom(null);

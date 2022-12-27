@@ -10,7 +10,6 @@ import {Button, Input} from 'antd';
 import {createFormActions} from '@formily/antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Modal from '@/components/Modal';
-import EditButton from '@/components/EditButton';
 import AddButton from '@/components/AddButton';
 import PartsEdit from '@/pages/Erp/parts/PartsEdit';
 import Table from '@/components/Table';
