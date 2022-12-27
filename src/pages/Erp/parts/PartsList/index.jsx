@@ -56,8 +56,6 @@ const PartsList = (
 
   const token = cookie.get('tianpeng-token');
 
-  const [radio, setRadio] = useState('1');
-
   const [loading, setLoading] = useState();
 
   const [key, setKey] = useState([]);
@@ -271,7 +269,7 @@ const PartsList = (
       <Modal
         width={1200}
         type={type}
-        headTitle="创建物料清单"
+        title="物料清单"
         bom={bom}
         loading={setLoading}
         compoentRef={formRef}
@@ -281,7 +279,6 @@ const PartsList = (
         }}
         onSuccess={() => {
           if (bom && bom.type) {
-            setRadio(bom.type);
             tableRef.current.formActions.setFieldValue('type', bom.type);
           }
           setBom(null);

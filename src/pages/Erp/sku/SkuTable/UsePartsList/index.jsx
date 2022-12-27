@@ -1,17 +1,21 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Button, Table} from 'antd';
 import Render from '@/components/Render';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import Note from '@/components/Note';
-import Drawer from '@/components/Drawer';
-import ShowBOM from '@/pages/Erp/parts/components/ShowBOM';
-import {isArray} from '@/util/Tools';
+import Modal from '@/components/Modal';
+import PartsEdit from '@/pages/Erp/parts/PartsEdit';
 
 const {Column} = Table;
 
 const UsePartsList = ({value}) => {
 
-  const showRef = useRef();
+  const refAdd = useRef();
+  const formRef = useRef();
+
+  const [bom, setBom] = useState();
+
+  const [loading, setLoading] = useState();
 
   return <div style={{padding: 18}}>
     <Table
@@ -50,19 +54,32 @@ const UsePartsList = ({value}) => {
         width={150}
         render={(value) => {
           return <Button type="link" onClick={() => {
-            showRef.current.open(value);
+            refAdd.current.open(value);
           }}>详情</Button>;
         }} />
     </Table>
 
-    <Drawer
-      extra
-      height="100%"
-      placement="top"
-      headTitle="物料清单"
-      width={1000}
-      component={ShowBOM}
-      ref={showRef}
+    <Modal
+      width={1200}
+      type={1}
+      title="物料清单"
+      bom={bom}
+      loading={setLoading}
+      compoentRef={formRef}
+      component={PartsEdit}
+      onClose={() => {
+        setBom(null);
+      }}
+      onSuccess={() => {
+        setBom(null);
+        refAdd.current.close();
+      }}
+      ref={refAdd}
+      footer={<>
+        <Button type="primary" loading={loading} onClick={() => {
+          formRef.current.submit();
+        }}>保存</Button>
+      </>}
     />
   </div>;
 };
