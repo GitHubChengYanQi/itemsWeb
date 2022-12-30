@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Button, Input, message} from 'antd';
+import {Button, Input, message, Space} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import styles from './index.module.less';
 import Table from '@/components/Table';
@@ -23,6 +23,10 @@ const Set = () => {
   const [state] = store.useModel('dataSource');
 
   const [data, setData] = useState([]);
+
+  const [bomSku, setBomSku] = useState({});
+
+  const [bomId, setBomId] = useState();
 
   const {addLoading, run: add} = useRequest(stockForewarnAdd, {
     response: true,
@@ -130,7 +134,11 @@ const Set = () => {
       <FormItem
         label="物料清单"
         name="partsSkuId"
-        component={BomSelect} />
+        component={BomSelect}
+        onChange={(value) => {
+          setBomId(value);
+        }}
+      />
     </>;
   };
 
@@ -140,7 +148,33 @@ const Set = () => {
     </div>
     <div className={styles.set}>
       <Table
+        onReset={() => {
+          setBomId();
+        }}
         noTableColumnSet
+        otherActions={bomId && <>
+          <div style={{marginLeft: 24}}>批量设置：</div>
+          <InputNumber
+            value={bomSku.inventoryFloor}
+            width={140}
+            placeholder="下限"
+            onChange={(inventoryFloor) => {
+              setBomSku({...bomSku, inventoryFloor});
+            }}
+          />
+          <InputNumber
+            width={140}
+            value={bomSku.inventoryCeiling}
+            min={bomSku.inventoryFloor + 1}
+            placeholder="上限"
+            onChange={(inventoryCeiling) => {
+              setBomSku({...bomSku, inventoryCeiling});
+            }}
+          />
+          <Button style={{padding: 0}} type="link" onClick={() => {
+            console.log({bomSku, bomId});
+          }}>确定</Button>
+        </>}
         format={(data) => {
           const newData = data.map(item => ({
             ...item,
