@@ -80,7 +80,7 @@ const SopList = () => {
               <EditButton onClick={() => {
                 ref.current.open(record.sopId);
               }} />
-              <DelButton api={sopDelete} value={record.shipSetpId} onSuccess={() => {
+              <DelButton api={sopDelete} value={record.sopId} onSuccess={() => {
                 tableRef.current.refresh();
               }} />
             </>
