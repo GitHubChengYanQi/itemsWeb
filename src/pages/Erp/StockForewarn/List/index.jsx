@@ -10,6 +10,9 @@ import store from '@/store';
 import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
+
+const { SHOW_CHILD } = Cascader;
+
 const searchForm = () => {
   const [state] = store.useModel('dataSource');
   const types = [
@@ -28,6 +31,7 @@ const searchForm = () => {
       <FormItem
         label="物料分类："
         name="classIds"
+        showCheckedStrategy={SHOW_CHILD}
         placeholder="请选择"
         options={state.skuClass}
         multiple

@@ -16,6 +16,8 @@ import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
 
+const { SHOW_CHILD } = Cascader;
+
 const Set = () => {
 
   const tableRef = useRef();
@@ -120,7 +122,8 @@ const Set = () => {
     return <>
       <FormItem name="skuName" label="基础物料" component={Input} placeholder="请输入" />
       <FormItem
-        name="classIds"
+        showCheckedStrategy={SHOW_CHILD}
+        name="spuClassIds"
         label="物料分类"
         width={200}
         multiple
@@ -146,7 +149,7 @@ const Set = () => {
         formSubmit={(values) => {
           return {
             ...values,
-            classIds: isArray(values.classIds).map(item => {
+            spuClassIds: isArray(values.spuClassIds).map(item => {
               return item[item.length - 1];
             })
           };
