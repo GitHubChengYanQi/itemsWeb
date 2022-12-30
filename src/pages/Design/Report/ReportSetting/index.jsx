@@ -8,7 +8,7 @@ import {formDetail, formEdit} from '@/pages/Form/url';
 import {
   AllocationReportData,
   ComprehensiveReportData,
-  inStockReportData, MaintenanceReportData, outStockReportData
+  inStockReportData, MaintenanceReportData, outStockReportData, StockingReportData
 } from '@/pages/Form/formFileData';
 import Empty from '@/components/Empty';
 import {MultipleContainers} from '@/pages/Form/components/MultipleContainers/MultipleContainers';
@@ -72,7 +72,7 @@ const ReportSetting = () => {
           newFileData = outStockReportData;
           break;
         case 'stocktaking':
-          newFileData = [];
+          newFileData = StockingReportData;
           break;
         case 'curring':
           newFileData = MaintenanceReportData;
