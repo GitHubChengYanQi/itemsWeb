@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Button, Input, message} from 'antd';
+import {Button, Input, message, Space} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import styles from './index.module.less';
 import Table from '@/components/Table';
@@ -23,7 +23,7 @@ const Set = () => {
   const [state] = store.useModel('dataSource');
 
   const [data, setData] = useState([]);
-
+  console.log(data);
   const {addLoading, run: add} = useRequest(stockForewarnAdd, {
     response: true,
     manual: true,
@@ -49,16 +49,19 @@ const Set = () => {
       title: '库存下限',
       width: 140,
       align: 'center',
-      dataIndex: 'inventoryFloor',
-      render: (text, record, index) => {
-        const sku = data[index] || {};
+      dataIndex: 'stockForewarnResult',
+      render: (stockForewarnResult, record) => {
+        const sku = data.find(item => item.skuId === record.skuId);
         return <InputNumber
-          value={sku.inventoryFloor}
+          defaultValue={stockForewarnResult?.inventoryFloor}
+          value={sku?.inventoryFloor}
           width={140}
           placeholder="请输入"
           onChange={(inventoryFloor) => {
-            const newData = data.map((item, key) => {
-              if (key === index) {
+            let exit = false;
+            const newData = data.map(item => {
+              if (item.skuId === record.skuId) {
+                exit = true;
                 return {
                   ...item,
                   inventoryFloor,
@@ -67,48 +70,83 @@ const Set = () => {
               }
               return item;
             });
+            if (!exit) {
+              newData.push({
+                skuId: record.skuId,
+                inventoryFloor,
+                inventoryCeiling: stockForewarnResult?.inventoryCeiling
+              });
+            }
             setData(newData);
           }}
         />;
       }
     },
     {
-      title: '库存上限', width: 140, align: 'center', dataIndex: 'inventoryCeiling', render: (text, record, index) => {
-        const sku = data[index] || {};
+      title: '库存上限',
+      width: 140,
+      align: 'center',
+      dataIndex: 'stockForewarnResult',
+      render: (stockForewarnResult, record) => {
+        const sku = data.find(item => item.skuId === record.skuId);
         return <InputNumber
+          defaultValue={stockForewarnResult?.inventoryCeiling}
+          value={sku?.inventoryCeiling}
           width={140}
-          value={sku.inventoryCeiling}
-          min={sku.inventoryFloor + 1}
+          min={sku?.inventoryFloor ? sku.inventoryFloor + 1 : 0}
           placeholder="请输入"
           onChange={(inventoryCeiling) => {
-            const newData = data.map((item, key) => {
-              if (key === index) {
-                return {...item, inventoryCeiling};
+            let exit = false;
+            const newData = data.map(item => {
+              if (item.skuId === record.skuId) {
+                exit = true;
+                return {
+                  ...item,
+                  inventoryCeiling,
+                };
               }
               return item;
             });
+            if (!exit) {
+              newData.push({
+                skuId: record.skuId,
+                inventoryCeiling,
+                inventoryFloor: stockForewarnResult?.inventoryFloor
+              });
+            }
             setData(newData);
-          }} />;
+          }}
+        />;
       }
     },
     {
-      title: '操作', width: 70, align: 'center', dataIndex: 'action', render: (text, record, index) => {
-        const sku = data[index] || {};
+      title: '操作', width: 70, align: 'center', dataIndex: 'action', render: (text, record) => {
         return <Button
           type="link"
-          disabled={record.inventoryFloor === sku.inventoryFloor && record.inventoryCeiling === sku.inventoryCeiling}
           onClick={() => {
-            add({
-              data: {
-                type: 'sku',
-                formId: record.skuId,
-                inventoryFloor: data[index].inventoryFloor,
-                inventoryCeiling: data[index].inventoryCeiling
+            let exit = false;
+            const newData = data.map(item => {
+              if (item.skuId === record.skuId) {
+                exit = true;
+                return {
+                  ...item,
+                  inventoryCeiling: null,
+                  inventoryFloor: null,
+                };
               }
+              return item;
             });
+            if (!exit) {
+              newData.push({
+                skuId: record.skuId,
+                inventoryCeiling: null,
+                inventoryFloor: null,
+              });
+            }
+            setData(newData);
           }}
         >
-          确定
+          重置
         </Button>;
       }
     },
@@ -136,20 +174,17 @@ const Set = () => {
 
   return <>
     <div className={styles.breadcrumb}>
-      <Breadcrumb title="预警设置" />
+      <div className={styles.bread}>
+        <Breadcrumb title="预警设置" />
+      </div>
+      <Space>
+        <Button type="primary">保存</Button>
+        <Button>返回</Button>
+      </Space>
     </div>
     <div className={styles.set}>
       <Table
         noTableColumnSet
-        format={(data) => {
-          const newData = data.map(item => ({
-            ...item,
-            inventoryCeiling: item.stockForewarnResult?.inventoryCeiling,
-            inventoryFloor: item.stockForewarnResult?.inventoryFloor
-          }));
-          setData(newData);
-          return newData;
-        }}
         loading={addLoading}
         searchForm={searchForm}
         api={skuList}
