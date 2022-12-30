@@ -13,6 +13,7 @@ import Render from '@/components/Render';
 import InputNumber from '@/components/InputNumber';
 import Cascader from '@/components/Cascader';
 import {BomSelect} from '@/pages/Erp/stock/StockField';
+import BottomButton from '@/components/BottomButton';
 
 const {FormItem} = Form;
 
@@ -28,10 +29,11 @@ const Set = () => {
 
   const [bomId, setBomId] = useState();
 
-  const {addLoading, run: add} = useRequest(stockForewarnAdd, {
+  const {loading: addLoading, run: add} = useRequest(stockForewarnAdd, {
     response: true,
     manual: true,
     onSuccess: () => {
+      setData([]);
       message.success('设置成功!');
       tableRef.current.refresh();
     }
@@ -159,9 +161,9 @@ const Set = () => {
 
   if (bomId) {
     columns.splice(3, 0, {
-      title: '配套数量', dataIndex: 'number', render: () => {
-        return 0;
-      }
+      title: '配套数量',
+      width: 140,
+      dataIndex: 'number'
     });
   }
 
@@ -190,12 +192,12 @@ const Set = () => {
         <Breadcrumb title="预警设置" />
       </div>
       <Space>
-        <Button type="primary">保存</Button>
         <Button>返回</Button>
       </Space>
     </div>
     <div className={styles.set}>
       <Table
+        contentHeight="calc(100vh - 175px)"
         formSubmit={(values) => {
           setBomId(values.partsSkuId);
           return values;
@@ -236,6 +238,12 @@ const Set = () => {
         noRowSelection
       />
     </div>
+
+    <BottomButton textAlign="right">
+      <Button disabled={data.length === 0} loading={addLoading} type="primary" onClick={() => {
+        add({data: {params: data.map(item => ({...item, formId: item.skuId, type: 'sku'}))}});
+      }}>保存</Button>
+    </BottomButton>
   </>;
 };
 

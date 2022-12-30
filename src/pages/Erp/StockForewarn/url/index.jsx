@@ -1,5 +1,5 @@
 export const stockForewarnAdd = {
-  url: '/stockForewarn/add',
+  url: '/stockForewarn/saveOrUpdate',
   method: 'POST'
 };
 

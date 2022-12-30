@@ -107,7 +107,6 @@ const Cascader = (
     showSearch={{
       filter,
     }}
-    allowClear={false}
     loading={loading}
     style={{width}}
     changeOnSelect={changeOnSelect}
