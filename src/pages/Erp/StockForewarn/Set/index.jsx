@@ -157,6 +157,13 @@ const Set = () => {
 
   ];
 
+  if (bomId) {
+    columns.splice(3, 0, {
+      title: '配套数量', dataIndex: 'number', render: () => {
+        return 0;
+      }
+    });
+  }
 
   const searchForm = () => {
     return <>
@@ -173,9 +180,6 @@ const Set = () => {
         label="物料清单"
         name="partsSkuId"
         component={BomSelect}
-        onChange={(value) => {
-          setBomId(value);
-        }}
       />
     </>;
   };
@@ -192,8 +196,9 @@ const Set = () => {
     </div>
     <div className={styles.set}>
       <Table
-        onReset={() => {
-          setBomId();
+        formSubmit={(values) => {
+          setBomId(values.partsSkuId);
+          return values;
         }}
         noTableColumnSet
         otherActions={bomId && <>
