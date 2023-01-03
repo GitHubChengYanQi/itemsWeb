@@ -33,7 +33,7 @@ const Set = () => {
     response: true,
     manual: true,
     onSuccess: () => {
-      setData([]);
+      // setData([]);
       message.success('设置成功!');
       tableRef.current.refresh();
     }
