@@ -21,6 +21,7 @@ const Amap = ({
   const [center, setCenter] = useState(isArray(value).length > 0 ? {longitude: value[0], latitude: value[1]} : {});
 
   const mapRef = useRef(null);
+  const [address,setAddress] = useState(value.address);
 
   const events = {
     complete: () => {
@@ -40,7 +41,7 @@ const Amap = ({
     <>
       <Button type="text" onClick={() => {
         setVisible(true);
-      }}><Icon type="icon-dingwei" />{title || '定位'}</Button>
+      }}><Icon type="icon-dingwei" />{address || '定位'}</Button>
       <Drawer
         destroyOnClose
         open={visible}
@@ -56,6 +57,7 @@ const Amap = ({
             <AmapSearch value={value} ref={mapRef} center={(value) => {
               setCenter({longitude: value.lgn, latitude: value.lat});
             }} onChange={(value) => {
+              setAddress(value.address);
               setCenter({longitude: value.location[0], latitude:  value.location[1]});
               setVisible(false);
               onChange(value);
@@ -66,5 +68,6 @@ const Amap = ({
     </>
 
   );
+
 };
 export default Amap;
