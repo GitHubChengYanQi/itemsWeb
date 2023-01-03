@@ -14,6 +14,7 @@ import InputNumber from '@/components/InputNumber';
 import Cascader from '@/components/Cascader';
 import {BomSelect} from '@/pages/Erp/stock/StockField';
 import BottomButton from '@/components/BottomButton';
+import {useHistory} from "ice";
 
 const {FormItem} = Form;
 
@@ -192,7 +193,9 @@ const Set = () => {
         <Breadcrumb title="预警设置" />
       </div>
       <Space>
-        <Button>返回</Button>
+        <Button onClick={()=>{
+          window.history.back(-1);
+        }}>返回</Button>
       </Space>
     </div>
     <div className={styles.set}>
