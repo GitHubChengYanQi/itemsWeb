@@ -15,6 +15,7 @@ const InputNumber = (
     min,
     addonAfter,
     status,
+    precision,
     style = {},
     ...props
   }) => {
@@ -22,6 +23,7 @@ const InputNumber = (
   const [number, setNumber] = useState(value);
 
   return <AntInputNumber
+    precision={precision}
     className={classNames(addonAfter && styles.addonAfter)}
     status={status}
     addonAfter={addonAfter}
