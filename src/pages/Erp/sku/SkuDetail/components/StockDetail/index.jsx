@@ -32,9 +32,6 @@ const StockDetail = ({skuId}) => {
       <Column title="库存数" dataIndex="number" render={(value) => {
         return <>{value || 0}</>;
       }} />
-      <Column title="单位" dataIndex="skuResult" render={(value) => {
-        return <>{value?.spuResult?.unitResult?.unitName || '-'}</>;
-      }} />
       <Column width={70} title="操作" dataIndex="brandResult" render={(value) => {
         return <Render><Button type="link">查看实物</Button></Render>;
       }} />
