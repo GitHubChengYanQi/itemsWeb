@@ -279,7 +279,7 @@ export const MaintenancePeriod = (props) => {
 
 
 export const Weight = (props) => {
-  return (<InputNumber precision={3} addonAfter="kg" {...props} />);
+  return (<InputNumber min={0} precision={3} addonAfter="kg" {...props} />);
 };
 
 export const FileId = (props) => {
