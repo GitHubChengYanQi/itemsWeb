@@ -15,10 +15,10 @@ const SkuResultSkuJsons = ({skuResult, describe}) => {
       &&
       skuResult.skuJsons.map((items) => {
         return `${items.attribute.attribute || '无'}:${items.values.attributeValues || '无'}`;
-      }).join(' ; ') || '无'
+      }).join(' ; ') || '无';
   }
 
-  return `${skuResult.spuResult.name} / ${skuResult.skuName || ''}${skuResult.specifications ? ` / ${skuResult.specifications}` : ''}`;
+  return `${skuResult.spuResult.name} ${skuResult.skuName ? ` / ${skuResult.skuName}` : ''}${skuResult.specifications ? ` / ${skuResult.specifications}` : ''}`;
 };
 
 export default SkuResultSkuJsons;

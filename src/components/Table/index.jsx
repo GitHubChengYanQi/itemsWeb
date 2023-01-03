@@ -67,6 +67,7 @@ const TableWarp = (
     noSort,
     noRowSelection,
     // o
+    otherActions,
     onChange = () => {
     },
     onReset = () => {
@@ -292,7 +293,7 @@ const TableWarp = (
                   {...form}
                   actions={formActions}
                 >
-                  {typeof  searchForm === 'function' && searchForm()}
+                  {typeof searchForm === 'function' && searchForm()}
                   {SearchButton ||
                   <FormButtonGroup>
                     <Button
@@ -310,6 +311,7 @@ const TableWarp = (
                       }}>
                       重置
                     </Button>
+                    {otherActions}
                   </FormButtonGroup>}
                 </Form>
               </Col>
