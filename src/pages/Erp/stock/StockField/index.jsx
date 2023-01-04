@@ -27,7 +27,7 @@ export const Palce = (props) => {
 };
 
 export const Position = (props) => {
-  const {value, onChange, id,placeholder} = props;
+  const {value, onChange, id, placeholder} = props;
   return <Cascader
     width={200}
     value={value}
@@ -135,7 +135,7 @@ export const StockNumbers = ({value = {}, onChange}) => {
   </Space>;
 };
 
-export const BomSelect = ({onChange}) => {
+export const BomSelect = ({value, onChange}) => {
 
   const {loading, data, run} = useRequest({...partsList, params: {limit: 10, page: 1}, data: {status: 99}});
 
@@ -148,6 +148,7 @@ export const BomSelect = ({onChange}) => {
   }) : [];
 
   return <AntSelect
+    value={value}
     allowClear
     placeholder="搜索BOM"
     style={{width: 200}}

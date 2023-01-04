@@ -5,6 +5,7 @@ import styles from './index.module.less';
 
 const InputNumber = (
   {
+    defaultValue,
     placeholder,
     onBlur = () => {
     },
@@ -22,6 +23,7 @@ const InputNumber = (
   const [number, setNumber] = useState(value);
 
   return <AntInputNumber
+    defaultValue={defaultValue}
     className={classNames(addonAfter && styles.addonAfter)}
     status={status}
     addonAfter={addonAfter}
