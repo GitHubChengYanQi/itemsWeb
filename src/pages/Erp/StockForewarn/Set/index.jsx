@@ -5,7 +5,7 @@ import styles from './index.module.less';
 import Table from '@/components/Table';
 import store from '@/store';
 import {useRequest} from '@/util/Request';
-import {stockForewarnAdd} from '@/pages/Erp/StockForewarn/url';
+import {stockForewarnAdd, stockForewarnSave} from '@/pages/Erp/StockForewarn/url';
 import Form from '@/components/Form';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import {skuList} from '@/pages/Erp/sku/skuUrl';
@@ -33,7 +33,17 @@ const Set = () => {
     response: true,
     manual: true,
     onSuccess: () => {
-      // setData([]);
+      setData([]);
+      message.success('设置成功!');
+      tableRef.current.refresh();
+    }
+  });
+
+  const {loading: stockForewarnSaveLoading, run: stockForewarnSaveRun} = useRequest(stockForewarnSave, {
+    response: true,
+    manual: true,
+    onSuccess: () => {
+      setData([]);
       message.success('设置成功!');
       tableRef.current.refresh();
     }
@@ -59,8 +69,7 @@ const Set = () => {
       render: (stockForewarnResult, record) => {
         const sku = data.find(item => item.skuId === record.skuId);
         return <InputNumber
-          defaultValue={stockForewarnResult?.inventoryFloor}
-          value={sku?.inventoryFloor}
+          value={sku ? sku.inventoryFloor : stockForewarnResult?.inventoryFloor}
           width={140}
           placeholder="请输入"
           onChange={(inventoryFloor) => {
@@ -96,8 +105,7 @@ const Set = () => {
       render: (stockForewarnResult, record) => {
         const sku = data.find(item => item.skuId === record.skuId);
         return <InputNumber
-          defaultValue={stockForewarnResult?.inventoryCeiling}
-          value={sku?.inventoryCeiling}
+          value={sku ? sku.inventoryCeiling : stockForewarnResult?.inventoryCeiling}
           width={140}
           min={sku?.inventoryFloor ? sku.inventoryFloor + 1 : 0}
           placeholder="请输入"
@@ -202,6 +210,9 @@ const Set = () => {
           setBomId(values.partsSkuId);
           return values;
         }}
+        format={(data) => {
+          return data;
+        }}
         noTableColumnSet
         otherActions={bomId && <>
           <div style={{marginLeft: 24}}>批量设置：</div>
@@ -222,8 +233,14 @@ const Set = () => {
               setBomSku({...bomSku, inventoryCeiling});
             }}
           />
-          <Button style={{padding: 0}} type="link" onClick={() => {
-            console.log({bomSku, bomId});
+          <Button loading={stockForewarnSaveLoading} style={{padding: 0}} type="link" onClick={() => {
+            stockForewarnSaveRun({
+              data: {
+                'skuId': bomId,
+                'InventoryFloor': bomSku.inventoryFloor,
+                'InventoryCeiling': bomSku.inventoryCeiling
+              }
+            });
           }}>确定</Button>
         </>}
         loading={addLoading}
