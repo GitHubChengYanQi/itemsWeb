@@ -144,6 +144,7 @@ export const BomSelect = ({value, onChange}) => {
     return {
       label: <SkuResultSkuJsons skuResult={skuResult} />,
       value: item.skuId,
+      partsId: item.partsId
     };
   }) : [];
 
@@ -168,8 +169,8 @@ export const BomSelect = ({value, onChange}) => {
         }
       });
     }}
-    onChange={(value) => {
-      onChange(value);
+    onChange={(value, option) => {
+      onChange(value, option && option.partsId);
     }}
   />;
 };

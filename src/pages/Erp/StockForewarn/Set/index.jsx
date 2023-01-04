@@ -29,6 +29,8 @@ const Set = () => {
 
   const [bomId, setBomId] = useState();
 
+  const [showBatch, setShowBatch] = useState(false);
+
   const {loading: addLoading, run: add} = useRequest(stockForewarnAdd, {
     response: true,
     manual: true,
@@ -167,7 +169,7 @@ const Set = () => {
 
   ];
 
-  if (bomId) {
+  if (showBatch) {
     columns.splice(3, 0, {
       title: '配套数量',
       width: 140,
@@ -190,6 +192,9 @@ const Set = () => {
         label="物料清单"
         name="partsSkuId"
         component={BomSelect}
+        onChange={(value, partsId) => {
+          setBomId(partsId);
+        }}
       />
     </>;
   };
@@ -205,16 +210,17 @@ const Set = () => {
     </div>
     <div className={styles.set}>
       <Table
+        onReset={() => setBomId()}
         contentHeight="calc(100vh - 175px)"
         formSubmit={(values) => {
-          setBomId(values.partsSkuId);
+          setShowBatch(values.partsSkuId);
           return values;
         }}
         format={(data) => {
           return data;
         }}
         noTableColumnSet
-        otherActions={bomId && <>
+        otherActions={showBatch && <>
           <div style={{marginLeft: 24}}>批量设置：</div>
           <InputNumber
             value={bomSku.inventoryFloor}
@@ -236,7 +242,7 @@ const Set = () => {
           <Button loading={stockForewarnSaveLoading} style={{padding: 0}} type="link" onClick={() => {
             stockForewarnSaveRun({
               data: {
-                'skuId': bomId,
+                'bomId': bomId,
                 'InventoryFloor': bomSku.inventoryFloor,
                 'InventoryCeiling': bomSku.inventoryCeiling
               }
