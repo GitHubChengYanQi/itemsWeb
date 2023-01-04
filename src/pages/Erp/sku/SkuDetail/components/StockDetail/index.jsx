@@ -2,7 +2,7 @@ import React from 'react';
 import {createFormActions} from '@formily/antd';
 import {Button, Table as AntTable} from 'antd';
 import Table from '@/components/Table';
-import {stockDetail, stockDetailList} from '@/pages/Erp/stock/StockUrl';
+import {stockDetailsSkuDetailView} from '@/pages/Erp/stock/StockUrl';
 import Render from '@/components/Render';
 
 
@@ -23,7 +23,7 @@ const StockDetail = ({skuId}) => {
       bodyStyle={{padding: 0}}
       bordered={false}
       headStyle={{display: 'none'}}
-      api={stockDetailList}
+      api={stockDetailsSkuDetailView}
       rowKey="stockItemId"
     >
       <Column title="库位" dataIndex="storehousePositionsResult" render={(value) => {
