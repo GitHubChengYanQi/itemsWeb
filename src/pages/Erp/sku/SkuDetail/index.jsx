@@ -45,7 +45,6 @@ const SkuDetail = ({value}) => {
     manual: true,
     onSuccess: (res) => {
       setDetailLoading(false);
-      console.log(JSON.parse(res.typeSetting));
       setTypeSetting(res && res.typeSetting && JSON.parse(res.typeSetting) || []);
     }
   });
@@ -114,7 +113,6 @@ const SkuDetail = ({value}) => {
             <Col span={22}>
               <Descriptions column={4}>
                 {
-
                   typeSetting.filter(item => item.show).map((item, index) => {
                     let children;
                     switch (item.key) {
@@ -131,9 +129,6 @@ const SkuDetail = ({value}) => {
                         break;
                       case 'batch':
                         children = data.batch ? '一批一码' : '一物一码';
-                        break;
-                      case 'spuCoding':
-                        children = spuResult.coding;
                         break;
                       case 'unitId':
                         children = isObject(data.unit).unitName || '-';
@@ -193,7 +188,6 @@ const SkuDetail = ({value}) => {
                         break;
                       default:
                         children = data[item.key] || '-';
-                        console.log(data);
                     }
                     return <Descriptions.Item key={index} label={item.filedName}>
                       {children}
