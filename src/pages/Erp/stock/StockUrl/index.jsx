@@ -74,6 +74,13 @@ export const stockDetailList = {
   rowKey:'stockId'
 };
 
+
+export const stockDetailsSkuDetailView = {
+  url: '/stockDetails/skuDetailView',
+  method: 'POST',
+  rowKey:'stockId'
+};
+
 export const stockList = {
   url: '/stock/list',
   method: 'POST',
