@@ -3,6 +3,11 @@ export const stockForewarnAdd = {
   method: 'POST'
 };
 
+export const stockForewarnSave = {
+  url: '/stockForewarn/save',
+  method: 'POST'
+};
+
 export const stockForewarnDelete = {
   url: '/stockForewarn/delete',
   method: 'POST'
