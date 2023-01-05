@@ -2,7 +2,7 @@ import React from 'react';
 import {createFormActions} from '@formily/antd';
 import {Button, Table as AntTable} from 'antd';
 import Table from '@/components/Table';
-import {stockDetail, stockDetailList} from '@/pages/Erp/stock/StockUrl';
+import {stockDetailList} from '@/pages/Erp/stock/StockUrl';
 import Render from '@/components/Render';
 
 
