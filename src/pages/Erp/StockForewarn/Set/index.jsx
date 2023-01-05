@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Button, Cascader, Input, message} from 'antd';
+import {Button, Cascader, Input, message, Space} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import styles from './index.module.less';
 import Table from '@/components/Table';
@@ -14,11 +14,10 @@ import InputNumber from '@/components/InputNumber';
 import {BomSelect} from '@/pages/Erp/stock/StockField';
 import {isArray} from '@/util/Tools';
 import BottomButton from '@/components/BottomButton';
-import {useHistory} from "ice";
 
 const {FormItem} = Form;
 
-const { SHOW_CHILD } = Cascader;
+const {SHOW_CHILD} = Cascader;
 
 const Set = () => {
 
@@ -199,7 +198,7 @@ const Set = () => {
         <Breadcrumb title="预警设置" />
       </div>
       <Space>
-        <Button onClick={()=>{
+        <Button onClick={() => {
           window.history.back(-1);
         }}>返回</Button>
       </Space>
@@ -207,7 +206,7 @@ const Set = () => {
     <div className={styles.set}>
       <Table
         formSubmit={(values) => {
-         setBomId(values.partsSkuId);
+          setBomId(values.partsSkuId);
           return {
             ...values,
             spuClassIds: isArray(values.spuClassIds).map(item => {
@@ -215,7 +214,6 @@ const Set = () => {
             })
           };
         }}
-        noTableColumnSet
         noTableColumnSet
         otherActions={bomId && <>
           <div style={{marginLeft: 24}}>批量设置：</div>
