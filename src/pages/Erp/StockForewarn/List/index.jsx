@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Input, Select} from 'antd';
+import {Button, Cascader, Input, Select} from 'antd';
 import {useHistory} from 'ice';
 import Table from '@/components/Table';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -7,9 +7,12 @@ import Form from '@/components/Form';
 import {warningSku} from '@/pages/Erp/StockForewarn/url';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import store from '@/store';
-import Cascader from '@/components/Cascader';
+import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
+
+const { SHOW_CHILD } = Cascader;
+
 const searchForm = () => {
   const [state] = store.useModel('dataSource');
   const types = [
@@ -27,10 +30,13 @@ const searchForm = () => {
         component={Input} />
       <FormItem
         label="物料分类："
-        name="classId"
-        width={200}
+        name="classIds"
+        showCheckedStrategy={SHOW_CHILD}
         placeholder="请选择"
         options={state.skuClass}
+        multiple
+        style={{width: '200px'}}
+        maxTagCount="responsive"
         component={Cascader} />
       <FormItem
         label="预警状态"
@@ -99,6 +105,14 @@ const List = () => {
 
   return <>
     <Table
+      formSubmit={(values) => {
+        return {
+          ...values,
+          classIds: isArray(values.classIds).map(item => {
+            return item[item.length - 1];
+          })
+        };
+      }}
       api={warningSku}
       title={<Breadcrumb />}
       columns={columns}

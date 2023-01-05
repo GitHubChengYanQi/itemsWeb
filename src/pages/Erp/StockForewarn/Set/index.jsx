@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Button, Input, message, Space} from 'antd';
+import {Button, Cascader, Input, message} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import styles from './index.module.less';
 import Table from '@/components/Table';
@@ -11,12 +11,14 @@ import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import {skuList} from '@/pages/Erp/sku/skuUrl';
 import Render from '@/components/Render';
 import InputNumber from '@/components/InputNumber';
-import Cascader from '@/components/Cascader';
 import {BomSelect} from '@/pages/Erp/stock/StockField';
+import {isArray} from '@/util/Tools';
 import BottomButton from '@/components/BottomButton';
 import {useHistory} from "ice";
 
 const {FormItem} = Form;
+
+const { SHOW_CHILD } = Cascader;
 
 const Set = () => {
 
@@ -172,9 +174,13 @@ const Set = () => {
     return <>
       <FormItem name="skuName" label="基础物料" component={Input} placeholder="请输入" />
       <FormItem
-        name="spuClass"
+        showCheckedStrategy={SHOW_CHILD}
+        name="spuClassIds"
         label="物料分类"
         width={200}
+        multiple
+        style={{width: '200px'}}
+        maxTagCount="responsive"
         component={Cascader}
         options={state.skuClass}
         placeholder="请选择"
@@ -200,11 +206,16 @@ const Set = () => {
     </div>
     <div className={styles.set}>
       <Table
-        contentHeight="calc(100vh - 175px)"
         formSubmit={(values) => {
-          setBomId(values.partsSkuId);
-          return values;
+         setBomId(values.partsSkuId);
+          return {
+            ...values,
+            spuClassIds: isArray(values.spuClassIds).map(item => {
+              return item[item.length - 1];
+            })
+          };
         }}
+        noTableColumnSet
         noTableColumnSet
         otherActions={bomId && <>
           <div style={{marginLeft: 24}}>批量设置：</div>
