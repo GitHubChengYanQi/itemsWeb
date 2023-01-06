@@ -1,9 +1,7 @@
 import React, {useRef, useState} from 'react';
-import {Button, Cascader, Input, message, Space} from 'antd';
+import {Button, Input, message, Space} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
-import styles from './index.module.less';
 import Table from '@/components/Table';
-import store from '@/store';
 import {useRequest} from '@/util/Request';
 import {stockForewarnAdd, stockForewarnSave} from '@/pages/Erp/StockForewarn/url';
 import Form from '@/components/Form';
@@ -11,19 +9,14 @@ import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import {skuList} from '@/pages/Erp/sku/skuUrl';
 import Render from '@/components/Render';
 import InputNumber from '@/components/InputNumber';
-import {BomSelect} from '@/pages/Erp/stock/StockField';
-import {isArray} from '@/util/Tools';
 import BottomButton from '@/components/BottomButton';
+import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 
 const {FormItem} = Form;
-
-const {SHOW_CHILD} = Cascader;
 
 const Set = () => {
 
   const tableRef = useRef();
-
-  const [state] = store.useModel('dataSource');
 
   const [data, setData] = useState([]);
 
@@ -181,59 +174,37 @@ const Set = () => {
 
   const searchForm = () => {
     return <>
-      <FormItem name="skuName" label="基础物料" component={Input} placeholder="请输入" />
-      <FormItem
-        showCheckedStrategy={SHOW_CHILD}
-        name="spuClassIds"
-        label="物料分类"
-        width={200}
-        multiple
-        style={{width: '200px'}}
-        maxTagCount="responsive"
-        component={Cascader}
-        options={state.skuClass}
-        placeholder="请选择"
-      />
-      <FormItem
-        label="物料清单"
-        name="partsSkuId"
-        component={BomSelect}
-        onChange={(value, partsId) => {
-          setBomId(partsId);
-        }}
-      />
-    </>;
-  };
-
-  return <>
-    <div className={styles.breadcrumb}>
-      <div className={styles.bread}>
-        <Breadcrumb title="预警设置" />
+      <GroupSku onChange={(id, type, otherData = {}) => {
+        if (type === 'reset') {
+          tableRef.current.reset();
+          return;
+        }
+        tableRef.current.formActions.setFieldValue('spuClass', null);
+        tableRef.current.formActions.setFieldValue('skuName', null);
+        tableRef.current.formActions.setFieldValue('partsSkuId', null);
+        switch (type) {
+          case 'skuClass':
+            tableRef.current.formActions.setFieldValue('spuClass', id);
+            break;
+          case 'skuName':
+            tableRef.current.formActions.setFieldValue('skuName', id);
+            break;
+          case 'parts':
+            setBomId(id);
+            tableRef.current.formActions.setFieldValue('partsSkuId', otherData.skuId);
+            break;
+          default:
+            break;
+        }
+        tableRef.current.submit();
+      }} />
+      <div hidden>
+        <FormItem name="skuName" label="基础物料" component={Input} />
+        <FormItem name="spuClass" label="基础物料" component={Input} />
+        <FormItem name="partsSkuId" label="基础物料" component={Input} />
       </div>
-      <Space>
-        <Button onClick={() => {
-          window.history.back(-1);
-        }}>返回</Button>
-      </Space>
-    </div>
-    <div className={styles.set}>
-      <Table
-        onReset={() => setBomId()}
-        contentHeight="calc(100vh - 175px)"
-        formSubmit={(values) => {
-          setShowBatch(values.partsSkuId);
-          return {
-            ...values,
-            spuClassIds: isArray(values.spuClassIds).map(item => {
-              return item[item.length - 1];
-            })
-          };
-        }}
-        format={(data) => {
-          return data;
-        }}
-        noTableColumnSet
-        otherActions={showBatch && <>
+      {
+        showBatch && <Space align='center'>
           <div style={{marginLeft: 24}}>批量设置：</div>
           <InputNumber
             value={bomSku.inventoryFloor}
@@ -261,19 +232,31 @@ const Set = () => {
               }
             });
           }}>确定</Button>
-        </>}
-        loading={addLoading}
-        searchForm={searchForm}
-        api={skuList}
-        ref={tableRef}
-        bodyStyle={{padding: 0}}
-        cardHeaderStyle={{display: 'none'}}
-        searchStyle={{margin: 0, padding: '0 0 16px'}}
-        rowKey="skuId"
-        columns={columns}
-        noRowSelection
-      />
-    </div>
+        </Space>
+      }
+    </>;
+  };
+
+  return <>
+    <Table
+      cardHeaderStyle={{display: 'none'}}
+      title={<Breadcrumb title="预警设置" />}
+      onReset={() => setBomId()}
+      contentHeight="calc(100vh - 175px)"
+      formSubmit={(values) => {
+        setShowBatch(values.partsSkuId);
+        return values;
+      }}
+      SearchButton
+      noTableColumnSet
+      loading={addLoading}
+      searchForm={searchForm}
+      api={skuList}
+      ref={tableRef}
+      rowKey="skuId"
+      columns={columns}
+      noRowSelection
+    />
 
     <BottomButton textAlign="right">
       <Button disabled={data.length === 0} loading={addLoading} type="primary" onClick={() => {

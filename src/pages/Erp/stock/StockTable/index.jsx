@@ -161,16 +161,19 @@ const StockTable = (props) => {
       rowKey="skuId"
       {...props}
     >
-      <Table.Column key={1} title="物料编码" dataIndex="standard" render={(value) => {
+      <Table.Column key={1} title="物料编码" dataIndex="standard" sorter render={(value) => {
         return <Render width={60}>{value}</Render>;
       }} />
-      <Table.Column key={2} title="物料名称" dataIndex="spuName" render={(value) => {
+      <Table.Column key={1} title="物料分类" dataIndex="spuResult" render={(value) => {
+        return <Render width={60}>{value?.spuClassificationResult?.name}</Render>;
+      }} />
+      <Table.Column key={2} title="物料名称" dataIndex="spuName" sorter render={(value) => {
         return <Render width={60}>{value}</Render>;
       }} />
-      <Table.Column key={3} title="物料型号" dataIndex="skuName" render={(value) => {
+      <Table.Column key={3} title="物料型号" dataIndex="skuName" sorter render={(value) => {
         return <Render width={60}>{value}</Render>;
       }} />
-      <Table.Column key={4} title="物料规格" dataIndex="specifications" render={(value) => {
+      <Table.Column key={4} title="物料规格" dataIndex="specifications" sorter render={(value) => {
         return <Render width={60}>{value}</Render>;
       }} />
       <Table.Column title="物料描述" key={5} render={(value, record) => {
@@ -178,17 +181,20 @@ const StockTable = (props) => {
           <Note value={<SkuResultSkuJsons describe skuResult={record} />} />
         </div>;
       }} />
-      <Table.Column key={6} title="库存数量" dataIndex="stockNumber" render={(value,record) => {
+      <Table.Column key={6} title="库存数量" dataIndex="stockNumber" sorter render={(value,record) => {
         const stockNumber = (record.stockNumber || 0) - (record.lockStockDetailNumber || 0);
         return <Render width={60}>{stockNumber || 0}</Render>;
       }} />
-      <Table.Column key={6} title="备料数量" dataIndex="lockStockDetailNumber" render={(value) => {
+      <Table.Column key={6} title="未到货数量" dataIndex="floatingCargoNumber" sorter render={(value) => {
         return <Render width={60}>{value || 0}</Render>;
       }} />
-      <Table.Column key={6} title="预购数量" dataIndex="purchaseNumber" render={(value) => {
+      <Table.Column key={6} title="备料数量" dataIndex="lockStockDetailNumber" sorter render={(value) => {
         return <Render width={60}>{value || 0}</Render>;
       }} />
-      <Table.Column key={7} title="库位" dataIndex="positionsResult" render={(value) => {
+      <Table.Column key={6} title="预购数量" dataIndex="purchaseNumber" sorter render={(value) => {
+        return <Render width={60}>{value || 0}</Render>;
+      }} />
+      <Table.Column key={7} title="库位" dataIndex="positionsResult" sorter render={(value) => {
         if (Array.isArray(value) && value.length > 0) {
           return value.map((item, index) => {
             return <div key={index} style={{minWidth: 60}}>{positionResult(item)}</div>;

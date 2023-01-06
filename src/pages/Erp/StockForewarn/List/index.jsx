@@ -11,7 +11,7 @@ import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
 
-const { SHOW_CHILD } = Cascader;
+const {SHOW_CHILD} = Cascader;
 
 const searchForm = () => {
 
@@ -61,16 +61,12 @@ const List = () => {
   const columns = [
     {
       title: '物料编码', width: 200, sorter: true, dataIndex: 'number', render: (value, record) => {
-        return (<>{record.skuResult.standard}</>);
+        return (<>{record?.skuResult?.standard}</>);
       }
     },
     {
       title: '物料分类', width: 140, sorter: true, dataIndex: 'name', render: (value, record) => {
-        try {
-          return (record.skuResult.spuResult.spuClassificationResult.name);
-        } catch (e) {
-          return null;
-        }
+        return (record?.skuResult?.spuResult?.spuClassificationResult?.name);
       }
     },
     {
