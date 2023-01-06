@@ -12,6 +12,7 @@ import OrderDetailTable from '@/pages/Crm/contract/components/OrderDetailTable';
 import PayTable from '@/pages/Crm/contract/components/PayTable';
 import {orderDetail} from '@/pages/Erp/order/OrderUrl';
 import Empty from '@/components/Empty';
+import {isArray} from '@/util/Tools';
 
 const {baseURI} = config;
 
@@ -70,10 +71,20 @@ const Detail = ({id}) => {
             state: {
               ...paymentResult,
               ...data,
-              detailParams: data.detailResults,
-              paymentDetail: paymentResult.detailResults,
-              templateId:contract?.templateId,
-              contractCoding:contract?.coding,
+              money: data.money / 100,
+              floatingAmount: data.floatingAmount / 100,
+              totalAmount: data.totalAmount / 100,
+              detailParams: isArray(data.detailResults).map(item => ({
+                ...item,
+                totalPrice: item.totalPrice / 100,
+                onePrice: item.onePrice / 100
+              })),
+              paymentDetail: isArray(paymentResult.detailResults).length > 0 ? isArray(paymentResult.detailResults).map(item => ({
+                ...item,
+                money: item.money / 100,
+              })) : 0,
+              templateId: contract?.templateId,
+              contractCoding: contract?.coding,
 
             }
           });

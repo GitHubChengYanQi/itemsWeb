@@ -188,7 +188,7 @@ const CreateOrder = ({previewData, ...props}) => {
             type: module().type,
             detailParams: isArray(value.detailParams).map(item => ({
               ...item,
-              purchaseNumber: item.purchaseNumber * 100,
+              totalPrice: item.totalPrice * 100,
               onePrice: item.onePrice * 100
             })),
             paymentParam: {
