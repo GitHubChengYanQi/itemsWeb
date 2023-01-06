@@ -92,8 +92,23 @@ const OrderTable = (props) => {
     {title: '创建人', dataIndex: 'user', render: (value) => <Render text={value?.name || '-'} />},
     {title: '创建时间', dataIndex: 'createTime'},
     {
-      title: '操作', width: 200, align: 'center', dataIndex: 'theme', render: (value, record) => {
+      title: '操作', width: 300, align: 'center', dataIndex: 'theme', render: (value, record) => {
         return <>
+          <Button type="link" onClick={() => {
+            const paymentResult = record.paymentResult || {};
+            history.push({
+              pathname: '/purchase/order/createOrder',
+              search: `?module=${record.type === 1 ? 'PO' : 'SO'}`,
+              state: {
+                ...paymentResult,
+                ...record,
+                detailParams: record.detailResults,
+                paymentDetail: paymentResult.detailResults,
+                // templateId:contract?.templateId,
+                // contractCoding:contract?.coding,
+              }
+            });
+          }}>再来一单</Button>
           <Button disabled={record.contractId || record.fileId} type="link" onClick={() => {
             createContractRef.current.open(record.orderId);
           }}>创建合同</Button>
