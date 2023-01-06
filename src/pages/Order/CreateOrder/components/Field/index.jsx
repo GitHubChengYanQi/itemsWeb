@@ -37,12 +37,17 @@ import Message from '@/components/Message';
 import SelectCreate from '@/components/SelectCreate';
 import FileUpload from '@/components/FileUpload';
 import Empty from '@/components/Empty';
+import CheckSku from '@/pages/Order/CreateOrder/components/CheckSku';
 
 export const orderDetailRecord = {url: '/orderDetail/record', method: 'POST'};
 
 export const AddSku = ({value = [], customerId, brandName, onChange, module, currency}) => {
 
   const addSpu = useRef();
+
+  const addSku = useRef();
+
+  const addSkuRef = useRef();
 
   const [sku, setSku] = useState();
 
@@ -69,6 +74,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
 
   return (<>
     <AddSkuTable
+      customerId={customerId}
       currency={currency}
       module={module}
       value={value}
@@ -78,7 +84,30 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
         setSkuId(null);
         addSpu.current.open(true);
       }}
+      onCusTomerBind={() => {
+        addSku.current.open(true);
+      }}
     />
+
+    <Modal
+      ref={addSku}
+      width={1000}
+      footer={<Space>
+        <Button onClick={() => {
+          onChange(addSkuRef.current.check());
+        }}>选中</Button>
+        <Button type="primary" onClick={() => {
+          onChange(addSkuRef.current.change());
+          addSku.current.close();
+        }}>选中并关闭</Button>
+      </Space>}
+    >
+      <CheckSku
+        value={value}
+        ref={addSkuRef}
+        customerId={customerId}
+      />
+    </Modal>
 
     <Modal
       headTitle="物料选择"
@@ -423,7 +452,7 @@ export const DateWay = (props) => {
 };
 
 export const dateNumber = (props) => {
-  return (<InputNumber min={1} {...props} style={{minWidth:50}} />);
+  return (<InputNumber min={1} {...props} style={{minWidth: 50}} />);
 };
 
 export const DeliveryWay = (props) => {
