@@ -13,7 +13,10 @@ const GroupSku = (
     onChange = () => {
 
     },
-    width = 300
+    noParts,
+    noSearchButton,
+    width = 300,
+    align,
   }
 ) => {
 
@@ -46,7 +49,7 @@ const GroupSku = (
   };
 
   return <>
-    <Space size={16}>
+    <Space size={16} align={align}>
       <Input
         style={{width}}
         value={showValue}
@@ -57,21 +60,27 @@ const GroupSku = (
           setOpen(true);
         }}
       />
-      <Button
-        type="primary"
-        onClick={() => {
-          run({data: {keyWord: showValue}});
-          setSearchValue(showValue);
-          setOpen(true);
-        }}><SearchOutlined />查询
-      </Button>
-      <Button
-        onClick={() => {
-          setShowValue('');
-          onChange('', 'reset');
-        }}>
-        重置
-      </Button>
+      <div hidden={noSearchButton}>
+        <Button
+          type="primary"
+          onClick={() => {
+            run({data: {keyWord: showValue}});
+            setSearchValue(showValue);
+            setOpen(true);
+          }}><SearchOutlined />查询
+        </Button>
+      </div>
+
+      <div hidden={noSearchButton}>
+        <Button
+          onClick={() => {
+            setShowValue('');
+            onChange('', 'reset');
+          }}>
+          重置
+        </Button>
+      </div>
+
     </Space>
 
 
@@ -130,7 +139,7 @@ const GroupSku = (
           }
 
 
-          <div className={styles.groupTitle} hidden={isArray(groupList.bomListResults).length === 0}>
+          <div className={styles.groupTitle} hidden={isArray(groupList.bomListResults).length === 0 || noParts}>
             清单
           </div>
           {
