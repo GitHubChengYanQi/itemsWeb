@@ -13,8 +13,11 @@ const AddSkuTable = ({
   },
   value,
   module,
+  customerId,
   currency,
   onAddSku = () => {
+  },
+  onCusTomerBind = () => {
   }
 }) => {
 
@@ -69,6 +72,15 @@ const AddSkuTable = ({
           >
             {SO ? '添加产品' : '添加物料'}
           </Button>
+
+          {customerId && !SO && <Button
+            onClick={() => {
+              onCusTomerBind();
+            }}
+          >
+            添加供应商绑定物料
+          </Button>}
+
           <Button
             type="link"
             disabled={keys.length === 0}
@@ -228,7 +240,7 @@ const AddSkuTable = ({
         dataIndex="remark"
         render={(value, record, index) => {
           return <Input
-            style={{minWidth:200}}
+            style={{minWidth: 200}}
             placeholder="请输入备注"
             value={value}
             onChange={(value) => {

@@ -20,48 +20,19 @@ const CheckSku = ({
   value = [],
   type,
   customerId,
-  ...props
 }, ref) => {
-
-  const {pathname} = props.location;
 
   const module = (record) => {
     const skuResult = record.skuResult || {};
-    if (type === 'supplySku') {
-      return {
-        api: toBuyPlanList,
-        coding: skuResult.standard,
-        skuResult: <SkuResultSkuJsons skuResult={record.skuResult} />,
-        brandResult: record.brandResult && record.brandResult.brandName || '无指定品牌',
-        stockNumber: record.stockNumber,
-        applyNumber: null,
-        unitResult: skuResult.spuResult && skuResult.spuResult.unitResult && skuResult.spuResult.unitResult.unitName,
-      };
-    }
-    switch (pathname) {
-      case '/purchase/toBuyPlan/createOrder':
-        return {
-          api: toBuyPlanList,
-          coding: skuResult.standard,
-          skuResult: <SkuResultSkuJsons skuResult={record.skuResult} />,
-          brandResult: record.brandResult && record.brandResult.brandName || '无指定品牌',
-          stockNumber: record.stockNumber,
-          applyNumber: null,
-          unitResult: skuResult.spuResult && skuResult.spuResult.unitResult && skuResult.spuResult.unitResult.unitName,
-        };
-      case '/purchase/order/createOrder':
-        return {
-          api: skuList,
-          coding: record.standard,
-          skuResult: <SkuResultSkuJsons skuResult={record} />,
-          brandResult: '无指定品牌',
-          stockNumber: null,
-          applyNumber: null,
-          unitResult: record.spuResult && record.spuResult.unitResult && record.spuResult.unitResult.unitName,
-        };
-      default:
-        return <></>;
-    }
+    return {
+      api: toBuyPlanList,
+      coding: skuResult.standard,
+      skuResult: <SkuResultSkuJsons skuResult={record.skuResult} />,
+      brandResult: record.brandResult && record.brandResult.brandName || '无指定品牌',
+      stockNumber: record.stockNumber,
+      applyNumber: null,
+      unitResult: skuResult.spuResult && skuResult.spuResult.unitResult && skuResult.spuResult.unitResult.unitName,
+    };
   };
 
   const [skus, setSkus] = useSetState({
@@ -110,42 +81,16 @@ const CheckSku = ({
   };
 
   const result = (record) => {
-    if (type === 'supplySku') {
-      return {
-        key: record.key,
-        skuId: record.skuId,
-        coding: record.skuResult.standard,
-        skuResult: record.skuResult,
-        brandId: record.brandId,
-        defaultBrandResult: record.brandResult && record.brandResult.brandName,
-        preordeNumber: record.applyNumber,
-        unitId: record.skuResult && record.skuResult.spuResult && record.skuResult.spuResult.unitId,
-      };
-    }
-    switch (pathname) {
-      case '/purchase/toBuyPlan/createOrder':
-        return {
-          key: record.key,
-          skuId: record.skuId,
-          coding: record.skuResult.standard,
-          skuResult: record.skuResult,
-          brandId: record.brandId,
-          defaultBrandResult: record.brandResult && record.brandResult.brandName,
-          preordeNumber: record.applyNumber,
-          unitId: record.skuResult && record.skuResult.spuResult && record.skuResult.spuResult.unitId,
-        };
-      case '/purchase/order/createOrder':
-        return {
-          key: record.key,
-          skuId: record.skuId,
-          coding: record.standard,
-          skuResult: record,
-          preordeNumber: 0,
-          unitId: record.spuResult && record.spuResult.unitId,
-        };
-      default:
-        return <></>;
-    }
+    return {
+      key: record.key,
+      skuId: record.skuId,
+      coding: record.skuResult.standard,
+      skuResult: record.skuResult,
+      brandId: record.brandId,
+      defaultBrandResult: record.brandResult && record.brandResult.brandName,
+      preordeNumber: record.applyNumber,
+      unitId: record.skuResult && record.skuResult.spuResult && record.skuResult.spuResult.unitId,
+    };
   };
 
   const key = (item) => {
@@ -155,7 +100,7 @@ const CheckSku = ({
   return (
     <>
       <Table
-        api={type === 'sku' ? module({}).api : supplyList}
+        api={supplyList}
         NoChildren
         contentHeight
         format={(data) => {
@@ -234,10 +179,9 @@ const CheckSku = ({
           title="品牌 / 厂家"
           dataIndex="brandResult"
           render={(value, record) => {
-            return <div style={{minWidth:100}}>{module(record).brandResult}</div>;
+            return <div style={{minWidth: 100}}>{module(record).brandResult}</div>;
           }} />
         <Column title="库存数量" width={100} dataIndex="stockNumber" />
-        {/* <Column title="在途数量" width={100} dataIndex="stockNumber" /> */}
         <Column title="预购数量" width={100} dataIndex="applyNumber" />
         <Column
           title="单位"
