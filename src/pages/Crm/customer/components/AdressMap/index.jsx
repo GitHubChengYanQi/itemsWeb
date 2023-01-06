@@ -8,9 +8,6 @@ const AdressMap = ({width, value, onChange}) => {
 
   return (
     <div style={{flexGrow: 1, display: 'flex',alignItems:'center'}}>
-      <Note maxWidth='70%' style={{width}} >
-        {location && location.address}
-      </Note>
       <div>
         <Amap value={value?.map} onChange={(value) => {
           setLocation(value);
