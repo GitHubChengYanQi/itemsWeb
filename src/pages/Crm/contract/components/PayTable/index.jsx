@@ -84,8 +84,8 @@ const PayTable = ({payment}) => {
       <Table
         columns={[
           ...columns,
-          {title: '百分比', dataIndex: 'percentum',render:(value)=><Render text={`${value}%`} />},
-          {title: '付款金额', dataIndex: 'money',render:(value)=><ThousandsSeparator value={value} /> }
+          {title: '百分比', dataIndex: 'percentum', render: (value) => <Render text={`${value}%`} />},
+          {title: '付款金额', dataIndex: 'money', render: (value) => <ThousandsSeparator value={value / 100} />}
         ]}
         bordered={false}
         noRowSelection
