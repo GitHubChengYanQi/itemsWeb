@@ -1,9 +1,7 @@
 import React, {useRef, useState} from 'react';
-import {Button, Cascader, Input, message, Space} from 'antd';
+import {Button, Input, message, Space} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
-import styles from './index.module.less';
 import Table from '@/components/Table';
-import store from '@/store';
 import {useRequest} from '@/util/Request';
 import {stockForewarnAdd, stockForewarnSave} from '@/pages/Erp/StockForewarn/url';
 import Form from '@/components/Form';
@@ -13,8 +11,6 @@ import Render from '@/components/Render';
 import InputNumber from '@/components/InputNumber';
 import BottomButton from '@/components/BottomButton';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
-import {SearchOutlined} from '@ant-design/icons';
-import {FormButtonGroup} from '@formily/antd';
 
 const {FormItem} = Form;
 
@@ -207,6 +203,37 @@ const Set = () => {
         <FormItem name="spuClass" label="基础物料" component={Input} />
         <FormItem name="partsSkuId" label="基础物料" component={Input} />
       </div>
+      {
+        showBatch && <Space align='center'>
+          <div style={{marginLeft: 24}}>批量设置：</div>
+          <InputNumber
+            value={bomSku.inventoryFloor}
+            width={140}
+            placeholder="下限"
+            onChange={(inventoryFloor) => {
+              setBomSku({...bomSku, inventoryFloor});
+            }}
+          />
+          <InputNumber
+            width={140}
+            value={bomSku.inventoryCeiling}
+            min={bomSku.inventoryFloor + 1}
+            placeholder="上限"
+            onChange={(inventoryCeiling) => {
+              setBomSku({...bomSku, inventoryCeiling});
+            }}
+          />
+          <Button loading={stockForewarnSaveLoading} style={{padding: 0}} type="link" onClick={() => {
+            stockForewarnSaveRun({
+              data: {
+                'bomId': bomId,
+                'InventoryFloor': bomSku.inventoryFloor,
+                'InventoryCeiling': bomSku.inventoryCeiling
+              }
+            });
+          }}>确定</Button>
+        </Space>
+      }
     </>;
   };
 
@@ -222,35 +249,6 @@ const Set = () => {
       }}
       SearchButton
       noTableColumnSet
-      otherActions={showBatch && <>
-        <div style={{marginLeft: 24}}>批量设置：</div>
-        <InputNumber
-          value={bomSku.inventoryFloor}
-          width={140}
-          placeholder="下限"
-          onChange={(inventoryFloor) => {
-            setBomSku({...bomSku, inventoryFloor});
-          }}
-        />
-        <InputNumber
-          width={140}
-          value={bomSku.inventoryCeiling}
-          min={bomSku.inventoryFloor + 1}
-          placeholder="上限"
-          onChange={(inventoryCeiling) => {
-            setBomSku({...bomSku, inventoryCeiling});
-          }}
-        />
-        <Button loading={stockForewarnSaveLoading} style={{padding: 0}} type="link" onClick={() => {
-          stockForewarnSaveRun({
-            data: {
-              'bomId': bomId,
-              'InventoryFloor': bomSku.inventoryFloor,
-              'InventoryCeiling': bomSku.inventoryCeiling
-            }
-          });
-        }}>确定</Button>
-      </>}
       loading={addLoading}
       searchForm={searchForm}
       api={skuList}
