@@ -52,25 +52,31 @@ const Breadcrumb = ({title}) => {
   const [userInfo] = store.useModel('user');
 
   return (
-    <AntBreadcrumb>
-      {
-        routesArray.map((item, index) => {
-          if (index === 0) {
-            return <AntBreadcrumb.Item key={index}>
+    <div>
+      <AntBreadcrumb>
+        {
+          routesArray.map((item, index) => {
+            if (index === 0) {
+              return <AntBreadcrumb.Item key={index}>
+                <a onClick={() => {
+                  history.push('/');
+                }}>{userInfo.abbreviation || 'Home'}</a>
+              </AntBreadcrumb.Item>;
+            }
+            return (item.name && <AntBreadcrumb.Item key={index}>
               <a onClick={() => {
-                history.push('/');
-              }}>{userInfo.abbreviation || 'Home'}</a>
-            </AntBreadcrumb.Item>;
-          }
-          return (item.name && <AntBreadcrumb.Item key={index}>
-            <a onClick={() => {
-              history.push(item.path);
-            }}>{item.name}</a>
-          </AntBreadcrumb.Item>);
-        })
-      }
-      {title && <AntBreadcrumb.Item key={title}>{title}</AntBreadcrumb.Item>}
-    </AntBreadcrumb>);
+                history.push(item.path);
+              }}>{item.name}</a>
+            </AntBreadcrumb.Item>);
+          })
+        }
+        {title && <AntBreadcrumb.Item key={title}>{title}</AntBreadcrumb.Item>}
+      </AntBreadcrumb>
+      <h1 style={{margin: '-4px 0 8px', fontSize: 21}}>
+        {title || routesArray[routesArray.length - 1].name}
+      </h1>
+    </div>
+  );
 
 };
 
