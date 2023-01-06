@@ -14,6 +14,7 @@ import InputNumber from '@/components/InputNumber';
 import {BomSelect} from '@/pages/Erp/stock/StockField';
 import {isArray} from '@/util/Tools';
 import BottomButton from '@/components/BottomButton';
+import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 
 const {FormItem} = Form;
 
@@ -181,27 +182,24 @@ const Set = () => {
 
   const searchForm = () => {
     return <>
-      <FormItem name="skuName" label="基础物料" component={Input} placeholder="请输入" />
-      <FormItem
-        showCheckedStrategy={SHOW_CHILD}
-        name="spuClassIds"
-        label="物料分类"
-        width={200}
-        multiple
-        style={{width: '200px'}}
-        maxTagCount="responsive"
-        component={Cascader}
-        options={state.skuClass}
-        placeholder="请选择"
-      />
-      <FormItem
-        label="物料清单"
-        name="partsSkuId"
-        component={BomSelect}
-        onChange={(value, partsId) => {
-          setBomId(partsId);
-        }}
-      />
+      <GroupSku onChange={(id, type) => {
+        switch (type) {
+          case 'skuClass':
+            tableRef.current.formActions.setFieldValue('spuClass', id);
+            break;
+          case 'skuName':
+            tableRef.current.formActions.setFieldValue('skuName', id);
+            break;
+          default:
+            break;
+        }
+        tableRef.current.submit();
+      }} />
+      <div hidden>
+        <FormItem name="skuName" label="基础物料" component={Input} />
+        <FormItem name="spuClass" label="基础物料" component={Input} />
+        <FormItem name="partsSkuId" label="基础物料" component={Input} />
+      </div>
     </>;
   };
 
@@ -222,16 +220,9 @@ const Set = () => {
         contentHeight="calc(100vh - 175px)"
         formSubmit={(values) => {
           setShowBatch(values.partsSkuId);
-          return {
-            ...values,
-            spuClassIds: isArray(values.spuClassIds).map(item => {
-              return item[item.length - 1];
-            })
-          };
+          return values;
         }}
-        format={(data) => {
-          return data;
-        }}
+        SearchButton
         noTableColumnSet
         otherActions={showBatch && <>
           <div style={{marginLeft: 24}}>批量设置：</div>
