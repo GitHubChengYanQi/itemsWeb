@@ -94,7 +94,7 @@ const OrderTable = (props) => {
     {
       title: '操作', width: 300, align: 'center', dataIndex: 'theme', render: (value, record) => {
         return <>
-          <Button type="link" onClick={() => {
+          <Button type="link" disabled onClick={() => {
             const paymentResult = record.paymentResult || {};
             history.push({
               pathname: '/purchase/order/createOrder',
