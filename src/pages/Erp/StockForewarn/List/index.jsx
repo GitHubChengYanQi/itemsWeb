@@ -1,60 +1,64 @@
-import React from 'react';
-import {Button, Cascader, Input, Select} from 'antd';
+import React, {useRef} from 'react';
+import {Button, Input, Select} from 'antd';
 import {useHistory} from 'ice';
 import Table from '@/components/Table';
 import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
 import {warningSku} from '@/pages/Erp/StockForewarn/url';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-import store from '@/store';
 import {isArray} from '@/util/Tools';
+import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 
 const {FormItem} = Form;
 
-const {SHOW_CHILD} = Cascader;
-
-const searchForm = () => {
-
-  const history = useHistory();
-
-  const [state] = store.useModel('dataSource');
-
-  const types = [
-    {value: 'all', label: '全部'},
-    {value: 'min', label: '下限预警'},
-    {value: 'max', label: '上限预警'},
-  ];
-  return (
-    <>
-      <FormItem
-        label="物料"
-        placeholder="请输入"
-        style={{width: '200px'}}
-        name="keyWords"
-        component={Input} />
-      <FormItem
-        label="物料分类："
-        name="classIds"
-        showCheckedStrategy={SHOW_CHILD}
-        placeholder="请选择"
-        options={state.skuClass}
-        multiple
-        style={{width: '200px'}}
-        maxTagCount="responsive"
-        component={Cascader} />
-      <FormItem
-        label="预警状态"
-        name="forewarnStatus"
-        style={{width: '200px'}}
-        options={types}
-        placeholder="请选择"
-        component={Select} />
-    </>
-  );
-};
-
 
 const List = () => {
+
+  const tableRef = useRef(null);
+
+  const searchForm = () => {
+
+    const types = [
+      {value: 'all', label: '全部'},
+      {value: 'min', label: '下限预警'},
+      {value: 'max', label: '上限预警'},
+    ];
+
+    return (
+      <>
+        <GroupSku
+          align="start"
+          noSearchButton
+          noParts
+          onChange={(id, type) => {
+            tableRef.current.formActions.setFieldValue('classId', null);
+            tableRef.current.formActions.setFieldValue('keyWords', null);
+            switch (type) {
+              case 'skuClass':
+                tableRef.current.formActions.setFieldValue('classId', id);
+                break;
+              case 'skuName':
+                tableRef.current.formActions.setFieldValue('keyWords', id);
+                break;
+              default:
+                break;
+            }
+            tableRef.current.submit();
+          }} />
+        <div hidden>
+          <FormItem name="keyWords" label="基础物料" component={Input} />
+          <FormItem name="classId" label="基础物料" component={Input} />
+        </div>
+        <FormItem
+          label="预警状态"
+          name="forewarnStatus"
+          style={{width: '200px'}}
+          options={types}
+          placeholder="请选择"
+          component={Select} />
+      </>
+    );
+  };
 
   const history = useHistory(null);
 
@@ -112,14 +116,7 @@ const List = () => {
 
   return <>
     <Table
-      formSubmit={(values) => {
-        return {
-          ...values,
-          classIds: isArray(values.classIds).map(item => {
-            return item[item.length - 1];
-          })
-        };
-      }}
+      ref={tableRef}
       api={warningSku}
       title={<Breadcrumb />}
       columns={columns}
