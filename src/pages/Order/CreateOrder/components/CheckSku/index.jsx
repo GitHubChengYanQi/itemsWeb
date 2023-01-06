@@ -100,6 +100,7 @@ const CheckSku = ({
   return (
     <>
       <Table
+        cardHeaderStyle={{display:'none'}}
         api={supplyList}
         NoChildren
         contentHeight

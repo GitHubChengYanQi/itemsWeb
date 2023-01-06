@@ -90,6 +90,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
     />
 
     <Modal
+      headTitle='供应商绑定物料'
       ref={addSku}
       width={1000}
       footer={<Space>
