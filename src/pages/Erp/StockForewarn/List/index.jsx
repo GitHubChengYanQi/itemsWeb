@@ -11,7 +11,7 @@ import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
 
-const { SHOW_CHILD } = Cascader;
+const {SHOW_CHILD} = Cascader;
 
 const searchForm = () => {
   const [state] = store.useModel('dataSource');
@@ -57,42 +57,38 @@ const List = () => {
   const columns = [
     {
       title: '物料编码', width: 200, sorter: true, dataIndex: 'number', render: (value, record) => {
-        return (<>{record.skuResult.standard}</>);
+        return (<>{record?.skuResult?.standard}</>);
       }
     },
     {
-      title: '物料分类', width: 140,sorter: true, dataIndex: 'name', render: (value, record) => {
-        try {
-          return (record.skuResult.spuResult.spuClassificationResult.name);
-        } catch (e) {
-          return null;
-        }
+      title: '物料分类', width: 140, sorter: true, dataIndex: 'name', render: (value, record) => {
+        return (record?.skuResult?.spuResult?.spuClassificationResult?.name);
       }
     },
     {
-      title: '物料', dataIndex: 'skuResult',sorter: true, render: (value) => {
+      title: '物料', dataIndex: 'skuResult', sorter: true, render: (value) => {
         return SkuResultSkuJsons({skuResult: value});
 
       }
     },
     {
-      title: '库存数量', width: 100, sorter: true,dataIndex: 'number', render(value, record) {
+      title: '库存数量', width: 100, sorter: true, dataIndex: 'number', render(value, record) {
         return record.number;
       }
     },
     {
-      title: '未到货数量', width: 120,sorter: true, dataIndex: 'floatingCargoNumber', render(value) {
+      title: '未到货数量', width: 120, sorter: true, dataIndex: 'floatingCargoNumber', render(value) {
         return value;
       }
     },
     {
-      title: '库存下限', width: '140',sorter: true, dataIndex: 'inventoryFloor', render: (text, record) => {
+      title: '库存下限', width: '140', sorter: true, dataIndex: 'inventoryFloor', render: (text, record) => {
         return (
           <div style={{color: record.number <= record.inventoryFloor ? 'red' : ''}}>{text}</div>);
       }
     },
     {
-      title: '库存上限', width: '140',sorter: true, dataIndex: 'inventoryCeiling', render: (text, record) => {
+      title: '库存上限', width: '140', sorter: true, dataIndex: 'inventoryCeiling', render: (text, record) => {
         return (
           <div style={{color: record.number >= record.inventoryCeiling ? 'red' : ''}}>{text}</div>);
       }

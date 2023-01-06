@@ -11,20 +11,16 @@ import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import {skuList} from '@/pages/Erp/sku/skuUrl';
 import Render from '@/components/Render';
 import InputNumber from '@/components/InputNumber';
-import {BomSelect} from '@/pages/Erp/stock/StockField';
-import {isArray} from '@/util/Tools';
 import BottomButton from '@/components/BottomButton';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
+import {SearchOutlined} from '@ant-design/icons';
+import {FormButtonGroup} from '@formily/antd';
 
 const {FormItem} = Form;
-
-const {SHOW_CHILD} = Cascader;
 
 const Set = () => {
 
   const tableRef = useRef();
-
-  const [state] = store.useModel('dataSource');
 
   const [data, setData] = useState([]);
 
@@ -182,13 +178,24 @@ const Set = () => {
 
   const searchForm = () => {
     return <>
-      <GroupSku onChange={(id, type) => {
+      <GroupSku onChange={(id, type, otherData = {}) => {
+        if (type === 'reset') {
+          tableRef.current.reset();
+          return;
+        }
+        tableRef.current.formActions.setFieldValue('spuClass', null);
+        tableRef.current.formActions.setFieldValue('skuName', null);
+        tableRef.current.formActions.setFieldValue('partsSkuId', null);
         switch (type) {
           case 'skuClass':
             tableRef.current.formActions.setFieldValue('spuClass', id);
             break;
           case 'skuName':
             tableRef.current.formActions.setFieldValue('skuName', id);
+            break;
+          case 'parts':
+            setBomId(id);
+            tableRef.current.formActions.setFieldValue('partsSkuId', otherData.skuId);
             break;
           default:
             break;
@@ -204,67 +211,54 @@ const Set = () => {
   };
 
   return <>
-    <div className={styles.breadcrumb}>
-      <div className={styles.bread}>
-        <Breadcrumb title="预警设置" />
-      </div>
-      <Space>
-        <Button onClick={() => {
-          window.history.back(-1);
-        }}>返回</Button>
-      </Space>
-    </div>
-    <div className={styles.set}>
-      <Table
-        onReset={() => setBomId()}
-        contentHeight="calc(100vh - 175px)"
-        formSubmit={(values) => {
-          setShowBatch(values.partsSkuId);
-          return values;
-        }}
-        SearchButton
-        noTableColumnSet
-        otherActions={showBatch && <>
-          <div style={{marginLeft: 24}}>批量设置：</div>
-          <InputNumber
-            value={bomSku.inventoryFloor}
-            width={140}
-            placeholder="下限"
-            onChange={(inventoryFloor) => {
-              setBomSku({...bomSku, inventoryFloor});
-            }}
-          />
-          <InputNumber
-            width={140}
-            value={bomSku.inventoryCeiling}
-            min={bomSku.inventoryFloor + 1}
-            placeholder="上限"
-            onChange={(inventoryCeiling) => {
-              setBomSku({...bomSku, inventoryCeiling});
-            }}
-          />
-          <Button loading={stockForewarnSaveLoading} style={{padding: 0}} type="link" onClick={() => {
-            stockForewarnSaveRun({
-              data: {
-                'bomId': bomId,
-                'InventoryFloor': bomSku.inventoryFloor,
-                'InventoryCeiling': bomSku.inventoryCeiling
-              }
-            });
-          }}>确定</Button>
-        </>}
-        loading={addLoading}
-        searchForm={searchForm}
-        api={skuList}
-        ref={tableRef}
-        bodyStyle={{padding: 0}}
-        cardHeaderStyle={{display: 'none'}}
-        searchStyle={{margin: 0, padding: '0 0 16px'}}
-        rowKey="skuId"
-        columns={columns}
-        noRowSelection
-      />
-    </div>
+    <Table
+      cardHeaderStyle={{display: 'none'}}
+      title={<Breadcrumb title="预警设置" />}
+      onReset={() => setBomId()}
+      contentHeight="calc(100vh - 175px)"
+      formSubmit={(values) => {
+        setShowBatch(values.partsSkuId);
+        return values;
+      }}
+      SearchButton
+      noTableColumnSet
+      otherActions={showBatch && <>
+        <div style={{marginLeft: 24}}>批量设置：</div>
+        <InputNumber
+          value={bomSku.inventoryFloor}
+          width={140}
+          placeholder="下限"
+          onChange={(inventoryFloor) => {
+            setBomSku({...bomSku, inventoryFloor});
+          }}
+        />
+        <InputNumber
+          width={140}
+          value={bomSku.inventoryCeiling}
+          min={bomSku.inventoryFloor + 1}
+          placeholder="上限"
+          onChange={(inventoryCeiling) => {
+            setBomSku({...bomSku, inventoryCeiling});
+          }}
+        />
+        <Button loading={stockForewarnSaveLoading} style={{padding: 0}} type="link" onClick={() => {
+          stockForewarnSaveRun({
+            data: {
+              'bomId': bomId,
+              'InventoryFloor': bomSku.inventoryFloor,
+              'InventoryCeiling': bomSku.inventoryCeiling
+            }
+          });
+        }}>确定</Button>
+      </>}
+      loading={addLoading}
+      searchForm={searchForm}
+      api={skuList}
+      ref={tableRef}
+      rowKey="skuId"
+      columns={columns}
+      noRowSelection
+    />
 
     <BottomButton textAlign="right">
       <Button disabled={data.length === 0} loading={addLoading} type="primary" onClick={() => {
