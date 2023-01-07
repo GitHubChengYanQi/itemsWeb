@@ -11,6 +11,7 @@ const Modal = (
     loading = () => {
     },
     footer,
+    closable = true,
     padding,
     onSuccess = () => {
     },
@@ -121,6 +122,7 @@ const Modal = (
       open={visible}
       footer={footer || null}
       centered
+      closable={closable}
       maskClosable={false}
       onCancel={() => {
         show(null);

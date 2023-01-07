@@ -6,17 +6,19 @@
  */
 
 import React, {useRef, useState} from 'react';
-import {Button, Input, message, Space, Table as AntTable} from 'antd';
+import {Button, Input, message, Space} from 'antd';
 import {useHistory} from 'ice';
 import Table from '@/components/Table';
 import Form from '@/components/Form';
 import Breadcrumb from '@/components/Breadcrumb';
-import {orderList} from '@/pages/Erp/order/OrderUrl';
-import * as SysField from '../SysField/index';
+import {orderDetail, orderList} from '@/pages/Erp/order/OrderUrl';
 import Modal from '@/components/Modal';
 import CreateContract from '@/pages/Order/CreateContract';
 import Render from '@/components/Render';
 import {Customer} from '@/pages/Order/CreateOrder/components/CustomerAll';
+import {request} from '@/util/Request';
+import {contractDetail} from '@/pages/Crm/contract/ContractUrl';
+import {isArray} from '@/util/Tools';
 
 const {FormItem} = Form;
 
@@ -68,7 +70,15 @@ const OrderTable = (props) => {
       <>
         <FormItem label="主题" name="theme" placeholder="请输入主题" component={Input} />
         <FormItem label="编号" name="coding" placeholder="请输入编号" component={Input} />
-        <FormItem hidden={module.type !== 1} label="供应商" name="sellerId" placeholder="请选择供应商" supply={1} component={Customer} width={200} />
+        <FormItem
+          hidden={module.type !== 1}
+          label="供应商"
+          name="sellerId"
+          placeholder="请选择供应商"
+          supply={1}
+          component={Customer}
+          width={200}
+        />
         <FormItem hidden name="type" value={module.type} component={Input} />
       </>
     );
@@ -94,18 +104,33 @@ const OrderTable = (props) => {
     {
       title: '操作', width: 300, align: 'center', dataIndex: 'theme', render: (value, record) => {
         return <>
-          <Button type="link" disabled onClick={() => {
-            const paymentResult = record.paymentResult || {};
+          <Button type="link" onClick={async () => {
+            message.loading({content: '正在获取数据，请稍后...', duration: 0});
+            let contract = {};
+            const data = await request({
+              ...orderDetail,
+              data: {
+                orderId: record.orderId,
+              }
+            });
+
+            if (data && data.contractId) {
+              setLoading(false);
+              contract = await request({...contractDetail, data: {contractId: data.contractId}});
+            }
+            message.destroy();
+            const paymentResult = data.paymentResult || {};
+
             history.push({
               pathname: '/purchase/order/createOrder',
-              search: `?module=${record.type === 1 ? 'PO' : 'SO'}`,
+              search: `?module=${data.type === 1 ? 'PO' : 'SO'}`,
               state: {
                 ...paymentResult,
-                ...record,
-                detailParams: record.detailResults,
-                paymentDetail: paymentResult.detailResults,
-                // templateId:contract?.templateId,
-                // contractCoding:contract?.coding,
+                ...data,
+                detailParams: isArray(data.detailResults).length > 0 ? data.detailResults : null,
+                paymentDetail: isArray(paymentResult.detailResults).length > 0 ? paymentResult.detailResults : null,
+                templateId: contract?.templateId,
+                contractCoding: contract?.coding,
               }
             });
           }}>再来一单</Button>

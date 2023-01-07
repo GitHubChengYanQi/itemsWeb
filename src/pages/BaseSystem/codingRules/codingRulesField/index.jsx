@@ -82,7 +82,7 @@ export const Values = (props) => {
 
       }
     }
-  }, []);
+  }, [value]);
 
   const modules = () => {
     switch (module) {
