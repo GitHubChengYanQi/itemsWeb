@@ -28,10 +28,10 @@ export const Latitude = (props) =>{
   return (<InputNumber min={0}   {...props}/>);
 };
 export const Measure = (props) =>{
-  return (<InputNumber min={0}   {...props}/>);
+  return (<InputNumber min={0} addonAfter='m²'  {...props}/>);
 };
 export const Capacity = (props) =>{
-  return (<InputNumber min={0}   {...props}/>);
+  return (<InputNumber min={0} addonAfter='m&nbsp;'  {...props}/>);
 };
 
 export const Map = (props) =>{
