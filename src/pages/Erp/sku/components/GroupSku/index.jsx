@@ -142,18 +142,21 @@ const GroupSku = (
           <div className={styles.groupTitle} hidden={isArray(groupList.bomListResults).length === 0 || noParts}>
             清单
           </div>
-          {
-            isArray(groupList.bomListResults).map((item, index) => {
-              const label = `${item.standard} / ${item.spuName} / ${item.skuName}`;
-              return <div key={index} className={styles.valueItem} onClick={() => {
-                setOpen(false);
-                setShowValue(label);
-                onChange(item.partsId, 'parts', {skuId: item.skuId});
-              }}>
-                <Icon type="icon-a-kehuliebiao2" style={{marginRight: 8}} />{format(label)}
-              </div>;
-            })
-          }
+          <div hidden={noParts}>
+            {
+              isArray(groupList.bomListResults).map((item, index) => {
+                const label = `${item.standard} / ${item.spuName} / ${item.skuName}`;
+                return <div key={index} className={styles.valueItem} onClick={() => {
+                  setOpen(false);
+                  setShowValue(label);
+                  onChange(item.partsId, 'parts', {skuId: item.skuId});
+                }}>
+                  <Icon type="icon-a-kehuliebiao2" style={{marginRight: 8}} />{format(label)}
+                </div>;
+              })
+            }
+          </div>
+
         < /Spin>
       </div>
 
