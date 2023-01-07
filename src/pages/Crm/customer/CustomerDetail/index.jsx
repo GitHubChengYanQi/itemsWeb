@@ -74,7 +74,7 @@ const CustomerDetail = ({id, supply = 0, status,}) => {
 
   return (
     <div className={styles.detail}>
-      <Card>
+      <Card bodyStyle={{padding: 16}}>
         <Breadcrumb title={enterprise ? null : title} />
       </Card>
       <Card>
