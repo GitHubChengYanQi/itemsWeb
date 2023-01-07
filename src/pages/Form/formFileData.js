@@ -159,6 +159,12 @@ export const outStockReportData = [
   {filedName: '任务统计', key: 'TaskStatistics'},
 ];
 
+export const StockingReportData = [
+  {filedName: '盘点次数统计', key: 'CountStatistics'},
+  {filedName: '异常分析', key: 'ErrorException'},
+  {filedName: '异常结果汇总', key: 'ErrorSummary'},
+  {filedName: '任务统计', key: 'TaskStatistics'},
+];
 
 export const MaintenanceReportData = [
   {filedName: '任务统计', key: 'TaskStatistics'},
