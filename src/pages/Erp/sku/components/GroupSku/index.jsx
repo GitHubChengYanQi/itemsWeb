@@ -1,6 +1,6 @@
 import React, {useImperativeHandle, useState} from 'react';
 import {Button, Input, Modal, Space, Spin} from 'antd';
-import {SearchOutlined, AppstoreOutlined} from '@ant-design/icons';
+import {SearchOutlined, AppstoreOutlined, CloseCircleFilled} from '@ant-design/icons';
 import styles from './index.module.less';
 import {useRequest} from '@/util/Request';
 import Icon from '@/components/Icon';
@@ -60,16 +60,26 @@ const GroupSku = (
 
   return <>
     <Space size={16} align={align}>
-      <Input
-        style={{width}}
-        value={showValue}
-        placeholder="请输入关键字搜索"
-        onFocus={() => {
-          run({data: {keyWord: showValue}});
-          setSearchValue(showValue);
-          setOpen(true);
-        }}
-      />
+      <Button
+        style={{width, textAlign: 'left'}}
+      >
+        <div className={styles.button}>
+          <div className={styles.buttonText} onClick={() => {
+            if (showValue) {
+              run({data: {keyWord: showValue}});
+            }
+            setSearchValue(showValue);
+            setOpen(true);
+          }}>
+            {showValue || <span className={styles.placeholder}>请输入关键字搜索</span>}
+          </div>
+          {showValue && <CloseCircleFilled onClick={() => {
+            setShowValue('');
+            onChange('', 'reset');
+          }} />}
+        </div>
+
+      </Button>
       <div hidden={noSearchButton}>
         <Button
           type="primary"
