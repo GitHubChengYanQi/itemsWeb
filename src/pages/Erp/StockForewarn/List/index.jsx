@@ -65,18 +65,18 @@ const List = () => {
 
   const columns = [
     {
-      title: '物料编码', width: 200, sorter: true, dataIndex: 'number', render: (value, record) => {
+      title: '物料编码', width: 200, sorter: true, dataIndex: 'standard', render: (value, record) => {
         return (<>{record?.skuResult?.standard}</>);
       }
     },
     {
-      title: '物料分类', width: 140, sorter: true, dataIndex: 'name', render: (value, record) => {
+      title: '物料分类', width: 140, sorter: true, dataIndex: 'className', render: (value, record) => {
         return (record?.skuResult?.spuResult?.spuClassificationResult?.name);
       }
     },
     {
-      title: '物料', dataIndex: 'skuResult', sorter: true, render: (value) => {
-        return SkuResultSkuJsons({skuResult: value});
+      title: '物料', dataIndex: 'spuName', sorter: true, render: (value, record) => {
+        return SkuResultSkuJsons({skuResult: record.skuResult});
 
       }
     },
@@ -86,7 +86,7 @@ const List = () => {
       }
     },
     {
-      title: '未到货数量', width: 120, dataIndex: 'floatingCargoNumber', render(value) {
+      title: '未到货数量', width: 120,sorter: true,  dataIndex: 'floatingCargoNumber', render(value) {
         return value;
       }
     },
