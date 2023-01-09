@@ -86,7 +86,7 @@ const List = () => {
       }
     },
     {
-      title: '未到货数量', width: 120, sorter: true, dataIndex: 'floatingCargoNumber', render(value) {
+      title: '未到货数量', width: 120, dataIndex: 'floatingCargoNumber', render(value) {
         return value;
       }
     },
