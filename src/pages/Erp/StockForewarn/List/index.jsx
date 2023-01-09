@@ -125,13 +125,6 @@ const List = () => {
       rowKey="skuId"
       searchForm={searchForm}
       actions={actions()}
-      // footer={footer}
-      actionButton={<>
-        <Button type="link" onClick={() => {
-        }}>导出全部</Button>
-        <Button type="link" onClick={() => {
-        }}>导出选中</Button>
-      </>}
     />
 
   </>;

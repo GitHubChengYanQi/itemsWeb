@@ -47,14 +47,14 @@ const Set = () => {
   });
 
   const columns = [
-    {title: '物料编码', width: 200, dataIndex: 'standard'},
+    {title: '物料编码', width: 200, sorter: true, dataIndex: 'standard'},
     {
       title: '物料分类', width: 140, dataIndex: 'spuResult', render: (value) => {
         return <Render text={value?.spuClassificationResult?.name} />;
       }
     },
     {
-      title: '物料', dataIndex: 'skuResult', render: (value, record) => {
+      title: '物料', dataIndex: 'spuName', sorter: true, render: (value, record) => {
         return SkuResultSkuJsons({skuResult: record});
       }
     },
@@ -204,7 +204,7 @@ const Set = () => {
         <FormItem name="partsSkuId" label="基础物料" component={Input} />
       </div>
       {
-        showBatch && <Space align='center'>
+        showBatch && <Space align="center">
           <div style={{marginLeft: 24}}>批量设置：</div>
           <InputNumber
             value={bomSku.inventoryFloor}
