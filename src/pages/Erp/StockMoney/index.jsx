@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, Input, message, Space} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Table from '@/components/Table';
@@ -18,13 +18,19 @@ const StockMoney = () => {
 
   const tableRef = useRef();
 
+  const [list, setList] = useState([]);
+
   const [data, setData] = useState([]);
 
-  const [bomSku, setBomSku] = useState({});
+  const [batchSku, setBatchSku] = useState({});
 
   const [bomId, setBomId] = useState();
 
-  const [showBatch, setShowBatch] = useState(false);
+  const [showBatch, setShowBatch] = useState({});
+
+  const [loading, setLoading] = useState(false);
+
+  const batch = Object.keys(showBatch).filter(item => showBatch[item]).length > 0;
 
   const {loading: addLoading, run: add} = useRequest(stockForewarnAdd, {
     response: true,
@@ -59,26 +65,27 @@ const StockMoney = () => {
       }
     },
     {
-      title: '库存下限',
+      title: '金额',
       width: 140,
       align: 'center',
       dataIndex: 'stockForewarnResult',
       render: (stockForewarnResult, record) => {
         const sku = data.find(item => item.skuId === record.skuId);
+
         return <InputNumber
-          value={sku ? sku.inventoryFloor : stockForewarnResult?.inventoryFloor}
+          value={sku ? sku.price : stockForewarnResult?.price}
           width={140}
           min={0}
+          precision={2}
           placeholder="请输入"
-          onChange={(inventoryFloor) => {
+          onChange={(price) => {
             let exit = false;
             const newData = data.map(item => {
               if (item.skuId === record.skuId) {
                 exit = true;
                 return {
                   ...item,
-                  inventoryFloor,
-                  inventoryCeiling: item.inventoryCeiling <= inventoryFloor ? null : item.inventoryCeiling
+                  price,
                 };
               }
               return item;
@@ -86,44 +93,7 @@ const StockMoney = () => {
             if (!exit) {
               newData.push({
                 skuId: record.skuId,
-                inventoryFloor,
-                inventoryCeiling: stockForewarnResult?.inventoryCeiling
-              });
-            }
-            setData(newData);
-          }}
-        />;
-      }
-    },
-    {
-      title: '库存上限',
-      width: 140,
-      align: 'center',
-      dataIndex: 'stockForewarnResult',
-      render: (stockForewarnResult, record) => {
-        const sku = data.find(item => item.skuId === record.skuId);
-        return <InputNumber
-          value={sku ? sku.inventoryCeiling : stockForewarnResult?.inventoryCeiling}
-          width={140}
-          min={sku?.inventoryFloor ? sku.inventoryFloor + 1 : 0}
-          placeholder="请输入"
-          onChange={(inventoryCeiling) => {
-            let exit = false;
-            const newData = data.map(item => {
-              if (item.skuId === record.skuId) {
-                exit = true;
-                return {
-                  ...item,
-                  inventoryCeiling,
-                };
-              }
-              return item;
-            });
-            if (!exit) {
-              newData.push({
-                skuId: record.skuId,
-                inventoryCeiling,
-                inventoryFloor: stockForewarnResult?.inventoryFloor
+                price,
               });
             }
             setData(newData);
@@ -142,8 +112,7 @@ const StockMoney = () => {
                 exit = true;
                 return {
                   ...item,
-                  inventoryCeiling: null,
-                  inventoryFloor: null,
+                  price: null,
                 };
               }
               return item;
@@ -151,8 +120,7 @@ const StockMoney = () => {
             if (!exit) {
               newData.push({
                 skuId: record.skuId,
-                inventoryCeiling: null,
-                inventoryFloor: null,
+                price: null,
               });
             }
             setData(newData);
@@ -164,14 +132,6 @@ const StockMoney = () => {
     },
 
   ];
-
-  if (showBatch) {
-    columns.splice(3, 0, {
-      title: '配套数量',
-      width: 140,
-      dataIndex: 'number'
-    });
-  }
 
   const searchForm = () => {
     return <>
@@ -205,49 +165,66 @@ const StockMoney = () => {
         <FormItem name="partsSkuId" label="基础物料" component={Input} />
       </div>
       {
-        showBatch && <Space align="center">
+        batch > 0 && <Space align="center">
           <div style={{marginLeft: 24}}>批量设置：</div>
           <InputNumber
-            value={bomSku.inventoryFloor}
+            value={batchSku.price}
             width={140}
+            precision={2}
             min={0}
-            placeholder="下限"
-            onChange={(inventoryFloor) => {
-              setBomSku({...bomSku, inventoryFloor});
-            }}
-          />
-          <InputNumber
-            width={140}
-            value={bomSku.inventoryCeiling}
-            min={bomSku.inventoryFloor + 1}
-            placeholder="上限"
-            onChange={(inventoryCeiling) => {
-              setBomSku({...bomSku, inventoryCeiling});
+            placeholder="金额"
+            onChange={(price) => {
+              const newData = list.map(item => ({
+                skuId: item.skuId,
+                price
+              }));
+              setData(newData);
+              setBatchSku({...batchSku, price});
             }}
           />
           <Button loading={stockForewarnSaveLoading} style={{padding: 0}} type="link" onClick={() => {
-            stockForewarnSaveRun({
-              data: {
-                'bomId': bomId,
-                'InventoryFloor': bomSku.inventoryFloor,
-                'InventoryCeiling': bomSku.inventoryCeiling
-              }
-            });
+            // 条件保存
+            // partsSkuId 清单物料id ，清单id为 bomId
+            // spuClass 分类id
+            // skuName 物料名称
+            // 哪个存在表示批量设置哪个
+            console.log(showBatch);
+            // stockForewarnSaveRun({
+            //   data: {
+            //     'bomId': bomId,
+            //     'price': batchSku.price,
+            //   }
+            // });
           }}>确定</Button>
         </Space>
       }
     </>;
   };
 
+  useEffect(() => {
+    if (batch && typeof batchSku.price === 'number') {
+      const newData = list.map(item => ({
+        skuId: item.skuId,
+        price: batchSku.price
+      }));
+      setData(newData);
+    }
+  }, [loading]);
+
   return <>
     <Table
+      onLoading={setLoading}
       cardHeaderStyle={{display: 'none'}}
-      title={<Breadcrumb title="预警设置" />}
+      title={<Breadcrumb />}
       onReset={() => setBomId()}
       contentHeight="calc(100vh - 175px)"
       formSubmit={(values) => {
-        setShowBatch(values.partsSkuId);
+        setShowBatch(values);
         return values;
+      }}
+      format={(list) => {
+        setList(list);
+        return list;
       }}
       SearchButton
       noTableColumnSet
@@ -262,7 +239,9 @@ const StockMoney = () => {
 
     <BottomButton textAlign="right">
       <Button disabled={data.length === 0} loading={addLoading} type="primary" onClick={() => {
-        add({data: {params: data.map(item => ({...item, formId: item.skuId, type: 'sku'}))}});
+        // 批量保存
+        console.log(data);
+        // add({data: {params: data.map(item => ({...item, formId: item.skuId, type: 'sku'}))}});
       }}>保存</Button>
     </BottomButton>
   </>;
