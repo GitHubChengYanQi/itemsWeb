@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useImperativeHandle, useState} from 'react';
 import {Button, Input, Modal, Space, Spin} from 'antd';
 import {SearchOutlined, AppstoreOutlined} from '@ant-design/icons';
 import styles from './index.module.less';
@@ -17,7 +17,8 @@ const GroupSku = (
     noSearchButton,
     width = 300,
     align,
-  }
+  },
+  ref
 ) => {
 
   const [open, setOpen] = useState(false);
@@ -38,15 +39,24 @@ const GroupSku = (
 
   const format = (label) => {
     let newLabel = label;
-    label.replace(searchValue, <span className={styles.searchValue}>{searchValue}</span>);
-    if (label.indexOf(searchValue) !== -1) {
-      const startValue = label.substring(0, label.indexOf(searchValue));
-      const value = label.substring(label.indexOf(searchValue), label.indexOf(searchValue) + searchValue.length);
-      const endValue = label.substring(label.indexOf(searchValue) + searchValue.length, label.length);
+    const lowerCaseLabel = label.toLowerCase();
+    const lowerCaseValue = searchValue.toLowerCase();
+    if (lowerCaseLabel.indexOf(lowerCaseValue) !== -1) {
+      const startValue = label.substring(0, lowerCaseLabel.indexOf(lowerCaseValue));
+      const value = label.substring(lowerCaseLabel.indexOf(lowerCaseValue), lowerCaseLabel.indexOf(lowerCaseValue) + lowerCaseValue.length);
+      const endValue = label.substring(lowerCaseLabel.indexOf(lowerCaseValue) + lowerCaseValue.length, lowerCaseLabel.length);
       newLabel = <>{startValue}<span className={styles.searchValue}>{value}</span>{endValue}</>;
     }
     return newLabel;
   };
+
+  const reset = () => {
+    setShowValue('');
+  };
+
+  useImperativeHandle(ref, () => ({
+    reset
+  }));
 
   return <>
     <Space size={16} align={align}>
@@ -164,4 +174,4 @@ const GroupSku = (
   </>;
 };
 
-export default GroupSku;
+export default React.forwardRef(GroupSku);
