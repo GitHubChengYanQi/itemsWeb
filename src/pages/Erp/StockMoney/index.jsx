@@ -3,7 +3,7 @@ import {Button, Input, message, Space} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Table from '@/components/Table';
 import {useRequest} from '@/util/Request';
-import {stockForewarnAdd, stockForewarnSave} from '@/pages/Erp/StockForewarn/url';
+import {stockForewarnSave} from '@/pages/Erp/StockForewarn/url';
 import Form from '@/components/Form';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import {skuList} from '@/pages/Erp/sku/skuUrl';
@@ -11,6 +11,7 @@ import Render from '@/components/Render';
 import InputNumber from '@/components/InputNumber';
 import BottomButton from '@/components/BottomButton';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
+import {skuPriceAddBatch} from '@/pages/Erp/StockMoney/url';
 
 const {FormItem} = Form;
 
@@ -32,7 +33,7 @@ const StockMoney = () => {
 
   const batch = Object.keys(showBatch).filter(item => showBatch[item]).length > 0;
 
-  const {loading: addLoading, run: add} = useRequest(stockForewarnAdd, {
+  const {loading: addLoading, run: add} = useRequest(skuPriceAddBatch, {
     response: true,
     manual: true,
     onSuccess: () => {
@@ -160,9 +161,9 @@ const StockMoney = () => {
         tableRef.current.submit();
       }} />
       <div hidden>
-        <FormItem name="skuName" label="基础物料" component={Input} />
-        <FormItem name="spuClass" label="基础物料" component={Input} />
-        <FormItem name="partsSkuId" label="基础物料" component={Input} />
+        <FormItem name="skuName" component={Input} />
+        <FormItem name="spuClass" component={Input} />
+        <FormItem name="partsSkuId" component={Input} />
       </div>
       {
         batch > 0 && <Space align="center">
@@ -240,8 +241,7 @@ const StockMoney = () => {
     <BottomButton textAlign="right">
       <Button disabled={data.length === 0} loading={addLoading} type="primary" onClick={() => {
         // 批量保存
-        console.log(data);
-        // add({data: {params: data.map(item => ({...item, formId: item.skuId, type: 'sku'}))}});
+        add({data: {skuPriceParamList: data}});
       }}>保存</Button>
     </BottomButton>
   </>;
