@@ -156,7 +156,7 @@ const CreateOrder = ({previewData, ...props}) => {
         labelAlign="right"
         wrapperCol={24}
         fieldKey="orderId"
-        initialValues={initialValues}
+        initialValues={{...initialValues, orderId: null}}
         onSubmit={(value) => {
           if (value.paymentDetail) {
             let percentum = 0;
