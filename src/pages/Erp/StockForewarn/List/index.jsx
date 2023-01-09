@@ -6,7 +6,6 @@ import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
 import {warningSku} from '@/pages/Erp/StockForewarn/url';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-import {isArray} from '@/util/Tools';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 
 const {FormItem} = Form;
@@ -15,6 +14,7 @@ const {FormItem} = Form;
 const List = () => {
 
   const tableRef = useRef(null);
+  const skuListRef = useRef(null);
 
   const searchForm = () => {
 
@@ -27,6 +27,7 @@ const List = () => {
     return (
       <>
         <GroupSku
+          ref={skuListRef}
           align="start"
           noSearchButton
           noParts
@@ -116,6 +117,9 @@ const List = () => {
 
   return <>
     <Table
+      onReset={() => {
+        skuListRef.current.reset();
+      }}
       ref={tableRef}
       api={warningSku}
       title={<Breadcrumb />}
@@ -123,13 +127,6 @@ const List = () => {
       rowKey="skuId"
       searchForm={searchForm}
       actions={actions()}
-      // footer={footer}
-      actionButton={<>
-        <Button type="link" onClick={() => {
-        }}>导出全部</Button>
-        <Button type="link" onClick={() => {
-        }}>导出选中</Button>
-      </>}
     />
 
   </>;

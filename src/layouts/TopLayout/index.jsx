@@ -132,7 +132,8 @@ const TopLayout = ({children, rightMenu: RightMenu}) => {
       </Sider>}
       <Content style={{
         overflowY: 'auto',
-        height: mode === 'vertical' ? 'calc(100vh - 63px)' : 'calc(100vh - 112px)'
+        height: mode === 'vertical' ? 'calc(100vh - 63px)' : 'calc(100vh - 112px)',
+        minWidth: 1000
       }}>{children}</Content>
     </Layout>
   );

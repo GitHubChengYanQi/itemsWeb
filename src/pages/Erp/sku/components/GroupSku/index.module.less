@@ -41,6 +41,8 @@
 .valueItem {
   cursor: pointer;
   padding: 8px;
+  display: flex;
+  align-items: center;
 
   &:hover {
     border-radius: 4px;
@@ -56,4 +58,30 @@
   margin-top: 12px;
   overflow: auto;
   max-height: calc(80vh - 48px - 53px);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+
+  .buttonText {
+    flex-grow: 1;
+    height: 24px;
+
+    .placeholder {
+      color: #bfbfbf;
+    }
+  }
+
+  svg {
+    color: #bfbfbf;
+  }
+
+}
+
+.tagText {
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
