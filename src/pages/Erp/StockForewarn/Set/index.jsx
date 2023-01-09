@@ -68,6 +68,7 @@ const Set = () => {
         return <InputNumber
           value={sku ? sku.inventoryFloor : stockForewarnResult?.inventoryFloor}
           width={140}
+          min={0}
           placeholder="请输入"
           onChange={(inventoryFloor) => {
             let exit = false;
@@ -209,6 +210,7 @@ const Set = () => {
           <InputNumber
             value={bomSku.inventoryFloor}
             width={140}
+            min={0}
             placeholder="下限"
             onChange={(inventoryFloor) => {
               setBomSku({...bomSku, inventoryFloor});
