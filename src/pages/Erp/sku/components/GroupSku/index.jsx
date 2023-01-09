@@ -1,12 +1,12 @@
 import React, {useImperativeHandle, useState} from 'react';
-import {Button, Input, Modal, Space, Spin} from 'antd';
-import {SearchOutlined, AppstoreOutlined, CloseCircleFilled} from '@ant-design/icons';
+import {Button, Modal, Space, Tag} from 'antd';
+import {SearchOutlined, CloseCircleFilled} from '@ant-design/icons';
 import styles from './index.module.less';
 import {useRequest} from '@/util/Request';
-import Icon from '@/components/Icon';
-import {isArray} from '@/util/Tools';
+import SearchSku from '@/pages/Erp/sku/components/GroupSku/components/SearchSku';
 
-export const generalList = {url: '/general/list', method: 'POST'};
+export const generalList = {url: '/general/v1.1/list', method: 'POST'};
+// export const generalList = {url: '/general/list', method: 'POST'};
 
 const GroupSku = (
   {
@@ -36,21 +36,10 @@ const GroupSku = (
   });
 
   const [showValue, setShowValue] = useState('');
-
-  const format = (label) => {
-    let newLabel = label;
-    const lowerCaseLabel = label.toLowerCase();
-    const lowerCaseValue = searchValue.toLowerCase();
-    if (lowerCaseLabel.indexOf(lowerCaseValue) !== -1) {
-      const startValue = label.substring(0, lowerCaseLabel.indexOf(lowerCaseValue));
-      const value = label.substring(lowerCaseLabel.indexOf(lowerCaseValue), lowerCaseLabel.indexOf(lowerCaseValue) + lowerCaseValue.length);
-      const endValue = label.substring(lowerCaseLabel.indexOf(lowerCaseValue) + lowerCaseValue.length, lowerCaseLabel.length);
-      newLabel = <>{startValue}<span className={styles.searchValue}>{value}</span>{endValue}</>;
-    }
-    return newLabel;
-  };
+  const [searchType, setSearchType] = useState('');
 
   const reset = () => {
+    setSearchType('');
     setShowValue('');
   };
 
@@ -68,12 +57,24 @@ const GroupSku = (
             if (showValue) {
               run({data: {keyWord: showValue}});
             }
-            setSearchValue(showValue);
+            setSearchValue(searchType ? '' : showValue);
             setOpen(true);
           }}>
-            {showValue || <span className={styles.placeholder}>请输入关键字搜索</span>}
+
+            {
+              searchType ?
+                <Tag
+                  style={{height: 22}}
+                  hidden={!searchType}>
+                  <div style={{maxWidth: width - 100}} className={styles.tagText}>
+                    {searchType === 'skuClass' ? `分类为 “${showValue}”` : `清单为 “${showValue}”`}
+                  </div>
+                </Tag> :
+                (showValue || <span className={styles.placeholder}>请输入关键字搜索</span>)
+            }
           </div>
           {showValue && <CloseCircleFilled onClick={() => {
+            setSearchType('');
             setShowValue('');
             onChange('', 'reset');
           }} />}
@@ -94,6 +95,7 @@ const GroupSku = (
       <div hidden={noSearchButton}>
         <Button
           onClick={() => {
+            setSearchType('');
             setShowValue('');
             onChange('', 'reset');
           }}>
@@ -114,72 +116,18 @@ const GroupSku = (
       mask={false}
       destroyOnClose
     >
-      <div className={styles.search}>
-        <Input
-          allowClear
-          autoFocus
-          value={searchValue}
-          onChange={({target: {value}}) => {
-            run({data: {keyWord: value}});
-            setSearchValue(value);
-          }}
-          prefix={<SearchOutlined />}
-          size="large"
-          placeholder="请输入关键字搜索" />
-      </div>
-
-      <div hidden={!searchValue} className={styles.searchValues}>
-        <div className={styles.groupTitle}>
-          物料
-        </div>
-        <div className={styles.valueItem} onClick={() => {
-          setOpen(false);
-          setShowValue(searchValue);
-          onChange(searchValue, 'skuName');
-        }}>
-          <Icon type="icon-wuliaoguanli" style={{marginRight: 8}} />
-          在物料中搜索关键词：<span className={styles.searchValue}>{searchValue}</span>
-        </div>
-
-        <Spin spinning={loading}>
-          <div className={styles.groupTitle} hidden={isArray(groupList.classListResults).length === 0}>
-            分类
-          </div>
-          {
-            isArray(groupList.classListResults).map((item, index) => {
-              const label = item.name;
-              return <div key={index} className={styles.valueItem} onClick={() => {
-                setOpen(false);
-                setShowValue(label);
-                onChange(item.spuClassificationId, 'skuClass');
-              }}>
-                <AppstoreOutlined style={{marginRight: 8}} />{format(label)}
-              </div>;
-            })
-          }
-
-
-          <div className={styles.groupTitle} hidden={isArray(groupList.bomListResults).length === 0 || noParts}>
-            清单
-          </div>
-          <div hidden={noParts}>
-            {
-              isArray(groupList.bomListResults).map((item, index) => {
-                const label = `${item.standard} / ${item.spuName} / ${item.skuName}`;
-                return <div key={index} className={styles.valueItem} onClick={() => {
-                  setOpen(false);
-                  setShowValue(label);
-                  onChange(item.partsId, 'parts', {skuId: item.skuId});
-                }}>
-                  <Icon type="icon-a-kehuliebiao2" style={{marginRight: 8}} />{format(label)}
-                </div>;
-              })
-            }
-          </div>
-
-        < /Spin>
-      </div>
-
+      <SearchSku
+        onChange={onChange}
+        searchValue={searchValue}
+        setOpen={setOpen}
+        setSearchValue={setSearchValue}
+        loading={loading}
+        setSearchType={setSearchType}
+        groupList={groupList}
+        noParts={noParts}
+        run={run}
+        setShowValue={setShowValue}
+      />
     </Modal>
   </>;
 };

@@ -175,16 +175,15 @@ const SkuTable = ({...props}, ref) => {
       dataIndex: 'spuResult',
       title: '单位',
       render: (value) => <Render text={value?.unitResult?.unitName || '-'} />,
-      sorter: true
     },
     {dataIndex: 'specifications', title: '规格', sorter: true},
     {
-      dataIndex: 'sku', title: '规格参数', sorter: true, render: (value, record) => <Render>
+      dataIndex: 'sku', title: '规格参数', render: (value, record) => <Render>
         <Note width={300} value={<SkuResultSkuJsons describe skuResult={record} />} />
       </Render>
     },
     {
-      dataIndex: 'inBom', title: 'BOM', sorter: true, render: (value, record) => {
+      dataIndex: 'inBom', title: 'BOM', render: (value, record) => {
         return <Render>
           <Button type="link" style={{color: value && 'green', padding: 0}} onClick={() => {
             if (value) {
@@ -198,7 +197,7 @@ const SkuTable = ({...props}, ref) => {
       }
     },
     {
-      dataIndex: 'processResult', title: '工艺路线', sorter: true, render: (value) => {
+      dataIndex: 'processResult', title: '工艺路线', render: (value) => {
         return <Render>
           <Button type="link" style={{color: value && 'green', padding: 0}} onClick={() => {
             if (value) {
@@ -211,17 +210,15 @@ const SkuTable = ({...props}, ref) => {
         </Render>;
       }
     },
-    {dataIndex: 'maintenancePeriod', title: '养护周期(天)', sorter: true},
+    {dataIndex: 'maintenancePeriod', title: '养护周期(天)'},
     {
       dataIndex: 'brandResults',
       title: '品牌',
-      sorter: true,
       render: (value) => <Render text={isArray(value).map(item => item.brandName).join('、') || '-'} />
     },
     {
       dataIndex: 'materialResultList',
       title: '材质',
-      sorter: true,
       render: (value) => <Render text={isArray(value).map(item => item.name).join('、') || '-'} />
     },
     {dataIndex: 'weight', title: '重量(kg)', sorter: true},
