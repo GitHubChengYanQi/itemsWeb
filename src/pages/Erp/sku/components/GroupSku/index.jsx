@@ -5,8 +5,8 @@ import styles from './index.module.less';
 import {useRequest} from '@/util/Request';
 import SearchSku from '@/pages/Erp/sku/components/GroupSku/components/SearchSku';
 
-// export const generalList = {url: '/general/v1.1/list', method: 'POST'};
-export const generalList = {url: '/general/list', method: 'POST'};
+export const generalList = {url: '/general/v1.1/list', method: 'POST'};
+// export const generalList = {url: '/general/list', method: 'POST'};
 
 const GroupSku = (
   {

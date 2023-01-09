@@ -104,9 +104,9 @@ const SearchSku = (
               }}>
                 <Icon type="icon-a-kehuliebiao2" style={{marginRight: 16}} />
                 <div>
-                  版本号：{item.version ? format(item.version) : '-'}
-                  <br />
                   {format(label)}
+                  <br />
+                  版本号：{item.version ? format(item.version) : '-'}
                 </div>
 
               </div>;
