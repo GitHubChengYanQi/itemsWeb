@@ -185,7 +185,7 @@ const StockTable = (props) => {
         const stockNumber = (record.stockNumber || 0) - (record.lockStockDetailNumber || 0);
         return <Render width={60}>{stockNumber || 0}</Render>;
       }} />
-      <Table.Column key={6} title="未到货数量" dataIndex="floatingCargoNumber" sorter render={(value) => {
+      <Table.Column key={6} title="在途数量" dataIndex="floatingCargoNumber" sorter render={(value) => {
         return <Render width={60}>{value || 0}</Render>;
       }} />
       <Table.Column key={6} title="备料数量" dataIndex="lockStockDetailNumber" sorter render={(value) => {
