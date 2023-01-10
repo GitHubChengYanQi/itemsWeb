@@ -71,8 +71,18 @@ const Detail = ({id}) => {
             state: {
               ...paymentResult,
               ...data,
-              detailParams: isArray(data.detailResults).length > 0 ? data.detailResults : null,
-              paymentDetail: isArray(paymentResult.detailResults).length > 0 ? paymentResult.detailResults : null,
+              money: data.money / 100,
+              floatingAmount: data.floatingAmount / 100,
+              totalAmount: data.totalAmount / 100,
+              detailParams: isArray(data.detailResults).length > 0 ? isArray(data.detailResults).map(item => ({
+                ...item,
+                totalPrice: item.totalPrice / 100,
+                onePrice: item.onePrice / 100
+              })):null,
+              paymentDetail: isArray(paymentResult.detailResults).length > 0 ? isArray(paymentResult.detailResults).map(item => ({
+                ...item,
+                money: item.money / 100,
+              })) : 0,
               templateId: contract?.templateId,
               contractCoding: contract?.coding,
 

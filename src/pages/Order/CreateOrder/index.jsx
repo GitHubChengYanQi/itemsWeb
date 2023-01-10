@@ -173,7 +173,7 @@ const CreateOrder = ({previewData, ...props}) => {
 
           if (value.detailParams) {
             const detailParams = value.detailParams.filter((item) => {
-              return item.skuId && item.brandId && item.purchaseNumber && item.onePrice;
+              return item.skuId && item.purchaseNumber && item.onePrice;
             });
             if (detailParams.length !== value.detailParams.length) {
               notification.warn({
@@ -186,17 +186,25 @@ const CreateOrder = ({previewData, ...props}) => {
           value = {
             ...value,
             type: module().type,
+            detailParams: isArray(value.detailParams).map(item => ({
+              ...item,
+              totalPrice: item.totalPrice * 100,
+              onePrice: item.onePrice * 100
+            })),
             paymentParam: {
-              money: value.money,
-              detailParams: value.paymentDetail,
+              money: value.money * 100,
+              detailParams: isArray(value.paymentDetail).map(item => ({
+                ...item,
+                money: item.money * 100,
+              })),
               payMethod: value.payMethod,
               freight: value.freight,
               deliveryWay: value.deliveryWay,
               adressId: value.adressId,
               payPlan: value.payPlan,
               remark: value.remark,
-              floatingAmount: value.floatingAmount,
-              totalAmount: value.totalAmount,
+              floatingAmount: value.floatingAmount * 100,
+              totalAmount: value.totalAmount * 100,
               paperType: value.paperType,
               rate: value.rate,
             },
