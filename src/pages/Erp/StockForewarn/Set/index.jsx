@@ -30,7 +30,6 @@ const Set = () => {
     response: true,
     manual: true,
     onSuccess: () => {
-      setData([]);
       message.success('设置成功!');
       tableRef.current.refresh();
     }
@@ -171,10 +170,11 @@ const Set = () => {
           <Button
             type="link"
             disabled={!sku || (stockForewarnResult.inventoryFloor === sku.inventoryFloor && stockForewarnResult.inventoryCeiling === sku.inventoryCeiling)}
-            onClick={() => {
-              add({
+            onClick={async () => {
+              await add({
                 data: {params: [{...sku, formId: sku.skuId, type: 'sku'}]}
               });
+              setData(data.filter(item => item.skuId !== record.skuId));
             }}
           >
             保存
@@ -285,8 +285,9 @@ const Set = () => {
     />
 
     <BottomButton textAlign="right">
-      <Button disabled={data.length === 0} loading={addLoading} type="primary" onClick={() => {
-        add({data: {params: data.map(item => ({...item, formId: item.skuId, type: 'sku'}))}});
+      <Button disabled={data.length === 0} loading={addLoading} type="primary" onClick={async () => {
+        await add({data: {params: data.map(item => ({...item, formId: item.skuId, type: 'sku'}))}});
+        setData([]);
       }}>保存</Button>
     </BottomButton>
   </>;

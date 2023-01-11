@@ -105,7 +105,6 @@ const GroupSku = (
 
     </Space>
 
-
     <Modal
       className={styles.searchModal}
       closable={false}

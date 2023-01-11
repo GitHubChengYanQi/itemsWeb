@@ -78,7 +78,6 @@ const List = () => {
     {
       title: '物料', dataIndex: 'spuName', sorter: true, render: (value, record) => {
         return <>{SkuResultSkuJsons({skuResult: record.skuResult})}</>;
-
       }
     },
     {
@@ -94,13 +93,13 @@ const List = () => {
     {
       title: '库存下限', width: 100, sorter: true, dataIndex: 'inventoryFloor', render: (text, record) => {
         return (
-          <Render style={{color: record.number <= record.inventoryFloor ? 'red' : ''}}>{text}</Render>);
+          <Render style={{color: record.number <= record.inventoryFloor ? 'red' : ''}}>{text || '-'}</Render>);
       }
     },
     {
       title: '库存上限', width: 100, sorter: true, dataIndex: 'inventoryCeiling', render: (text, record) => {
         return (
-          <Render style={{color: record.number >= record.inventoryCeiling ? 'red' : ''}}>{text}</Render>);
+          <Render style={{color: record.number >= record.inventoryCeiling ? 'red' : ''}}>{text || '-'}</Render>);
       }
     },
 
