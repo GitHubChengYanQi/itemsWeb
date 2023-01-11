@@ -261,8 +261,15 @@ const TableWarp = (
       ...item,
       key: `${index}`,
       render: (value, record, index) => {
-        return typeof item.render === 'function' ? item.render(value, record, index) :
-          <Render text={typeof value === 'object' ? '' : (value || '-')} />;
+        if (typeof item.render === 'function') {
+          return item.render(value, record, index);
+        } else if (typeof value === 'object') {
+          return <Render text="" />;
+        } else if (typeof value === 'number') {
+          return <Render>{value}</Render>;
+        } else {
+          return <Render text={(value || '-')} />;
+        }
       }
     }));
   };
