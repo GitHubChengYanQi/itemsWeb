@@ -11,7 +11,7 @@ import Render from '@/components/Render';
 import InputNumber from '@/components/InputNumber';
 import BottomButton from '@/components/BottomButton';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
-import {skuPriceAddBatch} from '@/pages/Erp/StockMoney/url';
+import {skuPriceAdd, skuPriceAddBatch, skuPriceList} from '@/pages/Erp/StockMoney/url';
 
 const {FormItem} = Form;
 
@@ -37,13 +37,23 @@ const StockMoney = () => {
 
   const [priceList, setPricelist] = useState({});
 
-  const {loading: addLoading, run: add} = useRequest(skuPriceAddBatch, {
+  const {run: add} = useRequest(skuPriceAdd, {
+    manual: true
+  });
+
+  const {loading: addLoading, run: AddBatch} = useRequest(skuPriceAddBatch, {
     response: true,
     manual: true,
-    onSuccess: () => {
-      setData([]);
-      message.success('设置成功!');
-      tableRef.current.refresh();
+  });
+
+  const {run: getPriceList} = useRequest(skuPriceList,{
+    manual: true,
+    onSuccess: (data) => {
+      const tmp = {};
+      data .forEach((item) => {
+        tmp[`${item.skuId}`] = item.price;
+      });
+      setPricelist(tmp);
     }
   });
 
@@ -113,26 +123,22 @@ const StockMoney = () => {
         return <Button
           disabled={!buttonState[record.skuId]}
           type="link"
-          onClick={() => {
-            let exit = false;
-            const newData = data.map(item => {
-              if (item.skuId === record.skuId) {
-                exit = true;
-                return {
-                  ...item,
-                  price: null,
-                };
-              }
-              return item;
-            });
+          onClick={async () => {
+            const sku = data.find(item => item.skuId === record.skuId);
 
-            if (!exit) {
-              newData.push({
-                skuId: record.skuId,
-                price: null,
-              });
-            }
+            await add({data: {...sku}});
+
+            const index = data.findIndex(item => item.skuId === record.skuId);
+            const newData = [...data];
+            if(index!==-1)newData.splice(index,1);
             setData(newData);
+            const tmp = {};
+            newData.forEach(item => {
+              tmp[`${item.skuId}`] = true;
+            });
+            setButtonState(tmp);
+            message.success('设置成功!');
+            tableRef.current.refresh();
           }}
         >
           保存
@@ -173,40 +179,6 @@ const StockMoney = () => {
         <FormItem name="spuClass" component={Input}/>
         <FormItem name="partsSkuId" component={Input}/>
       </div>
-      {
-        batch > 0 && <Space align="center">
-          <div style={{marginLeft: 24}}>批量设置：</div>
-          <InputNumber
-            value={batchSku.price}
-            width={140}
-            precision={2}
-            min={0}
-            placeholder="金额"
-            onChange={(price) => {
-              const newData = list.map(item => ({
-                skuId: item.skuId,
-                price
-              }));
-              setData(newData);
-              setBatchSku({...batchSku, price});
-            }}
-          />
-          <Button loading={stockForewarnSaveLoading} style={{padding: 0}} type="link" onClick={() => {
-            // 条件保存
-            // partsSkuId 清单物料id ，清单id为 bomId
-            // spuClass 分类id
-            // skuName 物料名称
-            // 哪个存在表示批量设置哪个
-            console.log(showBatch);
-            // stockForewarnSaveRun({
-            //   data: {
-            //     'bomId': bomId,
-            //     'price': batchSku.price,
-            //   }
-            // });
-          }}>确定</Button>
-        </Space>
-      }
     </>;
   };
 
@@ -233,11 +205,10 @@ const StockMoney = () => {
       }}
       format={(list) => {
         setList(list);
-        const tmp = {};
-        list.forEach((item) => {
-          tmp[`${item.skuId}`] = 0.00;
+        const skuIds = list.map(item=>item.skuId);
+        getPriceList({
+          data:{skuIds}
         });
-        setPricelist(tmp);
         return list;
       }}
       SearchButton
@@ -252,9 +223,13 @@ const StockMoney = () => {
     />
 
     <BottomButton textAlign="right">
-      <Button disabled={data.length === 0} loading={addLoading} type="primary" onClick={() => {
+      <Button disabled={data.length === 0} loading={addLoading} type="primary" onClick={async () => {
         // 批量保存
-        add({data: {skuPriceParamList: data}});
+        await AddBatch({data: {skuPriceParamList: data}});
+        setData([]);
+        setButtonState({});
+        message.success('设置成功!');
+        tableRef.current.refresh();
       }}>保存</Button>
     </BottomButton>
   </>;
