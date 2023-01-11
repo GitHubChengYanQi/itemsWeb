@@ -33,6 +33,10 @@ const StockMoney = () => {
 
   const batch = Object.keys(showBatch).filter(item => showBatch[item]).length > 0;
 
+  const [buttonState, setButtonState] = useState({});
+
+  const [priceList, setPricelist] = useState({});
+
   const {loading: addLoading, run: add} = useRequest(skuPriceAddBatch, {
     response: true,
     manual: true,
@@ -57,7 +61,7 @@ const StockMoney = () => {
     {title: '物料编码', width: 200, sorter: true, dataIndex: 'standard'},
     {
       title: '物料分类', width: 140, dataIndex: 'spuResult', render: (value) => {
-        return <Render text={value?.spuClassificationResult?.name} />;
+        return <Render text={value?.spuClassificationResult?.name}/>;
       }
     },
     {
@@ -72,31 +76,33 @@ const StockMoney = () => {
       dataIndex: 'stockForewarnResult',
       render: (stockForewarnResult, record) => {
         const sku = data.find(item => item.skuId === record.skuId);
-
         return <InputNumber
-          value={sku ? sku.price : stockForewarnResult?.price}
+          value={sku ? sku.price : priceList[record.skuId]}
           width={140}
           min={0}
           precision={2}
           placeholder="请输入"
           onChange={(price) => {
-            let exit = false;
-            const newData = data.map(item => {
-              if (item.skuId === record.skuId) {
-                exit = true;
-                return {
-                  ...item,
-                  price,
-                };
-              }
-              return item;
+            let newData = [...data];
+            const index = data.findIndex(item =>item.skuId === record.skuId);
+            if (index !== -1) newData.splice(index, 1);
+            newData.push({
+              skuId: record.skuId,
+              price,
             });
-            if (!exit) {
-              newData.push({
-                skuId: record.skuId,
-                price,
-              });
-            }
+            const tmp = {};
+
+            newData = newData.filter(item => {
+              if (item.skuId === record.skuId && priceList[item.skuId] === item.price) {
+                tmp[`${item.skuId}`] = false;
+                return false;
+              } else {
+                tmp[`${item.skuId}`] = true;
+                return item;
+              }
+            });
+
+            setButtonState({...buttonState, ...tmp});
             setData(newData);
           }}
         />;
@@ -105,6 +111,7 @@ const StockMoney = () => {
     {
       title: '操作', width: 70, align: 'center', dataIndex: 'action', render: (text, record) => {
         return <Button
+          disabled={!buttonState[record.skuId]}
           type="link"
           onClick={() => {
             let exit = false;
@@ -118,6 +125,7 @@ const StockMoney = () => {
               }
               return item;
             });
+
             if (!exit) {
               newData.push({
                 skuId: record.skuId,
@@ -127,7 +135,7 @@ const StockMoney = () => {
             setData(newData);
           }}
         >
-          重置
+          保存
         </Button>;
       }
     },
@@ -159,11 +167,11 @@ const StockMoney = () => {
             break;
         }
         tableRef.current.submit();
-      }} />
+      }}/>
       <div hidden>
-        <FormItem name="skuName" component={Input} />
-        <FormItem name="spuClass" component={Input} />
-        <FormItem name="partsSkuId" component={Input} />
+        <FormItem name="skuName" component={Input}/>
+        <FormItem name="spuClass" component={Input}/>
+        <FormItem name="partsSkuId" component={Input}/>
       </div>
       {
         batch > 0 && <Space align="center">
@@ -216,7 +224,7 @@ const StockMoney = () => {
     <Table
       onLoading={setLoading}
       cardHeaderStyle={{display: 'none'}}
-      title={<Breadcrumb />}
+      title={<Breadcrumb/>}
       onReset={() => setBomId()}
       contentHeight="calc(100vh - 175px)"
       formSubmit={(values) => {
@@ -225,6 +233,11 @@ const StockMoney = () => {
       }}
       format={(list) => {
         setList(list);
+        const tmp = {};
+        list.forEach((item) => {
+          tmp[`${item.skuId}`] = 0.00;
+        });
+        setPricelist(tmp);
         return list;
       }}
       SearchButton
