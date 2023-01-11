@@ -87,7 +87,7 @@ const Set = () => {
               newData.push({
                 skuId: record.skuId,
                 inventoryFloor,
-                inventoryCeiling: stockForewarnResult?.inventoryCeiling
+                inventoryCeiling: stockForewarnResult?.inventoryCeiling <= inventoryFloor ? null : stockForewarnResult?.inventoryCeiling
               });
             }
             setData(newData);
@@ -132,34 +132,54 @@ const Set = () => {
       }
     },
     {
-      title: '操作', width: 70, align: 'center', dataIndex: 'action', render: (text, record) => {
-        return <Button
-          type="link"
-          onClick={() => {
-            let exit = false;
-            const newData = data.map(item => {
-              if (item.skuId === record.skuId) {
-                exit = true;
-                return {
-                  ...item,
+      title: '操作',
+      width: 70,
+      align: 'center',
+      dataIndex: 'stockForewarnResult',
+      render: (stockForewarnResult, record) => {
+
+        const sku = data.find(item => item.skuId === record.skuId);
+
+        return <Space>
+          <Button
+            type="link"
+            onClick={() => {
+              let exit = false;
+              const newData = data.map(item => {
+                if (item.skuId === record.skuId) {
+                  exit = true;
+                  return {
+                    ...item,
+                    inventoryCeiling: null,
+                    inventoryFloor: null,
+                  };
+                }
+                return item;
+              });
+              if (!exit) {
+                newData.push({
+                  skuId: record.skuId,
                   inventoryCeiling: null,
                   inventoryFloor: null,
-                };
+                });
               }
-              return item;
-            });
-            if (!exit) {
-              newData.push({
-                skuId: record.skuId,
-                inventoryCeiling: null,
-                inventoryFloor: null,
+              setData(newData);
+            }}
+          >
+            重置
+          </Button>
+          <Button
+            type="link"
+            disabled={!sku || (stockForewarnResult.inventoryFloor === sku.inventoryFloor && stockForewarnResult.inventoryCeiling === sku.inventoryCeiling)}
+            onClick={() => {
+              add({
+                data: {params: [{...sku, formId: sku.skuId, type: 'sku'}]}
               });
-            }
-            setData(newData);
-          }}
-        >
-          重置
-        </Button>;
+            }}
+          >
+            保存
+          </Button>
+        </Space>;
       }
     },
 
@@ -213,7 +233,11 @@ const Set = () => {
             min={0}
             placeholder="下限"
             onChange={(inventoryFloor) => {
-              setBomSku({...bomSku, inventoryFloor});
+              setBomSku({
+                ...bomSku,
+                inventoryFloor,
+                inventoryCeiling: bomSku.inventoryCeiling <= inventoryFloor ? null : bomSku.inventoryCeiling
+              });
             }}
           />
           <InputNumber
@@ -233,7 +257,7 @@ const Set = () => {
                 'InventoryCeiling': bomSku.inventoryCeiling
               }
             });
-          }}>确定</Button>
+          }}>保存</Button>
         </Space>
       }
     </>;
