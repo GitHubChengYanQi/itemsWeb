@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {Input, Spin} from 'antd';
-import {AppstoreOutlined, SearchOutlined} from '@ant-design/icons';
+import {AppstoreOutlined, SearchOutlined, EnterOutlined} from '@ant-design/icons';
 import styles from '@/pages/Erp/sku/components/GroupSku/index.module.less';
 import Icon from '@/components/Icon';
 import {isArray} from '@/util/Tools';
@@ -41,6 +41,14 @@ const SearchSku = (
 
   return <div>
     <Input
+      onKeyDown={(e) => {
+        if (e.keyCode === 13) {
+          setOpen(false);
+          setSearchType('');
+          setShowValue(searchValue);
+          onChange(searchValue, 'skuName');
+        }
+      }}
       ref={inputRef}
       allowClear
       value={searchValue}
@@ -64,7 +72,11 @@ const SearchSku = (
         onChange(searchValue, 'skuName');
       }}>
         <Icon type="icon-wuliaoguanli" style={{marginRight: 8}} />
-        在物料中搜索关键词：<span className={styles.searchValue}>{searchValue}</span>
+        在物料中搜索关键词：
+        <div style={{flexGrow: 1, height: 22}}>
+          <span className={styles.keyWord}>{searchValue}</span>
+        </div>
+        <EnterOutlined />
       </div>
 
       <Spin spinning={loading}>

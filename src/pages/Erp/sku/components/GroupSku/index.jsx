@@ -47,6 +47,11 @@ const GroupSku = (
     reset
   }));
 
+  const showValueFormat = () => {
+    return showValue ? <span style={{width:width - 60}} className={styles.showValue}>{showValue}</span> :
+      <span className={styles.placeholder}>请输入关键字搜索</span>;
+  };
+
   return <>
     <Space size={16} align={align}>
       <Button
@@ -65,12 +70,12 @@ const GroupSku = (
               searchType ?
                 <Tag
                   style={{height: 22}}
-                  hidden={!searchType}>
+                  hidden={!searchType}
+                >
                   <div style={{maxWidth: width - 100}} className={styles.tagText}>
                     {searchType === 'skuClass' ? `分类为 “${showValue}”` : `清单为 “${showValue}”`}
                   </div>
-                </Tag> :
-                (showValue || <span className={styles.placeholder}>请输入关键字搜索</span>)
+                </Tag> : showValueFormat()
             }
           </div>
           {showValue && <CloseCircleFilled onClick={() => {
@@ -104,7 +109,6 @@ const GroupSku = (
       </div>
 
     </Space>
-
 
     <Modal
       className={styles.searchModal}

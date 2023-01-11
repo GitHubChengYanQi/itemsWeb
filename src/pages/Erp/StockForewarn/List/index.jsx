@@ -7,6 +7,7 @@ import Form from '@/components/Form';
 import {warningSku} from '@/pages/Erp/StockForewarn/url';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
+import Render from '@/components/Render';
 
 const {FormItem} = Form;
 
@@ -65,25 +66,22 @@ const List = () => {
 
   const columns = [
     {
-      title: '物料编码', width: 200, sorter: true, dataIndex: 'number', render: (value, record) => {
-        return (<>{record?.skuResult?.standard}</>);
+      title: '物料编码', width: 200, sorter: true, dataIndex: 'standard', render: (value, record) => {
+        return (<Render>{record?.skuResult?.standard}</Render>);
       }
     },
     {
-      title: '物料分类', width: 140, sorter: true, dataIndex: 'name', render: (value, record) => {
-        return (record?.skuResult?.spuResult?.spuClassificationResult?.name);
+      title: '物料分类', width: 140, sorter: true, dataIndex: 'className', render: (value, record) => {
+        return <Render>{record?.skuResult?.spuResult?.spuClassificationResult?.name}</Render>;
       }
     },
     {
-      title: '物料', dataIndex: 'skuResult', sorter: true, render: (value) => {
-        return SkuResultSkuJsons({skuResult: value});
-
+      title: '物料', dataIndex: 'spuName', sorter: true, render: (value, record) => {
+        return <>{SkuResultSkuJsons({skuResult: record.skuResult})}</>;
       }
     },
     {
-      title: '库存数量', width: 100, sorter: true, dataIndex: 'number', render(value, record) {
-        return record.number;
-      }
+      title: '库存数量', width: 100, sorter: true, dataIndex: 'number'
     },
     {
       title: '未到货数量', width: 120, sorter: true, dataIndex: 'floatingCargoNumber', render(value) {
@@ -93,15 +91,15 @@ const List = () => {
       }
     },
     {
-      title: '库存下限', width: '140', sorter: true, dataIndex: 'inventoryFloor', render: (text, record) => {
+      title: '库存下限', width: 100, sorter: true, dataIndex: 'inventoryFloor', render: (text, record) => {
         return (
-          <div style={{color: record.number <= record.inventoryFloor ? 'red' : ''}}>{text}</div>);
+          <Render style={{color: record.number <= record.inventoryFloor ? 'red' : ''}}>{text || '-'}</Render>);
       }
     },
     {
-      title: '库存上限', width: '140', sorter: true, dataIndex: 'inventoryCeiling', render: (text, record) => {
+      title: '库存上限', width: 100, sorter: true, dataIndex: 'inventoryCeiling', render: (text, record) => {
         return (
-          <div style={{color: record.number >= record.inventoryCeiling ? 'red' : ''}}>{text}</div>);
+          <Render style={{color: record.number >= record.inventoryCeiling ? 'red' : ''}}>{text || '-'}</Render>);
       }
     },
 
