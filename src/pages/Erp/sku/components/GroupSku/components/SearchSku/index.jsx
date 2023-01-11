@@ -73,7 +73,9 @@ const SearchSku = (
       }}>
         <Icon type="icon-wuliaoguanli" style={{marginRight: 8}} />
         在物料中搜索关键词：
-        <span style={{flexGrow: 1}} className={styles.searchValue}>{searchValue}</span>
+        <div style={{flexGrow: 1, height: 22}}>
+          <span className={styles.keyWord}>{searchValue}</span>
+        </div>
         <EnterOutlined />
       </div>
 
