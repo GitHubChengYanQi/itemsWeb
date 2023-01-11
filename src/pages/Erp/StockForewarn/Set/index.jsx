@@ -48,8 +48,8 @@ const Set = () => {
   const columns = [
     {title: '物料编码', width: 200, sorter: true, dataIndex: 'standard'},
     {
-      title: '物料分类', width: 140, dataIndex: 'spuResult', render: (value) => {
-        return <Render text={value?.spuClassificationResult?.name} />;
+      title: '物料分类', width: 140, sorter: true, dataIndex: 'className', render: (value, record) => {
+        return <Render text={record?.spuResult?.spuClassificationResult?.name} />;
       }
     },
     {
