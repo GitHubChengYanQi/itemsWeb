@@ -60,7 +60,7 @@ const SupplyList = ({customer = {}}) => {
     );
   };
 
-  const {loading, refresh} = useRequest(
+  const {loading, run} = useRequest(
     {
       ...supplyList,
       data: {customerId: customer.customerId}
@@ -127,7 +127,7 @@ const SupplyList = ({customer = {}}) => {
                 detailRef.current.open(record.skuId);
               }}><SearchOutlined /></Button>
               <DelButton api={supplyDelete} value={record.supplyId} onSuccess={() => {
-                refresh();
+                run({data: {customerId: customer.customerId}});
               }} />
             </Space>
           );
@@ -143,7 +143,7 @@ const SupplyList = ({customer = {}}) => {
         customerId={customer && customer.customerId}
         component={SupplyEdit}
         onSuccess={() => {
-          refresh();
+          run({data: {customerId: customer.customerId}});
           ref.current.close();
         }} ref={ref} />
     </>
