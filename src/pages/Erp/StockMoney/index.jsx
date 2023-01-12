@@ -69,6 +69,7 @@ const StockMoney = () => {
           min={0}
           precision={2}
           placeholder="请输入"
+          addonAfter='元'
           onChange={(price) => {
             let newData = [...data];
             const index = data.findIndex(item =>item.skuId === record.skuId);
@@ -80,7 +81,7 @@ const StockMoney = () => {
             const tmp = {};
 
             newData = newData.filter(item => {
-              if (item.skuId === record.skuId && priceList[item.skuId] === item.price) {
+              if (item.skuId === record.skuId && (priceList[item.skuId] || 0 ) === (item.price || 0)) {
                 tmp[`${item.skuId}`] = false;
                 return false;
               } else {
