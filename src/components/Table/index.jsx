@@ -341,6 +341,7 @@ const TableWarp = (
             bordered={bordered || false}
             title={listHeader ? actions : null}
             headStyle={headStyle || cardHeaderStyle}
+            className={style.card}
             bodyStyle={bodyStyle}
             extra={<Space>
               {actionButton}
@@ -392,6 +393,7 @@ const TableWarp = (
                 layout
                 scroll={{x: 'max-content', y: maxHeight}}
                 sticky={{
+                  offsetHeader: Object.keys((headStyle || cardHeaderStyle || {})).find(item => item === 'display' && (headStyle || cardHeaderStyle || {})[item] === 'none') ? 0 : 65,
                   getContainer: () => {
                     return document.getElementById('tableContent');
                   }

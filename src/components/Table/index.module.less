@@ -119,3 +119,14 @@
   border-right: 1px solid #f0f0f0;
   padding: 8px;
 }
+
+.card {
+  :global {
+    .ant-card-head {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background-color: #fff;
+    }
+  }
+}
