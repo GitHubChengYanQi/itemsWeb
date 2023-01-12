@@ -17,10 +17,13 @@ export default {
       try {
         const response = await request(userInfo);
         let res = await request(selfEnterpriseDetail);
-        if (!res) {
+
+        if (res && Object.keys(res).length > 0) {
+          res = {abbreviation: res.abbreviation, customerName: res.customerName, customerId: res.customerId};
+        } else {
           res = {};
         }
-        dispatch.user.update({...response, abbreviation: res.abbreviation, customerName: res.customerName,customerId:res.customerId});
+        dispatch.user.update({...response, ...res});
       } catch (e) {
         console.log(e);
       }
