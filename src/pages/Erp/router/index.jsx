@@ -7,6 +7,7 @@ import ErpLayout from '@/pages/Erp';
 import {DeliveryRouter} from '@/pages/Erp/delivery/deliveryRouter';
 import {InventoryRouter} from '@/pages/Erp/inventory/inventoryRouter';
 import {StockForewarnRouter} from '@/pages/Erp/StockForewarn/route';
+import {SkuMoneyRouter} from '@/pages/Erp/StockMoney/route';
 
 const ErpRouterConfig = [
   {
@@ -21,6 +22,7 @@ const ErpRouterConfig = [
       ...DeliveryRouter,
       ...InventoryRouter,
       ...StockForewarnRouter,
+      ...SkuMoneyRouter,
       {
         redirect: '/ERP/stock',
       }

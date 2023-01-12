@@ -67,6 +67,8 @@ const TableWarp = (
     noSort,
     noRowSelection,
     // o
+    onLoading = () => {
+    },
     otherActions,
     onChange = () => {
     },
@@ -141,6 +143,7 @@ const TableWarp = (
   };
 
   const requestMethod = async (params) => {
+    onLoading(true);
     const {values, pagination, sorter, ...other} = params;
     const page = {};
     page.limit = pagination.pageSize;
@@ -182,6 +185,7 @@ const TableWarp = (
       }
       return new Promise((resolve) => {
         response.data = format(response.data);
+        onLoading(false);
         resolve({
           dataSource: Array.isArray(response.data) ? response.data.map((items) => {
             return isChildren ? items : dataSourcedChildren(items);
@@ -192,6 +196,7 @@ const TableWarp = (
         });
       });
     } catch (e) {
+      onLoading(false);
       console.warn(e.message);
       return new Promise((resolve, reject) => {
         reject(e.message);

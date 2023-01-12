@@ -120,30 +120,43 @@ const StockTable = (props) => {
       ref={tableRef}
       noRowSelection
       actionButton={actions()}
-      showCard={loading ? <div style={{margin:24}}><Spin size='large' /></div> : <div style={{borderBottom: 'solid 1px #eee', marginBottom: 16}}>
-        <Space size={24} style={{paddingBottom: 24}}>
-          <Progress
-            type="circle"
-            percent={100}
-            strokeColor={{
-              '0%': '#108ee9',
-              '100%': '#87d068',
-            }}
-            format={() =>
-              <Statistic title="物料种类" value={stockDetail && stockDetail.type} />
-            } />
-          <Progress
-            type="circle"
-            percent={100}
-            strokeColor={{
-              '0%': '#108ee9',
-              '100%': '#87d068',
-            }}
-            format={() =>
-              <Statistic title="总数量" value={stockDetail && stockDetail.number} />
-            } />
-        </Space>
-      </div>}
+      showCard={loading ?
+        <div style={{margin: 24}}><Spin size="large" /></div>
+        :
+        <div style={{borderBottom: 'solid 1px #eee', marginBottom: 16}}>
+          <Space size={24} style={{paddingBottom: 24}}>
+            <Progress
+              type="circle"
+              percent={100}
+              strokeColor={{
+                '0%': '#108ee9',
+                '100%': '#87d068',
+              }}
+              format={() =>
+                <Statistic title="物料种类" value={stockDetail && stockDetail.type} />
+              } />
+            <Progress
+              type="circle"
+              percent={100}
+              strokeColor={{
+                '0%': '#108ee9',
+                '100%': '#87d068',
+              }}
+              format={() =>
+                <Statistic title="总数量" value={stockDetail && stockDetail.number} />
+              } />
+            <Progress
+              type="circle"
+              percent={100}
+              strokeColor={{
+                '0%': '#108ee9',
+                '100%': '#87d068',
+              }}
+              format={() =>
+                <Statistic title="总金额" value={0} />
+              } />
+          </Space>
+        </div>}
       title={<Breadcrumb />}
       searchForm={searchForm}
       formSubmit={(values) => {
@@ -181,7 +194,7 @@ const StockTable = (props) => {
           <Note value={<SkuResultSkuJsons describe skuResult={record} />} />
         </div>;
       }} />
-      <Table.Column key={6} title="库存数量" dataIndex="stockNumber" sorter render={(value,record) => {
+      <Table.Column key={6} title="库存数量" dataIndex="stockNumber" sorter render={(value, record) => {
         const stockNumber = (record.stockNumber || 0) - (record.lockStockDetailNumber || 0);
         return <Render width={60}>{stockNumber || 0}</Render>;
       }} />
