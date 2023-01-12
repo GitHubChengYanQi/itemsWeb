@@ -1,9 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Button, Input, message, Space} from 'antd';
+import React, {useRef, useState} from 'react';
+import {Button, Input, message} from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Table from '@/components/Table';
 import {useRequest} from '@/util/Request';
-import {stockForewarnSave} from '@/pages/Erp/StockForewarn/url';
 import Form from '@/components/Form';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import {skuList} from '@/pages/Erp/sku/skuUrl';
@@ -19,19 +18,7 @@ const StockMoney = () => {
 
   const tableRef = useRef();
 
-  const [list, setList] = useState([]);
-
   const [data, setData] = useState([]);
-
-  const [batchSku, setBatchSku] = useState({});
-
-  const [bomId, setBomId] = useState();
-
-  const [showBatch, setShowBatch] = useState({});
-
-  const [loading, setLoading] = useState(false);
-
-  const batch = Object.keys(showBatch).filter(item => showBatch[item]).length > 0;
 
   const [buttonState, setButtonState] = useState({});
 
@@ -54,16 +41,6 @@ const StockMoney = () => {
         tmp[`${item.skuId}`] = item.price;
       });
       setPricelist(tmp);
-    }
-  });
-
-  const {loading: stockForewarnSaveLoading, run: stockForewarnSaveRun} = useRequest(stockForewarnSave, {
-    response: true,
-    manual: true,
-    onSuccess: () => {
-      setData([]);
-      message.success('设置成功!');
-      tableRef.current.refresh();
     }
   });
 
@@ -166,7 +143,6 @@ const StockMoney = () => {
             tableRef.current.formActions.setFieldValue('skuName', id);
             break;
           case 'parts':
-            setBomId(id);
             tableRef.current.formActions.setFieldValue('partsSkuId', otherData.skuId);
             break;
           default:
@@ -182,29 +158,12 @@ const StockMoney = () => {
     </>;
   };
 
-  useEffect(() => {
-    if (batch && typeof batchSku.price === 'number') {
-      const newData = list.map(item => ({
-        skuId: item.skuId,
-        price: batchSku.price
-      }));
-      setData(newData);
-    }
-  }, [loading]);
-
   return <>
     <Table
-      onLoading={setLoading}
       cardHeaderStyle={{display: 'none'}}
       title={<Breadcrumb/>}
-      onReset={() => setBomId()}
       contentHeight="calc(100vh - 175px)"
-      formSubmit={(values) => {
-        setShowBatch(values);
-        return values;
-      }}
       format={(list) => {
-        setList(list);
         const skuIds = list.map(item=>item.skuId);
         getPriceList({
           data:{skuIds}
