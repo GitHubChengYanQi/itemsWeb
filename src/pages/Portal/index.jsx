@@ -1,19 +1,9 @@
-import React, {useRef, useState} from 'react';
-import {useRouteMatch, useHistory} from 'ice';
-import store from '@/store';
-import {Drawer, Menu, Modal} from 'antd';
+import React, {useState} from 'react';
+import {Menu, Modal} from 'antd';
 import TopLayout from '@/layouts/TopLayout';
-import Icon from '@/components/Icon';
-import styles from '@/pages/Crm/index.module.scss';
 import BannerDifferenceList from '@/pages/Portal/bannerDifference/bannerDifferenceList';
 import NavigationDifferenceList from '@/pages/Portal/navigationDifference/navigationDifferenceList';
 import RemindList from '@/pages/Portal/remind/remindList';
-import OriginList from '@/pages/Crm/origin/OriginList';
-import CrmBusinessSalesList from '@/pages/Crm/business/crmBusinessSales/crmBusinessSalesList';
-import TemplateList from '@/pages/Crm/template/TemplateList';
-import CrmCustomerLevelList from '@/pages/Crm/customer/crmCustomerLevel/crmCustomerLevelList';
-import CrmIndustryList from '@/pages/Crm/crmIndustry/crmIndustryList';
-import CompanyRoleList from '@/pages/Crm/companyRole/companyRoleList';
 import SetView from '@/layouts/SetView';
 
 

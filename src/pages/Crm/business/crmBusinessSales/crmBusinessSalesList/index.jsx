@@ -75,7 +75,6 @@ const CrmBusinessSalesList = () => {
         onChange={(keys) => {
           setIds(keys);
         }}
-        title={<Breadcrumb title="销售分类管理" />}
         api={crmBusinessSalesList}
         rowKey="salesId"
         searchForm={searchForm}

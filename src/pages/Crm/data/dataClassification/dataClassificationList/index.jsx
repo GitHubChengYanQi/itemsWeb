@@ -52,7 +52,6 @@ const DataClassificationList = () => {
     <>
       <Table
         contentHeight
-        title={<Breadcrumb />}
         api={dataClassificationList}
         rowKey="dataClassificationId"
         searchForm={searchForm}

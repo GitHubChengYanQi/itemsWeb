@@ -67,7 +67,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             {key: '话术分类管理', label: '话术分类管理'},
           ]}
         />} />
-      <Modal width={860} headTitle={type} title="设置" footer={[]} ref={ref}>{RenderComponent()}</Modal>
+      <Modal width={860} headTitle={type} title="设置" ref={ref}>{RenderComponent()}</Modal>
     </>
   );
 };
