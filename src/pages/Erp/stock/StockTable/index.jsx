@@ -159,16 +159,6 @@ const StockTable = (props) => {
               format={() =>
                 <Statistic title="总数量" value={stockDetail && stockDetail.number} />
               } />
-            <Progress
-              type="circle"
-              percent={100}
-              strokeColor={{
-                '0%': '#108ee9',
-                '100%': '#87d068',
-              }}
-              format={() =>
-                <Statistic title="总金额" value={0} />
-              } />
           </Space>
         </div>}
       title={<Breadcrumb />}
