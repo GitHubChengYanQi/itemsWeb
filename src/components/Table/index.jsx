@@ -183,8 +183,8 @@ const TableWarp = (
           };
         });
       }
+      response.data = await format(response.data);
       return new Promise((resolve) => {
-        response.data = format(response.data);
         onLoading(false);
         resolve({
           dataSource: Array.isArray(response.data) ? response.data.map((items) => {
