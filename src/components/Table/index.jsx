@@ -364,7 +364,7 @@ const TableWarp = (
                     fixed: 'left',
                     dataIndex: '0',
                     width: 40,
-                    render: (value, record, index) => <Render text={index + 1} width={40} maxWidth={40} />
+                    render: (value, record, index) => <Render text={(pagination.current - 1) * pagination.pageSize + (index + 1)} width={40} maxWidth={40} />
                   }]),
                   ...(noTableColumnSet ? columns : tableColumn.filter(item => !(item && (item.checked === false)))),
                 ]}
@@ -418,7 +418,7 @@ const TableWarp = (
                           setSorts(value);
                         }} />;
                     } else {
-                      return <>{index + 1}</>;
+                      return <>{(pagination.current - 1) * pagination.pageSize + (index + 1)}</>;
                     }
 
                   }} />}
