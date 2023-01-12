@@ -723,7 +723,7 @@ const CreateOrder = ({previewData, ...props}) => {
                   取消
                 </Button>,
                 <Button type="primary" key="console" onClick={() => {
-                  history.goBack();
+                  history.push(`/purchase/order`);
                 }}>
                   返回订单列表
                 </Button>,
