@@ -119,6 +119,8 @@ const SearchSku = (
                   {format(label)}
                   <br />
                   版本号：{item.version ? format(item.version) : '-'}
+                  <br/>
+                  创建时间：{item.createTime}
                 </div>
 
               </div>;
