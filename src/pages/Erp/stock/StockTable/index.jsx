@@ -5,7 +5,7 @@
  * @Date 2021-07-15 11:13:02
  */
 
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Input,
   Progress,
@@ -26,6 +26,8 @@ import Render from '@/components/Render';
 import Note from '@/components/Note';
 import {useRequest} from '@/util/Request';
 import {isArray} from '@/util/Tools';
+import {skuPriceList} from '@/pages/Erp/StockMoney/url';
+import ThousandsSeparator from '@/components/ThousandsSeparator';
 
 const {baseURI} = config;
 const {FormItem} = Form;
@@ -41,6 +43,8 @@ const StockTable = (props) => {
   const token = cookie.get('tianpeng-token');
 
   const {loading, data: stockDetail} = useRequest(stockDetailApi);
+
+  const {run: getPriceList} = useRequest(skuPriceList, {manual: true});
 
   const actions = () => {
     return (
@@ -114,11 +118,21 @@ const StockTable = (props) => {
     return `${positionResult(data.supper)}-${data.name}`;
   };
 
-
   return (
     <Table
       ref={tableRef}
       noRowSelection
+      format={async (list) => {
+        const skuIds = list.map(item => item.skuId);
+        const res = await getPriceList({
+          data: {skuIds}
+        });
+        const tmp = {};
+        isArray(res).forEach((item) => {
+          tmp[`${item.skuId}`] = item.price;
+        });
+        return list.map(item => ({...item, price: tmp[item.skuId]}));
+      }}
       actionButton={actions()}
       showCard={loading ?
         <div style={{margin: 24}}><Spin size="large" /></div>
@@ -197,6 +211,9 @@ const StockTable = (props) => {
       <Table.Column key={6} title="库存数量" dataIndex="stockNumber" sorter render={(value, record) => {
         const stockNumber = (record.stockNumber || 0) - (record.lockStockDetailNumber || 0);
         return <Render width={60}>{stockNumber || 0}</Render>;
+      }} />
+      <Table.Column key={6} title="价格" dataIndex='price' render={(value) => {
+        return <ThousandsSeparator suffix='元' value={value || 0} />;
       }} />
       <Table.Column key={6} title="未到货数量" dataIndex="floatingCargoNumber" sorter render={(value) => {
         return <Render width={60}>{value || 0}</Render>;
