@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import cookie from 'js-cookie';
 import {logger, useHistory} from 'ice';
 import {Alert, Spin, Layout} from 'antd';
@@ -20,6 +20,8 @@ export default function BasicLayout({children}) {
   const [state, dispatchers] = store.useModel('user');
   const dataDispatchers = store.useModel('dataSource')[1];
 
+  const [loading, setLoading] = useState(true);
+
   const Initialize = async () => {
     window.document.title = '道昕智造（沈阳）网络科技有限公司';
     try {
@@ -36,42 +38,54 @@ export default function BasicLayout({children}) {
         if (res.errCode === 0 && GetUserInfo(res.data).token) {
           cookie.set('tianpeng-token', res.data);
         }
-      }else {
-        cookie.set('tianpeng-token',token);
+      } else {
+        cookie.set('tianpeng-token', token);
       }
-      dispatchers.getUserInfo();
-      dataDispatchers.getSkuClass();
-      dataDispatchers.getCustomerLevel();
-      dataDispatchers.getCommonArea();
-      dataDispatchers.getBusinessSale();
-      dataDispatchers.getOrigin();
-      dataDispatchers.getDataClass();
-      dataDispatchers.getSpeechcraftClass();
-
+      await dispatchers.getUserInfo();
+      await dataDispatchers.getSkuClass();
+      await dataDispatchers.getCustomerLevel();
+      await dataDispatchers.getCommonArea();
+      await dataDispatchers.getBusinessSale();
+      await dataDispatchers.getOrigin();
+      await dataDispatchers.getDataClass();
+      await dataDispatchers.getSpeechcraftClass();
     } catch (e) {
       logger.error(e.message);
       cookie.remove('tianpeng-token');
       // TODO 登录超时处理
       history.push('/login');
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     Initialize();
   }, []);
 
+  if (loading) {
+    return <Spin size="large">
+      <Alert
+        message="加载中"
+        description="系统正在初始化个人信息，请稍后..."
+        type="info"
+        showIcon
+        style={{width: 500, margin: '100px auto'}}
+      />
+    </Spin>;
+  }
+
   return (
     <>
+
       {Object.keys(state).length === 0 ?
-        <Spin size="large">
-          <Alert
-            message="加载中"
-            description="系统正在初始化个人信息，请稍后..."
-            type="info"
-            showIcon
-            style={{width: 500, margin: '100px auto'}}
-          />
-        </Spin> :
+        <Alert
+          message="系统初始化失败"
+          description="请联系管理员"
+          type="error"
+          showIcon
+          style={{width: 500, margin: '100px auto'}}
+        />
+        :
         <>
           <Header />
           <Content className="web-content">
