@@ -4,13 +4,13 @@ import Breadcrumb from '@/components/Breadcrumb';
 import Table from '@/components/Table';
 import {useRequest} from '@/util/Request';
 import Form from '@/components/Form';
-import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-import {skuList} from '@/pages/Erp/sku/skuUrl';
+import {skuV1List} from '@/pages/Erp/sku/skuUrl';
 import Render from '@/components/Render';
 import InputNumber from '@/components/InputNumber';
 import BottomButton from '@/components/BottomButton';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
-import {skuPriceAdd, skuPriceAddBatch, skuPriceList} from '@/pages/Erp/StockMoney/url';
+import {skuPriceAdd, skuPriceAddBatch} from '@/pages/Erp/StockMoney/url';
+import SearchValueFormat from '@/components/SearchValueFormat';
 
 const {FormItem} = Form;
 
@@ -22,7 +22,7 @@ const StockMoney = () => {
 
   const [buttonState, setButtonState] = useState({});
 
-  const [priceList, setPricelist] = useState({});
+  const [searchValue, setSearchValue] = useState('');
 
   const {run: add} = useRequest(skuPriceAdd, {
     manual: true
@@ -33,46 +33,43 @@ const StockMoney = () => {
     manual: true,
   });
 
-  const {run: getPriceList} = useRequest(skuPriceList,{
-    manual: true,
-    onSuccess: (data) => {
-      const tmp = {};
-      data .forEach((item) => {
-        tmp[`${item.skuId}`] = item.price;
-      });
-      setPricelist(tmp);
-    }
-  });
+  const render = (value) => {
+    return <Render>
+      <SearchValueFormat
+        searchValue={searchValue}
+        label={value || '-'}
+      />
+    </Render>;
+  };
 
   const columns = [
-    {title: '物料编码', width: 200, sorter: true, dataIndex: 'standard'},
+    {title: '物料编码', width: 200, sorter: true, dataIndex: 'standard', render},
+    {title: '物料分类', width: 140, sorter: true, dataIndex: 'categoryName', render},
     {
-      title: '物料分类', width: 140, dataIndex: 'spuResult', render: (value) => {
-        return <Render text={value?.spuClassificationResult?.name}/>;
-      }
-    },
-    {
-      title: '物料', dataIndex: 'spuName', sorter: true, render: (value, record) => {
-        return SkuResultSkuJsons({skuResult: record});
+      title: '物料',
+      dataIndex: 'spuName',
+      sorter: true,
+      render: (value, record) => {
+        return render(`${value} ${record.skuName ? ` / ${record.skuName}` : ''}${record.specifications ? ` / ${record.specifications}` : ''}`);
       }
     },
     {
       title: '金额',
       width: 140,
       align: 'center',
-      dataIndex: 'stockForewarnResult',
-      render: (stockForewarnResult, record) => {
+      dataIndex: 'price',
+      render: (value, record) => {
         const sku = data.find(item => item.skuId === record.skuId);
         return <InputNumber
-          value={sku ? sku.price : priceList[record.skuId]}
+          value={sku ? sku.price : value}
           width={140}
           min={0}
           precision={2}
           placeholder="请输入"
-          addonAfter='元'
+          addonAfter="元"
           onChange={(price) => {
             let newData = [...data];
-            const index = data.findIndex(item =>item.skuId === record.skuId);
+            const index = data.findIndex(item => item.skuId === record.skuId);
             if (index !== -1) newData.splice(index, 1);
             newData.push({
               skuId: record.skuId,
@@ -81,7 +78,7 @@ const StockMoney = () => {
             const tmp = {};
 
             newData = newData.filter(item => {
-              if (item.skuId === record.skuId && (priceList[item.skuId] || 0 ) === (item.price || 0)) {
+              if (item.skuId === record.skuId && (value || 0) === (item.price || 0)) {
                 tmp[`${item.skuId}`] = false;
                 return false;
               } else {
@@ -108,7 +105,7 @@ const StockMoney = () => {
 
             const index = data.findIndex(item => item.skuId === record.skuId);
             const newData = [...data];
-            if(index!==-1)newData.splice(index,1);
+            if (index !== -1) newData.splice(index, 1);
             setData(newData);
             const tmp = {};
             newData.forEach(item => {
@@ -128,33 +125,38 @@ const StockMoney = () => {
 
   const searchForm = () => {
     return <>
-      <GroupSku onChange={(id, type, otherData = {}) => {
-        if (type === 'reset') {
-          tableRef.current.reset();
-          return;
-        }
-        tableRef.current.formActions.setFieldValue('spuClass', null);
-        tableRef.current.formActions.setFieldValue('skuName', null);
-        tableRef.current.formActions.setFieldValue('partsSkuId', null);
-        switch (type) {
-          case 'skuClass':
-            tableRef.current.formActions.setFieldValue('spuClass', id);
-            break;
-          case 'skuName':
-            tableRef.current.formActions.setFieldValue('skuName', id);
-            break;
-          case 'parts':
-            tableRef.current.formActions.setFieldValue('partsSkuId', otherData.skuId);
-            break;
-          default:
-            break;
-        }
-        tableRef.current.submit();
-      }}/>
+      <GroupSku
+        onChange={(id, type) => {
+          if (type === 'reset') {
+            setSearchValue('');
+            tableRef.current.reset();
+            return;
+          }
+          tableRef.current.formActions.setFieldValue('categoryId', null);
+          tableRef.current.formActions.setFieldValue('keyWord', null);
+          tableRef.current.formActions.setFieldValue('partsId', null);
+          switch (type) {
+            case 'skuClass':
+              setSearchValue('');
+              tableRef.current.formActions.setFieldValue('categoryId', id);
+              break;
+            case 'skuName':
+              setSearchValue(id);
+              tableRef.current.formActions.setFieldValue('keyWord', id);
+              break;
+            case 'parts':
+              setSearchValue('');
+              tableRef.current.formActions.setFieldValue('partsId', id);
+              break;
+            default:
+              break;
+          }
+          tableRef.current.submit();
+        }} />
       <div hidden>
-        <FormItem name="skuName" component={Input}/>
-        <FormItem name="spuClass" component={Input}/>
-        <FormItem name="partsSkuId" component={Input}/>
+        <FormItem name="keyWord" component={Input} />
+        <FormItem name="partsId" component={Input} />
+        <FormItem name="categoryId" component={Input} />
       </div>
     </>;
   };
@@ -162,20 +164,13 @@ const StockMoney = () => {
   return <>
     <Table
       cardHeaderStyle={{display: 'none'}}
-      title={<Breadcrumb/>}
+      title={<Breadcrumb />}
       contentHeight="calc(100vh - 175px)"
-      format={(list) => {
-        const skuIds = list.map(item=>item.skuId);
-        getPriceList({
-          data:{skuIds}
-        });
-        return list;
-      }}
       SearchButton
       noTableColumnSet
       loading={addLoading}
       searchForm={searchForm}
-      api={skuList}
+      api={skuV1List}
       ref={tableRef}
       rowKey="skuId"
       columns={columns}

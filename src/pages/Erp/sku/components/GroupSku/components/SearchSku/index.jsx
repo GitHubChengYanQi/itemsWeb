@@ -18,6 +18,7 @@ const SearchSku = (
     loading,
     groupList,
     noParts,
+    noSkuClass,
   }
 ) => {
 
@@ -35,7 +36,7 @@ const SearchSku = (
           setOpen(false);
           setSearchType('');
           setShowValue(searchValue);
-          onChange(searchValue, 'skuName');
+          onChange(searchValue, 'skuName', searchValue);
         }
       }}
       ref={inputRef}
@@ -58,7 +59,7 @@ const SearchSku = (
         setOpen(false);
         setSearchType('');
         setShowValue(searchValue);
-        onChange(searchValue, 'skuName');
+        onChange(searchValue, 'skuName', searchValue);
       }}>
         <Icon type="icon-wuliaoguanli" style={{marginRight: 8}} />
         在物料中搜索关键词：
@@ -69,23 +70,25 @@ const SearchSku = (
       </div>
 
       <Spin spinning={loading}>
-        <div className={styles.groupTitle} hidden={isArray(groupList.classListResults).length === 0}>
+        <div className={styles.groupTitle} hidden={isArray(groupList.classListResults).length === 0 || noSkuClass}>
           分类
         </div>
-        {
-          isArray(groupList.classListResults).map((item, index) => {
-            const label = item.name;
-            return <div key={index} className={styles.valueItem} onClick={() => {
-              setOpen(false);
-              setShowValue(label);
-              setSearchType('skuClass');
-              onChange(item.spuClassificationId, 'skuClass');
-            }}>
-              <AppstoreOutlined style={{marginRight: 16}} />
-              <SearchValueFormat searchValue={searchValue} label={label} />
-            </div>;
-          })
-        }
+        <div hidden={noSkuClass}>
+          {
+            isArray(groupList.classListResults).map((item, index) => {
+              const label = item.name;
+              return <div key={index} className={styles.valueItem} onClick={() => {
+                setOpen(false);
+                setShowValue(label);
+                setSearchType('skuClass');
+                onChange(item.spuClassificationId, 'skuClass', label);
+              }}>
+                <AppstoreOutlined style={{marginRight: 16}} />
+                <SearchValueFormat searchValue={searchValue} label={label} />
+              </div>;
+            })
+          }
+        </div>
 
 
         <div className={styles.groupTitle} hidden={isArray(groupList.bomListResults).length === 0 || noParts}>
@@ -99,13 +102,13 @@ const SearchSku = (
                 setOpen(false);
                 setShowValue(label);
                 setSearchType('parts');
-                onChange(item.partsId, 'parts', {skuId: item.skuId});
+                onChange(item.partsId, 'parts', label);
               }}>
                 <Icon type="icon-a-kehuliebiao2" style={{marginRight: 16}} />
                 <div>
                   <SearchValueFormat searchValue={searchValue} label={label} />
                   <br />
-                  版本号：{item.version ? <SearchValueFormat searchValue={searchValue} label={label} /> : '-'}
+                  版本号：{item.version ? <SearchValueFormat searchValue={searchValue} label={item.version} /> : '-'}
                 </div>
 
               </div>;

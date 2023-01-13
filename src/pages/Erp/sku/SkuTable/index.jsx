@@ -6,16 +6,16 @@
  */
 
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Button, Input, message, Space, Typography} from 'antd';
+import {Button, Input, message, Select, Space, Typography} from 'antd';
 import {CopyOutlined} from '@ant-design/icons';
 import {config, useHistory} from 'ice';
+import useUrlState from '@ahooksjs/use-url-state';
 import Table from '@/components/Table';
 import DelButton from '@/components/DelButton';
 import AddButton from '@/components/AddButton';
 import EditButton from '@/components/EditButton';
 import Form from '@/components/Form';
-import {deleteBatch, skuDelete, skuList} from '../skuUrl';
-import * as SysField from '../skuField';
+import {deleteBatch, skuDelete, skuV1List} from '../skuUrl';
 import Modal from '@/components/Modal';
 import Breadcrumb from '@/components/Breadcrumb';
 import Code from '@/pages/Erp/spu/components/Code';
@@ -27,17 +27,29 @@ import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
 import Render from '@/components/Render';
-import {isArray} from '@/util/Tools';
 import UsePartsList from '@/pages/Erp/sku/SkuTable/UsePartsList';
 import Excel from '@/pages/Erp/sku/SkuTable/Excel';
 import {SkuFileds} from '@/pages/Erp/sku/SkuTable/Excel/Fileds';
+import GroupSku from '@/pages/Erp/sku/components/GroupSku';
+import SearchValueFormat from '@/components/SearchValueFormat';
 
 const {FormItem} = Form;
 
 
 const SkuTable = ({...props}, ref) => {
 
+  const [state] = useUrlState(
+    {
+      navigateMode: 'push',
+    },
+  );
+
+  const defaultTableQuery = state.params && JSON.parse(state.params) || {};
+  const tableQueryValues = defaultTableQuery.values || {};
+
   const {baseURI} = config;
+
+  const skuListRef = useRef();
 
   const {spuClass, spuId, isModal, setSpuClass, ...other} = props;
 
@@ -80,7 +92,7 @@ const SkuTable = ({...props}, ref) => {
 
   useEffect(() => {
     if (spuClass) {
-      tableRef.current.formActions.setFieldValue('spuClass', spuClass === '0' ? null : spuClass);
+      tableRef.current.formActions.setFieldValue('categoryId', spuClass === '0' ? null : spuClass);
       tableRef.current.submit();
     }
   }, [spuClass]);
@@ -98,24 +110,75 @@ const SkuTable = ({...props}, ref) => {
     );
   };
 
+  let defaultSearchType = '';
+  if (tableQueryValues.partsId) {
+    defaultSearchType = 'parts';
+  }
+
   const searchForm = () => {
 
     return (
       <>
-        <FormItem
-          placeholder="搜索物料"
-          name="skuName"
-          component={Input} />
-        <FormItem
-          name="spuClass"
-          hidden
-          component={SysField.SelectSpuClass} />
+        <GroupSku
+          defaultSearchType={defaultSearchType}
+          ref={skuListRef}
+          align="start"
+          noSearchButton
+          noSkuClass
+          value={tableQueryValues.showValue}
+          onChange={(id, type, showValue) => {
+            tableRef.current.formActions.setFieldValue('showValue', showValue);
+            tableRef.current.formActions.setFieldValue('keyWord', null);
+            tableRef.current.formActions.setFieldValue('partsId', null);
+            switch (type) {
+              case 'skuName':
+                tableRef.current.formActions.setFieldValue('keyWord', id);
+                break;
+              case 'parts':
+                tableRef.current.formActions.setFieldValue('partsId', id);
+                break;
+              default:
+                break;
+            }
+            tableRef.current.submit();
+          }} />
         <div hidden>
-          <FormItem
-            name="spuId"
-            value={spuId}
-            component={SysField.SkuName} />
+          <FormItem name="showValue" component={Input} />
+          <FormItem name="keyWord" component={Input} />
+          <FormItem name="partsId" component={Input} />
+          <FormItem name="categoryId" component={Input} />
+          <FormItem name="spuId" value={spuId} component={Input} />
         </div>
+        <FormItem
+          label="BOM"
+          name="bomNum"
+          component={({value, onChange}) => {
+            return <Select
+              style={{width: 100}}
+              defaultValue="all"
+              value={value || 'all'}
+              options={[{label: '全部', value: 'all'}, {label: '有BOM', value: true}, {label: '无BOM', value: false}]}
+              onChange={(value) => {
+                onChange(value === 'all' ? null : value);
+              }}
+            />;
+          }}
+        />
+        <FormItem
+          label="工艺路线"
+          name="shipNum"
+          component={({value, onChange}) => {
+            return <Select
+              style={{width: 100}}
+              defaultValue="all"
+              value={value || 'all'}
+              options={[{label: '全部', value: 'all'}, {label: '有工艺', value: true}, {label: '无工艺', value: false}]}
+              onChange={(value) => {
+                onChange(value === 'all' ? null : value);
+              }}
+            />;
+          }}
+        />
       </>
     );
   };
@@ -144,9 +207,22 @@ const SkuTable = ({...props}, ref) => {
     );
   };
 
+  const render = (value, record, index, formActions) => {
+    return <Render>
+      <SearchValueFormat
+        searchValue={formActions.getFieldValue('keyWord')}
+        label={value || '-'}
+      />
+    </Render>;
+  };
+
   const columns = [
     {
-      title: '物料编码', align: 'left', sorter: true, dataIndex: 'standard', render: (value, record) => {
+      title: '物料编码',
+      align: 'left',
+      sorter: true,
+      dataIndex: 'standard',
+      render: (value, record) => {
         return (
           <Space align="center">
             <Code source="sku" id={record.skuId} />
@@ -163,83 +239,186 @@ const SkuTable = ({...props}, ref) => {
       }
     },
     {
+      dataIndex: 'categoryName',
+      title: '物料分类',
+      sorter: true,
+      render
+    },
+    {
       dataIndex: 'spuName',
       title: '产品名称',
-      render: (value, record) => <Render text={record.spuResult?.name} />,
-      sorter: true
+      sorter: true,
+      render: (value, record, index, formActions) => {
+        return <Render width={300}><Note value={
+          <SearchValueFormat
+            searchValue={formActions.getFieldValue('keyWord')}
+            label={value || '-'}
+          />
+        } maxWidth={300} /></Render>;
+      }
     },
-    {dataIndex: 'model', title: '型号', sorter: true,},
-    {dataIndex: 'nationalStandard', title: '国家标准', sorter: true,},
-    {dataIndex: 'partNo', title: '零件号', sorter: true,},
     {
-      dataIndex: 'spuResult',
+      dataIndex: 'model',
+      title: '型号',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'nationalStandard',
+      title: '国家标准',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'partNo',
+      title: '零件号',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'unitName',
       title: '单位',
-      render: (value) => <Render text={value?.unitResult?.unitName || '-'} />,
+      render
     },
-    {dataIndex: 'specifications', title: '规格', sorter: true},
     {
-      dataIndex: 'sku', title: '规格参数', render: (value, record) => <Render>
+      dataIndex: 'specifications',
+      title: '规格',
+      sorter: true,
+      render: (value, record, index, formActions) => {
+        return <Render width={300}><Note value={
+          <SearchValueFormat
+            searchValue={formActions.getFieldValue('keyWord')}
+            label={value || '-'}
+          />
+        } maxWidth={300} /></Render>;
+      }
+    },
+    {
+      dataIndex: 'sku',
+      title: '规格参数',
+      render: (value, record) => <Render>
         <Note width={300} value={<SkuResultSkuJsons describe skuResult={record} />} />
       </Render>
     },
     {
-      dataIndex: 'inBom', title: 'BOM', render: (value, record) => {
+      dataIndex: 'bomNum', title: 'BOM', render: (value, record) => {
+        const exist = value > 0;
         return <Render>
-          <Button type="link" style={{color: value && 'green', padding: 0}} onClick={() => {
-            if (value) {
-              editParts.current.open(record.partsId);
+          <Button type="link" style={{color: exist && 'green', padding: 0}} onClick={() => {
+            if (exist) {
+              // editParts.current.open(record.partsId);
             } else {
               editParts.current.open(false);
               setSkuId(record.skuId);
             }
-          }}>{record.inBom ? '有' : '无'}</Button>
+          }}>{exist ? '有' : '无'}</Button>
         </Render>;
       }
     },
     {
-      dataIndex: 'processResult', title: '工艺路线', render: (value) => {
+      dataIndex: 'shipNum',
+      title: '工艺路线',
+      render: (value) => {
+        const exist = value > 0;
         return <Render>
-          <Button type="link" style={{color: value && 'green', padding: 0}} onClick={() => {
-            if (value) {
-              showShip.current.open(value.processId);
+          <Button type="link" style={{color: exist && 'green', padding: 0}} onClick={() => {
+            if (exist) {
+              // showShip.current.open(value.processId);
             } else {
               showShip.current.open(false);
               setSkuId(value);
             }
-          }}>{value ? '有' : '无'}</Button>
+          }}>{exist ? '有' : '无'}</Button>
         </Render>;
       }
     },
-    {dataIndex: 'maintenancePeriod', title: '养护周期(天)'},
     {
-      dataIndex: 'brandResults',
+      dataIndex: 'maintenancePeriod',
+      title: '养护周期(天)',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'brandName',
       title: '品牌',
-      render: (value) => <Render text={isArray(value).map(item => item.brandName).join('、') || '-'} />
+      sorter: true,
+      render
     },
     {
-      dataIndex: 'materialResultList',
+      dataIndex: 'materialName',
       title: '材质',
-      render: (value) => <Render text={isArray(value).map(item => item.name).join('、') || '-'} />
+      sorter: true,
+      render
     },
-    {dataIndex: 'weight', title: '重量(kg)', sorter: true},
+    {
+      dataIndex: 'weight', title: '重量(kg)',
+      sorter: true,
+      render
+    },
     {
       dataIndex: 'skuSize',
       title: '尺寸',
-      sorter: true,
-      render: (value) => <Render text={value && value.split(',').join('×') || '-'} />
+      render: (value, record, index, formActions) => render(value && value.split(',').join('×') || '-', record, index, formActions)
     },
-    {dataIndex: 'color', title: '表色', sorter: true,},
-    {dataIndex: 'heatTreatment', title: '热处理', sorter: true,},
-    {dataIndex: 'level', title: '级别', sorter: true,},
-    {dataIndex: 'packaging', title: '包装方式', sorter: true,},
-    {dataIndex: 'viewFrame', title: '图幅', sorter: true,},
-    {dataIndex: 'remarks', title: '备注', sorter: true,},
-    {dataIndex: 'user', title: '添加人', render: (value) => <Render text={value?.name || '-'} />, sorter: true},
-    {dataIndex: 'createTime', title: '添加时间', sorter: true},
+    {
+      dataIndex: 'color',
+      title: '表色',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'heatTreatment',
+      title: '热处理',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'level',
+      title: '级别',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'packaging',
+      title: '包装方式',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'viewFrame',
+      title: '图幅',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'remarks',
+      title: '备注',
+      sorter: true,
+      render
+    },
+    {
+      dataIndex: 'user',
+      title: '添加人',
+      sorter: true,
+      render: (value, record, index, formActions) => {
+        return <Render>
+          <SearchValueFormat
+            searchValue={formActions.getFieldValue('keyWord')}
+            label={value?.name || '-'}
+          />
+        </Render>;
+      }
+    },
+    {
+      dataIndex: 'createTime',
+      title: '添加时间',
+      sorter: true
+    },
     {},
     {
       dataIndex: 'skuId',
       title: '操作',
+      align: 'center',
       fixed: 'right',
       width: 100,
       render: (value, record) => {
@@ -256,7 +435,7 @@ const SkuTable = ({...props}, ref) => {
                 try {
                   partsList = JSON.parse(res.message);
                 } catch (e) {
-
+                  //
                 }
                 message.error('当前物料已被使用!');
                 partsListRef.current.open(partsList);
@@ -273,11 +452,14 @@ const SkuTable = ({...props}, ref) => {
   return (
     <>
       <Table
-        onReset={() => setSpuClass([])}
+        onReset={() => {
+          skuListRef.current.reset();
+          setSpuClass([]);
+        }}
         title={<Breadcrumb />}
         headStyle={spuId && {display: 'none'}}
         noRowSelection={spuId}
-        api={skuList}
+        api={skuV1List}
         tableKey={`sku${spuClass || '0'}`}
         columns={columns}
         actionButton={<Space size={24}>
@@ -309,7 +491,7 @@ const SkuTable = ({...props}, ref) => {
         }}
         {...other}
       />
-{/* 一键生成出库单，分配出库单 */}
+
       <AddSkuModal addRef={addRef} tableRef={tableRef} copy={copy} edit={edit} />
 
       <Modal

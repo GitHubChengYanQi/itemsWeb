@@ -267,7 +267,7 @@ const TableWarp = (
       key: `${index}`,
       render: (value, record, index) => {
         if (typeof item.render === 'function') {
-          return item.render(value, record, index);
+          return item.render(value, record, index,formActions);
         } else if (typeof value === 'object') {
           return <Render text="" />;
         } else if (typeof value === 'number') {
