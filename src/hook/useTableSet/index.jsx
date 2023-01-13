@@ -357,6 +357,10 @@ const useTableSet = (column, tableKey) => {
               type="primary"
               key={1}
               onClick={() => {
+                if (!name) {
+                  message.warn('请输入名称！');
+                  return;
+                }
                 const columnKeys = tableColumn && tableColumn.map((items) => {
                   return {
                     key: items.key,

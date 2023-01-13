@@ -76,16 +76,19 @@ const StockTable = (props) => {
           ref={skuListRef}
           align="start"
           noSearchButton
-          noParts
           onChange={(id, type) => {
-            tableRef.current.formActions.setFieldValue('classId', null);
+            tableRef.current.formActions.setFieldValue('categoryId', null);
             tableRef.current.formActions.setFieldValue('keyWord', null);
+            tableRef.current.formActions.setFieldValue('partsId', null);
             switch (type) {
               case 'skuClass':
-                tableRef.current.formActions.setFieldValue('classId', id);
+                tableRef.current.formActions.setFieldValue('categoryId', id);
                 break;
               case 'skuName':
                 tableRef.current.formActions.setFieldValue('keyWord', id);
+                break;
+              case 'parts':
+                tableRef.current.formActions.setFieldValue('partsId', id);
                 break;
               default:
                 break;
@@ -94,7 +97,8 @@ const StockTable = (props) => {
           }} />
         <div hidden>
           <FormItem name="keyWord" component={Input} />
-          <FormItem name="classId" component={Input} />
+          <FormItem name="partsId" component={Input} />
+          <FormItem name="categoryId" component={Input} />
           <FormItem name="storehouseId" component={Input} />
         </div>
         <FormItem
@@ -116,9 +120,17 @@ const StockTable = (props) => {
   const columns = [
     {title: '物料编码', width: 150, dataIndex: 'standard', sorter: true},
     {title: '物料分类', width: 150, dataIndex: 'categoryName', sorter: true},
-    {title: '物料名称', width: 150, dataIndex: 'spuName', sorter: true},
+    {
+      title: '物料名称', width: 300, dataIndex: 'spuName', sorter: true, render: (value) => {
+        return <Render width={300}><Note value={value} maxWidth={300} /></Render>;
+      }
+    },
     {title: '物料型号', width: 150, dataIndex: 'skuName', sorter: true},
-    {title: '物料规格', width: 150, dataIndex: 'specifications', sorter: true},
+    {
+      title: '物料规格', width: 150, dataIndex: 'specifications', sorter: true, render: (value) => {
+        return <Render width={300}><Note value={value} maxWidth={300} /></Render>;
+      }
+    },
     {
       title: '物料描述', width: 300, dataIndex: 'skuValue', render: (value) => {
         return <Render width={300}><Note value={value} maxWidth={300} /></Render>;
@@ -141,8 +153,15 @@ const StockTable = (props) => {
     },
     {title: '未到货数量', width: 150, dataIndex: 'floatingCargoNumber', sorter: true},
     {title: '备料数量', width: 150, dataIndex: 'lockStockDetailNumber', sorter: true},
-    {title: '库位', width: 150, dataIndex: 'storeName', sorter: true},
-    {title: '仓库', width: 150, dataIndex: 'positionsResult', sorter: true},
+    {
+      title: '库位', width: 150, dataIndex: 'storePosName', sorter: true, render: (value) => {
+        return <Render width={150}><Note value={value} maxWidth={150} /></Render>;
+      }
+    },
+    {
+      title: '仓库', width: 150, dataIndex: 'storeName', sorter: true, render: (value) => {
+        return <Render width={150}><Note value={value} maxWidth={150} /></Render>;
+      }},
   ];
 
   return (
@@ -185,12 +204,12 @@ const StockTable = (props) => {
       title={<Breadcrumb />}
       searchForm={searchForm}
       formSubmit={(values) => {
-        const numbers = values.numbers || {};
+        const numbers = values.numbers;
         values = {
           ...values,
-          numbers: null,
-          maxNum: numbers.maxNum,
-          mixNum: numbers.mixNum,
+          numbers: undefined,
+          maximumInventory: numbers?.maxNum,
+          minimumInventory: numbers?.mixNum,
         };
         return values;
       }}

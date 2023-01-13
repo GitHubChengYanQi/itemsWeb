@@ -396,7 +396,8 @@ const TableWarp = (
                   offsetHeader: Object.keys((headStyle || cardHeaderStyle || {})).find(item => item === 'display' && (headStyle || cardHeaderStyle || {})[item] === 'none') ? 0 : 65,
                   getContainer: () => {
                     return document.getElementById('tableContent');
-                  }
+                  },
+                  offsetScroll:'max-content'
                 }}
                 {...other}
                 {...props}

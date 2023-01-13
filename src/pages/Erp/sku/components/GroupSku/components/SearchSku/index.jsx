@@ -4,6 +4,7 @@ import {AppstoreOutlined, SearchOutlined, EnterOutlined} from '@ant-design/icons
 import styles from '@/pages/Erp/sku/components/GroupSku/index.module.less';
 import Icon from '@/components/Icon';
 import {isArray} from '@/util/Tools';
+import SearchValueFormat from '@/components/SearchValueFormat';
 
 const SearchSku = (
   {
@@ -22,18 +23,6 @@ const SearchSku = (
 
   const inputRef = useRef();
 
-  const format = (label) => {
-    let newLabel = label;
-    const lowerCaseLabel = label.toLowerCase();
-    const lowerCaseValue = searchValue.toLowerCase();
-    if (lowerCaseLabel.indexOf(lowerCaseValue) !== -1) {
-      const startValue = label.substring(0, lowerCaseLabel.indexOf(lowerCaseValue));
-      const value = label.substring(lowerCaseLabel.indexOf(lowerCaseValue), lowerCaseLabel.indexOf(lowerCaseValue) + lowerCaseValue.length);
-      const endValue = label.substring(lowerCaseLabel.indexOf(lowerCaseValue) + lowerCaseValue.length, lowerCaseLabel.length);
-      newLabel = <>{startValue}<span className={styles.searchValue}>{value}</span>{endValue}</>;
-    }
-    return newLabel;
-  };
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -93,9 +82,7 @@ const SearchSku = (
               onChange(item.spuClassificationId, 'skuClass');
             }}>
               <AppstoreOutlined style={{marginRight: 16}} />
-              <div>
-                {format(label)}
-              </div>
+              <SearchValueFormat searchValue={searchValue} label={label} />
             </div>;
           })
         }
@@ -116,9 +103,9 @@ const SearchSku = (
               }}>
                 <Icon type="icon-a-kehuliebiao2" style={{marginRight: 16}} />
                 <div>
-                  {format(label)}
+                  <SearchValueFormat searchValue={searchValue} label={label} />
                   <br />
-                  版本号：{item.version ? format(item.version) : '-'}
+                  版本号：{item.version ? <SearchValueFormat searchValue={searchValue} label={label} /> : '-'}
                 </div>
 
               </div>;
