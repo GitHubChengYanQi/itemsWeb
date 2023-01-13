@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
-import {Menu, Modal} from 'antd';
+import React, {useRef,useState} from 'react';
+import {Menu} from 'antd';
+import Modal from '@/components/Modal';
 import TopLayout from '@/layouts/TopLayout';
 import BannerDifferenceList from '@/pages/Portal/bannerDifference/bannerDifferenceList';
 import NavigationDifferenceList from '@/pages/Portal/navigationDifference/navigationDifferenceList';
@@ -10,7 +11,7 @@ import SetView from '@/layouts/SetView';
 const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) => {
 
   const [type, setType] = useState(null);
-  const [visible, showModel] = useState(false);
+  const ref = useRef(null);
 
   const RenderComponent = () => {
     switch (type) {
@@ -38,16 +39,14 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
           style={{width: '100%'}}
           onClick={(item) => {
             setType(item.key);
-            showModel(true);
+            ref.current.open(false);
           }}
           items={[
             {key:'轮播图分类管理',label:'轮播图分类管理'},
             {key:'导航分类管理',label:'导航分类管理'}
           ]}
         />} />
-      <Modal centered destroyOnClose maskClosable={false} width={860} open={visible} onCancel={() => {
-        showModel(false);
-      }} footer={null}>{RenderComponent()}</Modal>
+      <Modal width={1200} headTitle={type} ref={ref}>{RenderComponent()}</Modal>
     </>
   );
 };

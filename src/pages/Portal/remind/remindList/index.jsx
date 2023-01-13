@@ -49,7 +49,6 @@ const RemindList = () => {
   return (
     <>
       <Table
-        title={<Breadcrumb title="消息提醒" />}
         api={remindList}
         rowKey="remindId"
         searchForm={searchForm}

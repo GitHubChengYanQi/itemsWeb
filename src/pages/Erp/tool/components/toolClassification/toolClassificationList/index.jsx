@@ -48,7 +48,6 @@ const ToolClassificationList = () => {
   return (
     <div style={{padding:16}}>
       <Table
-        title={<Breadcrumb title='工具分类' />}
         api={toolClassificationList}
         rowKey="toolClassificationId"
         formActions={formActionsPublic}

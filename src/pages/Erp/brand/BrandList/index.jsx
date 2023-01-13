@@ -65,7 +65,6 @@ const BrandList = () => {
         contentHeight
         listHeader={false}
         cardHeaderStyle={{display:'none'}}
-        title={<Breadcrumb title='品牌管理'/>}
         api={brandList}
         formActions={formActionsPublic}
         rowKey="brandId"

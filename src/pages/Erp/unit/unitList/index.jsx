@@ -64,7 +64,6 @@ const UnitList = () => {
       <Table
         contentHeight
         formActions={formActionsPublic}
-        title={<Breadcrumb title='单位管理'/>}
         api={unitList}
         rowKey="unitId"
         searchForm={searchForm}

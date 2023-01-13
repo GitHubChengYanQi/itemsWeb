@@ -64,7 +64,6 @@ const MaterialList = () => {
       <Table
         formActions={formActionsPublic}
         contentHeight
-        title={<Breadcrumb title='材质管理'/>}
         api={materialList}
         rowKey="materialId"
         searchForm={searchForm}

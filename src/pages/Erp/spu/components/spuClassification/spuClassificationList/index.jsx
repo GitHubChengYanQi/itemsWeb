@@ -66,7 +66,6 @@ const SpuClassificationList = ({type}) => {
     <div style={{padding: 16}}>
       <Table
         noPagination
-        title={<Breadcrumb title="物料分类管理" />}
         api={spuClassificationTreeVrew}
         rowKey="key"
         listHeader={false}

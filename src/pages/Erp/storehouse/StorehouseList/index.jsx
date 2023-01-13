@@ -114,7 +114,6 @@ const StorehouseList = (props) => {
         listHeader={false}
         cardHeaderStyle={{display:'none'}}
         contentHeight
-        title={<Breadcrumb title="仓库管理" />}
         api={storehouseList}
         rowKey="storehouseId"
         searchForm={searchForm}

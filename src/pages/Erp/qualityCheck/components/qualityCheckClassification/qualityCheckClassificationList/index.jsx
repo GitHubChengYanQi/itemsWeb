@@ -45,7 +45,6 @@ const QualityCheckClassificationList = () => {
   return (
     <div style={{padding:16}}>
       <Table
-        title={<Breadcrumb title="质检分类" />}
         api={qualityCheckClassificationList}
         rowKey="qualityCheckClassificationId"
         searchForm={searchForm}

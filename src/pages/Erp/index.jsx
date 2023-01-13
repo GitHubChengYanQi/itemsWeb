@@ -61,7 +61,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             {key: '注意事项', label: '注意事项'},
           ]}
         />} />
-      <Modal width={1200} headTitle={type} footer={[]} ref={ref}>{RenderComponent()}</Modal>
+      <Modal width={1200} headTitle={type} ref={ref}>{RenderComponent()}</Modal>
     </>
   );
 };
