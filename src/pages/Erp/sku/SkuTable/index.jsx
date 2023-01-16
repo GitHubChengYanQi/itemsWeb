@@ -156,7 +156,7 @@ const SkuTable = ({...props}, ref) => {
             return <Select
               style={{width: 100}}
               defaultValue="all"
-              value={value || 'all'}
+              value={typeof value === 'boolean' ? value : 'all'}
               options={[{label: '全部', value: 'all'}, {label: '有BOM', value: true}, {label: '无BOM', value: false}]}
               onChange={(value) => {
                 onChange(value === 'all' ? null : value);
@@ -171,7 +171,7 @@ const SkuTable = ({...props}, ref) => {
             return <Select
               style={{width: 100}}
               defaultValue="all"
-              value={value || 'all'}
+              value={typeof value === 'boolean' ? value : 'all'}
               options={[{label: '全部', value: 'all'}, {label: '有工艺', value: true}, {label: '无工艺', value: false}]}
               onChange={(value) => {
                 onChange(value === 'all' ? null : value);
