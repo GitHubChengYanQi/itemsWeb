@@ -13,10 +13,13 @@ const GroupSku = (
     onChange = () => {
 
     },
+    noSkuClass,
     noParts,
     noSearchButton,
     width = 300,
     align,
+    defaultSearchType,
+    value
   },
   ref
 ) => {
@@ -35,20 +38,28 @@ const GroupSku = (
     }
   });
 
-  const [showValue, setShowValue] = useState('');
-  const [searchType, setSearchType] = useState('');
+  const [showValue, setShowValue] = useState(value);
+  const [searchType, setSearchType] = useState(defaultSearchType);
 
   const reset = () => {
     setSearchType('');
     setShowValue('');
   };
 
+  const submit = ({id, searchType, showValue}) => {
+    setSearchType(searchType);
+    setShowValue(showValue);
+    onChange(id,searchType,showValue);
+  };
+
   useImperativeHandle(ref, () => ({
-    reset
+    reset,
+    searchType,
+    submit,
   }));
 
   const showValueFormat = () => {
-    return showValue ? <span style={{width:width - 60}} className={styles.showValue}>{showValue}</span> :
+    return showValue ? <span style={{width: width - 60}} className={styles.showValue}>{showValue}</span> :
       <span className={styles.placeholder}>请输入关键字搜索</span>;
   };
 
@@ -59,7 +70,7 @@ const GroupSku = (
       >
         <div className={styles.button}>
           <div className={styles.buttonText} onClick={() => {
-            if (showValue) {
+            if (!searchType && showValue) {
               run({data: {keyWord: showValue}});
             }
             setSearchValue(searchType ? '' : showValue);
@@ -81,7 +92,7 @@ const GroupSku = (
           {showValue && <CloseCircleFilled onClick={() => {
             setSearchType('');
             setShowValue('');
-            onChange('', 'reset');
+            onChange('', 'reset', '');
           }} />}
         </div>
 
@@ -102,7 +113,7 @@ const GroupSku = (
           onClick={() => {
             setSearchType('');
             setShowValue('');
-            onChange('', 'reset');
+            onChange('', 'reset', '');
           }}>
           重置
         </Button>
@@ -129,6 +140,7 @@ const GroupSku = (
         setSearchType={setSearchType}
         groupList={groupList}
         noParts={noParts}
+        noSkuClass={noSkuClass}
         run={run}
         setShowValue={setShowValue}
       />

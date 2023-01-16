@@ -24,7 +24,7 @@ export const skuMarge = {
 export const skuDelete = {
   url: '/sku/delete',
   method: 'POST',
-  rowKey:'skuId'
+  rowKey: 'skuId'
 };
 
 export const skuDetail = {
@@ -40,7 +40,13 @@ export const skuResults = {
 export const skuList = {
   url: '/sku/list',
   method: 'POST',
-  rowKey:'skuId'
+  rowKey: 'skuId'
+};
+
+export const skuV1List = {
+  url: '/sku/v1.1/list',
+  method: 'POST',
+  rowKey: 'skuId'
 };
 
 export const deleteBatch = {

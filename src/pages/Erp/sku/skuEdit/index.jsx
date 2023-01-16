@@ -131,7 +131,6 @@ const SkuEdit = ({...props}, ref) => {
             ...submitValue,
             type: 0,
             isHidden: true,
-            materialId: submitValue.materialId ? [submitValue.materialId] : [],
             skuId: value.copy ? null : value.skuId,
             oldSkuId: copy ? value.skuId : null,
             spu: {...submitValue.spu, coding: submitValue.spuCoding},
