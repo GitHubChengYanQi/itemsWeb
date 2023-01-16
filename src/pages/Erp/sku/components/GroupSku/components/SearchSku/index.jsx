@@ -109,6 +109,8 @@ const SearchSku = (
                   <SearchValueFormat searchValue={searchValue} label={label} />
                   <br />
                   版本号：{item.version ? <SearchValueFormat searchValue={searchValue} label={item.version} /> : '-'}
+                  <br/>
+                  创建时间：{item.createTime}
                 </div>
               </div>;
             })
