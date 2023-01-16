@@ -91,13 +91,13 @@ const AddSkuTable = (
       <Table.Column title="序号" align="center" dataIndex="key" render={(value) => {
         return <Render width={50}>{value + 1}</Render>;
       }} />
-      <Table.Column title="物料编号" dataIndex="skuResult" render={(value) => {
-        return <Render width={100}>{value && value.standard}</Render>;
+      <Table.Column title="物料编号" dataIndex="standard" render={(value) => {
+        return <Render>{value}</Render>;
       }} />
-      <Table.Column title="物料" dataIndex="skuResult" width={200} render={(value) => {
-        return <MyNote maxWidth={200}>
-          <SkuResultSkuJsons skuResult={value} />
-        </MyNote>;
+      <Table.Column title="物料" dataIndex="spuName" render={(value, record) => {
+        return <Note
+          maxWidth={200}
+          value={`${value} ${record.skuName ? ` / ${record.skuName}` : ''}${record.specifications ? ` / ${record.specifications}` : ''}`} />;
       }} />
       <Table.Column title="品牌" dataIndex="skuId" render={(skuId, record, index) => {
         return <Render width={100}>

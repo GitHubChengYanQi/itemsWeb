@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Descriptions, Space, Spin} from 'antd';
+import {Button, Descriptions, Space} from 'antd';
 import {createFormActions} from '@formily/antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {config, useLocation} from 'ice';
@@ -36,7 +36,6 @@ const {baseURI} = config;
 
 const PartsList = (
   {
-    showTable,
     spuId,
     spuSkuId,
     value,
@@ -128,7 +127,7 @@ const PartsList = (
   return (
     <>
       <>
-        {value && skuData && <div hidden={showTable}>
+        {value && skuData && <div>
           <Descriptions style={{margin: 24, marginBottom: 0}} column={2} contentStyle={{fontWeight: 700}}>
             <Descriptions.Item label="编号">{skuData.standard}</Descriptions.Item>
             <Descriptions.Item label="物料"><BackSkus record={skuData} /></Descriptions.Item>
@@ -151,8 +150,6 @@ const PartsList = (
         </div>}
 
         <Table
-          bodyStyle={{padding: showTable && 0}}
-          bordered={!showTable}
           actionButton={<Space>
             <Import
               url={`${baseURI}Excel/importBom`}
@@ -167,7 +164,7 @@ const PartsList = (
           cardHeaderStyle={{display: value === false && 'none'}}
           listHeader={value}
           formActions={formActionsPublic}
-          headStyle={(spuId || spuSkuId || showTable) && {display: 'none'}}
+          headStyle={(spuId || spuSkuId) && {display: 'none'}}
           title={value !== false && <Breadcrumb title="物料清单" />}
           actions={action()}
           searchForm={searchForm}

@@ -110,7 +110,6 @@ const SearchSku = (
                   <br />
                   版本号：{item.version ? <SearchValueFormat searchValue={searchValue} label={item.version} /> : '-'}
                 </div>
-
               </div>;
             })
           }

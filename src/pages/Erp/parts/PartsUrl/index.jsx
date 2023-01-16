@@ -12,6 +12,11 @@ export const partsAdd = {
   rowKey:'partsId'
 };
 
+export const bomsByskuId = {
+  url: '/parts/bomsByskuId',
+  method: 'GET',
+};
+
 export const partsRelease= {
   url: '/parts/release',
   method: 'POST',

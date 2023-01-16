@@ -36,7 +36,7 @@ import SearchValueFormat from '@/components/SearchValueFormat';
 const {FormItem} = Form;
 
 
-const SkuTable = ({...props}, ref) => {
+const SkuTable = ({spuClass, spuId, isModal, setSpuClass, ...other}, ref) => {
 
   const [state] = useUrlState(
     {
@@ -50,8 +50,6 @@ const SkuTable = ({...props}, ref) => {
   const {baseURI} = config;
 
   const skuListRef = useRef();
-
-  const {spuClass, spuId, isModal, setSpuClass, ...other} = props;
 
   const [loading, setLoading] = useState();
 
