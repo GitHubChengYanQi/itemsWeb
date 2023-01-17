@@ -64,7 +64,12 @@ const SkuList = () => {
   };
   return (
     <ListLayout>
-      <SkuTable left={Left()} spuClass={isArray(spuClass.length > 0 ? spuClass : defaultSpuClass)[0] || null} setSpuClass={setSpuClass} />
+      <SkuTable
+        left={Left()}
+        spuClass={spuClass[0]}
+        setSpuClass={setSpuClass}
+        defaultSpuClass={defaultSpuClass[0]}
+      />
     </ListLayout>
   );
 };
