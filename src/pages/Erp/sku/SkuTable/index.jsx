@@ -39,7 +39,7 @@ const SkuTable = ({...props}, ref) => {
 
   const {baseURI} = config;
 
-  const {spuClass, spuId, isModal, setSpuClass, ...other} = props;
+  const {spuClass, spuId, isModal, setSpuClass, defaultSpuClass, ...other} = props;
 
   const [loading, setLoading] = useState();
 
@@ -109,6 +109,7 @@ const SkuTable = ({...props}, ref) => {
         <FormItem
           name="spuClass"
           hidden
+          value={defaultSpuClass === '0' ? null : defaultSpuClass}
           component={SysField.SelectSpuClass} />
         <div hidden>
           <FormItem
@@ -309,7 +310,7 @@ const SkuTable = ({...props}, ref) => {
         }}
         {...other}
       />
-{/* 一键生成出库单，分配出库单 */}
+      {/* 一键生成出库单，分配出库单 */}
       <AddSkuModal addRef={addRef} tableRef={tableRef} copy={copy} edit={edit} />
 
       <Modal
