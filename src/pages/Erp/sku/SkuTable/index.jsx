@@ -294,7 +294,7 @@ const SkuTable = ({...props}, ref) => {
       }
     },
     {
-      dataIndex: 'sku',
+      dataIndex: 'skuJsons',
       title: '规格参数',
       render: (value, record) => <Render>
         <Note width={300} value={<SkuResultSkuJsons describe skuResult={record} />} />
@@ -397,17 +397,10 @@ const SkuTable = ({...props}, ref) => {
       render
     },
     {
-      dataIndex: 'user',
+      dataIndex: 'userName',
       title: '添加人',
       sorter: true,
-      render: (value, record, index, formActions) => {
-        return <Render>
-          <SearchValueFormat
-            searchValue={formActions.getFieldValue('keyWord')}
-            label={value?.name || '-'}
-          />
-        </Render>;
-      }
+      render
     },
     {
       dataIndex: 'createTime',

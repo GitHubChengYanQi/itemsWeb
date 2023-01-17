@@ -28,6 +28,7 @@ import ThousandsSeparator from '@/components/ThousandsSeparator';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 import Note from '@/components/Note';
 import SearchValueFormat from '@/components/SearchValueFormat';
+import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 
 const {baseURI} = config;
 const {FormItem} = Form;
@@ -179,8 +180,10 @@ const StockTable = (props) => {
       }
     },
     {
-      title: '物料描述', width: 300, dataIndex: 'skuValue', render: (value) => {
-        return <Render width={300}><Note value="-" maxWidth={300} /></Render>;
+      title: '物料描述', width: 300, dataIndex: 'skuValue', render: (value, record) => {
+        return <Render width={300}>
+          <Note value={<SkuResultSkuJsons describe skuResult={record} />} maxWidth={300} />
+        </Render>;
       }
     },
     {
