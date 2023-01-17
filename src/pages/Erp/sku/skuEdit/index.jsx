@@ -17,6 +17,7 @@ import {spuDetail} from '@/pages/Erp/spu/spuUrl';
 import BrandIds from '@/pages/Erp/brand/components/BrandIds';
 import {isArray, isObject} from '@/util/Tools';
 import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
+import styles from './index.module.less';
 
 const {FormItem} = Form;
 
@@ -93,6 +94,7 @@ const SkuEdit = ({...props}, ref) => {
   return (
     <div style={{padding: 16}}>
       <Form
+        className={typeSetting.length > 0 ? '' : styles.skuClass}
         labelCol={6}
         wrapperCol={18}
         {...other}

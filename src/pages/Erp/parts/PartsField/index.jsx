@@ -289,11 +289,9 @@ export const BackSku = ({
   deleted = [],
   setDeleted = () => {
   },
-  back = () => {
+  onBack = () => {
   },
 }) => {
-
-  const [keys, setKeys] = useState([]);
 
   return <ProCard
     style={{marginTop: 24}}
@@ -302,77 +300,7 @@ export const BackSku = ({
     title="删除信息"
     headerBordered
   >
-    <Table
-      dataSource={deleted}
-      pagination={false}
-      rowKey="key"
-      footer={() => {
-        return <>
-          <Button
-            type="link"
-            disabled={keys.length === 0}
-            icon={<DeleteOutlined />}
-            onClick={() => {
-              const ids = keys.map(item => item.key);
-              setDeleted(deleted.filter((item) => {
-                return !ids.includes(item.key);
-              }));
-              setKeys([]);
-              back(keys);
-            }}
-            danger
-          >
-            批量还原
-          </Button>
-        </>;
-      }}
-      rowSelection={{
-        selectedRowKeys: keys.map((item) => {
-          return item.key;
-        }),
-        onChange: (keys, record) => {
-          setKeys(record);
-        }
-      }}
-    >
-      <Table.Column title="序号" width={70} align="center" dataIndex="skuId" render={(value, record, index) => {
-        return index + 1;
-      }} />
-      <Table.Column title="物料编号" width={200} dataIndex="coding" />
-      <Table.Column title="物料" dataIndex="skuResult" render={(value) => {
-        return <SkuResultSkuJsons skuResult={value} />;
-      }} />
-      <Table.Column title="数量" width={100} dataIndex="number" render={(value) => {
-        return value || 1;
-      }} />
-      <Table.Column title="投产方式" width={100} dataIndex="autoOutstock" render={(value) => {
-        return <Render width={200}>
-          <Radio.Group
-            disabled
-            defaultValue={1}
-            value={value}
-          >
-            <Radio value={1}>推式</Radio>
-            <Radio value={0}>拉式</Radio>
-          </Radio.Group>
-        </Render>;
-      }} />
-      <Table.Column title="备注" dataIndex="note" render={(value) => {
-        return value;
-      }} />
-      <Table.Column title="操作" dataIndex="key" align="center" width={100} render={(value, record) => {
-        return <Button type="link" onClick={() => {
-          setDeleted(deleted.filter((item) => {
-            return item.key !== value;
-          }));
-          setKeys(keys.filter((item) => {
-            return item.key !== value;
-          }));
-          back([record]);
-        }}>还原</Button>;
-      }} />
-
-    </Table>
+    <AddSkuTable value={deleted} setDeleted={setDeleted} back onBack={onBack} />
   </ProCard>;
 };
 

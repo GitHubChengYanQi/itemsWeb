@@ -61,6 +61,21 @@ const PartsEdit = ({...props}, ref) => {
           {...other}
           value={value}
           ref={formRef}
+          formatDetail={(values) => {
+            console.log(values);
+            // parts
+            return {
+              ...values,
+              parts: isArray(values.parts).map(item => {
+                const skuResult = item.skuResult || {};
+                return {
+                  ...skuResult,
+                  spuName: skuResult.spuResult?.name,
+                  ...item
+                };
+              })
+            };
+          }}
           noButton
           api={ApiConfig}
           formActions={formActionsPublic}
@@ -217,9 +232,7 @@ const PartsEdit = ({...props}, ref) => {
             component={SysField.AddSku}
             deteted={deleted}
             setDeleted={(skus) => {
-              const startKey = (deleted[deleted.length - 1] || {}).key || 0;
-              const newDeleted = skus.map((item, index) => ({...item, key: startKey + index + 1}));
-              setDeleted([...deleted, ...newDeleted]);
+              setDeleted([...deleted, ...skus].map((item, index) => ({...item, key: index})));
             }}
             extraButton={<Button onClick={() => {
               partsRef.current.open(spuSkuId || true);
@@ -232,14 +245,14 @@ const PartsEdit = ({...props}, ref) => {
             deleted={deleted}
             setDeleted={setDeleted}
             component={SysField.BackSku}
-            back={(skus = []) => {
+            onBack={(skus = []) => {
               const partSkus = formRef.current.getFieldValue('parts');
               const exits = [];
               let newParts = partSkus.map((partItem) => {
-                const skuItem = skus.filter(item => partItem.skuId === item.skuId)[0];
+                const skuItem = skus.find(item => partItem.skuId === item.skuId);
                 if (skuItem) {
                   exits.push(skuItem.key);
-                  return {...partItem, number: (partItem.number || 0) + (skuItem.number || 0)};
+                  return skuItem;
                 }
                 return partItem;
               });

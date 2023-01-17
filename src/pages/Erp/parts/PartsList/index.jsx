@@ -210,7 +210,7 @@ const PartsList = (
             }
           }}
         >
-          <Column title={<div style={{marginLeft: 24}}>版本号</div>} key={1} dataIndex="name" render={(value) => {
+          <Column title='版本号' key={1} dataIndex="name" render={(value) => {
             return <div style={{minWidth: 100}}>{value || '无'}</div>;
           }} />
           <Column title="物料编码" key={2} dataIndex="skuResult" render={(value) => {
@@ -236,7 +236,7 @@ const PartsList = (
             fixed="right"
             align="center"
             dataIndex="partsId"
-            width={150}
+            width={spuSkuId ? 70 : 150}
             render={(value, record) => {
               return record.children && <>
                 {

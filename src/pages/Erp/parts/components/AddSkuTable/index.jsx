@@ -9,13 +9,15 @@ import {bomsByskuId} from '@/pages/Erp/parts/PartsUrl';
 import Modal from '@/components/Modal';
 import styles from './index.module.less';
 import Icon from '@/components/Icon';
-import SearchValueFormat from '@/components/SearchValueFormat';
 
 const AddSkuTable = ({
+  back,
   value = [],
   onChange = () => {
   },
   setDeleted = () => {
+  },
+  onBack = () => {
   }
 }) => {
 
@@ -24,6 +26,8 @@ const AddSkuTable = ({
   const [keys, setKeys] = useState([]);
 
   const [bomVersions, setBomVersions] = useState([]);
+
+  const [skuId, setSkuId] = useState();
 
   const dataSources = value;
 
@@ -44,7 +48,6 @@ const AddSkuTable = ({
   const {loading: bomsByskuIdLoading, run: bomsByskuIdRun} = useRequest(bomsByskuId, {
     manual: true,
     onSuccess: (res) => {
-      console.log(res);
       setBomVersions(res);
     }
   });
@@ -53,8 +56,26 @@ const AddSkuTable = ({
     <Table
       dataSource={dataSources}
       pagination={false}
-      rowKey="skuId"
+      rowKey={back ? 'key' : 'skuId'}
       footer={() => {
+        if (back) {
+          return <Button
+            type="link"
+            disabled={keys.length === 0}
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              const ids = keys.map(item => item.key);
+              setDeleted(dataSources.filter((item) => {
+                return !ids.includes(item.key);
+              }));
+              setKeys([]);
+              onBack(keys);
+            }}
+            danger
+          >
+            批量还原
+          </Button>;
+        }
         return <>
           <Button
             type="link"
@@ -94,14 +115,18 @@ const AddSkuTable = ({
         return <Note
           value={`${value} ${record.skuName ? ` / ${record.skuName}` : ''}${record.specifications ? ` / ${record.specifications}` : ''}`} />;
       }} />
-      <Table.Column title="数量" width={150} dataIndex="number" align="center" render={(value, record, index) => {
-        return <Render><InputNumber value={value || 1} min={1} onChange={(value) => {
+      <Table.Column title="数量" width={150} dataIndex="number" align="center" render={(value, record) => {
+        return back ? value : <Render><InputNumber value={value || 1} min={1} onChange={(value) => {
           setValue({number: value}, record.skuId);
         }} /></Render>;
       }} />
       <Table.Column title="投产方式" width={150} align="center" dataIndex="autoOutstock" render={(value, record) => {
+        if (back) {
+          return value === 0 ? '拉式' : '推式';
+        }
         return <Render width={150}>
           <Radio.Group
+            disabled={back}
             defaultValue={1}
             value={value}
             onChange={({target: {value}}) => setValue({autoOutstock: value}, record.skuId)}
@@ -112,21 +137,36 @@ const AddSkuTable = ({
         </Render>;
       }} />
       <Table.Column title="指定版本" dataIndex="bomNum" width={150} align="center" render={(value, record) => {
+        if (back) {
+          return (record.bomId ? (record.version || '-') : '选择版本');
+        }
         return <Button
           type="link"
           disabled={!value}
           onClick={() => {
             bomsByskuIdRun({params: {skuId: record.skuId}});
             versionModalRef.current.open(false);
+            setSkuId(record.skuId);
           }}
-        >选择版本</Button>;
+        >{record.bomId ? (record.version || '-') : '选择版本'}</Button>;
       }} />
       <Table.Column title="备注" width={400} dataIndex="note" render={(value, record) => {
-        return <Input.TextArea placeholder="请输入备注" rows={1} value={value} onChange={(value) => {
+        return back ? value : <Input.TextArea placeholder="请输入备注" rows={1} value={value} onChange={(value) => {
           setValue({note: value.target.value}, record.skuId);
         }} />;
       }} />
       <Table.Column title="操作" dataIndex="skuId" align="center" width={100} render={(value, record) => {
+        if (back) {
+          return <Button type="link" onClick={() => {
+            setDeleted(dataSources.filter((item) => {
+              return item.key !== record.key;
+            }));
+            setKeys(keys.filter((item) => {
+              return item.key !== record.key;
+            }));
+            onBack([record]);
+          }}>还原</Button>;
+        }
         return <><Button
           type="link"
           icon={<DeleteOutlined />}
@@ -162,12 +202,19 @@ const AddSkuTable = ({
             </Spin>
             :
             bomVersions.map((item, index) => {
-              return <div key={index} className={styles.versionIndex}>
+              return <div
+                key={index}
+                className={styles.versionIndex}
+                onClick={() => {
+                  setValue({version: item.name, bomId: item.partsId}, skuId);
+                  versionModalRef.current.close();
+                }}
+              >
                 <Icon type="icon-a-kehuliebiao2" style={{marginRight: 16}} />
                 <div>
-                  版本号：{item.version || '-'}
+                  版本号：{item.name || '-'}
                   <br />
-                  创建时间:{}
+                  创建时间：{item.createTime}
                 </div>
               </div>;
             })
