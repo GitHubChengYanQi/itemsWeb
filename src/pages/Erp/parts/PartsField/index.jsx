@@ -5,13 +5,13 @@
  * @Date 2021-07-14 14:30:20
  */
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   Input,
   InputNumber,
   Select as AntdSelect,
   Radio,
-  Spin, Descriptions, Button, Space, Table,
+  Spin, Descriptions, Button, Space,
 } from 'antd';
 import ProCard from '@ant-design/pro-card';
 import Select from '@/components/Select';
@@ -25,11 +25,7 @@ import SkuConfiguration from '@/pages/Erp/sku/components/SkuConfiguration';
 import Modal from '@/components/Modal';
 import CheckSku from '@/pages/Erp/sku/components/CheckSku';
 import AddSkuTable from '@/pages/Erp/parts/components/AddSkuTable';
-import {DeleteOutlined} from '@ant-design/icons';
-import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import {isArray} from '@/util/Tools';
-import Render from '@/components/Render';
-
 export const BrandId = (props) => {
   return (<Select api={apiUrl.brandIdSelect} {...props} />);
 };
@@ -141,9 +137,13 @@ export const Sku = (props) => {
   }, [props.type]);
 
   return (
-    <SelectSku width={400} value={props.value && props.value.skuId} disabled={props.disabled} onChange={(value) => {
-      props.onChange({skuId: value});
-    }} />);
+    <SelectSku
+      width={400}
+      value={props.value && props.value.skuId} disabled={props.disabled}
+      onChange={(value, sku) => {
+        props.onChange({skuId: value, list: sku?.list, standard: sku?.standard});
+      }}
+    />);
 };
 
 export const SkuId = (props) => {
@@ -206,7 +206,12 @@ export const ShowSku = ({value}) => {
     <Descriptions column={1} bordered>
       {
         value.map((item, index) => {
-          return <Descriptions.Item key={index} label={item.label}>{item.value}</Descriptions.Item>;
+          return <Descriptions.Item
+            key={index}
+            label={item.label}
+          >
+            {item.value}
+          </Descriptions.Item>;
         })
       }
     </Descriptions>

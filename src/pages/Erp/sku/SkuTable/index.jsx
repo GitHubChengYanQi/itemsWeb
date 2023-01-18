@@ -36,7 +36,7 @@ import SearchValueFormat from '@/components/SearchValueFormat';
 const {FormItem} = Form;
 
 
-const SkuTable = ({spuClass, spuId, isModal, setSpuClass, ...other}, ref) => {
+const SkuTable = ({...props}, ref) => {
 
   const [state] = useUrlState(
     {
@@ -50,6 +50,8 @@ const SkuTable = ({spuClass, spuId, isModal, setSpuClass, ...other}, ref) => {
   const {baseURI} = config;
 
   const skuListRef = useRef();
+
+  const {spuClass, spuId, isModal, setSpuClass, ...other} = props;
 
   const [loading, setLoading] = useState();
 
@@ -292,7 +294,7 @@ const SkuTable = ({spuClass, spuId, isModal, setSpuClass, ...other}, ref) => {
       }
     },
     {
-      dataIndex: 'sku',
+      dataIndex: 'skuJsons',
       title: '规格参数',
       render: (value, record) => <Render>
         <Note width={300} value={<SkuResultSkuJsons describe skuResult={record} />} />
@@ -395,17 +397,10 @@ const SkuTable = ({spuClass, spuId, isModal, setSpuClass, ...other}, ref) => {
       render
     },
     {
-      dataIndex: 'user',
+      dataIndex: 'userName',
       title: '添加人',
       sorter: true,
-      render: (value, record, index, formActions) => {
-        return <Render>
-          <SearchValueFormat
-            searchValue={formActions.getFieldValue('keyWord')}
-            label={value?.name || '-'}
-          />
-        </Render>;
-      }
+      render
     },
     {
       dataIndex: 'createTime',

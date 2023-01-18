@@ -28,6 +28,7 @@ const AddSkuTable = ({
   const [bomVersions, setBomVersions] = useState([]);
 
   const [skuId, setSkuId] = useState();
+  const [currentVer, setCurrentVer] = useState();
 
   const dataSources = value;
 
@@ -147,6 +148,7 @@ const AddSkuTable = ({
             bomsByskuIdRun({params: {skuId: record.skuId}});
             versionModalRef.current.open(false);
             setSkuId(record.skuId);
+            setCurrentVer(record.bomId);
           }}
         >{record.bomId ? (record.version || '-') : '选择版本'}</Button>;
       }} />
@@ -205,6 +207,7 @@ const AddSkuTable = ({
               return <div
                 key={index}
                 className={styles.versionIndex}
+                style={{border: currentVer === item.partsId ? 'solid 1px #c5e8ff' : 'none'}}
                 onClick={() => {
                   setValue({version: item.name, bomId: item.partsId}, skuId);
                   versionModalRef.current.close();

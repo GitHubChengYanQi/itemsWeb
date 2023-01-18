@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Descriptions, Space} from 'antd';
+import {Button, Descriptions, Space, Tag} from 'antd';
 import {createFormActions} from '@formily/antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {config, useLocation} from 'ice';
@@ -28,6 +28,7 @@ import {skuDetail} from '@/pages/Erp/sku/skuUrl';
 import BackSkus from '@/pages/Erp/sku/components/BackSkus';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
 import Note from '@/components/Note';
+import Render from '@/components/Render';
 
 const {Column} = Table;
 const {FormItem} = Form;
@@ -210,19 +211,30 @@ const PartsList = (
             }
           }}
         >
-          <Column title='版本号' key={1} dataIndex="name" render={(value) => {
-            return <div style={{minWidth: 100}}>{value || '无'}</div>;
-          }} />
-          <Column title="物料编码" key={2} dataIndex="skuResult" render={(value) => {
-            return <div style={{minWidth: 100}}>{value && value.standard}</div>;
-          }} />
           <Column title="物料" key={3} dataIndex="skuResult" render={(value) => {
             return (<Note width={400}><SkuResultSkuJsons skuResult={value} /></Note>);
+          }} />
+          <Column title="物料编码" key={2} dataIndex="skuResult" render={(value) => {
+            return <Render maxWidth={200}>
+              <Note maxWidth={200}>{value?.standard || '无'}</Note>
+            </Render>;
+          }} />
+          <Column title="版本号" key={1} dataIndex="name" render={(value, record) => {
+            if (!record.children) {
+              return <></>;
+            }
+            return <Render width={200}>
+              <Tag color="processing"><Note maxWidth={200}>{value || '-'}</Note></Tag>
+            </Render>;
           }} />
           <Column title="数量" key={4} dataIndex="number" align="center" render={(value) => {
             return <div style={{minWidth: 50}}>{value || null}</div>;
           }} />
-          <Column title="备注" key={5} visible={spuSkuId && false} dataIndex="note" />
+          <Column title="备注" key={1} visible={spuSkuId && false} dataIndex="note" render={(value) => {
+            return <Render width={100}>
+              {value || '-'}
+            </Render>;
+          }} />
           <Column title="创建人" key={6} visible={spuSkuId && false} dataIndex="userResult" render={(value) => {
             return <>{value && value.name}</>;
           }} />
@@ -264,7 +276,7 @@ const PartsList = (
       </>
 
       <Modal
-        width={1200}
+        width={1400}
         type={type}
         title="物料清单"
         bom={bom}

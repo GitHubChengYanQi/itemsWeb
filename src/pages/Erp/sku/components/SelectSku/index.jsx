@@ -113,9 +113,10 @@ const SelectSku = (
   };
 
   const {loading: detailLoading, run: detail} = useRequest(skuDetail, {
-    manual: true, onSuccess: (res) => {
+    manual: true,
+    onSuccess: (res) => {
       onChange(res.skuId, res);
-      setChange(`${skuLabel(res)}standard:${res.standard}`);
+      setChange(skuLabel(res));
     }
   });
 
@@ -130,22 +131,23 @@ const SelectSku = (
           skuId: value
         }
       });
-    } else {
-      setChange(null);
     }
-  }, [value]);
+  }, []);
 
   useEffect(() => {
-    if (spuClassId){
+    if (spuClassId) {
       getSkuList();
     }
   }, [spuClassId]);
 
 
   const options = !loading ? objects(data) : [];
-
+  if (detailLoading) {
+    return <Spin />;
+  }
   return (<>
     <Select
+      filterOption={false}
       style={{width: width || 200, ...style}}
       placeholder={placeholder || '搜索物料'}
       showSearch
@@ -169,7 +171,11 @@ const SelectSku = (
         setChange(value);
         if (option) {
           if (option && option.key) {
-            onChange(option.key);
+            detail({
+              data: {
+                skuId: option.key
+              }
+            });
           }
         } else {
           onChange(null);
@@ -187,7 +193,7 @@ const SelectSku = (
         </a>
       </Select.Option>}
       {options.map((items) => {
-        if (noSpu){
+        if (noSpu) {
           return <Select.Option
             key={items.value}
             style={{color: 'rgb(113 111 111)'}}
@@ -223,7 +229,7 @@ const SelectSku = (
                 disabled={item.disabled}
                 title={item.label}
                 standard={item.standard}
-                value={`${item.label}standard:${item.standard}`}>
+                value={item.label}>
                 <div style={{display: 'flex', alignItems: 'center'}}>
                   <div style={{flexGrow: 1, maxWidth: '85%'}}>
                     <Note>
@@ -252,7 +258,11 @@ const SelectSku = (
       loading={setAddLoading}
       component={SkuEdit}
       onSuccess={(res) => {
-        onChange(res);
+        detail({
+          data: {
+            skuId: res
+          }
+        });
         ref.current.close();
       }}
       ref={ref}
