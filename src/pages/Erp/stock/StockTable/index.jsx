@@ -201,7 +201,7 @@ const StockTable = (props) => {
         return <ThousandsSeparator suffix="元" value={MathCalc((value || 0), (record.stockNum || 0), 'cheng')} />;
       }
     },
-    {title: '未到货数量', width: 150, dataIndex: 'floatingCargoNumber', sorter: true},
+    {title: '在途数量', width: 150, dataIndex: 'floatingCargoNumber', sorter: true},
     {title: '备料数量', width: 150, dataIndex: 'lockStockDetailNumber', sorter: true},
     {
       title: '库位', width: 150, dataIndex: 'storePosName', sorter: true, render: (value) => {
