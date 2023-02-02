@@ -66,7 +66,6 @@ const CategoryList = () => {
     <div style={{padding: 16}}>
       <Table
         listHeader={false}
-        title={<Breadcrumb title="配置管理" />}
         api={categoryTree}
         contentHeight
         noSort

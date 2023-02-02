@@ -63,7 +63,6 @@ const SupplierBlacklistList = () => {
         contentHeight
         listHeader={false}
         cardHeaderStyle={{display:'none'}}
-        title={<Breadcrumb />}
         api={supplierBlacklistList}
         formActions={formActionsPublic}
         rowKey="blackListId"

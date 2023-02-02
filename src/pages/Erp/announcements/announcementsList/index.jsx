@@ -40,7 +40,6 @@ const AnnouncementsList = () => {
         api={announcementsList}
         rowKey="noticeId"
         contentHeight
-        title={<Breadcrumb title="注意事项" />}
         actions={actions()}
         ref={tableRef}
       >

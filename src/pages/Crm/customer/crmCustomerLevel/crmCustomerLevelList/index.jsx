@@ -61,7 +61,6 @@ const CrmCustomerLevelList = () => {
         onChange={(keys) => {
           setIds(keys);
         }}
-        title={<Breadcrumb title="客户级别管理" />}
         api={crmCustomerLevelList}
         rowKey="customerLevelId"
         actions={actions()}

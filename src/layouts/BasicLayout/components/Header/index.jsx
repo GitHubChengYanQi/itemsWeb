@@ -52,6 +52,31 @@ const Header = () => {
 
   const [visible, setVisible] = useState(false);
 
+  const items = [
+    {
+      key: 'name',
+      style: {padding: 12, fontSize: 16,width:200, color: '#7f7f7f'},
+      label: userInfo.name,
+    },
+    {
+      key: '/member',
+      label: <div className={styles.dropdownMenuItem} onClick={()=>{
+        history.push('/member');
+      }}>个人中心</div>,
+    },
+    {
+      key: '/password',
+      label: <div className={styles.dropdownMenuItem} onClick={()=>{
+        setVisiblePwd(true);
+      }}>修改密码</div>,
+    },
+    {
+      key: '/logout',
+      label: <div className={styles.dropdownMenuItem}  onClick={()=>{
+        history.push('/logout');
+      }}>退出登录</div>,
+    },
+  ];
 
   return (
     <>
@@ -91,36 +116,7 @@ const Header = () => {
             </div>
             <div className={styles.middle} />
             <div className={styles.right}>
-              <Dropdown trigger={['click']} overlay={
-                <Menu items={[
-                  {
-                    key: 'name',
-                    style: {padding: 12, fontSize: 16, color: '#7f7f7f'},
-                    label: userInfo.name,
-                  },
-                  {
-                    key: '/member',
-                    label: <span className={styles.dropdownMenuItem}>个人中心</span>,
-                  },
-                  {
-                    key: '/password',
-                    label: <span className={styles.dropdownMenuItem}>修改密码</span>,
-                  },
-                  {
-                    key: '/logout',
-                    label: <span className={styles.dropdownMenuItem}>退出登录</span>,
-                  },
-                ]} style={{width: 220}} onClick={({key}) => {
-                  if (key === 'name') {
-                    return;
-                  }
-                  if (key === '/password') {
-                    setVisiblePwd(true);
-                  } else {
-                    history.push(key);
-                  }
-                }} />
-              } placement="bottomRight">
+              <Dropdown trigger={['click']} menu={{items}} style={{width: 220}}>
                 <Button type="text" size="large" style={{height: 60}}>
                   <Avatar
                     style={{float: 'left'}}

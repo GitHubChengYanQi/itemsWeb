@@ -50,7 +50,6 @@ const PrintTemplateList = () => {
     <>
       <Table
         contentHeight
-        title={<Breadcrumb title="模板" />}
         api={printTemplateList}
         rowKey="printTemplateId"
         listHeader={false}

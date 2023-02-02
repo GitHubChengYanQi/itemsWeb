@@ -48,7 +48,6 @@ const ContractClassList = () => {
   return (
     <>
       <Table
-        title={<Breadcrumb title='合同分类' />}
         listHeader={false}
         cardHeaderStyle={{display:'none'}}
         contentHeight

@@ -42,7 +42,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             {key:'质检分类管理',label:'质检分类管理'}
           ]}
         />} />
-      <Modal width={860} title="设置" footer={[]} ref={ref}>{RenderComponent()}</Modal>
+      <Modal width={860} title="设置" ref={ref}>{RenderComponent()}</Modal>
     </>
   );
 };
