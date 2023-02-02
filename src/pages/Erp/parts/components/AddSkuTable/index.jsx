@@ -117,7 +117,7 @@ const AddSkuTable = ({
           value={`${value} ${record.skuName ? ` / ${record.skuName}` : ''}${record.specifications ? ` / ${record.specifications}` : ''}`} />;
       }} />
       <Table.Column title="数量" width={150} dataIndex="number" align="center" render={(value, record) => {
-        return back ? value : <Render><InputNumber value={value || 1} min={1} onChange={(value) => {
+        return back ? (value || 1) : <Render><InputNumber value={value || 1} min={1} onChange={(value) => {
           setValue({number: value}, record.skuId);
         }} /></Render>;
       }} />
