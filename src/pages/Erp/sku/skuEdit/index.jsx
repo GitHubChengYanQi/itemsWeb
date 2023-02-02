@@ -96,7 +96,7 @@ const SkuEdit = ({...props}, ref) => {
       <Form
         className={typeSetting.length > 0 ? '' : styles.skuClass}
         labelCol={6}
-        wrapperCol={18}
+        wrapperCol={15}
         {...other}
         value={value.skuId || false}
         ref={formRef}
