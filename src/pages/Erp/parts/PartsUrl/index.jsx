@@ -9,60 +9,77 @@ export const partsAdd = {
   // url: '/parts/add',
   url: '/parts/v1.1.1/add',
   method: 'POST',
-  rowKey:'partsId'
+  rowKey: 'partsId'
 };
 
-export const partsRelease= {
+export const partsV2Add = {
+  url: '/parts/v1.2/add',
+  method: 'POST',
+  rowKey: 'partsId'
+};
+
+export const bomsByskuId = {
+  url: '/parts/bomsByskuId',
+  method: 'GET',
+};
+
+export const partsRelease = {
   url: '/parts/release',
   method: 'POST',
-  rowKey:'partsId'
+  rowKey: 'partsId'
 };
 
 export const partsEdit = {
   url: '/parts/edit',
   method: 'POST',
-  rowKey:'partsId'
+  rowKey: 'partsId'
 };
 
 export const partsDelete = {
   url: '/parts/delete',
   method: 'POST',
-  rowKey:'partsId'
+  rowKey: 'partsId'
 };
 
 export const partsDetail = {
   url: '/parts/detail',
   method: 'POST',
-  rowKey:'partsId'
+  rowKey: 'partsId'
+};
+
+export const partsV1Detail = {
+  url: '/parts/v1.1/detail',
+  method: 'POST',
+  rowKey: 'partsId'
 };
 
 export const partsGetDetails = {
   url: '/parts/getdetails',
   method: 'POST',
-  rowKey:'partsId'
+  rowKey: 'partsId'
 };
 
 export const partsGetBom = {
   url: '/parts/getBOM',
   method: 'GET',
-  rowKey:'partsId'
+  rowKey: 'partsId'
 };
 
 export const partsList = {
   url: '/parts/list',
   method: 'POST',
-  rowKey:'partsId'
+  rowKey: 'partsId'
 };
 
 export const partsOldList = {
   url: '/parts/oldList',
   method: 'POST',
-  rowKey:'partsId'
+  rowKey: 'partsId'
 };
 export const partsListSelect = {
   url: '/parts/listSelect',
   method: 'POST',
-  rowKey:'partsId'
+  rowKey: 'partsId'
 };
 
 export const itemIdSelect = {
@@ -76,7 +93,7 @@ export const brandIdSelect = {
 export const materialListSelect = {
   url: '/material/listSelect',
   method: 'POST',
-  rowKey:'materialId'
+  rowKey: 'materialId'
 };
 
 export const spuListSelect = {

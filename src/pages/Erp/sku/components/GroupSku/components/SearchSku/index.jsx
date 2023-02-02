@@ -112,7 +112,6 @@ const SearchSku = (
                   <br/>
                   创建时间：{item.createTime}
                 </div>
-
               </div>;
             })
           }

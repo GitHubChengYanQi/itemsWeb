@@ -4,7 +4,7 @@ import styles from './index.module.scss';
 const ZOOM = {
   DOWN: 1,
   UP: 2,
-  MIN: 50,
+  MIN: 10,
   MAX: 300
 };
 

@@ -11,10 +11,9 @@ import {createFormActions, FormEffectHooks} from '@formily/antd';
 import ProCard from '@ant-design/pro-card';
 import * as SysField from '../PartsField';
 import Form from '@/components/Form';
-import {partsDetail, partsAdd} from '../PartsUrl';
+import {partsAdd, partsDetail, partsV1Detail} from '../PartsUrl';
 import {Codings} from '@/pages/Erp/sku/skuField';
 import {request, useRequest} from '@/util/Request';
-import {skuDetail} from '@/pages/Erp/sku/skuUrl';
 import {spuDetail} from '@/pages/Erp/spu/spuUrl';
 import {categoryDetail} from '@/pages/Erp/category/categoryUrl';
 import Modal from '@/components/Modal';
@@ -24,6 +23,9 @@ import {isArray} from '@/util/Tools';
 const {FormItem} = Form;
 
 const ApiConfig = {
+  // view: partsV1Detail,
+  // add: partsV2Add,
+  // save: partsV2Add
   view: partsDetail,
   add: partsAdd,
   save: partsAdd
@@ -39,10 +41,16 @@ const PartsEdit = ({...props}, ref) => {
 
   const formRef = useRef(null);
 
-  const {loading: partsLoading, run: parts} = useRequest(partsDetail, {
+  const {loading: partsLoading, run: parts} = useRequest(partsV1Detail, {
     manual: true,
     onSuccess: (res) => {
-      formRef.current.setFieldValue('parts', res.parts);
+      formRef.current.setFieldValue('parts', isArray(res.parts).map(item => {
+        const skuResult = item.skuResult || {};
+        return {
+          ...skuResult,
+          ...item
+        };
+      }));
     }
   });
 
@@ -61,12 +69,26 @@ const PartsEdit = ({...props}, ref) => {
           {...other}
           value={value}
           ref={formRef}
+          formatDetail={(values) => {
+            console.log(values);
+            // parts
+            return {
+              ...values,
+              parts: isArray(values.parts).map(item => {
+                const skuResult = item.skuResult || {};
+                const spuResult = skuResult.spuResult || {};
+                return {
+                  ...skuResult,
+                  spuName: spuResult.name,
+                  ...item
+                };
+              })
+            };
+          }}
           noButton
           api={ApiConfig}
           formActions={formActionsPublic}
           fieldKey="partsId"
-          onError={() => {
-          }}
           onSuccess={(res) => {
             onSuccess(res.data);
           }}
@@ -74,8 +96,7 @@ const PartsEdit = ({...props}, ref) => {
 
             FormEffectHooks.onFieldValueChange$('item').subscribe(async ({value}) => {
               if (value && value.skuId) {
-                const res = await request({...skuDetail, data: {skuId: value.skuId}});
-                const array = res && res.list && res.list.map((item) => {
+                const array = isArray(value.list).map((item) => {
                   return {
                     label: item.itemAttributeResult.attribute,
                     value: item.attributeValues
@@ -83,8 +104,8 @@ const PartsEdit = ({...props}, ref) => {
                 });
 
                 setFieldState('showSkuCoding', state => {
-                  state.value = res.standard;
-                  state.visible = res.standard;
+                  state.value = value.standard;
+                  state.visible = value.standard;
                 });
 
                 setFieldState('bom', state => {
@@ -92,12 +113,10 @@ const PartsEdit = ({...props}, ref) => {
                   // state.visible = value;
                 });
 
-                if (Array.isArray(array) && array.length > 0) {
-                  setFieldState('showSku', state => {
-                    state.value = array;
-                    state.visible = value;
-                  });
-                }
+                setFieldState('showSku', state => {
+                  state.value = array;
+                  state.visible = array.length > 0;
+                });
               } else if (value && value.spuId) {
                 const res = await request({...spuDetail, data: {spuId: value.spuId}});
                 if (res && res.categoryId) {
@@ -176,6 +195,7 @@ const PartsEdit = ({...props}, ref) => {
               visible={false}
               label="物料描述"
               name="showSku"
+              wrapperCol={10}
               component={SysField.ShowSku}
             />
 
@@ -217,9 +237,7 @@ const PartsEdit = ({...props}, ref) => {
             component={SysField.AddSku}
             deteted={deleted}
             setDeleted={(skus) => {
-              const startKey = (deleted[deleted.length - 1] || {}).key || 0;
-              const newDeleted = skus.map((item, index) => ({...item, key: startKey + index + 1}));
-              setDeleted([...deleted, ...newDeleted]);
+              setDeleted([...deleted, ...skus].map((item, index) => ({...item, key: index})));
             }}
             extraButton={<Button onClick={() => {
               partsRef.current.open(spuSkuId || true);
@@ -232,14 +250,14 @@ const PartsEdit = ({...props}, ref) => {
             deleted={deleted}
             setDeleted={setDeleted}
             component={SysField.BackSku}
-            back={(skus = []) => {
+            onBack={(skus = []) => {
               const partSkus = formRef.current.getFieldValue('parts');
               const exits = [];
               let newParts = partSkus.map((partItem) => {
-                const skuItem = skus.filter(item => partItem.skuId === item.skuId)[0];
+                const skuItem = skus.find(item => partItem.skuId === item.skuId);
                 if (skuItem) {
                   exits.push(skuItem.key);
-                  return {...partItem, number: (partItem.number || 0) + (skuItem.number || 0)};
+                  return skuItem;
                 }
                 return partItem;
               });
@@ -254,7 +272,7 @@ const PartsEdit = ({...props}, ref) => {
 
       <Modal
         headTitle="拷贝BOM"
-        width={800}
+        width={1200}
         spuSkuId
         component={PartsList}
         getPartsId={(id) => {
