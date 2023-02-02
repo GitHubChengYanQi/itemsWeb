@@ -106,7 +106,6 @@ const SkuEdit = ({...props}, ref) => {
           setDetails(res);
           return {
             ...res,
-            materialId: isArray(res.materialIdList)[0],
             spu: res.spuResult,
             brandIds: isArray(res.brandResults).map(item => item.brandId),
           };
