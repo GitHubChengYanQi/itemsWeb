@@ -11,7 +11,7 @@ import {createFormActions, FormEffectHooks} from '@formily/antd';
 import ProCard from '@ant-design/pro-card';
 import * as SysField from '../PartsField';
 import Form from '@/components/Form';
-import {partsV1Detail, partsV2Add} from '../PartsUrl';
+import {partsAdd, partsDetail, partsV1Detail} from '../PartsUrl';
 import {Codings} from '@/pages/Erp/sku/skuField';
 import {request, useRequest} from '@/util/Request';
 import {spuDetail} from '@/pages/Erp/spu/spuUrl';
@@ -23,9 +23,12 @@ import {isArray} from '@/util/Tools';
 const {FormItem} = Form;
 
 const ApiConfig = {
-  view: partsV1Detail,
-  add: partsV2Add,
-  save: partsV2Add
+  // view: partsV1Detail,
+  // add: partsV2Add,
+  // save: partsV2Add
+  view: partsDetail,
+  add: partsAdd,
+  save: partsAdd
 };
 
 const formActionsPublic = createFormActions();
@@ -73,8 +76,10 @@ const PartsEdit = ({...props}, ref) => {
               ...values,
               parts: isArray(values.parts).map(item => {
                 const skuResult = item.skuResult || {};
+                const spuResult = skuResult.spuResult || {};
                 return {
                   ...skuResult,
+                  spuName: spuResult.name,
                   ...item
                 };
               })

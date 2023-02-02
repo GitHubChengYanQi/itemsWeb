@@ -50,35 +50,7 @@ const CheckSku = ({
 
     return (
       <>
-        <GroupSku
-          onChange={(id, type) => {
-            if (type === 'reset') {
-              tableRef.current.reset();
-              return;
-            }
-            tableRef.current.formActions.setFieldValue('categoryId', null);
-            tableRef.current.formActions.setFieldValue('keyWord', null);
-            tableRef.current.formActions.setFieldValue('partsId', null);
-            switch (type) {
-              case 'skuClass':
-                tableRef.current.formActions.setFieldValue('categoryId', id);
-                break;
-              case 'skuName':
-                tableRef.current.formActions.setFieldValue('keyWord', id);
-                break;
-              case 'parts':
-                tableRef.current.formActions.setFieldValue('partsId', id);
-                break;
-              default:
-                break;
-            }
-            tableRef.current.submit();
-          }} />
-        <div hidden>
-          <FormItem name="keyWord" component={Input} />
-          <FormItem name="partsId" component={Input} />
-          <FormItem name="categoryId" component={Input} />
-        </div>
+        <FormItem name="keyWord" placeholder="请输入关键字搜索" style={{width: 300}} component={Input} />
       </>
     );
   };
@@ -116,7 +88,6 @@ const CheckSku = ({
         actions={!noCreate && <Button type="primary" onClick={() => {
           refAdd.current.open(false);
         }}>创建物料</Button>}
-        SearchButton
         rowKey="skuId"
         pageSize={5}
         noSort
