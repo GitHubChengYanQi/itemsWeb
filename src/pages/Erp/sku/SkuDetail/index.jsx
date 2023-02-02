@@ -39,7 +39,7 @@ const SkuDetail = ({value}) => {
 
   const [loading, setLoading] = useState();
 
-  const [detailLoading,setDetailLoading] = useState(true);
+  const [detailLoading, setDetailLoading] = useState(true);
 
   const {run: getSkuForm} = useRequest(spuClassificationDetail, {
     manual: true,
@@ -157,7 +157,7 @@ const SkuDetail = ({value}) => {
                           )</>;
                         break;
                       case 'materialId':
-                        children = isArray(data.materialResultList).map(item => item.name).join('、');
+                        children = data.materialResult?.name;
                         break;
                       case 'brandIds':
                         children = isArray(data.brandResults).map(item => item.brandName).join('、');

@@ -267,7 +267,7 @@ const TableWarp = (
       key: `${index}`,
       render: (value, record, index) => {
         if (typeof item.render === 'function') {
-          return item.render(value, record, index);
+          return item.render(value, record, index,formActions);
         } else if (typeof value === 'object') {
           return <Render text="" />;
         } else if (typeof value === 'number') {
@@ -341,6 +341,7 @@ const TableWarp = (
             bordered={bordered || false}
             title={listHeader ? actions : null}
             headStyle={headStyle || cardHeaderStyle}
+            className={style.card}
             bodyStyle={bodyStyle}
             extra={<Space>
               {actionButton}
@@ -392,9 +393,11 @@ const TableWarp = (
                 layout
                 scroll={{x: 'max-content', y: maxHeight}}
                 sticky={{
+                  offsetHeader: Object.keys((headStyle || cardHeaderStyle || {})).find(item => item === 'display' && (headStyle || cardHeaderStyle || {})[item] === 'none') ? 0 : 65,
                   getContainer: () => {
                     return document.getElementById('tableContent');
-                  }
+                  },
+                  offsetScroll:'max-content'
                 }}
                 {...other}
                 {...props}

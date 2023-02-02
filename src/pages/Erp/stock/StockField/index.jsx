@@ -101,7 +101,7 @@ export const StockNumbers = ({value = {}, onChange}) => {
       onChange={(mixNum) => {
         onChange({
           mixNum,
-          maxNum: mixNum >= value?.maxNum ? null : value?.maxNum
+          maxNum: value?.maxNum
         });
       }}
     />
