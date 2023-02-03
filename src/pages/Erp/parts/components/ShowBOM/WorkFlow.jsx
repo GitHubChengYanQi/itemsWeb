@@ -116,7 +116,7 @@ const WorkFlow = ({value, onChange}) => {
     setTimeout(() => {
       const dingflowDesign = document.getElementById('dingflowDesign');
       const bomStartNode = document.getElementById('bomStartNode');
-      if (dingflowDesign) {
+      if (dingflowDesign && bomStartNode) {
         dingflowDesign.scrollTo(bomStartNode.offsetLeft - (dingflowDesign.clientWidth / 2) + 110, 0);
       }
     }, 0);
