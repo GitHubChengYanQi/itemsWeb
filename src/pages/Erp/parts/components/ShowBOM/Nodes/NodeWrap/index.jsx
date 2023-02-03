@@ -8,7 +8,7 @@ function NodeWrap(props) {
   return (
     <div id={props.domId}>
       <div className={styles.nodeWrap}>
-        <div className={'node-wrap-box ' + (props.type === NodeTypes.START ? 'start-node' : '')}>
+        <div id='bomStartNode' className={'node-wrap-box ' + (props.type === NodeTypes.START ? 'start-node' : '')}>
           <div className="title" style={props.titleStyle}>
             {props.title}
           </div>

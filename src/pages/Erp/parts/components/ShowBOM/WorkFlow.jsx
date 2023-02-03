@@ -112,9 +112,19 @@ const WorkFlow = ({value, onChange}) => {
     }
   }, [value]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      const dingflowDesign = document.getElementById('dingflowDesign');
+      const bomStartNode = document.getElementById('bomStartNode');
+      if (dingflowDesign) {
+        dingflowDesign.scrollTo(bomStartNode.offsetLeft - (dingflowDesign.clientWidth / 2) + 110, 0);
+      }
+    }, 0);
+  }, []);
+
   return (
     <WFC.Provider value={{config, updateNode, onAddNode, onDeleteNode, onSelectNode}}>
-      <section className={styles.dingflowDesign}>
+      <section id="dingflowDesign" className={styles.dingflowDesign}>
         <ZoomLayout>
           <Render
             config={config}
