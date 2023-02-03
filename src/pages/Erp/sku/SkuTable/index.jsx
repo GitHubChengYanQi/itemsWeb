@@ -445,6 +445,7 @@ const SkuTable = ({...props}, ref) => {
   return (
     <>
       <Table
+        contentHeight={spuId}
         onReset={() => {
           skuListRef.current.reset();
           setSpuClass([]);
