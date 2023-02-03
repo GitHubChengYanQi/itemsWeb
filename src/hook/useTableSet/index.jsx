@@ -1,4 +1,4 @@
-import {Button, Card, Dropdown, Input, Menu, message, Modal, Select, Space, Spin} from 'antd';
+import {Button, Card, Dropdown, Input, message, Modal, Select, Space, Spin, Popover} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {useBoolean} from 'ahooks';
 import {CloseOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
@@ -200,13 +200,13 @@ const useTableSet = (column, tableKey) => {
 
   };
 
-  const menu = (
+  const content = (
     <div>
       <Card
         className={styles.cardTitle}
         title="表头设置"
         headStyle={{textAlign: 'center', padding: 0}}
-        bodyStyle={{maxWidth: 500, padding: 0, borderTop: 'solid 1px #eee', height: '50vh', overflow: 'auto'}}
+        bodyStyle={{padding: 0, borderTop: 'solid 1px #eee', height: '50vh', overflow: 'auto'}}
         extra={<Button icon={<CloseOutlined />} style={{marginRight: 16}} type="text" onClick={() => {
           setVisible(false);
         }} />}
@@ -259,12 +259,16 @@ const useTableSet = (column, tableKey) => {
   );
 
   const save = [
-    {key: '0', label: <div onClick={()=>{
-      setShowModal(true);
-    }}>另存为新视图</div>  ,minWidth: 220 },
-    {key: '1', label:  <div onClick={()=>{
-      cover();
-    }}>覆盖当前视图</div>, disabled: !detail }
+    {
+      key: '0', label: <div onClick={() => {
+        setShowModal(true);
+      }}>另存为新视图</div>, minWidth: 220
+    },
+    {
+      key: '1', label: <div onClick={() => {
+        cover();
+      }}>覆盖当前视图</div>, disabled: !detail
+    }
   ];
 
   useEffect(() => {
@@ -325,21 +329,22 @@ const useTableSet = (column, tableKey) => {
               }}
             />
         }
-        <Dropdown
-          menu={menu}
-          overlayStyle={{backgroundColor: '#fff', zIndex: 99, boxShadow: '0 6px 24px 0 rgb(0 0 0 / 10%)'}}
+        <Popover
+          overlayClassName={styles.popover}
+          content={content}
           onOpenChange={(value) => {
             setVisible(value);
           }}
           open={visible}
           placement="bottomRight"
-          trigger={['click']}>
+          trigger={['click']}
+        >
           <Button
             type="text"
             onClick={() => {
               setVisible(true);
             }}><Icon type="icon-xitongpeizhi" /></Button>
-        </Dropdown>
+        </Popover>
 
         <Modal
           title="保存视图"
