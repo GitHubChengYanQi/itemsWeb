@@ -138,9 +138,7 @@ const AddSkuTable = ({
         </Render>;
       }} />
 
-      {/*
-
-       <Table.Column title="指定版本" dataIndex="bomNum" width={150} align="center" render={(value, record) => {
+      <Table.Column title="指定版本" dataIndex="bomNum" width={150} align="center" render={(value, record) => {
         if (back) {
           return (record.bomId ? (record.version || '-') : '选择版本');
         }
@@ -156,7 +154,6 @@ const AddSkuTable = ({
         >{record.bomId ? (record.version || '-') : '选择版本'}</Button>;
       }} />
 
-      */}
 
       <Table.Column title="备注" width={400} dataIndex="note" render={(value, record) => {
         return back ? value : <Input.TextArea placeholder="请输入备注" rows={1} value={value} onChange={(value) => {
