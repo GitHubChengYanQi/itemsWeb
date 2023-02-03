@@ -6,7 +6,7 @@ import styles from './index.module.scss';
 function NodeWrap(props) {
 
   return (
-    <div>
+    <div id={props.domId}>
       <div className={styles.nodeWrap}>
         <div className={'node-wrap-box ' + (props.type === NodeTypes.START ? 'start-node' : '')}>
           <div className="title" style={props.titleStyle}>

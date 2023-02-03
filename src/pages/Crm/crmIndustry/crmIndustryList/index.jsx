@@ -47,7 +47,7 @@ const CrmIndustryList = () => {
   };
 
   return (
-    <div style={{padding:16}}>
+    <div style={{padding:'0px 16px'}}>
       <Table
         contentHeight
         listHeader={false}

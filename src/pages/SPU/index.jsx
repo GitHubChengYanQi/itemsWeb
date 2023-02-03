@@ -59,7 +59,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             {key: '打印模板', label: '打印模板'},
           ]}
         />} />
-      <Modal width={1000} headTitle={type} footer={[]} ref={ref}>{RenderComponent()}</Modal>
+      <Modal width={1000} headTitle={type} ref={ref}>{RenderComponent()}</Modal>
     </>
   );
 };

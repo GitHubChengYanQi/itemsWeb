@@ -11,7 +11,7 @@ const SkuList = () => {
 
   const [data] = store.useModel('dataSource');
 
-  const [state, setState] = useUrlState(
+  const [state] = useUrlState(
     {
       navigateMode: 'push',
     },
@@ -36,7 +36,7 @@ const SkuList = () => {
 
   const [spuClass, setSpuClass] = useState([]);
 
-  const defaultSpuClass = defaultTableQuery.values?.spuClass ? [defaultTableQuery.values?.spuClass] : ['0'];
+  const defaultSpuClass = defaultTableQuery.values?.categoryId ? [defaultTableQuery.values?.categoryId] : ['0'];
 
   const Left = () => {
     return (

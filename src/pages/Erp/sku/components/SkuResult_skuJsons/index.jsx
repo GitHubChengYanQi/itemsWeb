@@ -2,7 +2,7 @@ import React from 'react';
 
 const SkuResultSkuJsons = ({skuResult, describe}) => {
 
-  if (!(skuResult && skuResult.spuResult)) {
+  if (!skuResult) {
     return '无';
   }
 
@@ -18,7 +18,7 @@ const SkuResultSkuJsons = ({skuResult, describe}) => {
       }).join(' ; ') || '无';
   }
 
-  return `${skuResult.spuResult.name} ${skuResult.skuName ? ` / ${skuResult.skuName}` : ''}${skuResult.specifications ? ` / ${skuResult.specifications}` : ''}`;
+  return `${skuResult.spuResult ? skuResult.spuResult.name : ''} ${skuResult.skuName ? ` / ${skuResult.skuName}` : ''}${skuResult.specifications ? ` / ${skuResult.specifications}` : ''}`;
 };
 
 export default SkuResultSkuJsons;

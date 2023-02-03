@@ -85,7 +85,7 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
             {key: '付款管理', label: '付款管理'},
           ]}
         />}/>
-      <Modal headTitle={type} footer={[]} width={1200} ref={ref}>{RenderComponent()}</Modal>
+      <Modal headTitle={type} width={1200} ref={ref}>{RenderComponent()}</Modal>
     </>
   );
 };

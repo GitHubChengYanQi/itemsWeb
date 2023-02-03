@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {Button, Table} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
+import Render from '@/components/Render';
+import Note from '@/components/Note';
 
 const AddSkuTable = ({
   value = [],
@@ -54,12 +56,16 @@ const AddSkuTable = ({
         }
       }}
     >
-      <Table.Column title="序号" width={70} align="center" dataIndex="key" render={(value) => {
-        return value + 1;
+      <Table.Column title="序号" align="center" dataIndex="key" render={(value) => {
+        return <Render width={50}>{value + 1}</Render>;
       }} />
-      <Table.Column title="物料编号" width={200} dataIndex="coding" />
-      <Table.Column title="物料" dataIndex="skuResult" render={(value) => {
-        return <SkuResultSkuJsons skuResult={value} />;
+      <Table.Column title="物料编号" dataIndex="standard" render={(value) => {
+        return <Render>{value}</Render>;
+      }} />
+      <Table.Column title="物料" dataIndex="spuName" render={(value, record) => {
+        return <Note
+          maxWidth={200}
+          value={`${value} ${record.skuName ? ` / ${record.skuName}` : ''}${record.specifications ? ` / ${record.specifications}` : ''}`} />;
       }} />
       <Table.Column title="操作" dataIndex="skuId" align="center" width={100} render={(value, record, index) => {
         return <><Button

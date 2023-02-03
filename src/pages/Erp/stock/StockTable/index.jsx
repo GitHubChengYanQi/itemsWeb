@@ -5,7 +5,7 @@
  * @Date 2021-07-15 11:13:02
  */
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   Input,
   Progress,
@@ -15,19 +15,20 @@ import {
 import {config} from 'ice';
 import cookie from 'js-cookie';
 import Table from '@/components/Table';
-import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
-import {BomSelect, Position, SelectBom, StockNumbers} from '@/pages/Erp/stock/StockField';
+import {Position, StockNumbers} from '@/pages/Erp/stock/StockField';
 import Analysis from '@/pages/Erp/Analysis';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
-import {skuList} from '@/pages/Erp/sku/skuUrl';
+import {skuV1List} from '@/pages/Erp/sku/skuUrl';
 import Render from '@/components/Render';
-import Note from '@/components/Note';
 import {useRequest} from '@/util/Request';
-import {isArray} from '@/util/Tools';
-import {skuPriceList} from '@/pages/Erp/StockMoney/url';
+import {isArray, MathCalc} from '@/util/Tools';
 import ThousandsSeparator from '@/components/ThousandsSeparator';
+import GroupSku from '@/pages/Erp/sku/components/GroupSku';
+import Note from '@/components/Note';
+import SearchValueFormat from '@/components/SearchValueFormat';
+import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 
 const {baseURI} = config;
 const {FormItem} = Form;
@@ -40,11 +41,11 @@ const StockTable = (props) => {
 
   const tableRef = useRef();
 
+  const skuListRef = useRef();
+
   const token = cookie.get('tianpeng-token');
 
   const {loading, data: stockDetail} = useRequest(stockDetailApi);
-
-  const {run: getPriceList} = useRequest(skuPriceList, {manual: true});
 
   const actions = () => {
     return (
@@ -63,76 +64,166 @@ const StockTable = (props) => {
 
   useEffect(() => {
     if (storeHouse) {
-      tableRef.current.formActions.setFieldValue('storehouseId', storeHouse[0]);
-      tableRef.current.formActions.setFieldValue('storehousePositionsId', null);
+      tableRef.current.formActions.setFieldValue('storeId', storeHouse[0]);
+      tableRef.current.formActions.setFieldValue('positionId', null);
       tableRef.current.submit();
     }
   }, [storeHouse]);
-
 
   const searchForm = () => {
 
     return (
       <>
-        <FormItem
-          label="物料名称"
-          placeholder="搜索物料"
-          name="skuName"
-          component={Input} />
+        <GroupSku
+          ref={skuListRef}
+          align="start"
+          noSearchButton
+          onChange={(id, type) => {
+            tableRef.current.formActions.setFieldValue('categoryId', null);
+            tableRef.current.formActions.setFieldValue('keyWord', null);
+            tableRef.current.formActions.setFieldValue('partsId', null);
+            switch (type) {
+              case 'skuClass':
+                tableRef.current.formActions.setFieldValue('categoryId', id);
+                break;
+              case 'skuName':
+                tableRef.current.formActions.setFieldValue('keyWord', id);
+                break;
+              case 'parts':
+                tableRef.current.formActions.setFieldValue('partsId', id);
+                break;
+              default:
+                break;
+            }
+            tableRef.current.submit();
+          }} />
+        <div hidden>
+          <FormItem name="keyWord" component={Input} />
+          <FormItem name="partsId" component={Input} />
+          <FormItem name="categoryId" component={Input} />
+          <FormItem name="storeId" component={Input} />
+        </div>
         <FormItem
           label="库存范围"
           name="numbers"
-          component={StockNumbers} />
-        <FormItem
-          label="BOM查询"
-          name="partsSkuId"
-          component={BomSelect} />
-        <FormItem
-          name="selectBom"
-          component={SelectBom} />
+          component={StockNumbers}
+        />
         <FormItem
           visible={isArray(storeHouse)[0] || false}
           label="库位"
           id={isArray(storeHouse)[0]}
           placeholder="搜索库位"
-          name="storehousePositionsId"
+          name="positionId"
           component={Position} />
-        <FormItem
-          hidden
-          name="storehouseId"
-          component={Input} />
       </>
     );
   };
 
-  const positionResult = (data) => {
-
-    if (!data) {
-      return '';
-    }
-
-    if (!data.supper) {
-      return data.name;
-    }
-
-    return `${positionResult(data.supper)}-${data.name}`;
-  };
+  const columns = [
+    {
+      title: '物料编码', width: 150, dataIndex: 'standard', sorter: true, render: (value, record, index, formActions) => {
+        return <Render>
+          <SearchValueFormat
+            searchValue={formActions.getFieldValue('keyWord')}
+            label={value}
+          />
+        </Render>;
+      }
+    },
+    {
+      title: '物料分类',
+      width: 150,
+      dataIndex: 'categoryName',
+      sorter: true,
+      render: (value, record, index, formActions) => {
+        return <Render>
+          <SearchValueFormat
+            searchValue={formActions.getFieldValue('keyWord')}
+            label={value}
+          />
+        </Render>;
+      }
+    },
+    {
+      title: '物料名称', width: 300, dataIndex: 'spuName', sorter: true, render: (value, record, index, formActions) => {
+        return <Render width={300}><Note value={
+          <SearchValueFormat
+            searchValue={formActions.getFieldValue('keyWord')}
+            label={value}
+          />
+        } maxWidth={300} /></Render>;
+      }
+    },
+    {
+      title: '物料型号', width: 150, dataIndex: 'skuName', sorter: true,
+      render: (value, record, index, formActions) => {
+        return <Render>
+          <SearchValueFormat
+            searchValue={formActions.getFieldValue('keyWord')}
+            label={value}
+          />
+        </Render>;
+      }
+    },
+    {
+      title: '物料规格',
+      width: 300,
+      dataIndex: 'specifications',
+      sorter: true,
+      render: (value, record, index, formActions) => {
+        return <Render width={300}><Note value={
+          <SearchValueFormat
+            searchValue={formActions.getFieldValue('keyWord')}
+            label={value}
+          />
+        } maxWidth={300} /></Render>;
+      }
+    },
+    {
+      title: '物料描述', width: 300, dataIndex: 'skuValue', render: (value, record) => {
+        return <Render width={300}>
+          <Note value={<SkuResultSkuJsons describe skuResult={record} />} maxWidth={300} />
+        </Render>;
+      }
+    },
+    {
+      title: '库存数量', width: 150, dataIndex: 'stockNum', sorter: true, render: (value) => {
+        return <Render>{value || 0}</Render>;
+      }
+    },
+    {
+      title: '单价', width: 150, dataIndex: 'price', sorter: true, render: (value) => {
+        return <ThousandsSeparator suffix="元" value={value || 0} />;
+      }
+    },
+    {
+      title: '总价', width: 150, dataIndex: 'price', sorter: true, render: (value, record) => {
+        return <ThousandsSeparator suffix="元" value={MathCalc((value || 0), (record.stockNum || 0), 'cheng')} />;
+      }
+    },
+    {title: '在途数量', width: 150, dataIndex: 'floatingCargoNumber', sorter: true},
+    {title: '备料数量', width: 150, dataIndex: 'lockStockDetailNumber', sorter: true},
+    {
+      title: '库位', width: 150, dataIndex: 'storePosName', sorter: true, render: (value) => {
+        return <Render width={150}><Note value={value} maxWidth={150} /></Render>;
+      }
+    },
+    {
+      title: '仓库', width: 150, dataIndex: 'storeName', sorter: true, render: (value) => {
+        return <Render width={150}><Note value={value} maxWidth={150} /></Render>;
+      }
+    },
+  ];
 
   return (
     <Table
+      onReset={() => {
+        skuListRef.current.reset();
+      }}
+      // cardHeaderStyle={{display: 'none'}}
+      columns={columns}
       ref={tableRef}
       noRowSelection
-      format={async (list) => {
-        const skuIds = list.map(item => item.skuId);
-        const res = await getPriceList({
-          data: {skuIds}
-        });
-        const tmp = {};
-        isArray(res).forEach((item) => {
-          tmp[`${item.skuId}`] = item.price;
-        });
-        return list.map(item => ({...item, price: tmp[item.skuId]}));
-      }}
       actionButton={actions()}
       showCard={loading ?
         <div style={{margin: 24}}><Spin size="large" /></div>
@@ -164,69 +255,21 @@ const StockTable = (props) => {
       title={<Breadcrumb />}
       searchForm={searchForm}
       formSubmit={(values) => {
-        const numbers = values.numbers || {};
-        values = {
+        const numbers = values.numbers;
+        return {
           ...values,
-          numbers: null,
-          maxNum: numbers.maxNum,
-          mixNum: numbers.mixNum,
+          numbers: undefined,
+          maximumInventory: numbers?.maxNum,
+          minimumInventory: numbers?.mixNum,
+          positionIds: values.positionId ? [values.positionId] : null,
+          storeIds: values.storeId ? [values.storeId] : null
         };
-        return values;
       }}
-      api={skuList}
+      api={skuV1List}
       tableKey="stockSku"
       rowKey="skuId"
       {...props}
-    >
-      <Table.Column key={1} title="物料编码" dataIndex="standard" sorter render={(value) => {
-        return <Render width={60}>{value}</Render>;
-      }} />
-      <Table.Column key={1} title="物料分类" dataIndex="spuResult" render={(value) => {
-        return <Render width={60}>{value?.spuClassificationResult?.name}</Render>;
-      }} />
-      <Table.Column key={2} title="物料名称" dataIndex="spuName" sorter render={(value) => {
-        return <Render width={60}>{value}</Render>;
-      }} />
-      <Table.Column key={3} title="物料型号" dataIndex="skuName" sorter render={(value) => {
-        return <Render width={60}>{value}</Render>;
-      }} />
-      <Table.Column key={4} title="物料规格" dataIndex="specifications" sorter render={(value) => {
-        return <Render width={60}>{value}</Render>;
-      }} />
-      <Table.Column title="物料描述" key={5} render={(value, record) => {
-        return <div style={{minWidth: 100, maxWidth: 300}}>
-          <Note value={<SkuResultSkuJsons describe skuResult={record} />} />
-        </div>;
-      }} />
-      <Table.Column key={6} title="库存数量" dataIndex="stockNumber" sorter render={(value, record) => {
-        const stockNumber = (record.stockNumber || 0) - (record.lockStockDetailNumber || 0);
-        return <Render width={60}>{stockNumber || 0}</Render>;
-      }} />
-      <Table.Column key={6} title="价格" dataIndex='price' render={(value) => {
-        return <ThousandsSeparator suffix='元' value={value || 0} />;
-      }} />
-      <Table.Column key={6} title="未到货数量" dataIndex="floatingCargoNumber" sorter render={(value) => {
-        return <Render width={60}>{value || 0}</Render>;
-      }} />
-      <Table.Column key={6} title="备料数量" dataIndex="lockStockDetailNumber" sorter render={(value) => {
-        return <Render width={60}>{value || 0}</Render>;
-      }} />
-      <Table.Column key={6} title="预购数量" dataIndex="purchaseNumber" sorter render={(value) => {
-        return <Render width={60}>{value || 0}</Render>;
-      }} />
-      <Table.Column key={7} title="库位" dataIndex="positionsResult" sorter render={(value) => {
-        if (Array.isArray(value) && value.length > 0) {
-          return value.map((item, index) => {
-            return <div key={index} style={{minWidth: 60}}>{positionResult(item)}</div>;
-          });
-        }
-        return '-';
-      }} />
-      <Table.Column key={8} title="仓库" dataIndex="storehouseResult" render={(value) => {
-        return <div style={{minWidth: 60}}>{value ? value.name : '-'}</div>;
-      }} />
-      <Table.Column />
-    </Table>
+    />
   );
 };
 

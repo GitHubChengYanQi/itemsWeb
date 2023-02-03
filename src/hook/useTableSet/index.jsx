@@ -258,28 +258,20 @@ const useTableSet = (column, tableKey) => {
     </div>
   );
 
-  const save = (
-    <Menu
-      items={[
-        {key: '0', label: '另存为新视图'},
-        {key: '1', label: '覆盖当前视图', disabled: !detail}
-      ]}
-      style={{minWidth: 220}}
-      onClick={(value) => {
-        if (value.key === '0') {
-          setShowModal(true);
-        } else if (value.key === '1') {
-          cover();
-        }
-      }}
-    />
-  );
+  const save = [
+    {key: '0', label: <div onClick={()=>{
+      setShowModal(true);
+    }}>另存为新视图</div>  ,minWidth: 220 },
+    {key: '1', label:  <div onClick={()=>{
+      cover();
+    }}>覆盖当前视图</div>, disabled: !detail }
+  ];
 
   useEffect(() => {
     if (view) {
       viewDetail({
         data: {
-          tableViewId: view,
+          tableViewId: view
         }
       });
     } else {
@@ -297,7 +289,7 @@ const useTableSet = (column, tableKey) => {
         {
           state
           &&
-          <Dropdown overlay={save} placement="bottomLeft" trigger={['click']}>
+          <Dropdown menu={save} placement="bottomLeft" trigger={['click']}>
             <Button style={{marginRight: 8}}>保存视图</Button>
           </Dropdown>
         }
@@ -334,7 +326,7 @@ const useTableSet = (column, tableKey) => {
             />
         }
         <Dropdown
-          overlay={menu}
+          menu={menu}
           overlayStyle={{backgroundColor: '#fff', zIndex: 99, boxShadow: '0 6px 24px 0 rgb(0 0 0 / 10%)'}}
           onOpenChange={(value) => {
             setVisible(value);
@@ -357,6 +349,10 @@ const useTableSet = (column, tableKey) => {
               type="primary"
               key={1}
               onClick={() => {
+                if (!name) {
+                  message.warn('请输入名称！');
+                  return;
+                }
                 const columnKeys = tableColumn && tableColumn.map((items) => {
                   return {
                     key: items.key,

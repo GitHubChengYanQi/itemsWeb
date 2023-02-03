@@ -73,7 +73,6 @@ const TemplateList = ({module}) => {
         onChange={(keys) => {
           setIds(keys);
         }}
-        title={<Breadcrumb title="合同模板管理" />}
         api={templateList}
         rowKey="templateId"
         searchForm={searchForm}

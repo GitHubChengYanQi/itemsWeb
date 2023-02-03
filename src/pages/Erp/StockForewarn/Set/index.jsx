@@ -5,12 +5,12 @@ import Table from '@/components/Table';
 import {useRequest} from '@/util/Request';
 import {stockForewarnAdd, stockForewarnSave} from '@/pages/Erp/StockForewarn/url';
 import Form from '@/components/Form';
-import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-import {skuList} from '@/pages/Erp/sku/skuUrl';
+import {skuV1List} from '@/pages/Erp/sku/skuUrl';
 import Render from '@/components/Render';
 import InputNumber from '@/components/InputNumber';
 import BottomButton from '@/components/BottomButton';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
+import SearchValueFormat from '@/components/SearchValueFormat';
 
 const {FormItem} = Form;
 
@@ -25,6 +25,8 @@ const Set = () => {
   const [bomId, setBomId] = useState();
 
   const [showBatch, setShowBatch] = useState(false);
+
+  const [searchValue, setSearchValue] = useState('');
 
   const {loading: addLoading, run: add} = useRequest(stockForewarnAdd, {
     response: true,
@@ -45,27 +47,35 @@ const Set = () => {
     }
   });
 
+  const render = (value) => {
+    return <Render>
+      <SearchValueFormat
+        searchValue={searchValue}
+        label={value || '-'}
+      />
+    </Render>;
+  };
+
   const columns = [
-    {title: '物料编码', width: 200, sorter: true, dataIndex: 'standard'},
+    {title: '物料编码', width: 200, sorter: true, dataIndex: 'standard', render},
+    {title: '物料分类', width: 140, sorter: true, dataIndex: 'categoryName', render},
     {
-      title: '物料分类', width: 140, sorter: true, dataIndex: 'className', render: (value, record) => {
-        return <Render text={record?.spuResult?.spuClassificationResult?.name} />;
-      }
-    },
-    {
-      title: '物料', dataIndex: 'spuName', sorter: true, render: (value, record) => {
-        return SkuResultSkuJsons({skuResult: record});
+      title: '物料',
+      dataIndex: 'spuName',
+      sorter: true,
+      render: (value, record) => {
+        return render(`${value} ${record.skuName ? ` / ${record.skuName}` : ''}${record.specifications ? ` / ${record.specifications}` : ''}`);
       }
     },
     {
       title: '库存下限',
       width: 140,
       align: 'center',
-      dataIndex: 'stockForewarnResult',
-      render: (stockForewarnResult, record) => {
+      dataIndex: 'stockWarningMin',
+      render: (value, record) => {
         const sku = data.find(item => item.skuId === record.skuId);
         return <InputNumber
-          value={sku ? sku.inventoryFloor : stockForewarnResult?.inventoryFloor}
+          value={sku ? sku.inventoryFloor : value}
           width={140}
           min={0}
           placeholder="请输入"
@@ -86,7 +96,7 @@ const Set = () => {
               newData.push({
                 skuId: record.skuId,
                 inventoryFloor,
-                inventoryCeiling: stockForewarnResult?.inventoryCeiling <= inventoryFloor ? null : stockForewarnResult?.inventoryCeiling
+                inventoryCeiling: record?.stockWarningMax <= inventoryFloor ? null : record?.stockWarningMax
               });
             }
             setData(newData);
@@ -98,11 +108,11 @@ const Set = () => {
       title: '库存上限',
       width: 140,
       align: 'center',
-      dataIndex: 'stockForewarnResult',
-      render: (stockForewarnResult, record) => {
+      dataIndex: 'stockWarningMax',
+      render: (value, record) => {
         const sku = data.find(item => item.skuId === record.skuId);
         return <InputNumber
-          value={sku ? sku.inventoryCeiling : stockForewarnResult?.inventoryCeiling}
+          value={sku ? sku.inventoryCeiling : value}
           width={140}
           min={sku?.inventoryFloor ? sku.inventoryFloor + 1 : 0}
           placeholder="请输入"
@@ -122,7 +132,7 @@ const Set = () => {
               newData.push({
                 skuId: record.skuId,
                 inventoryCeiling,
-                inventoryFloor: stockForewarnResult?.inventoryFloor
+                inventoryFloor: record?.stockWarningMin
               });
             }
             setData(newData);
@@ -134,8 +144,8 @@ const Set = () => {
       title: '操作',
       width: 70,
       align: 'center',
-      dataIndex: 'stockForewarnResult',
-      render: (stockForewarnResult, record) => {
+      dataIndex: 'action',
+      render: (value, record) => {
 
         const sku = data.find(item => item.skuId === record.skuId);
 
@@ -169,7 +179,7 @@ const Set = () => {
           </Button>
           <Button
             type="link"
-            disabled={!sku || (stockForewarnResult.inventoryFloor === sku.inventoryFloor && stockForewarnResult.inventoryCeiling === sku.inventoryCeiling)}
+            disabled={!sku || (record.stockWarningMin === sku.inventoryFloor && record.stockWarningMax === sku.inventoryCeiling)}
             onClick={async () => {
               await add({
                 data: {params: [{...sku, formId: sku.skuId, type: 'sku'}]}
@@ -195,34 +205,39 @@ const Set = () => {
 
   const searchForm = () => {
     return <>
-      <GroupSku onChange={(id, type, otherData = {}) => {
-        if (type === 'reset') {
-          tableRef.current.reset();
-          return;
-        }
-        tableRef.current.formActions.setFieldValue('spuClass', null);
-        tableRef.current.formActions.setFieldValue('skuName', null);
-        tableRef.current.formActions.setFieldValue('partsSkuId', null);
-        switch (type) {
-          case 'skuClass':
-            tableRef.current.formActions.setFieldValue('spuClass', id);
-            break;
-          case 'skuName':
-            tableRef.current.formActions.setFieldValue('skuName', id);
-            break;
-          case 'parts':
-            setBomId(id);
-            tableRef.current.formActions.setFieldValue('partsSkuId', otherData.skuId);
-            break;
-          default:
-            break;
-        }
-        tableRef.current.submit();
-      }} />
+      <GroupSku
+        onChange={(id, type) => {
+          if (type === 'reset') {
+            setSearchValue('');
+            tableRef.current.reset();
+            return;
+          }
+          tableRef.current.formActions.setFieldValue('categoryId', null);
+          tableRef.current.formActions.setFieldValue('keyWord', null);
+          tableRef.current.formActions.setFieldValue('partsId', null);
+          switch (type) {
+            case 'skuClass':
+              setSearchValue('');
+              tableRef.current.formActions.setFieldValue('categoryId', id);
+              break;
+            case 'skuName':
+              setSearchValue(id);
+              tableRef.current.formActions.setFieldValue('keyWord', id);
+              break;
+            case 'parts':
+              setSearchValue('');
+              setBomId(id);
+              tableRef.current.formActions.setFieldValue('partsId', id);
+              break;
+            default:
+              break;
+          }
+          tableRef.current.submit();
+        }} />
       <div hidden>
-        <FormItem name="skuName" label="基础物料" component={Input} />
-        <FormItem name="spuClass" label="基础物料" component={Input} />
-        <FormItem name="partsSkuId" label="基础物料" component={Input} />
+        <FormItem name="keyWord" component={Input} />
+        <FormItem name="partsId" component={Input} />
+        <FormItem name="categoryId" component={Input} />
       </div>
       {
         showBatch && <Space align="center">
@@ -270,14 +285,14 @@ const Set = () => {
       onReset={() => setBomId()}
       contentHeight="calc(100vh - 175px)"
       formSubmit={(values) => {
-        setShowBatch(values.partsSkuId);
+        setShowBatch(values.partsId);
         return values;
       }}
       SearchButton
       noTableColumnSet
       loading={addLoading}
       searchForm={searchForm}
-      api={skuList}
+      api={skuV1List}
       ref={tableRef}
       rowKey="skuId"
       columns={columns}

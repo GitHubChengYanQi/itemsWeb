@@ -1,5 +1,6 @@
-import React, { useState} from 'react';
-import {Menu, Modal} from 'antd';
+import React, {useRef, useState} from 'react';
+import {Menu} from 'antd';
+import Modal from '@/components/Modal';
 import TopLayout from '@/layouts/TopLayout';
 import RemindList from '@/pages/Portal/remind/remindList';
 import SetView from '@/layouts/SetView';
@@ -8,7 +9,7 @@ import SetView from '@/layouts/SetView';
 const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) => {
 
   const [type, setType] = useState(null);
-  const [visible, showModel] = useState(false);
+  const ref = useRef(null);
 
   const RenderComponent = () => {
     switch (type) {
@@ -32,15 +33,13 @@ const RightMenu = ({mode = 'horizontal', theme, width = '50%', buttons = []}) =>
           style={{width: '100%'}}
           onClick={(item) => {
             setType(item.key);
-            showModel(true);
+            ref.current.open(false);
           }}
           items={[
             {key: '售后提醒管理', label: '售后提醒管理'},
           ]}
         />} />
-      <Modal centered destroyOnClose maskClosable={false} width={860} open={visible} onCancel={() => {
-        showModel(false);
-      }} footer={null}>{RenderComponent()}</Modal>
+      <Modal width={1200} headTitle={type} ref={ref}>{RenderComponent()}</Modal>
     </>
   );
 };

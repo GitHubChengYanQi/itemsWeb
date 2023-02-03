@@ -34,18 +34,17 @@ const NavigationDifferenceList = () => {
     );
   };
 
- const searchForm = () => {
-   return (
-     <>
-       <FormItem label="分类" name="difference" component={SysField.Difference}/>
-     </>
+  const searchForm = () => {
+    return (
+      <>
+        <FormItem label="分类" name="difference" component={SysField.Difference}/>
+      </>
     );
   };
 
   return (
     <>
       <Table
-        title={<Breadcrumb title='导航分类管理' />}
         api={navigationDifferenceList}
         rowKey="classificationId"
         searchForm={searchForm}

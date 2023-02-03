@@ -49,7 +49,6 @@ const TaxRateList = () => {
   return (
     <div style={{padding:16}}>
       <Table
-        title={<Breadcrumb title='税率管理' />}
         api={taxRateList}
         contentHeight
         listHeader={false}

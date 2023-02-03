@@ -45,7 +45,6 @@ const BannerDifferenceList = () => {
   return (
     <>
       <Table
-        title={<Breadcrumb title='轮播图分类管理' />}
         api={bannerDifferenceList}
         rowKey="classificationId"
         searchForm={searchForm}

@@ -52,7 +52,6 @@ const SpeechcraftTypeList = () => {
     <>
       <Table
         contentHeight
-        title={<Breadcrumb />}
         api={speechcraftTypeList}
         rowKey="speechcraftTypeId"
         searchForm={searchForm}

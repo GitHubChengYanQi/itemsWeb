@@ -84,7 +84,7 @@ const List = () => {
       title: '库存数量', width: 100, sorter: true, dataIndex: 'number'
     },
     {
-      title: '未到货数量', width: 120, sorter: true, dataIndex: 'floatingCargoNumber', render(value) {
+      title: '在途数量', width: 120, sorter: true, dataIndex: 'floatingCargoNumber', render(value) {
         return <Button type="link" onClick={() => {
           history.push('/purchase/order');
         }}>{value}</Button>;

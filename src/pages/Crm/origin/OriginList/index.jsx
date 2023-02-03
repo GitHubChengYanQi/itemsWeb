@@ -72,7 +72,6 @@ const OriginList = () => {
           setIds(keys);
         }}
         contentHeight
-        title={<Breadcrumb title="项目来源" />}
         api={originList}
         rowKey="originId"
         searchForm={searchForm}

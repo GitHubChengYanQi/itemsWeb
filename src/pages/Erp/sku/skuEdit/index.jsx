@@ -17,6 +17,7 @@ import {spuDetail} from '@/pages/Erp/spu/spuUrl';
 import BrandIds from '@/pages/Erp/brand/components/BrandIds';
 import {isArray, isObject} from '@/util/Tools';
 import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
+import styles from './index.module.less';
 
 const {FormItem} = Form;
 
@@ -93,8 +94,9 @@ const SkuEdit = ({...props}, ref) => {
   return (
     <div style={{padding: 16}}>
       <Form
+        className={typeSetting.length > 0 ? '' : styles.skuClass}
         labelCol={6}
-        wrapperCol={18}
+        wrapperCol={15}
         {...other}
         value={value.skuId || false}
         ref={formRef}
@@ -106,7 +108,6 @@ const SkuEdit = ({...props}, ref) => {
           setDetails(res);
           return {
             ...res,
-            materialId: isArray(res.materialIdList)[0],
             spu: res.spuResult,
             brandIds: isArray(res.brandResults).map(item => item.brandId),
           };
@@ -131,7 +132,6 @@ const SkuEdit = ({...props}, ref) => {
             ...submitValue,
             type: 0,
             isHidden: true,
-            materialId: submitValue.materialId ? [submitValue.materialId] : [],
             skuId: value.copy ? null : value.skuId,
             oldSkuId: copy ? value.skuId : null,
             spu: {...submitValue.spu, coding: submitValue.spuCoding},
