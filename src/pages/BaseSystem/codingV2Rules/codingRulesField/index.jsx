@@ -72,6 +72,8 @@ export const Values = (props) => {
       } else {
         setType('自定义');
       }
+    }else {
+      setType('通用');
     }
   }, [value]);
 
@@ -82,7 +84,7 @@ export const Values = (props) => {
       options: codingRules?.generalRuleList || []
     },
     ...(moduleRules ? [{
-      label: '模块',
+      label: moduleRules.name,
       options: moduleRules.ruleList || []
     }] : []),
     {

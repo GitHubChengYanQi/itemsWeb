@@ -7,19 +7,20 @@
 
 import React, {useRef} from 'react';
 import {createFormActions} from '@formily/antd';
-import {Button, Radio, Table as AntTable, Spin} from 'antd';
+import {Button, Radio, Table as AntTable} from 'antd';
 import Table from '@/components/Table';
 import DelButton from '@/components/DelButton';
 import AddButton from '@/components/AddButton';
 import EditButton from '@/components/EditButton';
 import Form from '@/components/Form';
-import {codingRulesV2Delete, codingRulesV2Edit, codingRulesV2List, getRuleV2} from '../codingRulesUrl';
+import {codingRulesV2Delete, codingRulesV2Edit, codingRulesV2List} from '../codingRulesUrl';
 import CodingRulesEdit from '../codingRulesEdit';
 import * as SysField from '../codingRulesField';
 import Breadcrumb from '@/components/Breadcrumb';
 import Modal from '@/components/Modal';
 import {useRequest} from '@/util/Request';
 import {isArray} from '@/util/Tools';
+import store from '@/store';
 
 const formActionsPublic = createFormActions();
 const {Column} = AntTable;
@@ -30,6 +31,10 @@ const CodingRulesList = () => {
   const formRef = useRef(null);
   const tableRef = useRef(null);
 
+  const [state] = store.useModel('dataSource');
+
+  const rules = state.codingRules || {};
+
   const {run} = useRequest(codingRulesV2Edit, {
     manual: true,
     onSuccess: () => {
@@ -37,12 +42,7 @@ const CodingRulesList = () => {
     }
   });
 
-  const {loading: rulesLoading, data: rules = {}} = useRequest(getRuleV2);
-
   const actions = () => {
-    if (rulesLoading) {
-      return <Spin />;
-    }
     return (
       <>
         <AddButton onClick={() => {
@@ -70,7 +70,7 @@ const CodingRulesList = () => {
   return (
     <>
       <Table
-        loading={rulesLoading}
+        noTableColumnSet
         title={<Breadcrumb title="编码规则管理" />}
         isModal
         formActions={formActionsPublic}
@@ -83,9 +83,7 @@ const CodingRulesList = () => {
       >
         <Column title="规则名称" dataIndex="name" />
         <Column title="对应模块" width={100} dataIndex="module" render={(value) => {
-          return (
-            <>{module(value)}</>
-          );
+          return module(value);
         }} />
         <Column title="默认规则" dataIndex="state" render={(value, record) => {
           return (

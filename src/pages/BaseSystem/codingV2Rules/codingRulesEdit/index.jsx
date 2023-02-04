@@ -23,7 +23,7 @@ const ApiConfig = {
   save: codingRulesV2Edit
 };
 
-const CodingRulesEdit = ({rules,...props}, ref) => {
+const CodingRulesEdit = ({rules, ...props}, ref) => {
 
   const formRef = useRef();
 
@@ -41,7 +41,7 @@ const CodingRulesEdit = ({rules,...props}, ref) => {
         api={ApiConfig}
         fieldKey="codingRulesId"
         onSubmit={(values) => {
-          const codings = isArray(values.codings).filter(item => item && item.values);
+          const codings = isArray(values.codings).filter(item => item && item.value);
           if (codings.length === 0) {
             message.warn('请配置规则!');
             return false;
@@ -55,9 +55,17 @@ const CodingRulesEdit = ({rules,...props}, ref) => {
 
           const {setFieldState} = createFormActions();
 
-          FormEffectHooks.onFieldValueChange$('module').subscribe(({value}) => {
+          FormEffectHooks.onFieldValueChange$('module').subscribe(({value,inputed}) => {
+            if (inputed){
+              setFieldState(
+                'codings',
+                state => {
+                  state.value = [{}];
+                }
+              );
+            }
             setFieldState(
-              'codings.*.values',
+              'codings.*.value',
               state => {
                 state.props.module = value;
               }
@@ -95,7 +103,7 @@ const CodingRulesEdit = ({rules,...props}, ref) => {
                           <div style={{display: 'inline-block', marginRight: 8,}}>
                             <FormItem
                               codingRules={rules}
-                              name={`codings.${index}.values`}
+                              name={`codings.${index}.value`}
                               component={SysField.Values}
                             />
                           </div>

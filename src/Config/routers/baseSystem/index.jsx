@@ -1,13 +1,14 @@
-import { lazy } from 'react';
+import {lazy} from 'react';
 import BaseSystem from '@/pages/BaseSystem';
-import { GenRouter } from '@/pages/BaseSystem/gen/GenRouter';
-import { LoginLogRouter } from '@/pages/BaseSystem/loginLog/loginLogRouter';
-import { SysDeptRouter } from '@/pages/BaseSystem/sysDept/sysDeptRouter';
+import {GenRouter} from '@/pages/BaseSystem/gen/GenRouter';
+import {LoginLogRouter} from '@/pages/BaseSystem/loginLog/loginLogRouter';
+import {SysDeptRouter} from '@/pages/BaseSystem/sysDept/sysDeptRouter';
 import {ConfigRouter} from '@/pages/BaseSystem/config/configRouter';
 import {CodingRulesRouter} from '@/pages/BaseSystem/codingRules/codingRulesRouter';
 import {OperationLogRouter} from '@/pages/BaseSystem/operationLog/operationLogRouter';
 import {ProductionStationRouter} from '@/pages/BaseSystem/productionStation/productionStationRouter';
 import DesignConfig from '@/pages/Design/router';
+import {CodingV2RulesRouter} from '@/pages/BaseSystem/codingV2Rules/codingRulesRouter';
 
 const systemConfig = [
 
@@ -21,6 +22,7 @@ const systemConfig = [
       ...GenRouter,
       ...ConfigRouter,
       ...CodingRulesRouter,
+      ...CodingV2RulesRouter,
       ...OperationLogRouter,
       ...ProductionStationRouter,
       ...DesignConfig,
@@ -63,18 +65,18 @@ const systemConfig = [
 
       {
         path: '/dictType',
-        name:'字典管理',
+        name: '字典管理',
         component: lazy(() => import('@/pages/BaseSystem/dictType/List')),
         exact: true,
       },
       {
         path: '/dictType/purchaseConfig',
-        name:'采购配置管理',
+        name: '采购配置管理',
         component: lazy(() => import('@/pages/BaseSystem/dictType/components/purchaseConfig/purchaseConfigList')),
       },
       {
         path: '/dictType/:dictTypeId',
-        name:'字典管理',
+        name: '字典管理',
         component: lazy(() => import('@/pages/BaseSystem/dictType/dict/List')),
       },
       {

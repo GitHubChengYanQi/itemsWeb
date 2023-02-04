@@ -7,9 +7,9 @@
 
 import React, {lazy} from 'react';
 
-export const CodingRulesRouter = [
+export const CodingV2RulesRouter = [
   {
-    path: '/codingRules',
+    path: '/codingRule',
     component: lazy(() => import('../codingRulesList')),
     fallback: <div>loading...</div>,
     exact: true,
