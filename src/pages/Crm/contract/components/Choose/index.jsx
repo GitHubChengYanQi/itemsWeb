@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Select} from 'antd';
 import {useRequest} from '@/util/Request';
 import {customerIdSelect} from '@/pages/Erp/order/OrderUrl';
-import {skuListSelect} from '@/pages/Erp/Spus/spuUrl';
-import SelectSku from '@/pages/Erp/sku/components/SelectSku';
 
 const Choose = ({type, value, width,placeholder, onChange}) => {
 

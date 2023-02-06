@@ -13,7 +13,6 @@ import Cascader from '@/components/Cascader';
 import Select from '@/components/Select';
 import {useRequest} from '@/util/Request';
 import {spuListSelect} from '@/pages/Erp/parts/PartsUrl';
-import {unitListSelect} from '@/pages/Erp/Spus/spuUrl';
 import {
   spuClassificationTreeVrew
 } from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
@@ -27,6 +26,7 @@ import SpuClassificationEdit from '@/pages/Erp/spu/components/spuClassification/
 import UnitEdit from '@/pages/Erp/unit/unitEdit';
 import {materialListSelect} from '@/pages/Erp/material/MaterialUrl';
 import MaterialEdit from '@/pages/Erp/material/MaterialEdit';
+import {unitListSelect} from '@/pages/Erp/unit/unitUrl';
 
 export const Type = (props) => {
 
