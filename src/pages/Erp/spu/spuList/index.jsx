@@ -87,7 +87,7 @@ const SpuList = () => {
             </>
           );
         }} sorter />
-        <Column title="操作" fixed="right" align="right" render={(value, record) => {
+        <Column title="操作" width={150} fixed="right" align="right" render={(value, record) => {
           return (
             <>
               <EditButton onClick={() => {

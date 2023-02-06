@@ -135,7 +135,7 @@ const SpuList = () => {
               break;
           }
         }} sorter />
-        <Column title="养护周期" key={6} width={120} align="center" dataIndex="curingCycle" render={(value) => {
+        <Column title="养护周期" key={6} width={120} align='center' dataIndex="curingCycle" render={(value) => {
           return (
             <>
               {value && `${value}天`}
@@ -143,7 +143,7 @@ const SpuList = () => {
           );
         }} sorter />
         <Column />
-        <Column title="操作" key={7} fixed="right" align="right" render={(value, record) => {
+        <Column title="操作" width={150} key={7} fixed="right" align="center" render={(value, record) => {
           return (
             <>
               <EditButton onClick={() => {
