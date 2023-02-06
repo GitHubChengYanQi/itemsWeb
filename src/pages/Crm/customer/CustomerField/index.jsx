@@ -6,10 +6,9 @@
  */
 
 import React, {useEffect, useRef} from 'react';
-import {Input, Select as AntdSelect, Radio, AutoComplete, Spin, Space, Button, Tag, Popover} from 'antd';
+import {Input, Select as AntdSelect, Radio, AutoComplete, Spin, Space, Button, Tag} from 'antd';
 import moment from 'moment';
 import ProCard from '@ant-design/pro-card';
-import {useBoolean} from 'ahooks';
 import Select from '@/components/Select';
 import * as apiUrl from '@/pages/Crm/customer/CustomerUrl';
 import {useRequest} from '@/util/Request';
@@ -21,19 +20,13 @@ import AdressMap from '@/pages/Crm/customer/components/AdressMap';
 import FileUpload from '@/components/FileUpload';
 import AddSkuTable from '@/pages/Crm/customer/components/AddSkuTable';
 import CheckSku from '@/pages/Erp/sku/components/CheckSku';
-import {companyRoleList} from '@/pages/Crm/companyRole/companyRoleUrl';
 import Modal from '@/components/Modal';
 import SetSelectOrCascader from '@/components/SetSelectOrCascader';
-import CrmIndustryList from '@/pages/Crm/crmIndustry/crmIndustryList';
 import {bankListSelect} from '@/pages/Purshase/bank/bankUrl';
 import InputNumber from '@/components/InputNumber';
-import Drawer from '@/components/Drawer';
 import BankEdit from '@/pages/Purshase/bank/bankEdit';
 import UpLoadImg from '@/components/Upload';
 import CrmIndustryEdit from '@/pages/Crm/crmIndustry/crmIndustryEdit';
-import SpuClassificationEdit from '@/pages/Erp/spu/components/spuClassification/spuClassificationEdit';
-import {unitListSelect} from '@/pages/Erp/Spus/spuUrl';
-import UnitEdit from '@/pages/Erp/unit/unitEdit';
 
 export const ContactsName = (props) => {
 

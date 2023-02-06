@@ -17,7 +17,7 @@ import Empty from '@/components/Empty';
 import Modal from '@/components/Modal';
 import SkuTable from '@/pages/Erp/sku/SkuTable';
 import Overflow from '@/components/Overflow';
-import AddSku from '@/pages/Erp/Spus/components/AddSku';
+import AddSku from '@/pages/Erp/spu/components/AddSku';
 
 
 const SpuDetail = () => {

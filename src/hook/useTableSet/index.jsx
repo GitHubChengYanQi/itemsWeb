@@ -45,16 +45,18 @@ const useTableSet = (column, tableKey) => {
   tableKey && Array.isArray(tableColumn) && tableColumn.map((items) => {
     const props = items.props || {};
     if (items && items.key && (items.title || props.title)) {
+      const visible = items.fixed || props.fixed;
       return itemsData.push({
         title: items.title || props.title,
         key: items.key,
-        visible: items.fixed || props.fixed,
+        visible,
         checked: items.checked,
         align: items.align || props.align || 'left',
       });
     }
     return null;
   });
+
 
   const md5TableKey = () => {
     let keys = '';
@@ -150,11 +152,12 @@ const useTableSet = (column, tableKey) => {
                   return items.key === columns.key;
                 });
                 if (columns && columns[0]) {
+                  const props = columns[0].props || {};
                   tableColumns.push({
                     ...columns[0],
                     checked: items.checked,
                     align: items.align,
-                    props: {...isObject(columns[0].props), align: items.align}
+                    props: {...props, align: items.align || props.align}
                   });
                 }
                 return null;

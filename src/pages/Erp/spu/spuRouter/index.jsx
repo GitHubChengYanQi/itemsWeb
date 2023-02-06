@@ -7,21 +7,17 @@
 
 import React, {lazy} from 'react';
 
-export const SpuRouter = [
+export const SPUSRouter = [
   {
-    path: '/spu',
-    name:'物料管理',
+    path: '/SPUS',
+    name:'产品管理',
     component: lazy(() => import('../spuList')),
     fallback: <div>loading...</div>,
     exact: true,
-  },{
-    path: '/spu/add',
-    component: lazy(() => import('../spuEdit')),
-    fallback: <div>loading...</div>,
-    exact: true,
-  },{
-    path: '/spu/parts/:cid',
-    component: lazy(() => import('../../parts/PartsList')),
+  },
+  {
+    path: '/SPUS/detail/:cid',
+    component: lazy(() => import('../components/SpuDetail/index')),
     fallback: <div>loading...</div>,
     exact: true,
   }
