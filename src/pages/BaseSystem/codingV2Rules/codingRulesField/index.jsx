@@ -56,7 +56,7 @@ export const Values = (props) => {
 
   const [number, setNumber] = useState();
 
-  const [type, setType] = useState(true);
+  const [type, setType] = useState('通用');
 
   const moduleRules = isArray(codingRules?.modelRuleList).find(item => item.module === module);
 
@@ -64,7 +64,7 @@ export const Values = (props) => {
     if (value) {
       const generalRule = isArray(codingRules?.generalRuleList).find(item => item.value === value);
       const moduleRule = isArray(moduleRules?.ruleList).find(item => item.value === value);
-      if (/\$\{(serial.*?(\[(\d[0-9]?)\]))\}/.test(value)) {
+      if (/\${(serial.*?(\[(\d[0-9]?)]))}/.test(value)) {
         setNumber(value.split('[')[1].split(']')[0]);
         setType('流水号');
       } else if (generalRule || moduleRule) {
@@ -72,7 +72,7 @@ export const Values = (props) => {
       } else {
         setType('自定义');
       }
-    }else {
+    } else {
       setType('通用');
     }
   }, [value]);
@@ -90,7 +90,6 @@ export const Values = (props) => {
     {
       label: '自定义',
       options: [
-        // eslint-disable-next-line no-template-curly-in-string
         {label: '自定义', value: '自定义'},
       ]
     },
