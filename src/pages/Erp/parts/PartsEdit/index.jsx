@@ -5,13 +5,13 @@
  * @Date 2021-07-14 14:30:20
  */
 
-import React, {useImperativeHandle, useRef, useState} from 'react';
-import {Button, message, Select} from 'antd';
+import React, {useRef, useState} from 'react';
+import {Button, Col, Drawer, message, Row, Select} from 'antd';
 import {createFormActions, FormEffectHooks} from '@formily/antd';
 import ProCard from '@ant-design/pro-card';
 import * as SysField from '../PartsField';
 import Form from '@/components/Form';
-import {partsV1Detail, partsV2Add} from '../PartsUrl';
+import {partsAdd, partsDetail, partsV1Detail, partsV2Add} from '../PartsUrl';
 import {Codings} from '@/pages/Erp/sku/skuField';
 import {request, useRequest} from '@/util/Request';
 import {spuDetail} from '@/pages/Erp/spu/spuUrl';
@@ -19,27 +19,43 @@ import {categoryDetail} from '@/pages/Erp/category/categoryUrl';
 import Modal from '@/components/Modal';
 import PartsList from '@/pages/Erp/parts/PartsList';
 import {isArray} from '@/util/Tools';
+import styles from './index.module.less';
 
 const {FormItem} = Form;
 
-const ApiConfig = {
-  view: partsV1Detail,
-  add: partsV2Add,
-  save: partsV2Add
-  // view: partsDetail,
-  // add: partsAdd,
-  // save: partsAdd
+export const partApiConfig = {
+  // view: partsV1Detail,
+  // add: partsV2Add,
+  // save: partsV2Add
+  view: partsDetail,
+  add: partsAdd,
+  save: partsAdd
 };
 
 const formActionsPublic = createFormActions();
 
-const PartsEdit = ({...props}, ref) => {
+const PartsEdit = (props) => {
 
-  const {spuId, value, spuSkuId, onSuccess, sku, ...other} = props;
+  const {
+    spuId,
+    value,
+    spuSkuId,
+    onSuccess,
+    sku,
+    onFull = () => {
+    },
+    ...other
+  } = props;
 
   const partsRef = useRef();
 
   const formRef = useRef(null);
+
+  const [select, setSelect] = useState([]);
+
+  const [open, setOpen] = useState();
+
+  const [full, setFull] = useState();
 
   const {loading: partsLoading, run: parts} = useRequest(partsV1Detail, {
     manual: true,
@@ -54,17 +70,11 @@ const PartsEdit = ({...props}, ref) => {
     }
   });
 
-  useImperativeHandle(ref, () => ({
-    submit: formRef.current.submit,
-  }));
-
   const [type, setType] = useState((!value && spuId) ? 0 : 1);
-
-  const [deleted, setDeleted] = useState([]);
 
   return (
     <>
-      <div style={{padding: 16}}>
+      <div className={styles.edit}>
         <Form
           {...other}
           value={value}
@@ -85,7 +95,7 @@ const PartsEdit = ({...props}, ref) => {
             };
           }}
           noButton
-          api={ApiConfig}
+          api={partApiConfig}
           formActions={formActionsPublic}
           fieldKey="partsId"
           onSuccess={(res) => {
@@ -94,29 +104,7 @@ const PartsEdit = ({...props}, ref) => {
           effects={({setFieldState}) => {
 
             FormEffectHooks.onFieldValueChange$('item').subscribe(async ({value}) => {
-              if (value && value.skuId) {
-                const array = isArray(value.list).map((item) => {
-                  return {
-                    label: item.itemAttributeResult.attribute,
-                    value: item.attributeValues
-                  };
-                });
-
-                setFieldState('showSkuCoding', state => {
-                  state.value = value.standard;
-                  state.visible = value.standard;
-                });
-
-                setFieldState('bom', state => {
-                  // state.value = value;
-                  // state.visible = value;
-                });
-
-                setFieldState('showSku', state => {
-                  state.value = array;
-                  state.visible = array.length > 0;
-                });
-              } else if (value && value.spuId) {
+              if (value && value.spuId) {
                 const res = await request({...spuDetail, data: {spuId: value.spuId}});
                 if (res && res.categoryId) {
                   const category = await request({...categoryDetail, data: {categoryId: res.categoryId}});
@@ -158,115 +146,126 @@ const PartsEdit = ({...props}, ref) => {
         >
 
           <ProCard className="h2Card" headerBordered title="父件信息">
-            <FormItem
-              required
-              label="版本号"
-              name="name"
-              component={SysField.Name}
-            />
-            <FormItem
-              visible={false}
-              label="物料编码"
-              name="showSkuCoding"
-              component={SysField.Show}
-            />
-            <FormItem
-              label={
-                <Select
-                  defaultValue={type}
-                  bordered={false}
-                  disabled={sku || value || spuId}
-                  options={[{label: '产品', value: 0}, {label: '物料', value: 1}]}
-                  onChange={(value) => {
-                    setType(value);
-                  }}
+            <Row>
+              <Col span={12}>
+                <FormItem
+                  required
+                  label="版本号"
+                  name="name"
+                  component={SysField.Name}
                 />
-              }
-              name="item"
-              type={type}
-              spuId={spuId}
-              disabled={sku || value || spuId}
-              component={type ? SysField.Sku : SysField.Spu}
-              required
-            />
-
-            <FormItem
-              visible={false}
-              label="物料描述"
-              name="showSku"
-              wrapperCol={10}
-              component={SysField.ShowSku}
-            />
-
-            <FormItem
-              visible={false}
-              label="上级BOM"
-              name="bom"
-              component={SysField.Bom}
-            />
+              </Col>
+              <Col span={12}>
+                <FormItem
+                  label={
+                    <Select
+                      defaultValue={type}
+                      bordered={false}
+                      disabled={sku || value || spuId}
+                      options={[{label: '产品', value: 0}, {label: '物料', value: 1}]}
+                      onChange={(value) => {
+                        setType(value);
+                      }}
+                    />
+                  }
+                  name="item"
+                  type={type}
+                  spuId={spuId}
+                  disabled={sku || value || spuId}
+                  component={type ? SysField.Sku : SysField.Spu}
+                  required
+                />
+              </Col>
+            </Row>
 
             {!type && <>
-              <FormItem label="编码" name="standard" module={0} component={Codings} required />
-              <FormItem
-                label="型号"
-                name="skuName"
-                component={SysField.SkuName}
-                required
-              />
-              <FormItem
-                label="配置"
-                name="sku"
-                title="配置项"
-                component={SysField.Attributes}
-                required
-              />
-              <FormItem
-                label="规格"
-                placeholder="无规格内容可填写“型号”"
-                name="specifications"
-                component={SysField.SkuName}
-              />
-              <FormItem label="备注" name="note" component={SysField.Note} />
+              <Row>
+                <Col span={12}>
+                  <FormItem label="编码" name="standard" module={0} component={Codings} required />
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    label="型号"
+                    name="skuName"
+                    component={SysField.SkuName}
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    label="配置"
+                    name="sku"
+                    title="配置项"
+                    component={SysField.Attributes}
+                    required
+                  />
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    label="规格"
+                    placeholder="无规格内容可填写“型号”"
+                    name="specifications"
+                    component={SysField.SkuName}
+                  />
+                </Col>
+              </Row>
             </>}
+
+            <div hidden={select.length === 0} className={styles.line} />
           </ProCard>
 
-          <FormItem
-            name="parts"
-            loading={partsLoading}
-            component={SysField.AddSku}
-            deteted={deleted}
-            setDeleted={(skus) => {
-              setDeleted([...deleted, ...skus].map((item, index) => ({...item, key: index})));
-            }}
-            extraButton={<Button onClick={() => {
+          <ProCard
+            bodyStyle={{padding: '0 16px'}}
+            className="h2Card"
+            title="子件信息"
+            extra={<Button onClick={() => {
               partsRef.current.open(spuSkuId || true);
             }}>拷贝BOM</Button>}
-          />
-
-          <FormItem
-            visible={deleted.length > 0}
-            name="back"
-            deleted={deleted}
-            setDeleted={setDeleted}
-            component={SysField.BackSku}
-            onBack={(skus = []) => {
-              const partSkus = formRef.current.getFieldValue('parts');
-              const exits = [];
-              let newParts = partSkus.map((partItem) => {
-                const skuItem = skus.find(item => partItem.skuId === item.skuId);
-                if (skuItem) {
-                  exits.push(skuItem.key);
-                  return skuItem;
-                }
-                return partItem;
-              });
-              if (exits.length !== skus.length) {
-                newParts = [...newParts, ...skus.filter(item => !exits.includes(item.key))];
-              }
-              formRef.current.setFieldValue('parts', newParts);
-            }}
-          />
+          >
+            <FormItem
+              itemStyle={{margin: 0}}
+              name="parts"
+              loading={partsLoading}
+              onChange={(value) => {
+                setSelect(value);
+              }}
+              openNewEdit={(id) => {
+                onFull(true);
+                setOpen(id || true);
+              }}
+              component={SysField.AddSku}
+            />
+          </ProCard>
         </Form>
+
+        <div
+          className={styles.bottom}
+        >
+          <Button type="primary" onClick={() => {
+            formRef.current.submit();
+          }}>保存</Button>
+        </div>
+
+        <Drawer
+          destroyOnClose
+          push={false}
+          bodyStyle={{padding: 0}}
+          width={full ? '100%' : '90%'}
+          closable={false}
+          onClose={() => {
+            onFull(false);
+            setOpen(false);
+          }}
+          open={open}
+          getContainer={false}
+        >
+          <PartsEdit
+            value={open === true ? false : open}
+            onFull={setFull}
+          />
+        </Drawer>
       </div>
 
       <Modal
@@ -289,4 +288,4 @@ const PartsEdit = ({...props}, ref) => {
   );
 };
 
-export default React.forwardRef(PartsEdit);
+export default PartsEdit;

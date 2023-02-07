@@ -11,7 +11,7 @@ import {ProcessRouteRouter} from '@/pages/ReSearch/ProcessRoute/route';
 const SpuRouterConfig = [
   {
     path: '/SPU',
-    name: '产品物料',
+    name: '产研管理',
     component: SpuLayout,
     children: [
       ...SkuRouter,

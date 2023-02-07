@@ -1,29 +1,24 @@
-import React, {useRef, useState} from 'react';
-import {Alert, Button, Input, Radio, Spin, Table} from 'antd';
+import React, {useImperativeHandle, useRef, useState} from 'react';
+import {Alert, Button, List, Select, Space, Spin} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
 import InputNumber from '@/components/InputNumber';
-import Render from '@/components/Render';
-import Note from '@/components/Note';
 import {useRequest} from '@/util/Request';
 import {bomsByskuId} from '@/pages/Erp/parts/PartsUrl';
 import Modal from '@/components/Modal';
 import styles from './index.module.less';
 import Icon from '@/components/Icon';
+import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
+import Note from '@/components/Note';
 
 const AddSkuTable = ({
-  back,
   value = [],
   onChange = () => {
   },
-  setDeleted = () => {
-  },
-  onBack = () => {
+  openNewEdit = () => {
   }
-}) => {
+}, ref) => {
 
   const versionModalRef = useRef();
-
-  const [keys, setKeys] = useState([]);
 
   const [bomVersions, setBomVersions] = useState([]);
 
@@ -53,142 +48,97 @@ const AddSkuTable = ({
     }
   });
 
+  const addNewItem = () => {
+    const partsList = document.getElementById('partsListId');
+    partsList.scrollTop = partsList.scrollHeight;
+  };
+
+  useImperativeHandle(ref, () => ({
+    addNewItem,
+  }));
+
   return <>
-    <Table
-      dataSource={dataSources}
-      pagination={false}
-      rowKey={back ? 'key' : 'skuId'}
-      footer={() => {
-        if (back) {
-          return <Button
-            type="link"
-            disabled={keys.length === 0}
-            icon={<DeleteOutlined />}
-            onClick={() => {
-              const ids = keys.map(item => item.key);
-              setDeleted(dataSources.filter((item) => {
-                return !ids.includes(item.key);
-              }));
-              setKeys([]);
-              onBack(keys);
-            }}
-            danger
-          >
-            批量还原
-          </Button>;
-        }
-        return <>
-          <Button
-            type="link"
-            disabled={keys.length === 0}
-            icon={<DeleteOutlined />}
-            onClick={() => {
-              const ids = keys.map((item) => {
-                return item.skuId;
-              });
-              const array = value.filter((item) => {
-                return !ids.includes(item.skuId);
-              });
-              setDeleted(keys);
-              onChange(array);
-              setKeys([]);
-            }}
-            danger
-          >
-            批量删除
-          </Button>
-        </>;
-      }}
-      rowSelection={{
-        selectedRowKeys: keys.map((item) => {
-          return item.skuId;
-        }),
-        onChange: (keys, record) => {
-          setKeys(record);
-        }
-      }}
-    >
-      <Table.Column title="序号" width={70} align="center" dataIndex="skuId" render={(value, record, index) => {
-        return <Render text={index + 1} width={50} />;
-      }} />
-      <Table.Column title="物料编号" width={150} dataIndex="standard" />
-      <Table.Column title="物料" width={150} dataIndex="spuName" render={(value, record) => {
-        return <Note
-          value={`${value} ${record.skuName ? ` / ${record.skuName}` : ''}${record.specifications ? ` / ${record.specifications}` : ''}`} />;
-      }} />
-      <Table.Column title="数量" width={150} dataIndex="number" align="center" render={(value, record) => {
-        return back ? (value || 1) : <Render><InputNumber value={value || 1} min={1} onChange={(value) => {
-          setValue({number: value}, record.skuId);
-        }} /></Render>;
-      }} />
-      <Table.Column title="投产方式" width={150} align="center" dataIndex="autoOutstock" render={(value, record) => {
-        if (back) {
-          return value === 0 ? '拉式' : '推式';
-        }
-        return <Render width={150}>
-          <Radio.Group
-            disabled={back}
-            defaultValue={1}
-            value={value}
-            onChange={({target: {value}}) => setValue({autoOutstock: value}, record.skuId)}
-          >
-            <Radio value={1}>推式</Radio>
-            <Radio value={0}>拉式</Radio>
-          </Radio.Group>
-        </Render>;
-      }} />
-
-      <Table.Column title="指定版本" dataIndex="bomNum" width={150} align="center" render={(value, record) => {
-        if (back) {
-          return (record.bomId ? (record.version || '-') : '选择版本');
-        }
-        return <Button
-          type="link"
-          disabled={!value}
-          onClick={() => {
-            bomsByskuIdRun({params: {skuId: record.skuId}});
-            versionModalRef.current.open(false);
-            setSkuId(record.skuId);
-            setCurrentVer(record.bomId);
-          }}
-        >{record.bomId ? (record.version || '-') : '选择版本'}</Button>;
-      }} />
-
-
-      <Table.Column title="备注" width={400} dataIndex="note" render={(value, record) => {
-        return back ? value : <Input.TextArea placeholder="请输入备注" rows={1} value={value} onChange={(value) => {
-          setValue({note: value.target.value}, record.skuId);
-        }} />;
-      }} />
-      <Table.Column title="操作" dataIndex="skuId" align="center" width={100} render={(value, record) => {
-        if (back) {
-          return <Button type="link" onClick={() => {
-            setDeleted(dataSources.filter((item) => {
-              return item.key !== record.key;
-            }));
-            setKeys(keys.filter((item) => {
-              return item.key !== record.key;
-            }));
-            onBack([record]);
-          }}>还原</Button>;
-        }
-        return <><Button
-          type="link"
-          icon={<DeleteOutlined />}
-          onClick={() => {
-            setDeleted([record]);
-            const array = dataSources.filter((item) => {
-              return item.skuId !== value;
-            });
-            setKeys(keys.filter((item) => {
-              return item.skuId !== value;
-            }));
-            onChange(array);
-          }}
-          danger
-        /></>;
-      }} />
-    </Table>
+    <div className={styles.checkList}>
+      {value.length > 0 && <div className={styles.line} />}
+      <List
+        id="partsListId"
+        className={styles.list}
+        itemLayout="horizontal"
+        dataSource={dataSources}
+        renderItem={(item, index) => {
+          return <div className={styles.listItem}>
+            <div className={index === dataSources.length - 1 ? styles.last : styles.leftBorder} />
+            <List.Item
+              className={styles.item}
+              actions={[
+                <Button
+                  style={{padding: 0}}
+                  size="large"
+                  type="link"
+                  danger
+                  onClick={() => {
+                    const array = dataSources.filter((dataItem) => {
+                      return item.skuId !== dataItem.skuId;
+                    });
+                    onChange(array);
+                  }}
+                >
+                  <DeleteOutlined />
+                </Button>,
+                <Button
+                  disabled={item.bomNum ? !item.bomId : false}
+                  style={{padding: 0}}
+                  type="link"
+                  onClick={() => {
+                    openNewEdit(item.bomId);
+                  }}
+                >
+                  {item.bomNum ? '查看详情' : '添加bom'}
+                </Button>
+              ]}
+            >
+              <List.Item.Meta
+                title={<Note maxWidth="94%" value={item.standard} />}
+                description={
+                  <div>
+                    <Note maxWidth="94%" value={SkuRender(item)} />
+                    {item.bomNum && <Button
+                      style={{padding: 0}}
+                      type="link"
+                      onClick={() => {
+                        bomsByskuIdRun({params: {skuId: item.skuId}});
+                        versionModalRef.current.open(false);
+                        setSkuId(item.skuId);
+                        setCurrentVer(item.bomId);
+                      }}
+                    >
+                      {item.bomId ? (item.version || '-') : '选择版本'}
+                    </Button>}
+                  </div>}
+              />
+              <Space>
+                <Select
+                  bordered={false}
+                  defaultValue={1}
+                  value={item.autoOutstock}
+                  options={[
+                    {label: '推式', value: 1},
+                    {label: '拉式', value: 0},
+                  ]}
+                  onChange={(value) => setValue({autoOutstock: value}, item.skuId)}
+                />
+                <Space align="center">
+                  数量：
+                  <InputNumber addonBefore="" width={100} value={item.number || 1} min={1} onChange={(value) => {
+                    setValue({number: value}, item.skuId);
+                  }} />
+                </Space>
+              </Space>
+            </List.Item>
+          </div>;
+        }}
+      />
+    </div>
 
     <Modal
       ref={versionModalRef}
@@ -230,4 +180,4 @@ const AddSkuTable = ({
   </>;
 };
 
-export default AddSkuTable;
+export default React.forwardRef(AddSkuTable);

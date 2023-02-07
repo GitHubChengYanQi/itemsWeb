@@ -9,7 +9,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, Descriptions, Space, Tag} from 'antd';
 import {createFormActions} from '@formily/antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
-import {config, useLocation} from 'ice';
+import {config, useHistory, useLocation} from 'ice';
 import cookie from 'js-cookie';
 import {backDetails, partsList} from '../PartsUrl';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -46,6 +46,7 @@ const PartsList = (
   }) => {
 
   const {state = {}} = useLocation();
+  const history = useHistory();
 
   const [formActionsPublic, setFormActionsPublic] = useState(createFormActions);
 
@@ -81,7 +82,8 @@ const PartsList = (
   const action = () => {
     return (
       <AddButton name="创建物料清单" onClick={() => {
-        refAdd.current.open(false);
+        history.push('/SPU/parts/edit');
+        // refAdd.current.open(false);
       }} />
     );
   };
@@ -260,7 +262,11 @@ const PartsList = (
                     :
                     <>
                       <EditButton onClick={() => {
-                        refAdd.current.open(record.id || value);
+                        history.push({
+                          pathname: '/SPU/parts/edit',
+                          search: `id=${record.id}`
+                        });
+                        // refAdd.current.open(record.id || value);
                       }} />
                       <Button type="link" onClick={() => {
                         showRef.current.open(record.id || value);

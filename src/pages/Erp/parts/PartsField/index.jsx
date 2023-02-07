@@ -11,7 +11,7 @@ import {
   InputNumber,
   Select as AntdSelect,
   Radio,
-  Spin, Descriptions, Button, Space,
+  Spin, Descriptions, Row, Col,
 } from 'antd';
 import ProCard from '@ant-design/pro-card';
 import Select from '@/components/Select';
@@ -22,10 +22,10 @@ import {useRequest} from '@/util/Request';
 import SpuAttribute from '@/pages/Erp/instock/components/SpuAttribute';
 import SelectSku from '@/pages/Erp/sku/components/SelectSku';
 import SkuConfiguration from '@/pages/Erp/sku/components/SkuConfiguration';
-import Modal from '@/components/Modal';
-import CheckSku from '@/pages/Erp/sku/components/CheckSku';
 import AddSkuTable from '@/pages/Erp/parts/components/AddSkuTable';
-import {isArray} from '@/util/Tools';
+import PartsSelectSkus from '@/pages/Erp/parts/PartsEdit/components/PartsSelectSkus';
+import styles from './index.module.less';
+
 export const BrandId = (props) => {
   return (<Select api={apiUrl.brandIdSelect} {...props} />);
 };
@@ -227,66 +227,39 @@ export const AddSku = (
     value = [],
     onChange,
     loading,
-    extraButton,
-    setDeleted = () => {
+    openNewEdit = () => {
     },
   }) => {
-
-  const ref = useRef();
 
   const addSkuRef = useRef();
 
   return (<>
-    <ProCard
-      style={{marginTop: 24}}
-      bodyStyle={{padding: 16}}
-      className="h2Card"
-      title="子件信息"
-      headerBordered
-      extra={<Space>
-        {extraButton}
-        <Button onClick={() => {
-          ref.current.open(true);
-        }}>批量添加物料</Button>
-      </Space>}
-    >
-
-      {
-        loading
-          ?
-          <div style={{textAlign: 'center'}}>
-            <Spin />
-          </div>
-          :
-          <AddSkuTable
-            setDeleted={setDeleted}
-            value={value}
-            onChange={onChange}
-          />
-      }
-    </ProCard>
-
-    <Modal
-      ref={ref}
-      width={1000}
-      headTitle="添加物料"
-      footer={<Space>
-        <Button onClick={() => {
-          const res = addSkuRef.current.check();
-          onChange(isArray(res));
-        }}>选中</Button>
-        <Button type="primary" onClick={() => {
-          const res = addSkuRef.current.change();
-          onChange(isArray(res));
-          ref.current.close();
-        }}>选中并关闭</Button>
-      </Space>}
-    >
-      <CheckSku
-        value={value}
-        ref={addSkuRef}
-      />
-    </Modal>
+    <Row gutter={24}>
+      <Col span={8} className={styles.left}>
+        <PartsSelectSkus value={value} onChange={(sku) => {
+          onChange([...value, sku]);
+          setTimeout(() => {
+            addSkuRef.current.addNewItem();
+          }, 0);
+        }} />
+      </Col>
+      <Col span={16}>
+        {
+          loading
+            ?
+            <div style={{textAlign: 'center'}}>
+              <Spin />
+            </div>
+            :
+            <AddSkuTable
+              ref={addSkuRef}
+              value={value}
+              openNewEdit={openNewEdit}
+              onChange={onChange}
+            />
+        }
+      </Col>
+    </Row>
   </>);
 };
 

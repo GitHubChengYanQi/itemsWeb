@@ -1,0 +1,27 @@
+.breadcrumb {
+  padding: 16px;
+}
+
+.left {
+  padding-left: 24px;
+}
+
+.list {
+  padding: 12px;
+
+  :global {
+    .ant-spin-container {
+      max-height: calc(100vh - 530px);
+      overflow: auto;
+
+      &::-webkit-scrollbar {
+        /* 滚动条整体样式 */
+        width: 4px; /* 高宽分别对应横竖滚动条的尺寸 */
+        height: 10px;
+      }
+    }
+  }
+}
+
+
+
