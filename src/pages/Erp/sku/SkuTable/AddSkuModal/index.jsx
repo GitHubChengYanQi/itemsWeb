@@ -11,6 +11,7 @@ const AddSkuModal = ({
   copy,
   edit,
   addRef,
+  add = true,
   onSuccess = () => {
   },
 }, ref) => {
@@ -32,7 +33,7 @@ const AddSkuModal = ({
       if (tableRef) {
         tableRef.current.submit();
       }
-      if (copy && nextCopy){
+      if (copy && nextCopy) {
         return;
       }
       addRef.current.close();
@@ -57,14 +58,15 @@ const AddSkuModal = ({
         setVisible({oldData, newData});
       }}
       onSuccess={(res, action) => {
-        onSuccess(action);
-        if (action) {
-          console.log(1);
-          tableRef.current.refresh();
-        } else {
-          tableRef.current.submit();
+        onSuccess(res);
+        if (tableRef) {
+          if (action) {
+            tableRef.current.refresh();
+          } else {
+            tableRef.current.submit();
+          }
         }
-        if (copy && nextCopy){
+        if (copy && nextCopy) {
           return;
         }
         addRef.current.close();
@@ -88,14 +90,14 @@ const AddSkuModal = ({
             formRef.current.nextAdd(true);
           }}
         >完成并添加下一个</Button>}
-        <Button
+        {add && <Button
           loading={loading}
           type="primary"
           ghost={copy}
           onClick={() => {
             formRef.current.nextAdd(false);
           }}
-        >完成</Button>
+        >完成</Button>}
       </>} />
 
     <AntModal

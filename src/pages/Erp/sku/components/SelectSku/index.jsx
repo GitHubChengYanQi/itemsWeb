@@ -5,10 +5,13 @@ import {skuDetail, skuList} from '@/pages/Erp/sku/skuUrl';
 import Modal from '@/components/Modal';
 import SkuEdit from '@/pages/Erp/sku/skuEdit';
 import Note from '@/components/Note';
+import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
+import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
 
 
 const SelectSku = (
   {
+    disabled,
     supply,
     value,
     onChange,
@@ -31,21 +34,11 @@ const SelectSku = (
     },
   }) => {
 
-  const formRef = useRef();
   const ref = useRef();
 
   const [change, setChange] = useState();
 
   const [open, setOpen] = useState(false);
-
-  const [addLoading, setAddLoading] = useState();
-
-  const skuLabel = (res) => {
-    if (!res.spuResult) {
-      return '';
-    }
-    return `${res.spuResult.name} / ${res.skuName} ${res.specifications ? `/ ${res.specifications}` : ''}`;
-  };
 
   const objects = (data) => {
 
@@ -62,7 +55,7 @@ const SelectSku = (
         disabled: skuIds && skuIds.filter((value) => {
           return value === skuItem.skuId;
         }).length > 0,
-        label: skuLabel(skuItem),
+        label: SkuResultSkuJsons({skuResult: skuItem}),
         value: skuItem.skuId,
         spu: skuItem.spuResult,
         standard: skuItem.standard,
@@ -116,7 +109,7 @@ const SelectSku = (
     manual: true,
     onSuccess: (res) => {
       onChange(res.skuId, res);
-      setChange(skuLabel(res));
+      setChange(SkuResultSkuJsons({skuResult: res}));
     }
   });
 
@@ -132,7 +125,7 @@ const SelectSku = (
         }
       });
     }
-  }, []);
+  }, [value]);
 
   useEffect(() => {
     if (spuClassId) {
@@ -147,6 +140,7 @@ const SelectSku = (
   }
   return (<>
     <Select
+      disabled={disabled}
       filterOption={false}
       style={{width: width || 200, ...style}}
       placeholder={placeholder || '搜索物料'}
@@ -166,16 +160,13 @@ const SelectSku = (
       onChange={(value, option) => {
         if (value === 'add') {
           ref.current.open(false);
+          onChange(null);
           return;
         }
         setChange(value);
         if (option) {
           if (option && option.key) {
-            detail({
-              data: {
-                skuId: option.key
-              }
-            });
+            onChange(option.key);
           }
         } else {
           onChange(null);
@@ -252,11 +243,8 @@ const SelectSku = (
     </Select>
 
 
-    <Modal
-      title="物料"
-      compoentRef={formRef}
-      loading={setAddLoading}
-      component={SkuEdit}
+    <AddSkuModal
+      addRef={ref}
       onSuccess={(res) => {
         detail({
           data: {
@@ -265,16 +253,7 @@ const SelectSku = (
         });
         ref.current.close();
       }}
-      ref={ref}
-      footer={<>
-        <Button
-          loading={addLoading}
-          type="primary"
-          onClick={() => {
-            formRef.current.nextAdd(false);
-          }}
-        >完成</Button>
-      </>} />
+    />
 
   </>);
 };

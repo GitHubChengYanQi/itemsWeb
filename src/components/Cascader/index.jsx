@@ -97,7 +97,7 @@ const Cascader = (
   };
 
   const filter = (inputValue, path) => {
-    return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+    return path.some(option => typeof option.label === 'string' && option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
   };
 
   return (<AntCascader

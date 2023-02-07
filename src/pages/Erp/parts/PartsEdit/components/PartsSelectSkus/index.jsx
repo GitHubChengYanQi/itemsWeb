@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Button, List} from 'antd';
-import {DoubleRightOutlined} from '@ant-design/icons';
 import styles from '../../../PartsEditV2/index.module.less';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 import {useRequest} from '@/util/Request';
@@ -8,14 +7,21 @@ import {skuV1List} from '@/pages/Erp/sku/skuUrl';
 import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
 import {isArray} from '@/util/Tools';
 import SearchValueFormat from '@/components/SearchValueFormat';
+import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
 
 const PartsSelectSkus = (
   {
     value = [],
     onChange = () => {
     },
-  }
+  }, ref
 ) => {
+
+  const searchRef = useRef();
+
+  const addRef = useRef();
+
+  const [copy, setCopy] = useState(false);
 
   const params = {limit: 20, page: 1};
 
@@ -35,11 +41,20 @@ const PartsSelectSkus = (
     const res = await run({data: newData || data, params});
     setSkuList(isArray(res));
     setNoPage(isArray(res).length < 20);
+    return isArray(res);
   };
 
   useEffect(() => {
     init();
   }, []);
+
+  const searchOpen = () => {
+    searchRef.current.searchOpen();
+  };
+
+  useImperativeHandle(ref, () => ({
+    searchOpen
+  }));
 
   const onLoadMore = async () => {
     const res = await run({data, params: {...params, page: page + 1}});
@@ -63,7 +78,15 @@ const PartsSelectSkus = (
     ) : null;
 
   return <>
+    <h3>
+      搜索物料
+      <Button style={{float: 'right'}} type="link" onClick={() => {
+        addRef.current.open(false);
+        setCopy(false);
+      }}>新增物料</Button>
+    </h3>
     <GroupSku
+      ref={searchRef}
       width="100%"
       align="start"
       noSearchButton
@@ -102,26 +125,37 @@ const PartsSelectSkus = (
         const exit = value.find(valueItem => valueItem.skuId === item.skuId);
         return <List.Item
           actions={[
-            exit ? '已添加' : <Button
-              size="large"
-              type="link"
+            <Button
+              size="small"
+              // type="link"
+              onClick={() => {
+                const value = {...item, copy: true};
+                addRef.current.open(value);
+                setCopy(true);
+              }}
+            >
+              拷贝
+            </Button>,
+            exit ? <div style={{width: 47}}>已添加</div> : <Button
+              size="small"
+              // type="link"
               onClick={() => {
                 onChange(item);
               }}
             >
-              <DoubleRightOutlined />
+              选择
             </Button>
           ]}
         >
           <List.Item.Meta
             title={<SearchValueFormat
-              maxWidth='100%'
+              maxWidth="100%"
               searchValue={searchValue}
               label={item.standard || '-'}
             />}
             description={
               <SearchValueFormat
-                maxWidth='100%'
+                maxWidth="100%"
                 searchValue={searchValue}
                 label={SkuRender(item) || '-'}
               />}
@@ -129,7 +163,18 @@ const PartsSelectSkus = (
         </List.Item>;
       }}
     />
+
+    <AddSkuModal
+      edit={copy}
+      addRef={addRef}
+      copy={copy}
+      onSuccess={async () => {
+        addRef.current.close();
+        const list = await init({});
+        onChange(list[0]);
+      }}
+    />
   </>;
 };
 
-export default PartsSelectSkus;
+export default React.forwardRef(PartsSelectSkus);

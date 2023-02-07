@@ -5,23 +5,17 @@
  * @Date 2021-07-14 14:30:20
  */
 
-import React, {useRef, useState} from 'react';
-import {Button, Col, Drawer, message, Row, Select} from 'antd';
-import {createFormActions, FormEffectHooks} from '@formily/antd';
+import React, {useEffect, useRef, useState} from 'react';
+import {Button, Col, Drawer, Image, message, Row, Spin, Tooltip} from 'antd';
 import ProCard from '@ant-design/pro-card';
-import * as SysField from '../PartsField';
-import Form from '@/components/Form';
 import {partsAdd, partsDetail, partsV1Detail, partsV2Add} from '../PartsUrl';
-import {Codings} from '@/pages/Erp/sku/skuField';
-import {request, useRequest} from '@/util/Request';
-import {spuDetail} from '@/pages/Erp/spu/spuUrl';
-import {categoryDetail} from '@/pages/Erp/category/categoryUrl';
+import {useRequest} from '@/util/Request';
 import Modal from '@/components/Modal';
 import PartsList from '@/pages/Erp/parts/PartsList';
-import {isArray} from '@/util/Tools';
+import {isArray, isObject} from '@/util/Tools';
 import styles from './index.module.less';
-
-const {FormItem} = Form;
+import {Name, Sku} from '../PartsField';
+import AddSkuTable from '@/pages/Erp/parts/components/AddSkuTable';
 
 export const partApiConfig = {
   // view: partsV1Detail,
@@ -32,219 +26,187 @@ export const partApiConfig = {
   save: partsAdd
 };
 
-const formActionsPublic = createFormActions();
-
 const PartsEdit = (props) => {
 
   const {
     spuId,
     value,
-    spuSkuId,
-    onSuccess,
+    onSeletSku,
+    parts,
+    defaultValue = {},
+    setParts = () => {
+    },
+    onSuccess = () => {
+    },
     sku,
     onFull = () => {
     },
-    ...other
   } = props;
 
   const partsRef = useRef();
 
-  const formRef = useRef(null);
-
-  const [select, setSelect] = useState([]);
+  const [checks, setChecks] = useState([]);
 
   const [open, setOpen] = useState();
 
   const [full, setFull] = useState();
 
-  const {loading: partsLoading, run: parts} = useRequest(partsV1Detail, {
+  const [skuDetail, setSkuDetail] = useState({});
+
+  const [item, setItem] = useState(defaultValue.item || {});
+  const [name, setName] = useState();
+
+  const {loading: partsLoading, run: partsRun} = useRequest(partsDetail, {
     manual: true,
     onSuccess: (res) => {
-      formRef.current.setFieldValue('parts', isArray(res.parts).map(item => {
+      setParts(isArray(res.parts).map(item => {
         const skuResult = item.skuResult || {};
+        const spuResult = skuResult.spuResult || {};
         return {
           ...skuResult,
+          spuName: spuResult.name,
           ...item
         };
       }));
     }
   });
 
-  const [type, setType] = useState((!value && spuId) ? 0 : 1);
+  const {loading: addLoading, run: addRun} = useRequest(partsAdd, {
+    manual: true,
+    onSuccess: (res) => {
+      onSuccess(res.data);
+      message.success('添加成功！');
+    },
+    onError: () => {
+      message.error('添加失败！');
+    }
+  });
+
+  const {loading: detailLoading, run: detailRun} = useRequest(partsDetail, {
+    manual: true,
+    onSuccess: (res) => {
+      setParts(isArray(res.parts).map(item => {
+        const skuResult = item.skuResult || {};
+        const spuResult = skuResult.spuResult || {};
+        return {
+          ...skuResult,
+          spuName: spuResult.name,
+          ...item,
+          bomNum: item.partsId ? 1 : 0
+        };
+      }));
+      setItem(res.item);
+      setName(res.name);
+    }
+  });
+
+  useEffect(() => {
+    if (value) {
+      detailRun({data: {partsId: value}});
+    } else {
+      setParts([]);
+    }
+  }, []);
 
   return (
-    <>
+    <Spin spinning={detailLoading}>
       <div className={styles.edit}>
-        <Form
-          {...other}
-          value={value}
-          ref={formRef}
-          formatDetail={(values) => {
-            // parts
-            return {
-              ...values,
-              parts: isArray(values.parts).map(item => {
-                const skuResult = item.skuResult || {};
-                const spuResult = skuResult.spuResult || {};
-                return {
-                  ...skuResult,
-                  spuName: spuResult.name,
-                  ...item
-                };
-              })
-            };
-          }}
-          noButton
-          api={partApiConfig}
-          formActions={formActionsPublic}
-          fieldKey="partsId"
-          onSuccess={(res) => {
-            onSuccess(res.data);
-          }}
-          effects={({setFieldState}) => {
-
-            FormEffectHooks.onFieldValueChange$('item').subscribe(async ({value}) => {
-              if (value && value.spuId) {
-                const res = await request({...spuDetail, data: {spuId: value.spuId}});
-                if (res && res.categoryId) {
-                  const category = await request({...categoryDetail, data: {categoryId: res.categoryId}});
-                  setFieldState('sku', state => {
-                    state.props.category = category && category.categoryRequests;
-                  });
-                }
-              }
-            });
-          }}
-          onSubmit={(value) => {
-            if (!value.parts || value.parts.length === 0) {
-              message.warn('请添加物料清单！');
-              return false;
-            }
-            const partsArray = value.parts.filter((item) => {
-              return item.skuId;
-            });
-            if (partsArray.length !== value.parts.length) {
-              message.warn('请添加物料数量！');
-              return false;
-            }
-            return {
-              ...value,
-              ...value.item,
-              type: 1,
-              batch: 0,
-              status: 0,
-              partsId: value.partsId || '1',
-              parts: isArray(value.parts).map(item => {
-                return {
-                  ...item,
-                  number: item.number || 1,
-                  autoOutstock: typeof item.autoOutstock === 'number' ? item.autoOutstock : 1
-                };
-              })
-            };
-          }}
-        >
-
-          <ProCard className="h2Card" headerBordered title="父件信息">
+        <ProCard className="h2Card" headerBordered title="BOM信息">
+          <Tooltip
+            color="#fff"
+            placement="leftTop"
+            open={skuDetail.skuId}
+            title={<div className={styles.skuDetail}>
+              <Image
+                preview={{src: isArray(skuDetail.imgResults)[0]?.url}}
+                src={isArray(skuDetail.imgResults)[0]?.thumbUrl}
+              />
+            </div>}
+            overlayClassName={styles.skuDetailTip}
+          >
             <Row>
-              <Col span={12}>
-                <FormItem
-                  required
-                  label="版本号"
-                  name="name"
-                  component={SysField.Name}
-                />
+              <Col span={16}>
+                <div className={styles.formItem}>
+                  <div className={styles.label}>物料：</div>
+                  {detailLoading ? <Spin /> : <Sku
+                    spuId={spuId}
+                    value={item}
+                    disabled={sku || value || spuId}
+                    onChange={(item) => {
+                      setSkuDetail(item.sku);
+                      setItem(item);
+                    }}
+                  />}
+                </div>
               </Col>
-              <Col span={12}>
-                <FormItem
-                  label={
-                    <Select
-                      defaultValue={type}
-                      bordered={false}
-                      disabled={sku || value || spuId}
-                      options={[{label: '产品', value: 0}, {label: '物料', value: 1}]}
-                      onChange={(value) => {
-                        setType(value);
-                      }}
-                    />
-                  }
-                  name="item"
-                  type={type}
-                  spuId={spuId}
-                  disabled={sku || value || spuId}
-                  component={type ? SysField.Sku : SysField.Spu}
-                  required
-                />
+              <Col span={8}>
+                <div className={styles.formItem}>
+                  <div className={styles.label}>版本号：</div>
+                  <Name
+                    value={name}
+                    onChange={({target: {value}}) => {
+                      setName(value);
+                    }}
+                  />
+                </div>
               </Col>
             </Row>
+          </Tooltip>
+          <div className={styles.line} />
+        </ProCard>
 
-            {!type && <>
-              <Row>
-                <Col span={12}>
-                  <FormItem label="编码" name="standard" module={0} component={Codings} required />
-                </Col>
-                <Col span={12}>
-                  <FormItem
-                    label="型号"
-                    name="skuName"
-                    component={SysField.SkuName}
-                    required
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={12}>
-                  <FormItem
-                    label="配置"
-                    name="sku"
-                    title="配置项"
-                    component={SysField.Attributes}
-                    required
-                  />
-                </Col>
-                <Col span={12}>
-                  <FormItem
-                    label="规格"
-                    placeholder="无规格内容可填写“型号”"
-                    name="specifications"
-                    component={SysField.SkuName}
-                  />
-                </Col>
-              </Row>
-            </>}
-
-            <div hidden={select.length === 0} className={styles.line} />
-          </ProCard>
-
-          <ProCard
-            bodyStyle={{padding: '0 16px'}}
-            className="h2Card"
-            title="子件信息"
-            extra={<Button onClick={() => {
-              partsRef.current.open(spuSkuId || true);
-            }}>拷贝BOM</Button>}
-          >
-            <FormItem
-              itemStyle={{margin: 0}}
-              name="parts"
-              loading={partsLoading}
+        <div className={styles.skus}>
+          <div className={styles.space} />
+          <div className={styles.list}>
+            {partsLoading ? <Spin /> : <AddSkuTable
+              onSeletSku={onSeletSku}
               onChange={(value) => {
-                setSelect(value);
+                setParts(value);
               }}
-              openNewEdit={(id) => {
+              openNewEdit={(id, skuId) => {
                 onFull(true);
-                setOpen(id || true);
+                setChecks(parts);
+                setOpen({id, skuId});
               }}
-              component={SysField.AddSku}
-            />
-          </ProCard>
-        </Form>
+              value={parts}
+            />}
+          </div>
+
+        </div>
+
 
         <div
           className={styles.bottom}
         >
-          <Button type="primary" onClick={() => {
-            formRef.current.submit();
+          <Button loading={addLoading} type="primary" onClick={() => {
+            if (!name) {
+              message.warn('请添加版本号！');
+              return false;
+            } else if (!item?.skuId) {
+              message.warn('请添加物料！');
+              return false;
+            } else if (!parts.length === 0) {
+              message.warn('请添加物料清单！');
+              return false;
+            }
+            addRun({
+              data: {
+                name,
+                item,
+                ...item,
+                type: 1,
+                batch: 0,
+                status: 0,
+                partsId: value.partsId || '1',
+                parts: parts.map(item => {
+                  return {
+                    ...item,
+                    number: item.number || 1,
+                    autoOutstock: typeof item.autoOutstock === 'number' ? item.autoOutstock : 1
+                  };
+                })
+              }
+            });
           }}>保存</Button>
         </div>
 
@@ -257,14 +219,32 @@ const PartsEdit = (props) => {
           onClose={() => {
             onFull(false);
             setOpen(false);
+            setParts(checks);
           }}
           open={open}
           getContainer={false}
         >
-          <PartsEdit
-            value={open === true ? false : open}
+          {open && <PartsEdit
+            parts={parts}
+            setParts={setParts}
+            sku
+            defaultValue={{
+              item: {skuId: open?.skuId}
+            }}
+            value={open?.id || false}
             onFull={setFull}
-          />
+            onSuccess={(data) => {
+              onFull(false);
+              setOpen(false);
+              const newParts = checks.map(item => {
+                if (item.skuId === open.skuId) {
+                  return {...item, bomNum: item.bomNum + 1, bomId: data?.partsId};
+                }
+                return item;
+              });
+              setParts(newParts);
+            }}
+          />}
         </Drawer>
       </div>
 
@@ -275,7 +255,7 @@ const PartsEdit = (props) => {
         component={PartsList}
         getPartsId={(id) => {
           partsRef.current.close();
-          parts({
+          partsRun({
             data: {
               partsId: id,
             }
@@ -284,7 +264,7 @@ const PartsEdit = (props) => {
         ref={partsRef}
       />
 
-    </>
+    </Spin>
   );
 };
 

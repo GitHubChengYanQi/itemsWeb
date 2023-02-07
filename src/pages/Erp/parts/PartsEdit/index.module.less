@@ -1,5 +1,11 @@
 .formItem {
-  margin: 0
+  padding: 0 24px 24px 24px;
+  display: flex;
+  align-items: center;
+
+  .label {
+    width: 80px;
+  }
 }
 
 .line {
@@ -12,7 +18,7 @@
 
 .edit {
   padding: 16px 16px 41px;
-  max-width: 1250px;
+  max-width: 1000px;
   margin: auto;
   position: relative;
   overflow: hidden;
@@ -25,4 +31,32 @@
     border-top: 1px solid #e7e7e7;
     padding: 8px 24px 0;
   }
+}
+
+.skus {
+  display: flex;
+
+  .space {
+    min-width: 50px;
+  }
+
+  .list {
+    flex-grow: 1;
+  }
+}
+
+.skuDetailTip {
+  background-color: #fff;
+
+  :global {
+    .ant-tooltip-inner {
+
+    }
+  }
+}
+
+.skuDetail {
+  padding: 24px;
+  max-height: 50vh;
+  overflow: auto;
 }

@@ -16,19 +16,18 @@
   position: relative;
 
   .line {
-    content: "";
     position: absolute;
     left: 49.5px;
-    bottom: 50px;
+    bottom: 100%;
     margin: auto;
     width: 1px;
-    height: calc(100% + 23px);
+    height: 24px;
     background-color: #cacaca;
   }
 }
 
 .list {
-  max-height: calc(100vh - 431px);
+  height: calc(100vh - 377px);
   overflow: auto;
 
   &::-webkit-scrollbar {
@@ -36,73 +35,89 @@
     width: 4px; /* 高宽分别对应横竖滚动条的尺寸 */
     height: 10px;
   }
+}
 
-  .listItem {
+.listItem {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+
+
+  .item {
+    flex-grow: 1;
     display: flex;
-    align-items: stretch;
+    align-items: center;
+    padding: 12px 0;
+    gap: 12px;
 
-    .item {
+    .content {
       flex-grow: 1;
-    }
+      display: flex;
+      align-items: center;
 
-    .leftBorder {
-      width: 100px;
-      position: relative;
-
-      &::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        margin: auto;
-        width: 1px;
-        height: 100%;
-        background-color: #cacaca;
-      }
-
-      &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 12px;
-        bottom: 0;
-        margin: auto;
-        height: 1px;
-        width: calc(50% - 12px);
-        background-color: #cacaca;
+      .sku {
+        flex-grow: 1;
       }
     }
-
-    .last {
-      width: 100px;
-      position: relative;
-
-      &::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-        width: 1px;
-        height: 50%;
-        background-color: #cacaca;
-      }
-
-      &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 12px;
-        bottom: 0;
-        margin: auto;
-        height: 1px;
-        width: calc(50% - 12px);
-        background-color: #cacaca;
-      }
-    }
-
   }
+
+  .leftBorder {
+    width: 100px;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      width: 1px;
+      height: 100%;
+      background-color: #cacaca;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 12px;
+      bottom: 0;
+      margin: auto;
+      height: 1px;
+      width: calc(50% - 12px);
+      background-color: #cacaca;
+    }
+  }
+
+  .last {
+    width: 100px;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+      width: 1px;
+      height: 50%;
+      background-color: #cacaca;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 12px;
+      bottom: 0;
+      margin: auto;
+      height: 1px;
+      width: calc(50% - 12px);
+      background-color: #cacaca;
+    }
+  }
+
 }

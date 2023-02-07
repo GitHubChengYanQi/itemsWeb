@@ -52,10 +52,19 @@ const GroupSku = (
     onChange(id, searchType, showValue);
   };
 
+  const searchOpen = () => {
+    if (!searchType && showValue) {
+      run({data: {keyWord: showValue}});
+    }
+    setSearchValue(searchType ? '' : showValue);
+    setOpen(true);
+  };
+
   useImperativeHandle(ref, () => ({
     reset,
     searchType,
     submit,
+    searchOpen,
   }));
 
   const showValueFormat = () => {

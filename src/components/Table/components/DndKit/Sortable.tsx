@@ -39,6 +39,7 @@ export interface ItemData {
   title: string;
   visible?: boolean;
   checked?: boolean;
+  disabled?: boolean;
   align?: string;
 }
 
@@ -54,7 +55,7 @@ export interface Props {
   dropAnimation?: DropAnimation | null;
   handle?: boolean;
   itemCount?: number;
-  items?: ItemData[];
+  items: ItemData[];
   measuring?: MeasuringConfiguration;
   modifiers?: Modifiers;
   renderItem?: any;
@@ -66,6 +67,7 @@ export interface Props {
   useDragOverlay?: boolean;
   onDragEnd?: Function;
   onChecked?: Function;
+  setItems?: Function;
   onAlign?: Function;
   refresh?: Boolean;
 
@@ -101,10 +103,12 @@ export function Sortable(
     dropAnimation = defaultDropAnimationConfig,
     getItemStyles = () => ({}),
     handle = false,
-    items: initialItems,
+    items,
     measuring,
     liBorder,
     onDragEnd = () => {
+    },
+    setItems = () => {
     },
     modifiers,
     refresh,
@@ -120,8 +124,6 @@ export function Sortable(
     useDragOverlay = true,
     wrapperStyle = (object) => ({}),
   }: Props) {
-
-  const [items, setItems] = useState<ItemData[]>(initialItems || []);
 
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -192,10 +194,6 @@ export function Sortable(
   };
 
   useEffect(() => {
-    setItems(initialItems || []);
-  }, [refresh]);
-
-  useEffect(() => {
     if (!activeId) {
       isFirstAnnouncement.current = true;
     }
@@ -260,7 +258,7 @@ export function Sortable(
                   onChecked(key, index);
                   setItems(array);
                 }}
-                onAlign={(key,value) => {
+                onAlign={(key, value) => {
                   const array = items.map((item) => {
                     if (item.key === key) {
                       return {
@@ -299,9 +297,11 @@ export function Sortable(
           >
             {activeId ? (
               <Item
+                definedItem={definedItem}
                 keys={items[activeIndex].key}
                 value={items[activeIndex].title}
                 handle={handle}
+                item={items[activeIndex]}
                 checked={items[activeIndex].checked}
                 renderItem={renderItem}
                 wrapperStyle={wrapperStyle({
@@ -387,9 +387,11 @@ export function SortableItem(
     animateLayoutChanges,
     disabled,
   });
+
+
   return (
     <Item
-      ref={setNodeRef}
+      ref={item.disabled ? null : setNodeRef}
       liBorder={liBorder}
       definedItem={definedItem}
       value={title}
@@ -400,7 +402,6 @@ export function SortableItem(
       itemData={itemData}
       align={align}
       checked={checked}
-      disabled={disabled}
       dragging={isDragging}
       sorting={isSorting}
       handle={handle}
