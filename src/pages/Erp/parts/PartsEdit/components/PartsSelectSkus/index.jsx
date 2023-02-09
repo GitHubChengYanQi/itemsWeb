@@ -79,7 +79,7 @@ const PartsSelectSkus = (
 
   return <>
     <h3>
-      搜索物料
+      待选物料
       <Button style={{float: 'right'}} type="link" onClick={() => {
         addRef.current.open(false);
         setCopy(false);
@@ -134,7 +134,7 @@ const PartsSelectSkus = (
                 setCopy(true);
               }}
             >
-              拷贝
+              复制
             </Button>,
             exit ? <div style={{width: 47}}>已添加</div> : <Button
               size="small"

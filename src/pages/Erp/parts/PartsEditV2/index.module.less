@@ -1,3 +1,10 @@
+.partsEdit {
+  background-color: #f7f8fa;
+  padding-top: 24px;
+  height: 100%;
+  overflow: auto;
+}
+
 .breadcrumb {
   padding: 16px;
 }
@@ -11,7 +18,7 @@
 
   :global {
     .ant-spin-container {
-      max-height: calc(100vh - 400px);
+      max-height: calc(100vh - 200px);
       overflow: auto;
 
       &::-webkit-scrollbar {
@@ -27,13 +34,46 @@
   padding: 8px;
   width: 16vw;
   position: fixed;
-  right: 24px;
-  top: 185px;
-  box-shadow: -3px 10px 20px rgb(0 0 0 / 20%);
+  bottom: 0;
+  left: calc(50% + 605px);
+  top: 60px;
+  box-shadow: 2px 1px 6px rgb(0 0 0 / 20%);
+  background-color: #fff;
 }
 
 .edit {
-  //width: calc(80vw - 224px);
+  position: relative;
+  width: 1000px;
+  margin: auto;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.describe {
+  z-index: 1;
+  width: 17vw;
+  position: absolute;
+  left: -18vw;
+  background-color: #fff;
+  top: 0;
+  //max-width: calc(100vw - 1000px - 30vw - 200px);
+  box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
+
+  .describeContent {
+    position: relative;
+    padding: 4px 24px 24px;
+
+    .triangle {
+      position: absolute;
+      z-index: 1;
+      right: -17px;
+      top: 83px;
+      font-size: 24px;
+      color: #fff;
+    }
+  }
+
+
 }
 
 

@@ -1,6 +1,7 @@
 import React, {useRef, useState} from 'react';
 import {Alert, Button, List, Select, Space, Spin} from 'antd';
-import {DeleteOutlined, MenuOutlined, PlusSquareOutlined} from '@ant-design/icons';
+import {DeleteOutlined, MenuOutlined, PlusOutlined, SearchOutlined, RightOutlined} from '@ant-design/icons';
+import classNames from 'classnames';
 import InputNumber from '@/components/InputNumber';
 import {useRequest} from '@/util/Request';
 import {bomsByskuId} from '@/pages/Erp/parts/PartsUrl';
@@ -11,19 +12,23 @@ import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
 import Note from '@/components/Note';
 import {isArray} from '@/util/Tools';
 import Warning from '@/components/Warning';
-import Empty from '@/components/Empty';
 import {Sortable} from '@/components/Table/components/DndKit/Sortable';
-import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-import {useBoolean} from 'ahooks';
 import {Handle} from '@/components/Table/components/DndKit/Item';
 
 const AddSkuTable = ({
+  onParts,
+  comparisonSku,
+  comparison,
+  comparisonParts = [],
   value = [],
   onChange = () => {
   },
+  show,
   openNewEdit = () => {
   },
   onSeletSku = () => {
+  },
+  addSku = () => {
   }
 }) => {
 
@@ -59,28 +64,51 @@ const AddSkuTable = ({
 
   const Item = (props) => {
     const {value, item, index, ...other} = props;
+    const noExist = comparison && !isArray(comparisonParts).find(comparison => comparison.skuId === item.skuId);
+
     return <>
       <div className={styles.listItem}>
-        <div className={index === dataSources.length ? styles.last : styles.leftBorder} />
+        <div
+          style={{width: show ? 50 : 100}}
+          className={index === dataSources.length - (show ? 1 : 0) ? styles.last : styles.leftBorder}
+        />
         {item.add ?
           <a
             style={{padding: '12px 0'}}
             onClick={onSeletSku}
           >
-            <PlusSquareOutlined style={{fontSize: 24}} />
+            <PlusOutlined style={{fontSize: 24}} />
           </a>
           :
           <div
+            style={noExist ? {color: '#174ad4'} : {}}
             className={styles.item}
           >
-            <Handle icon={<MenuOutlined />} {...other} />
-            <div className={styles.content}>
-              <div className={styles.sku}>
+            <Handle hidden={show} icon={<MenuOutlined />} {...other} />
+            <div
+              id={`${show ? 'comparison' : 'parts'}${item.skuId}`}
+              style={(comparisonSku && comparisonSku.skuId === item.skuId) ? {border: 'solid 1px #174ad4'} : {}}
+              className={classNames(styles.content, noExist && styles.noComparison)}
+            >
+              <div className={styles.sku} onClick={() => {
+                if (noExist || !comparison) {
+                  return;
+                }
+                if (comparisonSku?.skuId === item.skuId) {
+                  onParts(null);
+                } else {
+                  onParts(item);
+                  setTimeout(() => {
+                    const partItemDom = document.getElementById(`${!show ? 'comparison' : 'parts'}${item.skuId}`);
+                    partItemDom.scrollIntoView({block: 'center', behavior: 'smooth'});
+                  }, 0);
+                }
+              }}>
                 <List.Item.Meta
-                  title={<Note maxWidth="94%" value={item.standard} />}
+                  title={<Note style={{color: noExist && '#174ad4'}} maxWidth="94%" value={item.standard} />}
                   description={
                     <div>
-                      <Note maxWidth="94%" value={SkuRender(item)} />
+                      <Note style={{color: noExist && '#174ad4'}} maxWidth="94%" value={SkuRender(item)} />
                       {/*
 
                      {item.bomNum && <Button
@@ -99,7 +127,43 @@ const AddSkuTable = ({
                     </div>}
                 />
               </div>
-              <Space>
+              {show ? <Space size={12}>
+                <div style={{textAlign: 'center'}}>
+                  {item.autoOutstock ? '推式' : '拉式'}
+                  <br />
+                  × {item.number}
+                </div>
+                {item.bomNum ? <Button
+                  style={{padding: 0}}
+                  type="link"
+                  loading={bomsByskuIdLoading}
+                  onClick={async () => {
+                    if (item.bomNum) {
+                      const res = await bomsByskuIdRun({params: {skuId: item.skuId}});
+                      openNewEdit(isArray(res)[0]?.partsId, item.skuId);
+                      return;
+                    }
+                    openNewEdit(item.bomId, item.skuId);
+                  }}
+                >
+                  <SearchOutlined />
+                </Button> : <div style={{width: 16}} />}
+                {noExist ? <Button
+                  style={{padding: 0}}
+                  type="link"
+                  onClick={() => {
+                    addSku(item);
+                  }}
+                >
+                  <RightOutlined />
+                </Button> : <div style={{width: 16}} />}
+              </Space> : <Space>
+                <Space align="center">
+                  数量：
+                  <InputNumber addonBefore="" width={100} value={item.number || 1} min={1} onChange={(value) => {
+                    setValue({number: value}, item.skuId);
+                  }} />
+                </Space>
                 <Select
                   bordered={false}
                   value={typeof item.autoOutstock === 'number' ? item.autoOutstock : 1}
@@ -109,12 +173,6 @@ const AddSkuTable = ({
                   ]}
                   onChange={(value) => setValue({autoOutstock: value}, item.skuId)}
                 />
-                <Space align="center">
-                  数量：
-                  <InputNumber addonBefore="" width={100} value={item.number || 1} min={1} onChange={(value) => {
-                    setValue({number: value}, item.skuId);
-                  }} />
-                </Space>
 
                 <Warning onOk={() => {
                   const array = dataSources.filter((dataItem) => {
@@ -145,9 +203,9 @@ const AddSkuTable = ({
                     openNewEdit(item.bomId, item.skuId);
                   }}
                 >
-                  {item.bomNum ? '查看详情' : '添加bom'}
+                  {item.bomNum ? <RightOutlined style={{width: 56}} /> : '添加bom'}
                 </Button>
-              </Space>
+              </Space>}
             </div>
           </div>}
       </div>
@@ -157,8 +215,8 @@ const AddSkuTable = ({
   return <>
 
     <div className={styles.checkList}>
-      <div className={styles.line} />
-      <div className={styles.list}>
+      <div style={{left: show ? 24.5 : 49.5}} className={styles.line} />
+      <div style={{paddingRight: show ? 0 : 40}} className={styles.list}>
         <Sortable
           handle
           getItemStyles={() => {
@@ -168,7 +226,7 @@ const AddSkuTable = ({
             };
           }}
           definedItem={Item}
-          items={[...dataSources, {add: true, disabled: true}].map((item) => {
+          items={(show ? dataSources : [...dataSources, {add: true, disabled: true}]).map((item) => {
             return {
               ...item,
               key: item.skuId || 'add',
@@ -179,104 +237,6 @@ const AddSkuTable = ({
           }}
         />
       </div>
-
-      <div hidden>
-        <List
-          className={styles.list}
-          itemLayout="horizontal"
-          dataSource={[...dataSources, {add: true}]}
-          renderItem={(item, index) => {
-            return <div className={styles.listItem}>
-              <div className={index === dataSources.length ? styles.last : styles.leftBorder} />
-              <List.Item
-                className={styles.item}
-                actions={item.add ? [] : [
-                  <Warning onOk={() => {
-                    const array = dataSources.filter((dataItem) => {
-                      return item.skuId !== dataItem.skuId;
-                    });
-                    onChange(array);
-                  }}>
-                    <Button
-                      style={{padding: 0}}
-                      size="large"
-                      type="link"
-                      danger
-                    >
-                      <DeleteOutlined />
-                    </Button>
-                  </Warning>,
-                  <Button
-                    // disabled={item.bomNum ? !item.bomId : false}
-                    style={{padding: 0}}
-                    type="link"
-                    loading={bomsByskuIdLoading}
-                    onClick={async () => {
-                      if (item.bomNum) {
-                        const res = await bomsByskuIdRun({params: {skuId: item.skuId}});
-                        openNewEdit(isArray(res)[0]?.partsId, item.skuId);
-                        return;
-                      }
-                      openNewEdit(item.bomId, item.skuId);
-                    }}
-                  >
-                    {item.bomNum ? '查看详情' : '添加bom'}
-                  </Button>
-                ]}
-              >
-                {item.add ?
-                  <a
-                    onClick={onSeletSku}
-                  >
-                    <PlusSquareOutlined style={{fontSize: 24}} />
-                  </a> :
-                  <>
-                    <List.Item.Meta
-                      title={<Note maxWidth="94%" value={item.standard} />}
-                      description={
-                        <div>
-                          <Note maxWidth="94%" value={SkuRender(item)} />
-                          {/*
-
-                     {item.bomNum && <Button
-                      style={{padding: 0}}
-                      type="link"
-                      onClick={() => {
-                        bomsByskuIdRun({params: {skuId: item.skuId}});
-                        versionModalRef.current.open(false);
-                        setSkuId(item.skuId);
-                        setCurrentVer(item.bomId);
-                      }}
-                    >
-                      {item.bomId ? (item.version || '-') : '选择版本'}
-                    </Button>}
-                    */}
-                        </div>}
-                    />
-                    <Space>
-                      <Select
-                        bordered={false}
-                        value={typeof item.autoOutstock === 'number' ? item.autoOutstock : 1}
-                        options={[
-                          {label: '推式', value: 1},
-                          {label: '拉式', value: 0},
-                        ]}
-                        onChange={(value) => setValue({autoOutstock: value}, item.skuId)}
-                      />
-                      <Space align="center">
-                        数量：
-                        <InputNumber addonBefore="" width={100} value={item.number || 1} min={1} onChange={(value) => {
-                          setValue({number: value}, item.skuId);
-                        }} />
-                      </Space>
-                    </Space>
-                  </>}
-              </List.Item>
-            </div>;
-          }}
-        />
-      </div>
-
     </div>
 
     <Modal

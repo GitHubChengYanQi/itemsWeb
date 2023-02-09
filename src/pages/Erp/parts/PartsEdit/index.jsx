@@ -6,16 +6,18 @@
  */
 
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Col, Drawer, Image, message, Row, Spin, Tooltip} from 'antd';
+import {Affix, Button, Col, Drawer, message, Row, Spin} from 'antd';
 import ProCard from '@ant-design/pro-card';
-import {partsAdd, partsDetail, partsV1Detail, partsV2Add} from '../PartsUrl';
+import {partsAdd, partsDetail} from '../PartsUrl';
 import {useRequest} from '@/util/Request';
 import Modal from '@/components/Modal';
 import PartsList from '@/pages/Erp/parts/PartsList';
-import {isArray, isObject} from '@/util/Tools';
+import {isArray} from '@/util/Tools';
 import styles from './index.module.less';
 import {Name, Sku} from '../PartsField';
 import AddSkuTable from '@/pages/Erp/parts/components/AddSkuTable';
+import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
+import ProSkeleton from '@ant-design/pro-skeleton';
 
 export const partApiConfig = {
   // view: partsV1Detail,
@@ -29,14 +31,27 @@ export const partApiConfig = {
 const PartsEdit = (props) => {
 
   const {
+    onParts = () => {
+    },
+    addSku = () => {
+    },
+    comparisonParts,
+    comparisonSku,
+    comparison,
+    firstEdit,
     spuId,
     value,
     onSeletSku,
     parts,
+    show,
+    openDrawer = () => {
+    },
     defaultValue = {},
     setParts = () => {
     },
     onSuccess = () => {
+    },
+    onSkuDetail = () => {
     },
     sku,
     onFull = () => {
@@ -51,9 +66,7 @@ const PartsEdit = (props) => {
 
   const [full, setFull] = useState();
 
-  const [skuDetail, setSkuDetail] = useState({});
-
-  const [item, setItem] = useState(defaultValue.item || {});
+  const [skuItem, setSkuItem] = useState(defaultValue.item || {});
   const [name, setName] = useState();
 
   const {loading: partsLoading, run: partsRun} = useRequest(partsDetail, {
@@ -92,10 +105,10 @@ const PartsEdit = (props) => {
           ...skuResult,
           spuName: spuResult.name,
           ...item,
-          bomNum: item.partsId ? 1 : 0
+          bomNum: skuResult.inBom ? 1 : 0
         };
       }));
-      setItem(res.item);
+      setSkuItem(res.item);
       setName(res.name);
     }
   });
@@ -106,37 +119,47 @@ const PartsEdit = (props) => {
     } else {
       setParts([]);
     }
-  }, []);
+  }, [value]);
+
+  let padding = '16px 16px 0';
+
+  if (show) {
+    padding = firstEdit ? '37px 0 0px' : 0;
+  }
+
+  const closeDrawer = (success) => {
+    onSkuDetail(skuItem.sku);
+    onParts(null);
+    onFull(false);
+    openDrawer(false);
+    setOpen(false);
+    if (!success) {
+      setParts(checks);
+    }
+  };
+
+  if (detailLoading) {
+    return <ProSkeleton type="descriptions" />;
+  }
 
   return (
-    <Spin spinning={detailLoading}>
+    <>
       <div className={styles.edit}>
-        <ProCard className="h2Card" headerBordered title="BOM信息">
-          <Tooltip
-            color="#fff"
-            placement="leftTop"
-            open={skuDetail.skuId}
-            title={<div className={styles.skuDetail}>
-              <Image
-                preview={{src: isArray(skuDetail.imgResults)[0]?.url}}
-                src={isArray(skuDetail.imgResults)[0]?.thumbUrl}
-              />
-            </div>}
-            overlayClassName={styles.skuDetailTip}
-          >
+        <div style={{padding}}>
+          <ProCard hidden={show} className="h2Card" headerBordered title="BOM信息">
             <Row>
               <Col span={16}>
                 <div className={styles.formItem}>
                   <div className={styles.label}>物料：</div>
-                  {detailLoading ? <Spin /> : <Sku
+                  <Sku
                     spuId={spuId}
-                    value={item}
+                    value={skuItem}
                     disabled={sku || value || spuId}
                     onChange={(item) => {
-                      setSkuDetail(item.sku);
-                      setItem(item);
+                      onSkuDetail(item.sku);
+                      setSkuItem(item);
                     }}
-                  />}
+                  />
                 </div>
               </Col>
               <Col span={8}>
@@ -151,91 +174,128 @@ const PartsEdit = (props) => {
                 </div>
               </Col>
             </Row>
-          </Tooltip>
-          <div className={styles.line} />
-        </ProCard>
+            <div className={styles.line} />
+          </ProCard>
+          <div style={{padding: 15}} hidden={!show || firstEdit}>
+            {SkuResultSkuJsons({skuResult: skuItem.sku})}
+          </div>
+          <div hidden={!show} className={styles.line} />
+          <div style={{paddingTop: show && 24}} className={styles.skus}>
+            <div hidden={show} className={styles.space} />
+            <div className={styles.list}>
+              {partsLoading ? <Spin /> : <AddSkuTable
+                addSku={addSku}
+                comparison={comparison}
+                comparisonSku={comparisonSku}
+                onParts={onParts}
+                comparisonParts={comparisonParts}
+                show={show}
+                onSeletSku={onSeletSku}
+                onChange={(value) => {
+                  setParts(value);
+                }}
+                openNewEdit={(id, skuId) => {
+                  onParts(null);
+                  onFull(true);
+                  setChecks(parts);
+                  openDrawer(true);
+                  setOpen({id, skuId});
+                }}
+                value={parts}
+              />}
+            </div>
+          </div>
+        </div>
 
-        <div className={styles.skus}>
-          <div className={styles.space} />
-          <div className={styles.list}>
-            {partsLoading ? <Spin /> : <AddSkuTable
-              onSeletSku={onSeletSku}
-              onChange={(value) => {
-                setParts(value);
-              }}
-              openNewEdit={(id, skuId) => {
-                onFull(true);
-                setChecks(parts);
-                setOpen({id, skuId});
-              }}
-              value={parts}
-            />}
+        <Affix offsetBottom={11}>
+          <div className={styles.footer}>
+            <div
+              hidden={show}
+              className={styles.bottom}
+            >
+              <div className={styles.total}>
+                总计：<span>{parts.length}</span> 类物料
+              </div>
+              <Button
+                loading={addLoading}
+                type="primary"
+                onClick={() => {
+                  if (!name) {
+                    message.warn('请添加版本号！');
+                    return false;
+                  } else if (!skuItem?.skuId) {
+                    message.warn('请添加物料！');
+                    return false;
+                  } else if (!parts.length === 0) {
+                    message.warn('请添加物料清单！');
+                    return false;
+                  }
+                  addRun({
+                    data: {
+                      name,
+                      item: skuItem,
+                      ...skuItem,
+                      type: 1,
+                      batch: 0,
+                      status: 0,
+                      partsId: value.partsId || '1',
+                      parts: parts.map(item => {
+                        return {
+                          ...item,
+                          number: item.number || 1,
+                          autoOutstock: typeof item.autoOutstock === 'number' ? item.autoOutstock : 1
+                        };
+                      })
+                    }
+                  });
+                }}>保存</Button>
+            </div>
           </div>
 
-        </div>
+        </Affix>
+      </div>
 
-
-        <div
-          className={styles.bottom}
-        >
-          <Button loading={addLoading} type="primary" onClick={() => {
-            if (!name) {
-              message.warn('请添加版本号！');
-              return false;
-            } else if (!item?.skuId) {
-              message.warn('请添加物料！');
-              return false;
-            } else if (!parts.length === 0) {
-              message.warn('请添加物料清单！');
-              return false;
-            }
-            addRun({
-              data: {
-                name,
-                item,
-                ...item,
-                type: 1,
-                batch: 0,
-                status: 0,
-                partsId: value.partsId || '1',
-                parts: parts.map(item => {
-                  return {
-                    ...item,
-                    number: item.number || 1,
-                    autoOutstock: typeof item.autoOutstock === 'number' ? item.autoOutstock : 1
-                  };
-                })
-              }
-            });
-          }}>保存</Button>
-        </div>
-
-        <Drawer
-          destroyOnClose
-          push={false}
-          bodyStyle={{padding: 0}}
-          width={full ? '100%' : '90%'}
-          closable={false}
-          onClose={() => {
-            onFull(false);
-            setOpen(false);
-            setParts(checks);
-          }}
-          open={open}
-          getContainer={false}
-        >
+      <Drawer
+        className={styles.drawer}
+        destroyOnClose
+        push={false}
+        bodyStyle={{padding: show ? 16 : 0, overflow: 'visible'}}
+        width={full ? '100%' : `${show ? 90 : 95}%`}
+        closable={false}
+        onClose={() => {
+          closeDrawer();
+        }}
+        open={open}
+        getContainer={false}
+      >
+        <div className={styles.newEdit}>
+          <div
+            style={{left: show ? 'calc(-5% + -7px + -16px)' : 'calc(-2.5% + -7px)'}}
+            onClick={() => {
+              closeDrawer();
+            }}
+            className={styles.back}
+          >
+            返 <br />回
+          </div>
           {open && <PartsEdit
+            addSku={addSku}
+            onSkuDetail={onSkuDetail}
+            comparison={comparison}
+            onParts={onParts}
+            comparisonSku={comparisonSku}
+            comparisonParts={comparisonParts}
+            show={show}
             parts={parts}
             setParts={setParts}
             sku
-            defaultValue={{
+            defaultValue={open?.id ? {} : {
               item: {skuId: open?.skuId}
             }}
             value={open?.id || false}
             onFull={setFull}
             onSuccess={(data) => {
-              onFull(false);
-              setOpen(false);
+              closeDrawer(true);
               const newParts = checks.map(item => {
                 if (item.skuId === open.skuId) {
                   return {...item, bomNum: item.bomNum + 1, bomId: data?.partsId};
@@ -245,8 +305,8 @@ const PartsEdit = (props) => {
               setParts(newParts);
             }}
           />}
-        </Drawer>
-      </div>
+        </div>
+      </Drawer>
 
       <Modal
         headTitle="拷贝BOM"
@@ -263,8 +323,7 @@ const PartsEdit = (props) => {
         }}
         ref={partsRef}
       />
-
-    </Spin>
+    </>
   );
 };
 

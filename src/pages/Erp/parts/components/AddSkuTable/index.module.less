@@ -27,7 +27,7 @@
 }
 
 .list {
-  height: calc(100vh - 377px);
+  min-height: calc(100vh - 296px);
   overflow: auto;
 
   &::-webkit-scrollbar {
@@ -42,27 +42,31 @@
   align-items: stretch;
   width: 100%;
 
-
   .item {
     flex-grow: 1;
     display: flex;
     align-items: center;
-    padding: 12px 0;
+    padding: 4px 0;
     gap: 12px;
 
     .content {
       flex-grow: 1;
       display: flex;
       align-items: center;
+      padding: 8px;
+      border-radius: 4px;
 
       .sku {
         flex-grow: 1;
       }
     }
+
+    .noComparison {
+      background-color: #e7effa;
+    }
   }
 
   .leftBorder {
-    width: 100px;
     position: relative;
 
     &::after {
@@ -92,7 +96,6 @@
   }
 
   .last {
-    width: 100px;
     position: relative;
 
     &::after {

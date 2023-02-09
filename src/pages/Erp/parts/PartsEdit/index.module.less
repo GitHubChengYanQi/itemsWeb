@@ -17,24 +17,48 @@
 }
 
 .edit {
-  padding: 16px 16px 41px;
   max-width: 1000px;
   margin: auto;
   position: relative;
   overflow: hidden;
 
-  .bottom {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    text-align: right;
-    border-top: 1px solid #e7e7e7;
-    padding: 8px 24px 0;
+  .footer {
+    box-shadow: 0 -4px 10px 0 rgb(0 0 0 / 8%);
+  }
+}
+
+.bottom {
+  max-width: 1000px;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-top: 1px solid #e7e7e7;
+  padding: 8px 24px 0;
+  box-shadow: 0 10px 0 #fff;
+
+  .total {
+    flex-grow: 1;
+
+    span {
+      color: @primary-color;
+      font-size: 16px;
+    }
+  }
+}
+
+.spin {
+  height: 100%;
+
+  :global {
+    .ant-spin-container {
+      height: 100%;
+    }
   }
 }
 
 .skus {
   display: flex;
+  flex-grow: 1;
 
   .space {
     min-width: 50px;
@@ -60,3 +84,26 @@
   max-height: 50vh;
   overflow: auto;
 }
+
+.drawer {
+
+  :global {
+    .ant-drawer-content {
+      overflow: visible;
+    }
+  }
+}
+
+.newEdit {
+  position: relative;
+
+  .back {
+    position: absolute;
+    color: #fff;
+    left: 30px;
+    top: 12px;
+    cursor: pointer;
+  }
+}
+
+
