@@ -8,6 +8,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Affix, Button, Col, Drawer, message, Row, Spin} from 'antd';
 import ProCard from '@ant-design/pro-card';
+import ProSkeleton from '@ant-design/pro-skeleton';
 import {partsAdd, partsDetail} from '../PartsUrl';
 import {useRequest} from '@/util/Request';
 import Modal from '@/components/Modal';
@@ -17,7 +18,6 @@ import styles from './index.module.less';
 import {Name, Sku} from '../PartsField';
 import AddSkuTable from '@/pages/Erp/parts/components/AddSkuTable';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-import ProSkeleton from '@ant-design/pro-skeleton';
 
 export const partApiConfig = {
   // view: partsV1Detail,
@@ -58,6 +58,10 @@ const PartsEdit = (props) => {
     onFull = () => {
     },
   } = props;
+
+  let total = 0;
+
+  parts.forEach(item => total += (item.number || 0));
 
   const partsRef = useRef();
 
@@ -216,9 +220,10 @@ const PartsEdit = (props) => {
               className={styles.bottom}
             >
               <div className={styles.total}>
-                总计：<span>{parts.length}</span> 类物料
+                总计：<span>{parts.length}</span> 类 <span>{total}</span> 件 物料
               </div>
               <Button
+                size='large'
                 loading={addLoading}
                 type="primary"
                 onClick={() => {

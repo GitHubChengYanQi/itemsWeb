@@ -71,7 +71,7 @@ const PartsEditV2 = () => {
         }}
         comparisonParts={tabKey === '2' ? comparisonParts : []}
         onParts={setComparisonSku}
-        comparisonSku={tabKey === '2' && comparisonSku}
+        comparisonSku={comparisonSku}
         comparison={tabKey === '2' && comparisonParts.length > 0}
         defaultValue={{item: {skuId: searchParams.skuId || undefined}}}
         parts={parts}
