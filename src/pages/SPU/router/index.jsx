@@ -11,7 +11,7 @@ import {SPUSRouter} from '@/pages/Erp/spu/spuRouter';
 const SpuRouterConfig = [
   {
     path: '/SPU',
-    name: '产品物料',
+    name: '产研管理',
     component: SpuLayout,
     children: [
       ...SkuRouter,

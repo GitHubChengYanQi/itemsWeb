@@ -10,7 +10,6 @@ import {skuDetail} from '@/pages/Erp/sku/skuUrl';
 import {isArray, isObject} from '@/util/Tools';
 import Icon from '@/components/Icon';
 import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
-import PartsList from '@/pages/Erp/parts/PartsList';
 import Supply from '@/pages/Erp/sku/SkuDetail/components/Supply';
 import StockDetail from '@/pages/Erp/sku/SkuDetail/components/StockDetail';
 import InStock from '@/pages/Erp/sku/SkuDetail/components/InStock';
@@ -20,8 +19,6 @@ import Maintenance from '@/pages/Erp/sku/SkuDetail/components/Maintenance';
 import Allocation from '@/pages/Erp/sku/SkuDetail/components/Allocation';
 import SkuPartsList from '@/pages/Erp/sku/SkuDetail/components/SkuPartsList';
 import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
-import Modal from '@/components/Modal';
-import PartsEdit from '@/pages/Erp/parts/PartsEdit';
 
 const SkuDetail = ({value}) => {
 
@@ -29,15 +26,10 @@ const SkuDetail = ({value}) => {
 
   const addRef = useRef(null);
   const editParts = useRef(null);
-  const addParts = useRef(null);
 
   const history = useHistory();
 
   const [typeSetting, setTypeSetting] = useState([]);
-
-  const [skuId, setSkuId] = useState();
-
-  const [loading, setLoading] = useState();
 
   const [detailLoading, setDetailLoading] = useState(true);
 
@@ -201,12 +193,10 @@ const SkuDetail = ({value}) => {
                   })
                 }
                 <Descriptions.Item label="物料清单"><a onClick={() => {
-                  if (data.inBom) {
-                    editParts.current.open(data.partsId);
-                  } else {
-                    editParts.current.open(false);
-                    setSkuId(data.skuId);
-                  }
+                  history.push({
+                    pathname: '/SPU/parts/edit',
+                    search: data.inBom ? `id=${data.partsId}` : null
+                  });
                 }}>查看</a></Descriptions.Item>
                 <Descriptions.Item label="创建人">{data.createUserName || '-'}</Descriptions.Item>
                 <Descriptions.Item label="创建时间">{data.createTime}</Descriptions.Item>
@@ -242,33 +232,6 @@ const SkuDetail = ({value}) => {
       <AddSkuModal addRef={addRef} edit onSuccess={() => {
         refresh();
       }} />
-
-      <Modal
-        width={1200}
-        type={1}
-        loading={setLoading}
-        headTitle="物料清单"
-        sku
-        defaultValue={{
-          item: {skuId}
-        }}
-        compoentRef={addParts}
-        component={PartsEdit}
-        onClose={() => {
-          setSkuId(null);
-        }}
-        onSuccess={() => {
-          setSkuId(null);
-          refresh();
-          editParts.current.close();
-        }}
-        ref={editParts}
-        footer={<>
-          <Button type="primary" loading={loading} onClick={() => {
-            addParts.current.submit();
-          }}>保存</Button>
-        </>}
-      />
 
     </div>
 

@@ -9,14 +9,12 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, Descriptions, Space, Tag} from 'antd';
 import {createFormActions} from '@formily/antd';
 import ProSkeleton from '@ant-design/pro-skeleton';
-import {config, useLocation} from 'ice';
+import {config, useHistory, useLocation} from 'ice';
 import cookie from 'js-cookie';
 import {backDetails, partsList} from '../PartsUrl';
 import Breadcrumb from '@/components/Breadcrumb';
-import Modal from '@/components/Modal';
 import EditButton from '@/components/EditButton';
 import AddButton from '@/components/AddButton';
-import PartsEdit from '@/pages/Erp/parts/PartsEdit';
 import Table from '@/components/Table';
 import * as SysField from '../PartsField';
 import Form from '@/components/Form';
@@ -29,6 +27,7 @@ import BackSkus from '@/pages/Erp/sku/components/BackSkus';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
 import Note from '@/components/Note';
 import Render from '@/components/Render';
+import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
 
 const {Column} = Table;
 const {FormItem} = Form;
@@ -45,18 +44,17 @@ const PartsList = (
     type = 1
   }) => {
 
+  const addRef = useRef();
+
   const {state = {}} = useLocation();
+  const history = useHistory();
 
-  const [formActionsPublic, setFormActionsPublic] = useState(createFormActions);
+  const [formActionsPublic] = useState(createFormActions);
 
-  const refAdd = useRef();
-  const formRef = useRef();
   const tableRef = useRef();
   const showRef = useRef();
 
   const token = cookie.get('tianpeng-token');
-
-  const [loading, setLoading] = useState();
 
   const [key, setKey] = useState([]);
 
@@ -72,8 +70,6 @@ const PartsList = (
     }
   }, []);
 
-  const [bom, setBom] = useState();
-
   if (skuLoading) {
     return <ProSkeleton type="descriptions" />;
   }
@@ -81,7 +77,8 @@ const PartsList = (
   const action = () => {
     return (
       <AddButton name="创建物料清单" onClick={() => {
-        refAdd.current.open(false);
+        history.push('/SPU/parts/edit');
+        // refAdd.current.open(false);
       }} />
     );
   };
@@ -248,59 +245,44 @@ const PartsList = (
             fixed="right"
             align="center"
             dataIndex="partsId"
-            width={spuSkuId ? 70 : 150}
+            width={spuSkuId ? 70 : 200}
             render={(value, record) => {
-              return record.children && <>
-                {
-                  spuSkuId
-                    ?
+              if (record.children) {
+                if (spuSkuId) {
+                  return <Button type="link" onClick={() => {
+                    getPartsId(record.id || value);
+                  }}>拷贝</Button>;
+                } else {
+                  return <>
                     <Button type="link" onClick={() => {
-                      getPartsId(record.id || value);
+                      addRef.current.open({skuId: record.skuId, copy: true});
                     }}>拷贝</Button>
-                    :
-                    <>
-                      <EditButton onClick={() => {
-                        refAdd.current.open(record.id || value);
-                      }} />
-                      <Button type="link" onClick={() => {
-                        showRef.current.open(record.id || value);
-                      }}>详情</Button>
-                    </>
+                    <EditButton onClick={() => {
+                      history.push({
+                        pathname: '/SPU/parts/edit',
+                        search: `id=${record.id || value}`
+                      });
+                      // refAdd.current.open(record.id || value);
+                    }} />
+                    <Button type="link" onClick={() => {
+                      showRef.current.open(record.id || value);
+                    }}>详情</Button>
+                  </>;
                 }
-
-              </>;
+              }
             }} />
         </Table>
-
-
       </>
 
-      <Modal
-        width={1400}
-        type={type}
-        title="物料清单"
-        bom={bom}
-        loading={setLoading}
-        compoentRef={formRef}
-        component={PartsEdit}
-        onClose={() => {
-          setBom(null);
-        }}
+      <AddSkuModal
+        add={false}
+        edit
+        addRef={addRef}
+        copy
         onSuccess={() => {
-          if (bom && bom.type) {
-            tableRef.current.formActions.setFieldValue('type', bom.type);
-          }
-          setBom(null);
           tableRef.current.submit();
-          refAdd.current.close();
+          addRef.current.close();
         }}
-        ref={refAdd}
-        spuId={spuId}
-        footer={<>
-          <Button type="primary" loading={loading} onClick={() => {
-            formRef.current.submit();
-          }}>保存</Button>
-        </>}
       />
 
       <Drawer

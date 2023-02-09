@@ -9,9 +9,6 @@ import React, {useRef, useState} from 'react';
 import {Button, Input} from 'antd';
 import {createFormActions} from '@formily/antd';
 import Breadcrumb from '@/components/Breadcrumb';
-import Modal from '@/components/Modal';
-import AddButton from '@/components/AddButton';
-import PartsEdit from '@/pages/Erp/parts/PartsEdit';
 import Table from '@/components/Table';
 import Form from '@/components/Form';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
@@ -24,33 +21,13 @@ const {Column} = Table;
 const {FormItem} = Form;
 
 const SkuPartsList = ({
-  spuId,
   spuSkuId,
   value,
-  getPartsId = () => {
-  },
-  type = 1
 }) => {
 
   const [formActionsPublic] = useState(createFormActions);
-
-  const refAdd = useRef();
-  const formRef = useRef();
   const tableRef = useRef();
   const showRef = useRef();
-
-  const [loading, setLoading] = useState();
-
-
-  const [bom, setBom] = useState();
-
-  const action = () => {
-    return (
-      <AddButton name="创建物料清单" onClick={() => {
-        refAdd.current.open(false);
-      }} />
-    );
-  };
 
   const searchForm = () => {
 
@@ -80,7 +57,6 @@ const SkuPartsList = ({
         formActions={formActionsPublic}
         headStyle={{display: 'none'}}
         title={value !== false && <Breadcrumb title="物料清单" />}
-        actions={action()}
         searchForm={searchForm}
         ref={tableRef}
         contentHeight
@@ -126,34 +102,6 @@ const SkuPartsList = ({
             }}>详情</Button>;
           }} />
       </Table>
-
-      <Modal
-        width={1200}
-        type={type}
-        headTitle="创建物料清单"
-        bom={bom}
-        loading={setLoading}
-        compoentRef={formRef}
-        component={PartsEdit}
-        onClose={() => {
-          setBom(null);
-        }}
-        onSuccess={() => {
-          if (bom && bom.type) {
-            tableRef.current.formActions.setFieldValue('type', bom.type);
-          }
-          setBom(null);
-          tableRef.current.submit();
-          refAdd.current.close();
-        }}
-        ref={refAdd}
-        spuId={spuId}
-        footer={<>
-          <Button type="primary" loading={loading} onClick={() => {
-            formRef.current.submit();
-          }}>保存</Button>
-        </>}
-      />
 
       <Drawer
         extra

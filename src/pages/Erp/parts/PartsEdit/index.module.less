@@ -1,0 +1,109 @@
+.formItem {
+  padding: 0 24px 24px 24px;
+  display: flex;
+  align-items: center;
+
+  .label {
+    width: 80px;
+  }
+}
+
+.line {
+  height: 20px;
+  margin-top: -20px;
+  border: solid 1px #cacaca;
+  border-top: none;
+  position: relative;
+}
+
+.edit {
+  max-width: 1000px;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+
+  .footer {
+    box-shadow: 0 -4px 10px 0 rgb(0 0 0 / 8%);
+  }
+}
+
+.bottom {
+  max-width: 1000px;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-top: 1px solid #e7e7e7;
+  padding: 8px 24px 0;
+  box-shadow: 0 10px 0 #fff;
+
+  .total {
+    flex-grow: 1;
+
+    span {
+      color: @primary-color;
+      font-size: 16px;
+    }
+  }
+}
+
+.spin {
+  height: 100%;
+
+  :global {
+    .ant-spin-container {
+      height: 100%;
+    }
+  }
+}
+
+.skus {
+  display: flex;
+  flex-grow: 1;
+
+  .space {
+    min-width: 25px;
+  }
+
+  .list {
+    flex-grow: 1;
+  }
+}
+
+.skuDetailTip {
+  background-color: #fff;
+
+  :global {
+    .ant-tooltip-inner {
+
+    }
+  }
+}
+
+.skuDetail {
+  padding: 24px;
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.drawer {
+
+  :global {
+    .ant-drawer-content {
+      overflow: visible;
+    }
+  }
+}
+
+.newEdit {
+  position: relative;
+
+  .back {
+    position: absolute;
+    color: #fff;
+    left: 30px;
+    top: 12px;
+    cursor: pointer;
+  }
+}
+
+

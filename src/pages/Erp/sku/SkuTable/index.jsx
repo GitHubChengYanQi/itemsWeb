@@ -19,7 +19,6 @@ import {deleteBatch, skuDelete, skuV1List} from '../skuUrl';
 import Modal from '@/components/Modal';
 import Breadcrumb from '@/components/Breadcrumb';
 import Code from '@/pages/Erp/spu/components/Code';
-import PartsEdit from '@/pages/Erp/parts/PartsEdit';
 import Drawer from '@/components/Drawer';
 import Detail from '@/pages/ReSearch/Detail';
 import Note from '@/components/Note';
@@ -53,8 +52,6 @@ const SkuTable = ({...props}, ref) => {
 
   const {spuClass, spuId, isModal, setSpuClass, ...other} = props;
 
-  const [loading, setLoading] = useState();
-
   const [ids, setIds] = useState([]);
 
   const [sku, setSku] = useState([]);
@@ -67,9 +64,7 @@ const SkuTable = ({...props}, ref) => {
 
   const addRef = useRef(null);
   const showShip = useRef(null);
-  const addParts = useRef(null);
   const tableRef = useRef(null);
-  const editParts = useRef(null);
 
   const partsListRef = useRef(null);
 
@@ -77,7 +72,10 @@ const SkuTable = ({...props}, ref) => {
 
   const addBom = (id) => {
     setSkuId(id);
-    editParts.current.open(false);
+    history.push({
+      pathname: '/SPU/parts/edit',
+      search: `skuId=${id}`
+    });
   };
   const addShip = (id) => {
     setSkuId(id);
@@ -118,7 +116,7 @@ const SkuTable = ({...props}, ref) => {
   const searchForm = () => {
 
     return (
-      <>
+      <Space>
         <GroupSku
           defaultSearchType={defaultSearchType}
           ref={skuListRef}
@@ -179,7 +177,7 @@ const SkuTable = ({...props}, ref) => {
             />;
           }}
         />
-      </>
+      </Space>
     );
   };
 
@@ -308,7 +306,7 @@ const SkuTable = ({...props}, ref) => {
             if (exist) {
               // editParts.current.open(record.partsId);
             } else {
-              editParts.current.open(false);
+              // editParts.current.open(false);
               setSkuId(record.skuId);
             }
           }}>{exist ? '有' : '无'}</Button>
@@ -445,6 +443,7 @@ const SkuTable = ({...props}, ref) => {
   return (
     <>
       <Table
+        contentHeight={spuId}
         onReset={() => {
           skuListRef.current.reset();
           setSpuClass([]);
@@ -486,33 +485,6 @@ const SkuTable = ({...props}, ref) => {
       />
 
       <AddSkuModal addRef={addRef} tableRef={tableRef} copy={copy} edit={edit} />
-
-      <Modal
-        width={1200}
-        type={1}
-        loading={setLoading}
-        headTitle="物料清单"
-        sku
-        defaultValue={{
-          item: {skuId}
-        }}
-        compoentRef={addParts}
-        component={PartsEdit}
-        onClose={() => {
-          setSkuId(null);
-        }}
-        onSuccess={() => {
-          setSkuId(null);
-          tableRef.current.refresh();
-          editParts.current.close();
-        }}
-        ref={editParts}
-        footer={<>
-          <Button type="primary" loading={loading} onClick={() => {
-            addParts.current.submit();
-          }}>保存</Button>
-        </>}
-      />
 
       <Drawer
         bodyStyle={{padding: 0}}

@@ -18,8 +18,6 @@ const SkuList = ({...props}, ref) => {
 
   const addSku = useRef();
 
-  const [refresh, {toggle}] = useBoolean();
-
   const [skuId, setSkuId] = useState();
 
   const [skuList, setSkuList] = useState([]);
@@ -39,15 +37,13 @@ const SkuList = ({...props}, ref) => {
           fixed: false,
         }]
       );
-      toggle();
     }
   });
 
   const setSku = async (data, index) => {
     const array = skuList.filter(() => true);
     array[index] = {...array[index], ...data};
-    await setSkuList(array);
-    await toggle();
+    setSkuList(array);
   };
 
   const Item = (props) => {
@@ -78,7 +74,6 @@ const SkuList = ({...props}, ref) => {
             return skuIndex !== index;
           });
           await setSkuList(array);
-          await toggle();
         }}>
         <DeleteOutlined />
       </Button>
@@ -94,7 +89,6 @@ const SkuList = ({...props}, ref) => {
       handle
       liBorder
       definedItem={Item}
-      refresh={refresh}
       items={skuList.map((item) => {
         return {
           ...item,
@@ -112,8 +106,7 @@ const SkuList = ({...props}, ref) => {
           }
           return item;
         });
-        await setSkuList(newSkuList);
-        await toggle();
+        setSkuList(newSkuList);
       }}
     />
 

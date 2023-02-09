@@ -10,12 +10,21 @@ import TableSort from '@/components/Table/components/TableSort';
 import Render from '@/components/Render';
 import {isArray} from '@/util/Tools';
 import Empty from '@/components/Empty';
+import Breadcrumb from '@/components/Breadcrumb';
 
 
 const {Column} = AntdTable;
 const {Sider, Content} = Layout;
 
 const formActionsPublic = createFormActions();
+
+export const Title = ({title}) => {
+  return <div className={style.listHeader}>
+    <div className="title">
+      <Breadcrumb title={title} />
+    </div>
+  </div>;
+};
 
 const TableWarp = (
   {
@@ -267,7 +276,7 @@ const TableWarp = (
       key: `${index}`,
       render: (value, record, index) => {
         if (typeof item.render === 'function') {
-          return item.render(value, record, index,formActions);
+          return item.render(value, record, index, formActions);
         } else if (typeof value === 'object') {
           return <Render text="" />;
         } else if (typeof value === 'number') {
@@ -365,7 +374,8 @@ const TableWarp = (
                     fixed: 'left',
                     dataIndex: '0',
                     width: 40,
-                    render: (value, record, index) => <Render text={(pagination.current - 1) * pagination.pageSize + (index + 1)} width={40} maxWidth={40} />
+                    render: (value, record, index) => <Render
+                      text={(pagination.current - 1) * pagination.pageSize + (index + 1)} width={40} maxWidth={40} />
                   }]),
                   ...(noTableColumnSet ? columns : tableColumn.filter(item => !(item && (item.checked === false)))),
                 ]}
@@ -397,7 +407,7 @@ const TableWarp = (
                   getContainer: () => {
                     return document.getElementById('tableContent');
                   },
-                  offsetScroll:'max-content'
+                  offsetScroll: 'max-content'
                 }}
                 {...other}
                 {...props}

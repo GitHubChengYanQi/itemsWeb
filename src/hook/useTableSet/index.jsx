@@ -217,7 +217,6 @@ const useTableSet = (column, tableKey) => {
         <Sortable
           handle
           items={itemsData}
-          refresh={dndRefresh}
           onDragEnd={(allIems) => {
             setTrue();
             const array = [];

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BottomButton = ({children, textAlign}) => {
+const BottomButton = ({children, textAlign, style}) => {
 
 
   return <div
@@ -13,7 +13,8 @@ const BottomButton = ({children, textAlign}) => {
       borderTop: '1px solid #e7e7e7',
       background: '#fff',
       textAlign: textAlign || 'center',
-      padding: '8px 24px 0'
+      padding: '8px 24px 0',
+      ...style
     }}
   >
     {children}

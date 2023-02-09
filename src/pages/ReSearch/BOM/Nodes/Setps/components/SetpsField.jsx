@@ -10,6 +10,7 @@ import Modal from '@/components/Modal';
 import PartsEdit from '@/pages/Erp/parts/PartsEdit';
 import {partsGetDetails} from '@/pages/Erp/parts/PartsUrl';
 import Detail from '@/pages/ReSearch/Detail';
+import PartsEditV2 from '@/pages/Erp/parts/PartsEditV2';
 
 
 export const Tool = (props) => {
@@ -176,8 +177,9 @@ export const Bom = ({value, equals,spuSkuId, skuId, onChange}) => {
 
   return <>
     {bomType()}
-    <Modal
-      width={1200}
+    <Drawer
+      placement='top'
+      height='100%'
       type={1}
       title="清单"
       bom={{copy:true}}
@@ -188,7 +190,7 @@ export const Bom = ({value, equals,spuSkuId, skuId, onChange}) => {
       loading={setLoading}
       compoentRef={formRef}
       spuSkuId={spuSkuId}
-      component={PartsEdit}
+      component={PartsEditV2}
       onSuccess={(res) => {
         onChange(res && res.partsId);
         refAdd.current.close();

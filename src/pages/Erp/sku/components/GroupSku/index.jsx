@@ -49,77 +49,98 @@ const GroupSku = (
   const submit = ({id, searchType, showValue}) => {
     setSearchType(searchType);
     setShowValue(showValue);
-    onChange(id,searchType,showValue);
+    onChange(id, searchType, showValue);
+  };
+
+  const searchOpen = () => {
+    if (!searchType && showValue) {
+      run({data: {keyWord: showValue}});
+    }
+    setSearchValue(searchType ? '' : showValue);
+    setOpen(true);
   };
 
   useImperativeHandle(ref, () => ({
     reset,
     searchType,
     submit,
+    searchOpen,
   }));
 
   const showValueFormat = () => {
-    return showValue ? <span style={{width: width - 60}} className={styles.showValue}>{showValue}</span> :
-      <span className={styles.placeholder}>请输入关键字搜索</span>;
+    if (showValue) {
+      return <span
+        style={{width}}
+        className={styles.showValue}
+      >{showValue}</span>;
+    }
+    return <span className={styles.placeholder}>请输入关键字搜索</span>;
+  };
+
+  const searchButton = () => {
+    return <Button
+      style={{width, textAlign: 'left'}}
+    >
+      <div className={styles.button}>
+        <div className={styles.buttonText} onClick={() => {
+          if (!searchType && showValue) {
+            run({data: {keyWord: showValue}});
+          }
+          setSearchValue(searchType ? '' : showValue);
+          setOpen(true);
+        }}>
+
+          {
+            searchType ?
+              <Tag
+                style={{height: 22, display: 'inline-block', maxWidth: '100%'}}
+                hidden={!searchType}
+              >
+                <div
+                  style={{maxWidth: width}}
+                  className={styles.tagText}
+                >
+                  {searchType === 'skuClass' ? `分类为 “${showValue}”` : `清单为 “${showValue}”`}
+                </div>
+              </Tag> : showValueFormat()
+          }
+        </div>
+        {showValue && <div style={{margin: 'auto'}}>
+          <CloseCircleFilled onClick={() => {
+            setSearchType('');
+            setShowValue('');
+            onChange('', 'reset', '');
+          }} />
+        </div>}
+      </div>
+
+    </Button>;
   };
 
   return <>
-    <Space size={16} align={align}>
+    {noSearchButton ? searchButton() : <Space size={16} align={align}>
+
+      {searchButton()}
+
       <Button
-        style={{width, textAlign: 'left'}}
-      >
-        <div className={styles.button}>
-          <div className={styles.buttonText} onClick={() => {
-            if (!searchType && showValue) {
-              run({data: {keyWord: showValue}});
-            }
-            setSearchValue(searchType ? '' : showValue);
-            setOpen(true);
-          }}>
-
-            {
-              searchType ?
-                <Tag
-                  style={{height: 22}}
-                  hidden={!searchType}
-                >
-                  <div style={{maxWidth: width - 100}} className={styles.tagText}>
-                    {searchType === 'skuClass' ? `分类为 “${showValue}”` : `清单为 “${showValue}”`}
-                  </div>
-                </Tag> : showValueFormat()
-            }
-          </div>
-          {showValue && <CloseCircleFilled onClick={() => {
-            setSearchType('');
-            setShowValue('');
-            onChange('', 'reset', '');
-          }} />}
-        </div>
-
+        type="primary"
+        onClick={() => {
+          run({data: {keyWord: showValue}});
+          setSearchValue(showValue);
+          setOpen(true);
+        }}><SearchOutlined />查询
       </Button>
-      <div hidden={noSearchButton}>
-        <Button
-          type="primary"
-          onClick={() => {
-            run({data: {keyWord: showValue}});
-            setSearchValue(showValue);
-            setOpen(true);
-          }}><SearchOutlined />查询
-        </Button>
-      </div>
 
-      <div hidden={noSearchButton}>
-        <Button
-          onClick={() => {
-            setSearchType('');
-            setShowValue('');
-            onChange('', 'reset', '');
-          }}>
-          重置
-        </Button>
-      </div>
+      <Button
+        onClick={() => {
+          setSearchType('');
+          setShowValue('');
+          onChange('', 'reset', '');
+        }}>
+        重置
+      </Button>
 
-    </Space>
+    </Space>}
 
     <Modal
       className={styles.searchModal}
