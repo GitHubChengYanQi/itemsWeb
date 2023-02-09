@@ -7,6 +7,7 @@ import styles from './index.module.less';
 import SkuDetail from '@/pages/Erp/parts/components/SkuDetail';
 import BomComparison from '@/pages/Erp/parts/components/BomComparison';
 import Triangle from '@/pages/Erp/parts/components/Triangle';
+import {scroll} from '@/pages/Erp/parts/components/Item';
 
 const PartsEditV2 = () => {
 
@@ -18,7 +19,7 @@ const PartsEditV2 = () => {
 
   const [skuDetail, setSkuDetail] = useState({});
 
-  const [comparisonSku, setComparisonSku] = useState([]);
+  const [comparisonSku, setComparisonSku] = useState();
 
   const [comparisonParts, setComparisonParts] = useState([]);
 
@@ -28,8 +29,8 @@ const PartsEditV2 = () => {
 
   const scrollTo = (skuId) => {
     setTimeout(() => {
-      const partsId = document.getElementById(`parts${skuId}`);
-      partsId.scrollIntoView({block: 'center', behavior: 'smooth'});
+      setComparisonSku({skuId});
+      scroll(`parts${skuId}`);
     }, 0);
   };
 
@@ -57,7 +58,7 @@ const PartsEditV2 = () => {
 
   return <div id="partsEditId" className={styles.partsEdit}>
     <div className={styles.edit}>
-      <div id="describeId" className={styles.describe}>
+      <div id="describeId" hidden={!skuDetail?.skuId} className={styles.describe}>
         <div className={styles.describeContent}>
           <Triangle />
           <Tabs activeKey={tabKey} items={items} onChange={setTabKey} />

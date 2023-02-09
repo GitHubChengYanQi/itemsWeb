@@ -301,7 +301,7 @@ export function Sortable(
                 keys={items[activeIndex].key}
                 value={items[activeIndex].title}
                 handle={handle}
-                item={items[activeIndex]}
+                item={{...items[activeIndex], isDragging: true}}
                 checked={items[activeIndex].checked}
                 renderItem={renderItem}
                 wrapperStyle={wrapperStyle({
@@ -395,7 +395,7 @@ export function SortableItem(
       liBorder={liBorder}
       definedItem={definedItem}
       value={title}
-      item={item}
+      item={{...item, isDragging}}
       onChecked={onChecked}
       onAlign={onAlign}
       keys={id}

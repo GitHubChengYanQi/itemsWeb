@@ -31,6 +31,7 @@ export const partApiConfig = {
 const PartsEdit = (props) => {
 
   const {
+    isOpen,
     onParts = () => {
     },
     addSku = () => {
@@ -139,7 +140,7 @@ const PartsEdit = (props) => {
   };
 
   if (detailLoading) {
-    return <ProSkeleton type="descriptions" />;
+    return show ? <Spin /> : <ProSkeleton />;
   }
 
   return (
@@ -184,6 +185,7 @@ const PartsEdit = (props) => {
             <div hidden={show} className={styles.space} />
             <div className={styles.list}>
               {partsLoading ? <Spin /> : <AddSkuTable
+                isOpen={isOpen}
                 addSku={addSku}
                 comparison={comparison}
                 comparisonSku={comparisonSku}
@@ -207,7 +209,7 @@ const PartsEdit = (props) => {
           </div>
         </div>
 
-        <Affix offsetBottom={11}>
+        {!open && <Affix offsetBottom={11}>
           <div className={styles.footer}>
             <div
               hidden={show}
@@ -252,61 +254,63 @@ const PartsEdit = (props) => {
             </div>
           </div>
 
-        </Affix>
-      </div>
+        </Affix>}
 
-      <Drawer
-        className={styles.drawer}
-        destroyOnClose
-        push={false}
-        bodyStyle={{padding: show ? 16 : 0, overflow: 'visible'}}
-        width={full ? '100%' : `${show ? 90 : 95}%`}
-        closable={false}
-        onClose={() => {
-          closeDrawer();
-        }}
-        open={open}
-        getContainer={false}
-      >
-        <div className={styles.newEdit}>
-          <div
-            style={{left: show ? 'calc(-5% + -7px + -16px)' : 'calc(-2.5% + -7px)'}}
-            onClick={() => {
-              closeDrawer();
-            }}
-            className={styles.back}
-          >
-            返 <br />回
+        <Drawer
+          height="100vh"
+          className={styles.drawer}
+          destroyOnClose
+          push={false}
+          bodyStyle={{padding: show ? 16 : 0, overflow: 'visible'}}
+          width={full ? '100%' : `${show ? 90 : 95}%`}
+          closable={false}
+          onClose={() => {
+            closeDrawer();
+          }}
+          open={open}
+          getContainer={false}
+        >
+          <div className={styles.newEdit}>
+            <div
+              style={{left: show ? 'calc(-5% + -7px + -16px)' : 'calc(-2.5% + -7px)'}}
+              onClick={() => {
+                closeDrawer();
+              }}
+              className={styles.back}
+            >
+              返 <br />回
+            </div>
+            {open && <PartsEdit
+              isOpen={open}
+              addSku={addSku}
+              onSkuDetail={onSkuDetail}
+              comparison={comparison}
+              onParts={onParts}
+              comparisonSku={comparisonSku}
+              comparisonParts={comparisonParts}
+              show={show}
+              parts={parts}
+              setParts={setParts}
+              sku
+              defaultValue={open?.id ? {} : {
+                item: {skuId: open?.skuId}
+              }}
+              value={open?.id || false}
+              onFull={setFull}
+              onSuccess={(data) => {
+                closeDrawer(true);
+                const newParts = checks.map(item => {
+                  if (item.skuId === open.skuId) {
+                    return {...item, bomNum: item.bomNum + 1, bomId: data?.partsId};
+                  }
+                  return item;
+                });
+                setParts(newParts);
+              }}
+            />}
           </div>
-          {open && <PartsEdit
-            addSku={addSku}
-            onSkuDetail={onSkuDetail}
-            comparison={comparison}
-            onParts={onParts}
-            comparisonSku={comparisonSku}
-            comparisonParts={comparisonParts}
-            show={show}
-            parts={parts}
-            setParts={setParts}
-            sku
-            defaultValue={open?.id ? {} : {
-              item: {skuId: open?.skuId}
-            }}
-            value={open?.id || false}
-            onFull={setFull}
-            onSuccess={(data) => {
-              closeDrawer(true);
-              const newParts = checks.map(item => {
-                if (item.skuId === open.skuId) {
-                  return {...item, bomNum: item.bomNum + 1, bomId: data?.partsId};
-                }
-                return item;
-              });
-              setParts(newParts);
-            }}
-          />}
-        </div>
-      </Drawer>
+        </Drawer>
+      </div>
 
       <Modal
         headTitle="拷贝BOM"

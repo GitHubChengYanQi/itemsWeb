@@ -121,9 +121,11 @@ const PartsSelectSkus = (
       itemLayout="horizontal"
       loadMore={loadMore}
       dataSource={skuList}
-      renderItem={(item) => {
+      renderItem={(item, index) => {
         const exit = value.find(valueItem => valueItem.skuId === item.skuId);
         return <List.Item
+          style={{backgroundColor: index % 2 === 0 && '#f5f5f5'}}
+          className={styles.item}
           actions={[
             <Button
               size="small"
