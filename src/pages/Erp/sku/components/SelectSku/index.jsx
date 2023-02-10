@@ -1,6 +1,6 @@
 import {Button, Input, List, Popover, Spin} from 'antd';
 import React, {useEffect, useRef, useState} from 'react';
-import {SearchOutlined, DownOutlined} from '@ant-design/icons';
+import {SearchOutlined, DownOutlined, CloseCircleOutlined} from '@ant-design/icons';
 import classNames from 'classnames';
 import {useRequest} from '@/util/Request';
 import {skuDetail, skuV1List} from '@/pages/Erp/sku/skuUrl';
@@ -45,6 +45,10 @@ const SelectSku = (
   const [open, setOpen] = useState(false);
 
   const [searchValue, setSearchValue] = useState('');
+
+  const [hover, setHover] = useState(false);
+
+  const [detailData, setDetailData] = useState({});
 
   const objects = (data) => {
 
@@ -110,9 +114,10 @@ const SelectSku = (
     });
   };
 
-  const {loading: detailLoading, data: detailData = {}, run: detailRun} = useRequest(skuDetail, {
+  const {loading: detailLoading, run: detailRun} = useRequest(skuDetail, {
     manual: true,
     onSuccess: (res) => {
+      setDetailData(res);
       onChange(res.skuId, res);
     }
   });
@@ -207,6 +212,7 @@ const SelectSku = (
           setTimeout(() => {
             searchRef.current?.focus();
           }, 0);
+          return;
         }
         setOpen(status);
       }}
@@ -261,8 +267,20 @@ const SelectSku = (
         </div>
       }
     >
-      <div className={styles.show}>
-        <div className={styles.content}>
+      <div
+        onBlur={()=>{}}
+        onFocus={()=>{}}
+        className={styles.show}
+        onMouseOver={() => {
+          setHover(true);
+        }}
+        onMouseOut={() => {
+          setHover(false);
+        }}
+      >
+        <div className={styles.content} onClick={() => {
+          setOpen(true);
+        }}>
           <div className={styles.placeholder} hidden={detailData.skuId}>{placeholder || '请选择物料'}</div>
           <div
             className={styles.coding}
@@ -272,7 +290,13 @@ const SelectSku = (
           <div><Note maxWidth="100%" value={SkuResultSkuJsons({skuResult: detailData})} /></div>
         </div>
         <div>
-          <DownOutlined style={{color: '#7d8389'}} />
+          {(hover && detailData.skuId) ?
+            <CloseCircleOutlined style={{color: '#7d8389'}} onClick={() => {
+              onChange(null);
+              setDetailData({});
+            }} />
+            :
+            <DownOutlined style={{color: '#7d8389'}} />}
         </div>
       </div>
 
