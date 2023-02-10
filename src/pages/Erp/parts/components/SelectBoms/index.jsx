@@ -1,6 +1,6 @@
 import {Input, List, Popover,} from 'antd';
 import React, {useRef, useState} from 'react';
-import {SearchOutlined} from '@ant-design/icons';
+import {CloseCircleOutlined, DownOutlined, SearchOutlined} from '@ant-design/icons';
 import {useRequest} from '@/util/Request';
 import Note from '@/components/Note';
 import {partsList} from '@/pages/Erp/parts/PartsUrl';
@@ -28,6 +28,8 @@ const SelectBoms = (
   const [searchValue, setSearchValue] = useState('');
 
   const [detailData, setDetailData] = useState({});
+
+  const [hover, setHover] = useState(false);
 
   const {loading, data = [], run} = useRequest(partsList, {
     manual,
@@ -79,55 +81,78 @@ const SelectBoms = (
               getList({keyWord: value});
             }}
           />
-          <List
-            loading={loading}
-            className={styles.list}
-            itemLayout="horizontal"
-            dataSource={options}
-            renderItem={(item, index) => {
-              return <List.Item
-                style={{backgroundColor: index % 2 === 0 && '#f5f5f5'}}
-                className={styles.item}
-              >
-                <List.Item.Meta
-                  title={<SearchValueFormat
-                    maxWidth="100%"
-                    searchValue={searchValue}
-                    label={item.name || '-'}
-                  />}
-                  description={<div>
-                    <SearchValueFormat
+          <div className={styles.skuList}>
+            <List
+              loading={loading}
+              className={styles.list}
+              itemLayout="horizontal"
+              dataSource={options}
+              renderItem={(item, index) => {
+                return <List.Item
+                  style={{backgroundColor: index % 2 === 0 && '#f5f5f5'}}
+                  className={styles.item}
+                >
+                  <List.Item.Meta
+                    title={<SearchValueFormat
                       maxWidth="100%"
                       searchValue={searchValue}
-                      label={item.skuResult?.standard || '-'}
-                    />
-                    <SearchValueFormat
-                      maxWidth="100%"
-                      searchValue={searchValue}
-                      label={item.label || '-'}
-                    />
-                  </div>}
-                  onClick={() => {
-                    setOpen(false);
-                    setDetailData(item);
-                    onChange(item.value);
-                  }}
-                />
-              </List.Item>;
-            }}
-          />
+                      label={item.name || '-'}
+                    />}
+                    description={<div>
+                      <SearchValueFormat
+                        maxWidth="100%"
+                        searchValue={searchValue}
+                        label={item.skuResult?.standard || '-'}
+                      />
+                      <SearchValueFormat
+                        maxWidth="100%"
+                        searchValue={searchValue}
+                        label={item.label || '-'}
+                      />
+                    </div>}
+                    onClick={() => {
+                      setOpen(false);
+                      setDetailData(item);
+                      onChange(item.value);
+                    }}
+                  />
+                </List.Item>;
+              }}
+            />
+          </div>
         </div>
       }
     >
-      <div className={styles.show}>
-        <div className={styles.placeholder} hidden={detailData.partsId}>{placeholder || '请选择Bom'}</div>
-        <div
-          className={styles.coding}
-        >
-          <Note maxWidth="100%" value={detailData.name} />
+      <div
+        onBlur={()=>{}}
+        onFocus={()=>{}}
+        className={styles.show}
+        onMouseOver={() => {
+          setHover(true);
+        }}
+        onMouseOut={() => {
+          setHover(false);
+        }}
+      >
+        <div className={styles.content}>
+          <div className={styles.placeholder} hidden={detailData.partsId}>{placeholder || '请选择Bom'}</div>
+          <div
+            className={styles.coding}
+          >
+            <Note maxWidth="100%" value={detailData.name} />
+          </div>
+          <Note maxWidth="100%" value={detailData.skuResult?.standard} />
+          <Note maxWidth="100%" value={SkuResultSkuJsons({skuResult: detailData.skuResult})} />
         </div>
-        <Note maxWidth="100%" value={detailData.skuResult?.standard} />
-        <Note maxWidth="100%" value={SkuResultSkuJsons({skuResult: detailData.skuResult})} />
+        <div>
+          {(hover && detailData.skuId) ?
+            <CloseCircleOutlined style={{color: '#7d8389'}} onClick={() => {
+              onChange(null);
+              setDetailData({});
+            }} />
+            :
+            <DownOutlined style={{color: '#7d8389'}} />}
+        </div>
       </div>
 
     </Popover>
