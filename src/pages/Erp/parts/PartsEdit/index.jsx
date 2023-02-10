@@ -144,7 +144,7 @@ const PartsEdit = (props) => {
   };
 
   if (detailLoading) {
-    return show ? <Spin /> : <ProSkeleton />;
+    return show ? <div style={{textAlign: 'center', padding: 12}}><Spin /></div> : <ProSkeleton />;
   }
 
   return (
@@ -152,7 +152,7 @@ const PartsEdit = (props) => {
       <div className={styles.edit}>
         <div style={{padding}}>
           <ProCard hidden={show} className="h2Card" headerBordered title="BOM信息">
-            <Row>
+            <Row align='middle'>
               <Col span={16}>
                 <div className={styles.formItem}>
                   <div className={styles.label}>物料：</div>
@@ -223,7 +223,7 @@ const PartsEdit = (props) => {
                 总计：<span>{parts.length}</span> 类 <span>{total}</span> 件 物料
               </div>
               <Button
-                size='large'
+                size="large"
                 loading={addLoading}
                 type="primary"
                 onClick={() => {

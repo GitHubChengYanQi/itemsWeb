@@ -1,0 +1,95 @@
+.list {
+  padding: 12px 0 12px 12px;
+  cursor: pointer;
+
+  .item {
+    border-radius: 2px;
+    padding: 8px;
+
+    &:hover {
+      background-color: #c5e8ff !important;
+    }
+  }
+}
+
+.childrenList {
+  padding: 12px 0 12px 12px;
+  cursor: pointer;
+}
+
+.skuList {
+  max-height: 50vh;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    /* 滚动条整体样式 */
+    width: 4px; /* 高宽分别对应横竖滚动条的尺寸 */
+    height: 10px;
+  }
+}
+
+.spuList {
+  padding: 8px;
+
+  .spuName {
+    padding: 8px 8px 0;
+    display: flex;
+    align-items: center;
+
+    div {
+      flex-grow: 1;
+    }
+  }
+}
+
+.add {
+  padding: 8px 8px 0;
+  display: flex;
+  align-items: center;
+
+  div {
+    flex-grow: 1;
+  }
+}
+
+.show {
+  cursor: pointer;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 11px;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 1.5715;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+
+  .content {
+    flex-grow: 1;
+  }
+
+  .placeholder {
+    color: #d9d9d9;
+  }
+
+  .coding {
+    font-weight: 500;
+  }
+}
+
+.popoverTop {
+  top: 0 !important;
+}
+
+.popover {
+  padding: 0;
+
+  :global {
+    .ant-popover-arrow {
+      display: none;
+    }
+  }
+}

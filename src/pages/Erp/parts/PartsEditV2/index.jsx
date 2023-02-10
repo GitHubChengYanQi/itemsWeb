@@ -82,7 +82,7 @@ const PartsEditV2 = () => {
         }}
       />
     </div>
-    <div className={styles.search}>
+    <div hidden={!skuDetail?.skuId} className={styles.search}>
       <PartsSelectSkus ref={searchRef} value={parts} onChange={(sku) => {
         setParts([...parts, sku]);
         scrollTo(sku.skuId);

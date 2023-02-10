@@ -226,7 +226,7 @@ const Item = (
             openNewEdit(item.bomId, item.skuId);
           }}
         >
-          {item.bomNum ? <RightOutlined style={{width: 56}} /> : '添加bom'}
+          {item.bomNum ? <Space style={{width: 56}}><SearchOutlined />详情</Space> : '添加bom'}
         </Button>
       </Space>}
     </div>;
