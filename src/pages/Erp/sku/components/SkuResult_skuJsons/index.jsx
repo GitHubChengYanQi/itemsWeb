@@ -3,7 +3,7 @@ import React from 'react';
 const SkuResultSkuJsons = ({skuResult, describe}) => {
 
   if (!skuResult) {
-    return '无';
+    return '';
   }
 
   if (describe) {
@@ -15,7 +15,7 @@ const SkuResultSkuJsons = ({skuResult, describe}) => {
       &&
       skuResult.skuJsons.map((items) => {
         return `${items.attribute.attribute || '无'}:${items.values.attributeValues || '无'}`;
-      }).join(' ; ') || '无';
+      }).join(' ; ') || '';
   }
 
   return `${skuResult.spuResult ? skuResult.spuResult.name : ''} ${skuResult.skuName ? ` / ${skuResult.skuName}` : ''}${skuResult.specifications ? ` / ${skuResult.specifications}` : ''}`;

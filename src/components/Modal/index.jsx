@@ -8,6 +8,7 @@ const Modal = (
     component: Component,
     width,
     headTitle,
+    overflowY,
     loading = () => {
     },
     footer,
@@ -136,8 +137,7 @@ const Modal = (
     >
       <div style={{
         maxHeight: footer ? 'calc(100vh - 110px)' : 'calc(100vh - 55px)',
-        overflowY: 'auto',
-        overflowX: 'hidden'
+        overflow: 'hidden auto',
       }}>
         {Component ? <Component
           {...props}

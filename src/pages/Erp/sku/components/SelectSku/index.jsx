@@ -1,23 +1,26 @@
-import {Button, Select, Spin} from 'antd';
+import {Button, Input, List, Popover, Spin} from 'antd';
 import React, {useEffect, useRef, useState} from 'react';
+import {SearchOutlined, DownOutlined} from '@ant-design/icons';
+import classNames from 'classnames';
 import {useRequest} from '@/util/Request';
-import {skuDetail, skuList} from '@/pages/Erp/sku/skuUrl';
-import Modal from '@/components/Modal';
-import SkuEdit from '@/pages/Erp/sku/skuEdit';
-import Note from '@/components/Note';
+import {skuDetail, skuV1List} from '@/pages/Erp/sku/skuUrl';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
+import styles from './index.module.less';
+import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
+import SearchValueFormat from '@/components/SearchValueFormat';
+import Note from '@/components/Note';
 
 
 const SelectSku = (
   {
+    maxHeight = '50vh',
+    popupContainerBody,
     disabled,
     supply,
     value,
     onChange,
     manual,
-    width,
-    dropdownMatchSelectWidth,
     placeholder,
     onSpuId = () => {
     },
@@ -28,7 +31,6 @@ const SelectSku = (
     noAdd,
     spuClassId,
     ids,
-    style,
     api,
     getDetailLoading = () => {
     },
@@ -36,16 +38,19 @@ const SelectSku = (
 
   const ref = useRef();
 
-  const [change, setChange] = useState();
+  const selectRef = useRef();
+
+  const searchRef = useRef();
 
   const [open, setOpen] = useState(false);
+
+  const [searchValue, setSearchValue] = useState('');
 
   const objects = (data) => {
 
     if (!Array.isArray(data)) {
       return [];
     }
-
 
     let spus = [];
     const skus = [];
@@ -55,7 +60,7 @@ const SelectSku = (
         disabled: skuIds && skuIds.filter((value) => {
           return value === skuItem.skuId;
         }).length > 0,
-        label: SkuResultSkuJsons({skuResult: skuItem}),
+        label: SkuRender(skuItem),
         value: skuItem.skuId,
         spu: skuItem.spuResult,
         standard: skuItem.standard,
@@ -82,7 +87,7 @@ const SelectSku = (
       }
 
       return spus.push({
-        label: skuItem.spuResult && skuItem.spuResult.name,
+        label: skuItem.spuName,
         value: skuItem.spuId,
         type: 'spu',
         options: [sku]
@@ -92,7 +97,7 @@ const SelectSku = (
     return noSpu ? skus : spus;
   };
 
-  const {loading, data, run} = useRequest({...(api || skuList), data: {skuIds: ids, ...params}}, {
+  const {loading, data, run} = useRequest({...(api || skuV1List), data: {skuIds: ids, ...params}}, {
     manual,
     debounceInterval: 300,
   });
@@ -100,16 +105,15 @@ const SelectSku = (
   const getSkuList = (data) => {
     run({
       data: {
-        skuIds: ids, spuClass: spuClassId, ...data, ...params
+        skuIds: ids, categoryId: spuClassId, ...data, ...params
       }
     });
   };
 
-  const {loading: detailLoading, run: detail} = useRequest(skuDetail, {
+  const {loading: detailLoading, data: detailData = {}, run: detailRun} = useRequest(skuDetail, {
     manual: true,
     onSuccess: (res) => {
       onChange(res.skuId, res);
-      setChange(SkuResultSkuJsons({skuResult: res}));
     }
   });
 
@@ -119,7 +123,7 @@ const SelectSku = (
 
   useEffect(() => {
     if (value) {
-      detail({
+      detailRun({
         data: {
           skuId: value
         }
@@ -135,118 +139,150 @@ const SelectSku = (
 
 
   const options = !loading ? objects(data) : [];
+
   if (detailLoading) {
     return <Spin />;
   }
-  return (<>
-    <Select
-      disabled={disabled}
-      filterOption={false}
-      style={{width: width || 200, ...style}}
-      placeholder={placeholder || '搜索物料'}
-      showSearch
-      open={open}
-      allowClear
-      onClear={() => {
-        onChange(null);
-      }}
-      onDropdownVisibleChange={setOpen}
-      value={value && change}
-      notFoundContent={loading && <div style={{textAlign: 'center', padding: 16}}><Spin /></div>}
-      dropdownMatchSelectWidth={dropdownMatchSelectWidth || 400}
-      onSearch={(value) => {
-        getSkuList({skuName: value,});
-      }}
-      onChange={(value, option) => {
-        if (value === 'add') {
-          ref.current.open(false);
-          onChange(null);
-          return;
-        }
-        setChange(value);
-        if (option) {
-          if (option && option.key) {
-            onChange(option.key);
-          }
-        } else {
-          onChange(null);
-          getSkuList();
-        }
 
-      }}>
-      {!noAdd && !loading && <Select.Option
-        key="add"
-        title="新增物料"
-        value="add"
-      >
-        <a>
-          新增物料
-        </a>
-      </Select.Option>}
-      {options.map((items) => {
-        if (noSpu) {
-          return <Select.Option
-            key={items.value}
-            style={{color: 'rgb(113 111 111)'}}
-            disabled={items.disabled}
-            title={items.label}
-            standard={items.standard}
-            value={`${items.label}standard:${items.standard}`}>
-            <div style={{display: 'flex', alignItems: 'center'}}>
-              <div style={{flexGrow: 1, maxWidth: '85%'}}>
-                <Note>
-                  {items.label}
-                </Note>
-              </div>
-              {supply && params && params.customerId && <div style={{textAlign: 'right', width: 100}}>
-                <Button
-                  type="link"
-                  danger={!items.supply}
-                  style={{padding: 0}}>{items.supply ? '供应物料' : '非供应物料'}</Button>
-              </div>}
+  const skuList = (dataSource, isChildren) => {
+    return <List
+      loading={loading}
+      className={isChildren ? styles.childrenList : styles.list}
+      itemLayout="horizontal"
+      dataSource={dataSource}
+      renderItem={(item, index) => {
+        return <List.Item
+          style={{backgroundColor: index % 2 === 0 && '#f5f5f5'}}
+          className={styles.item}
+          actions={[
+            supply && params && params.customerId &&
+            <div style={{textAlign: 'right', width: 100}}>
+              <Button
+                type="link"
+                danger={!item.supply}
+                style={{padding: 0}}
+              >
+                {item.supply ? '供应物料' : '非供应物料'}
+              </Button>
             </div>
+          ]}
+        >
+          <List.Item.Meta
+            title={<SearchValueFormat
+              maxWidth="100%"
+              searchValue={searchValue}
+              label={item.standard || '-'}
+            />}
+            description={<SearchValueFormat
+              maxWidth="100%"
+              searchValue={searchValue}
+              label={item.label || '-'}
+            />}
+            onClick={() => {
+              setOpen(false);
+              detailRun({
+                data: {
+                  skuId: item.value
+                }
+              });
+            }}
+          />
+        </List.Item>;
+      }}
+    />;
+  };
 
-          </Select.Option>;
+  return (<div style={{width: '100%'}} ref={selectRef}>
+    <Popover
+      zIndex={1005}
+      getPopupContainer={() => {
+        return popupContainerBody ? document.body : selectRef.current;
+      }}
+      overlayClassName={classNames(styles.popover, !popupContainerBody && styles.popoverTop)}
+      arrow={false}
+      placement="bottomLeft"
+      open={disabled ? false : open}
+      onOpenChange={(status) => {
+        if (status) {
+          setTimeout(() => {
+            searchRef.current?.focus();
+          }, 0);
         }
-        return (
-          <Select.OptGroup key={items.value} label={<Button type="text" style={{padding: 0}} onClick={() => {
-            onSpuId(items.value);
-            setOpen(false);
-          }}>{items.label}</Button>}>
-            {items.options.map((item) => {
-              return <Select.Option
-                key={item.value}
-                style={{color: 'rgb(113 111 111)'}}
-                disabled={item.disabled}
-                title={item.label}
-                standard={item.standard}
-                value={item.label}>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                  <div style={{flexGrow: 1, maxWidth: '85%'}}>
-                    <Note>
-                      {item.label}
-                    </Note>
-                  </div>
-                  {supply && params && params.customerId && <div style={{textAlign: 'right', width: 100}}>
-                    <Button
-                      type="link"
-                      danger={!item.supply}
-                      style={{padding: 0}}>{item.supply ? '供应物料' : '非供应物料'}</Button>
-                  </div>}
-                </div>
+        setOpen(status);
+      }}
+      trigger="click"
+      content={
+        <div style={{minWidth: 400}}>
+          <Input
+            ref={searchRef}
+            allowClear
+            placeholder="请输入关键词搜索"
+            value={searchValue}
+            prefix={<SearchOutlined />}
+            onChange={({target: {value}}) => {
+              setSearchValue(value);
+              getSkuList({keyWord: value});
+            }}
+          />
+          <div className={styles.add}>
+            <div>物料列表</div>
+            <a hidden={noAdd} onClick={() => {
+              setOpen(false);
+              ref.current.open(false);
+            }}>
+              新增物料
+            </a>
+          </div>
+          <div style={{maxHeight}} className={styles.skuList}>
+            {
+              noSpu ? skuList(options) : <div className={styles.spuList}>
+                {
+                  options.map((item, index) => {
+                    return <div key={index}>
+                      <div onClick={() => {
+                        onSpuId(item.value);
+                        setOpen(false);
+                      }}>
+                        <div className={styles.spuName}>
+                          <div>{item.label}</div>
+                          <a onClick={() => {
+                            onSpuId(item.value);
+                            setOpen(false);
+                          }}>选择产品</a>
+                        </div>
+                        {skuList(item.options, true)}
+                      </div>
+                    </div>;
+                  })
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    >
+      <div className={styles.show}>
+        <div className={styles.content}>
+          <div className={styles.placeholder} hidden={detailData.skuId}>{placeholder || '请选择物料'}</div>
+          <div
+            className={styles.coding}
+          >
+            <Note maxWidth="100%" value={detailData.standard} />
+          </div>
+          <div><Note maxWidth="100%" value={SkuResultSkuJsons({skuResult: detailData})} /></div>
+        </div>
+        <div>
+          <DownOutlined style={{color: '#7d8389'}} />
+        </div>
+      </div>
 
-              </Select.Option>;
-            })}
-          </Select.OptGroup>
-        );
-      })}
-    </Select>
+    </Popover>
 
 
     <AddSkuModal
       addRef={ref}
       onSuccess={(res) => {
-        detail({
+        detailRun({
           data: {
             skuId: res
           }
@@ -255,7 +291,7 @@ const SelectSku = (
       }}
     />
 
-  </>);
+  </div>);
 };
 
 export default SelectSku;

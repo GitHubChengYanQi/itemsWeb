@@ -9,6 +9,8 @@ import SelectSku from '@/pages/Erp/sku/components/SelectSku';
 
 const AddSpu = (
   {
+    maxHeight,
+    popupContainerBody,
     value,
     onChange,
     noSkuIds,
@@ -161,6 +163,8 @@ const AddSpu = (
       </Descriptions.Item>
       <Descriptions.Item label="物料名称">
         <SelectSku
+          maxHeight={maxHeight}
+          popupContainerBody={popupContainerBody}
           manual={manual}
           skuResult={skuResult}
           api={api}
