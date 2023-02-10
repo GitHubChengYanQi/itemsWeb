@@ -64,6 +64,7 @@ const SelectBoms = (
           setTimeout(() => {
             searchRef.current?.focus();
           }, 0);
+          return;
         }
         setOpen(status);
       }}
@@ -134,7 +135,9 @@ const SelectBoms = (
           setHover(false);
         }}
       >
-        <div className={styles.content}>
+        <div className={styles.content} onClick={() => {
+          setOpen(true);
+        }}>
           <div className={styles.placeholder} hidden={detailData.partsId}>{placeholder || '请选择Bom'}</div>
           <div
             className={styles.coding}
