@@ -49,8 +49,10 @@ const PartsEditV2 = () => {
         comparisonSku={comparisonSku}
         onParts={setComparisonSku}
         addSku={(sku) => {
-          setParts([...parts, sku]);
-          scrollTo(sku.skuId);
+          if (sku) {
+            setParts([...parts, sku]);
+            scrollTo(sku.skuId);
+          }
         }}
       />,
     },
@@ -65,6 +67,7 @@ const PartsEditV2 = () => {
         </div>
       </div>
       <PartsEdit
+        scrollTo={scrollTo}
         onSkuDetail={setSkuDetail}
         onSeletSku={() => {
           searchRef.current.searchOpen();

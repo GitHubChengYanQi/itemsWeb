@@ -31,6 +31,8 @@ export const partApiConfig = {
 const PartsEdit = (props) => {
 
   const {
+    scrollTo = () => {
+    },
     isOpen,
     onParts = () => {
     },
@@ -133,6 +135,7 @@ const PartsEdit = (props) => {
   }
 
   const closeDrawer = (success) => {
+    scrollTo(open.skuId);
     onSkuDetail(skuItem.sku);
     onParts(null);
     onFull(false);
@@ -152,7 +155,7 @@ const PartsEdit = (props) => {
       <div className={styles.edit}>
         <div style={{padding}}>
           <ProCard hidden={show} className="h2Card" headerBordered title="BOM信息">
-            <Row align='middle'>
+            <Row align="middle">
               <Col span={14}>
                 <div className={styles.formItem}>
                   <div className={styles.label}>物料：</div>
@@ -272,6 +275,12 @@ const PartsEdit = (props) => {
           onClose={() => {
             closeDrawer();
           }}
+          afterOpenChange={(status) => {
+            if (status) {
+              const partsEditId = document.getElementById('partsEditId');
+              partsEditId.scrollTop = 0;
+            }
+          }}
           open={open}
           getContainer={false}
         >
@@ -286,6 +295,7 @@ const PartsEdit = (props) => {
               返 <br />回
             </div>
             {open && <PartsEdit
+              scrollTo={scrollTo}
               isOpen={open}
               addSku={addSku}
               onSkuDetail={onSkuDetail}

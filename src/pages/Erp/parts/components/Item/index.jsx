@@ -11,8 +11,10 @@ import InputNumber from '@/components/InputNumber';
 import Warning from '@/components/Warning';
 import Modal from '@/components/Modal';
 import Icon from '@/components/Icon';
-import {useRequest} from '@/util/Request';
+import {request, useRequest} from '@/util/Request';
 import {bomsByskuId} from '@/pages/Erp/parts/PartsUrl';
+import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
+import {skuV1List} from '@/pages/Erp/sku/skuUrl';
 
 export const scroll = (itemId) => {
   const partItemDom = document.getElementById(itemId);
@@ -56,6 +58,10 @@ const Item = (
 ) => {
 
   const versionModalRef = useRef();
+
+  const addRef = useRef();
+
+  const [copy, setCopy] = useState(false);
 
   const [bomVersions, setBomVersions] = useState([]);
 
@@ -169,6 +175,16 @@ const Item = (
         >
           <SearchOutlined />
         </Button> : <div style={{width: 16}} />}
+        <Button
+          style={{padding: 0}}
+          type="link"
+          onClick={() => {
+            addRef.current.open({...item, copy: true});
+            setCopy(true);
+          }}
+        >
+          复制
+        </Button>
         {noExist ? <Button
           style={{padding: 0}}
           type="link"
@@ -278,6 +294,17 @@ const Item = (
         }
       </div>
     </Modal>
+
+    <AddSkuModal
+      edit={copy}
+      addRef={addRef}
+      copy={copy}
+      onSuccess={async () => {
+        addRef.current.close();
+        const list = await request({...skuV1List, data: {}, params: {limit: 1, page: 1}});
+        addSku(isArray(list)[0]);
+      }}
+    />
   </>;
 };
 

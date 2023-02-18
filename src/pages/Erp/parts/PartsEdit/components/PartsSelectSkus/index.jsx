@@ -1,5 +1,5 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Button, List, Space} from 'antd';
+import {Button, List} from 'antd';
 import styles from '../../../PartsEditV2/index.module.less';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 import {useRequest} from '@/util/Request';
@@ -132,8 +132,7 @@ const PartsSelectSkus = (
                 size="small"
                 // type="link"
                 onClick={() => {
-                  const value = {...item, copy: true};
-                  addRef.current.open(value);
+                  addRef.current.open({...item, copy: true});
                   setCopy(true);
                 }}
               >
