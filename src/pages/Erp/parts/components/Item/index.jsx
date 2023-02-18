@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import classNames from 'classnames';
 import TweenOne from 'rc-tween-one';
-import {DeleteOutlined, RightOutlined, SearchOutlined, DoubleRightOutlined} from '@ant-design/icons';
+import {DeleteOutlined, SearchOutlined, DoubleRightOutlined} from '@ant-design/icons';
 import {Alert, Button, List, Select, Space, Spin} from 'antd';
 import styles from '@/pages/Erp/parts/components/AddSkuTable/index.module.less';
 import Note from '@/components/Note';
@@ -152,8 +152,6 @@ const Item = (
       </div>
       {show ? <Space size={12}>
         <div style={{textAlign: 'center'}}>
-          {item.autoOutstock ? '推式' : '拉式'}
-          <br />
           × {item.number}
         </div>
         {item.bomNum ? <Button
