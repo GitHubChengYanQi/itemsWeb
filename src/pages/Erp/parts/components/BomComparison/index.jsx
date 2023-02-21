@@ -21,7 +21,7 @@ const BomComparison = (
   const [openDrawer, setOpenDrawer] = useState();
 
   return <>
-    <div hidden={openDrawer}>
+    <div hidden={openDrawer} style={{padding:'0 8px'}}>
       <SelectBoms
         value={value}
         style={{width: '100%'}}

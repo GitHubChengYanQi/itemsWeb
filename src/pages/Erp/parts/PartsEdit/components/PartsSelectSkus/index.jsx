@@ -127,26 +127,27 @@ const PartsSelectSkus = (
           style={{backgroundColor: index % 2 === 0 && '#f5f5f5'}}
           className={styles.item}
           actions={[
-            <Button
-              size="small"
-              // type="link"
-              onClick={() => {
-                const value = {...item, copy: true};
-                addRef.current.open(value);
-                setCopy(true);
-              }}
-            >
-              复制
-            </Button>,
-            exit ? <div style={{width: 47}}>已添加</div> : <Button
-              size="small"
-              // type="link"
-              onClick={() => {
-                onChange(item);
-              }}
-            >
-              选择
-            </Button>
+            <div className={styles.actions}>
+              <Button
+                size="small"
+                // type="link"
+                onClick={() => {
+                  addRef.current.open({...item, copy: true});
+                  setCopy(true);
+                }}
+              >
+                复制
+              </Button>
+              {exit ? <div style={{width: 47}}>已添加</div> : <Button
+                size="small"
+                // type="link"
+                onClick={() => {
+                  onChange(item);
+                }}
+              >
+                选择
+              </Button>}
+            </div>
           ]}
         >
           <List.Item.Meta

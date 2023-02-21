@@ -31,6 +31,8 @@ export const partApiConfig = {
 const PartsEdit = (props) => {
 
   const {
+    scrollTo = () => {
+    },
     isOpen,
     onParts = () => {
     },
@@ -129,10 +131,11 @@ const PartsEdit = (props) => {
   let padding = '16px 16px 0';
 
   if (show) {
-    padding = firstEdit ? '37px 0 0px' : 0;
+    padding = firstEdit ? '17px 0 0px' : 0;
   }
 
   const closeDrawer = (success) => {
+    scrollTo(open.skuId);
     onSkuDetail(skuItem.sku);
     onParts(null);
     onFull(false);
@@ -152,8 +155,8 @@ const PartsEdit = (props) => {
       <div className={styles.edit}>
         <div style={{padding}}>
           <ProCard hidden={show} className="h2Card" headerBordered title="BOM信息">
-            <Row align='middle'>
-              <Col span={16}>
+            <Row align="middle">
+              <Col span={14}>
                 <div className={styles.formItem}>
                   <div className={styles.label}>物料：</div>
                   <Sku
@@ -167,7 +170,7 @@ const PartsEdit = (props) => {
                   />
                 </div>
               </Col>
-              <Col span={8}>
+              <Col span={10}>
                 <div className={styles.formItem}>
                   <div className={styles.label}>版本号：</div>
                   <Name
@@ -181,7 +184,7 @@ const PartsEdit = (props) => {
             </Row>
             <div className={styles.line} />
           </ProCard>
-          <div style={{padding: 15}} hidden={!show || firstEdit}>
+          <div style={{padding: '15px 15px 36px'}} hidden={!show || firstEdit}>
             {SkuResultSkuJsons({skuResult: skuItem.sku})}
           </div>
           <div hidden={!show} className={styles.line} />
@@ -272,6 +275,12 @@ const PartsEdit = (props) => {
           onClose={() => {
             closeDrawer();
           }}
+          afterOpenChange={(status) => {
+            if (status) {
+              const partsEditId = document.getElementById('partsEditId');
+              partsEditId.scrollTop = 0;
+            }
+          }}
           open={open}
           getContainer={false}
         >
@@ -286,6 +295,7 @@ const PartsEdit = (props) => {
               返 <br />回
             </div>
             {open && <PartsEdit
+              scrollTo={scrollTo}
               isOpen={open}
               addSku={addSku}
               onSkuDetail={onSkuDetail}

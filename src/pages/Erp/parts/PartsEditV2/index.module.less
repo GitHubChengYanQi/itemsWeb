@@ -32,20 +32,20 @@
 
 .search {
   padding: 8px;
-  width: 16vw;
+  width: 22vw;
+  max-width: 500px;
   position: fixed;
   bottom: 0;
-  left: calc(50% + 605px);
+  left: calc(((60vw - 200px) / 2) + 200px + 40vw + 12px);
   top: 60px;
   box-shadow: 2px 1px 6px rgb(0 0 0 / 20%);
   background-color: #fff;
 }
 
 
-
 .edit {
   position: relative;
-  width: 1000px;
+  width: 40vw;
   margin: auto;
   border-radius: 4px;
   background-color: #fff;
@@ -53,9 +53,9 @@
 
 .describe {
   z-index: 1;
-  width: 17vw;
+  width: 22vw;
   position: absolute;
-  left: -18vw;
+  left: -23vw;
   background-color: #fff;
   top: 0;
   //max-width: calc(100vw - 1000px - 30vw - 200px);
@@ -82,6 +82,25 @@
 .item {
   border-radius: 2px;
   padding: 8px;
+
+  .actions {
+    width: 55px;
+
+    button {
+      display: inline-block;
+      margin: 4px;
+    }
+  }
+
+  :global {
+    .ant-list-item-action {
+      margin: 0;
+
+      li {
+        padding: 0;
+      }
+    }
+  }
 }
 
 
