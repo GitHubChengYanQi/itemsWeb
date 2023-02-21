@@ -14,7 +14,7 @@ import {
   Button,
   Space,
   AutoComplete,
-  Descriptions
+  Descriptions, Tooltip
 } from 'antd';
 import Coding from '@/pages/Erp/tool/components/Coding';
 import DatePicker from '@/components/DatePicker';
@@ -38,6 +38,9 @@ import SelectCreate from '@/components/SelectCreate';
 import FileUpload from '@/components/FileUpload';
 import Empty from '@/components/Empty';
 import CheckSku from '@/pages/Order/CreateOrder/components/CheckSku';
+import SelectSkusUtil from '@/pages/Erp/sku/components/SelectSkusUtil';
+import styles from './index.module.less';
+import {SearchOutlined} from '@ant-design/icons';
 
 export const orderDetailRecord = {url: '/orderDetail/record', method: 'POST'};
 
@@ -72,25 +75,48 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
     return true;
   };
 
+  const [hidden, setHidden] = useState(true);
+
   return (<>
-    <AddSkuTable
-      customerId={customerId}
-      currency={currency}
-      module={module}
-      value={value}
-      onChange={onChange}
-      onAddSku={() => {
-        setSku(null);
-        setSkuId(null);
-        addSpu.current.open(true);
-      }}
-      onCusTomerBind={() => {
-        addSku.current.open(true);
-      }}
-    />
+    <Space size={24} align="start">
+      <div>
+        {hidden ? <div style={{padding: 24}} onClick={() => setHidden(false)}>
+          <Tooltip title="搜索物料进行选择">
+            <Button type="primary" shape="circle" icon={<SearchOutlined />} />
+          </Tooltip>
+        </div> : <div className={styles.selectSkus}>
+          <SelectSkusUtil
+            small
+            onSmall={() => {
+              setHidden(true);
+            }}
+            onChange={(sku) => {
+              onChange([...value, sku]);
+            }}
+          />
+        </div>}
+      </div>
+      <div style={{width:`calc(100vw - ${hidden ? '80px' : '20vw'} - 300px)`}}>
+        <AddSkuTable
+          customerId={customerId}
+          currency={currency}
+          module={module}
+          value={value}
+          onChange={onChange}
+          onAddSku={() => {
+            setSku(null);
+            setSkuId(null);
+            addSpu.current.open(true);
+          }}
+          onCusTomerBind={() => {
+            addSku.current.open(true);
+          }}
+        />
+      </div>
+    </Space>
 
     <Modal
-      headTitle='供应商绑定物料'
+      headTitle="供应商绑定物料"
       ref={addSku}
       width={1000}
       footer={<Space>
@@ -135,7 +161,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
       <Spin spinning={loading}>
         <div style={{padding: '24px 10%'}}>
           <AddSpu
-            maxHeight='20vh'
+            maxHeight="20vh"
             popupContainerBody
             noSpu={module === 'PO'}
             supply={module === 'PO'}

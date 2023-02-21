@@ -114,7 +114,7 @@ const SelectSku = (
     });
   };
 
-  const {loading: detailLoading, run: detailRun} = useRequest(skuDetail, {
+  const {loading: detailLoading, data: detail, run: detailRun} = useRequest(skuDetail, {
     manual: true,
     onSuccess: (res) => {
       setDetailData(res);
@@ -185,11 +185,7 @@ const SelectSku = (
             />}
             onClick={() => {
               setOpen(false);
-              detailRun({
-                data: {
-                  skuId: item.value
-                }
-              });
+              onChange(item.value, item.value === value ? detail : {});
             }}
           />
         </List.Item>;
@@ -268,8 +264,10 @@ const SelectSku = (
       }
     >
       <div
-        onBlur={()=>{}}
-        onFocus={()=>{}}
+        onBlur={() => {
+        }}
+        onFocus={() => {
+        }}
         className={styles.show}
         onMouseOver={() => {
           setHover(true);

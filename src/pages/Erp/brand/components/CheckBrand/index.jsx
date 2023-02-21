@@ -12,31 +12,30 @@ const CheckBrand = ({
   },
   getBrands = () => {
   },
+  brandRefresh = () => {
+  },
+  options = [],
   ...props
 }) => {
 
   const ref = useRef();
 
-  const {loading, data, refresh} = useRequest(brandIdSelect, {onSuccess: getBrands});
+  const {loading, data, refresh} = useRequest(brandIdSelect, {manual: options.length > 0, onSuccess: getBrands});
 
   if (loading) {
     return <Spin />;
-  }
-
-  if (!data) {
-    return <>暂无品牌</>;
   }
 
   return <>
     <Select
       {...props}
       options={[
-        {label: <a>新增品牌</a>, value: 'add'},
-        ...data
+        {label: <a>新增品牌</a>, value: '111add'},
+        ...(options.length > 0 ? options : data)
       ]}
       value={value}
       onChange={(value, option) => {
-        if (value === 'add') {
+        if (value === '111add') {
           ref.current.open(false);
           return;
         }
@@ -48,8 +47,10 @@ const CheckBrand = ({
       component={BrandEdit}
       ref={ref}
       onSuccess={(res) => {
+        ref.current.close();
         onChange(res.data);
         refresh();
+        brandRefresh();
       }}
     />
   </>;
