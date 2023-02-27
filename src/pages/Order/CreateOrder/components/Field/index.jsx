@@ -96,7 +96,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
           />
         </div>}
       </div>
-      <div style={{width:`calc(100vw - ${hidden ? '80px' : '20vw'} - 300px)`}}>
+      <div style={{width: `calc(100vw - ${hidden ? '80px' : '20vw'} - 300px)`}}>
         <AddSkuTable
           customerId={customerId}
           currency={currency}
@@ -104,6 +104,10 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
           value={value}
           onChange={onChange}
           onAddSku={() => {
+            if (module === 'PO') {
+              setHidden(false);
+              return;
+            }
             setSku(null);
             setSkuId(null);
             addSpu.current.open(true);
