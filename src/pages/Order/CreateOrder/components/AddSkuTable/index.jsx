@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Table, Space, Spin, Input} from 'antd';
+import {Button, Table, Space, Input} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
 import {useRequest} from '@/util/Request';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
@@ -7,6 +7,9 @@ import Select from '@/components/Select';
 import {unitListSelect} from '@/pages/Erp/spu/spuUrl';
 import InputNumber from '@/components/InputNumber';
 import CheckBrand from '@/pages/Erp/brand/components/CheckBrand';
+import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
+import {brandIdSelect} from '@/pages/Erp/stock/StockUrl';
+import {orderDetailRecord} from '@/pages/Order/CreateOrder/components/Field';
 
 const AddSkuTable = ({
   onChange = () => {
@@ -17,6 +20,7 @@ const AddSkuTable = ({
   currency,
   onAddSku = () => {
   },
+  noAddSku,
   onCusTomerBind = () => {
   }
 }) => {
@@ -26,6 +30,9 @@ const AddSkuTable = ({
   const [keys, setKeys] = useState([]);
 
   const {data: unitData} = useRequest(unitListSelect);
+  const {data: brandData, refresh: brandRefresh} = useRequest(brandIdSelect);
+
+  const {run: getRecord} = useRequest(orderDetailRecord, {manual: true});
 
   const dataSources = value.map((item, index) => {
     return {
@@ -33,13 +40,6 @@ const AddSkuTable = ({
       index
     };
   });
-
-
-  const sharedOnCell = (data) => {
-    if (!data.skuId) {
-      return {colSpan: 0};
-    }
-  };
 
   const setValue = (data, index) => {
     const array = dataSources.map((item) => {
@@ -62,10 +62,11 @@ const AddSkuTable = ({
       dataSource={dataSources}
       pagination={false}
       rowKey="index"
-      scroll={{x: 'max-content'}}
+      scroll={{x: 'max-content', y: 'calc(100vh - 200px)'}}
       footer={() => {
         return <Space>
           <Button
+            hidden={noAddSku}
             onClick={() => {
               onAddSku();
             }}
@@ -112,8 +113,7 @@ const AddSkuTable = ({
     >
       <Table.Column
         title="序号"
-        onCell={sharedOnCell}
-        width={100}
+        width={70}
         fixed="left"
         align="center"
         dataIndex="index"
@@ -123,8 +123,7 @@ const AddSkuTable = ({
       <Table.Column
         fixed="left"
         title="物料编码"
-        onCell={sharedOnCell}
-        dataIndex="coding"
+        dataIndex="standard"
         render={(value, record) => {
           return <div style={{minWidth: 100}}>
             {value || (record.skuResult && record.skuResult.standard)}
@@ -133,25 +132,36 @@ const AddSkuTable = ({
       <Table.Column
         fixed="left"
         title="物料"
-        onCell={sharedOnCell}
         dataIndex="skuResult"
-        render={(value) => {
-          return <SkuResultSkuJsons skuResult={value} />;
+        render={(value, record) => {
+          return value ? <SkuResultSkuJsons skuResult={value} /> : SkuRender(record);
         }} />
       <Table.Column
         title="品牌 / 厂家"
-        onCell={sharedOnCell}
         width={200}
         dataIndex="defaultBrandResult"
         render={(value, record, index) => {
           return value
             ||
             <CheckBrand
+              brandRefresh={brandRefresh}
+              options={brandData}
               placeholder="请选择品牌/厂家"
               width={200}
               value={record.brandId}
-              onChange={(value, option) => {
-                setValue({brandId: value, brandResult: option && option.label}, index);
+              onChange={async (value, option) => {
+                if (customerId) {
+                  const res = await getRecord({
+                    data: {
+                      customerId,
+                      skuId: record.skuId,
+                      brandId: value
+                    }
+                  });
+                  setValue({...(res || {}), brandId: value, brandResult: option && option.label}, index);
+                } else {
+                  setValue({brandId: value, brandResult: option && option.label}, index);
+                }
               }} />;
         }} />
       {!SO && <Table.Column
@@ -159,12 +169,10 @@ const AddSkuTable = ({
         align="center"
         width={100}
         dataIndex="preordeNumber"
-        onCell={sharedOnCell}
         render={(value) => {
           return value || 0;
         }} />}
       <Table.Column
-        onCell={sharedOnCell}
         title={SO ? '销售数量' : '采购数量'}
         width={120}
         dataIndex="purchaseNumber"
@@ -183,7 +191,6 @@ const AddSkuTable = ({
         }} />
       <Table.Column
         title="单位"
-        onCell={sharedOnCell}
         width={120}
         dataIndex="unitId"
         render={(value, record, index) => {
@@ -199,7 +206,6 @@ const AddSkuTable = ({
       <Table.Column
         title={`单价 (${currency})`}
         width={150}
-        onCell={sharedOnCell}
         dataIndex="onePrice"
         render={(value, record, index) => {
           return <InputNumber
@@ -218,7 +224,6 @@ const AddSkuTable = ({
       <Table.Column
         title={`总价 (${currency})`}
         width={150}
-        onCell={sharedOnCell}
         dataIndex="totalPrice"
         render={(value, record, index) => {
           return <InputNumber
@@ -235,8 +240,6 @@ const AddSkuTable = ({
         }} />
       <Table.Column
         title="备注"
-        width={100}
-        onCell={sharedOnCell}
         dataIndex="remark"
         render={(value, record, index) => {
           return <Input
@@ -250,21 +253,11 @@ const AddSkuTable = ({
         }} />
 
       <Table.Column
-        onCell={(data, index) => {
-          return !data.skuId && {
-            colSpan: 12,
-          };
-        }}
-        render={(value, record) => {
-          return !record.skuId && <div style={{marginLeft: 16}}><Spin /></div>;
-        }} />
-      <Table.Column
         title="操作"
-        onCell={sharedOnCell}
         fixed="right"
         dataIndex="skuId"
         align="center"
-        width={50}
+        width={70}
         render={(value, record, index) => {
           return <><Button
             type="link"

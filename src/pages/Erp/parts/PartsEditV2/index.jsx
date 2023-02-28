@@ -2,12 +2,12 @@ import React, {useRef, useState} from 'react';
 import {getSearchParams, useHistory} from 'ice';
 import {Modal, Tabs} from 'antd';
 import PartsEdit from '@/pages/Erp/parts/PartsEdit';
-import PartsSelectSkus from '@/pages/Erp/parts/PartsEdit/components/PartsSelectSkus';
 import styles from './index.module.less';
 import SkuDetail from '@/pages/Erp/parts/components/SkuDetail';
 import BomComparison from '@/pages/Erp/parts/components/BomComparison';
 import Triangle from '@/pages/Erp/parts/components/Triangle';
 import {scroll} from '@/pages/Erp/parts/components/Item';
+import SelectSkusUtil from '@/pages/Erp/sku/components/SelectSkusUtil';
 
 const PartsEditV2 = () => {
 
@@ -95,7 +95,7 @@ const PartsEditV2 = () => {
       />
     </div>
     <div hidden={!skuDetail?.skuId} className={styles.search}>
-      <PartsSelectSkus ref={searchRef} value={parts} onChange={(sku) => {
+      <SelectSkusUtil ref={searchRef} value={parts} onChange={(sku) => {
         setParts([...parts, sku]);
         scrollTo(sku.skuId);
       }} />

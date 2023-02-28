@@ -1,6 +1,7 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Button, List} from 'antd';
-import styles from '../../../PartsEditV2/index.module.less';
+import {Button, List, Space} from 'antd';
+import {SwitcherOutlined} from '@ant-design/icons';
+import styles from '../../../parts/PartsEditV2/index.module.less';
 import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 import {useRequest} from '@/util/Request';
 import {skuV1List} from '@/pages/Erp/sku/skuUrl';
@@ -9,10 +10,13 @@ import {isArray} from '@/util/Tools';
 import SearchValueFormat from '@/components/SearchValueFormat';
 import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
 
-const PartsSelectSkus = (
+const SelectSkusUtil = (
   {
     value = [],
     onChange = () => {
+    },
+    small,
+    onSmall = () => {
     },
   }, ref
 ) => {
@@ -80,10 +84,20 @@ const PartsSelectSkus = (
   return <>
     <h3>
       待选物料
-      <Button style={{float: 'right'}} type="link" onClick={() => {
-        addRef.current.open(false);
-        setCopy(false);
-      }}>新增物料</Button>
+      <div style={{float: 'right'}}>
+        <Space>
+          <Button style={{padding: 0}} type="link" onClick={() => {
+            addRef.current.open(false);
+            setCopy(false);
+          }}>新增物料</Button>
+
+          <Button hidden={!small} type="link" onClick={onSmall}>
+            <SwitcherOutlined />
+          </Button>
+        </Space>
+
+      </div>
+
     </h3>
     <GroupSku
       ref={searchRef}
@@ -180,4 +194,4 @@ const PartsSelectSkus = (
   </>;
 };
 
-export default React.forwardRef(PartsSelectSkus);
+export default React.forwardRef(SelectSkusUtil);

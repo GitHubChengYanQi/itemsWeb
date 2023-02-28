@@ -8,7 +8,7 @@ const BottomButton = ({children, textAlign, style}) => {
       position: 'fixed',
       bottom: 0,
       width: 'calc(100% - 200px)',
-      zIndex: 1,
+      zIndex: 2,
       height: 47,
       borderTop: '1px solid #e7e7e7',
       background: '#fff',

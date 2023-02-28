@@ -70,7 +70,7 @@ const GroupSku = (
   const showValueFormat = () => {
     if (showValue) {
       return <span
-        style={{width}}
+        style={{width:'100%'}}
         className={styles.showValue}
       >{showValue}</span>;
     }
@@ -97,7 +97,7 @@ const GroupSku = (
                 hidden={!searchType}
               >
                 <div
-                  style={{maxWidth: width}}
+                  style={{maxWidth: '100%'}}
                   className={styles.tagText}
                 >
                   {searchType === 'skuClass' ? `分类为 “${showValue}”` : `清单为 “${showValue}”`}
