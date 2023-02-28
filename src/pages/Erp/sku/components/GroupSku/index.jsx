@@ -19,7 +19,8 @@ const GroupSku = (
     width = 300,
     align,
     defaultSearchType,
-    value
+    value,
+    style
   },
   ref
 ) => {
@@ -117,7 +118,7 @@ const GroupSku = (
     </Button>;
   };
 
-  return <>
+  return <div style={style}>
     {noSearchButton ? searchButton() : <Space size={16} align={align}>
 
       {searchButton()}
@@ -166,7 +167,7 @@ const GroupSku = (
         setShowValue={setShowValue}
       />
     </Modal>
-  </>;
+  </div>;
 };
 
 export default React.forwardRef(GroupSku);

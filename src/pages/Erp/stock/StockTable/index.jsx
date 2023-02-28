@@ -75,6 +75,7 @@ const StockTable = (props) => {
     return (
       <>
         <GroupSku
+          style={{margin: '0 16px 0 0'}}
           ref={skuListRef}
           align="start"
           noSearchButton

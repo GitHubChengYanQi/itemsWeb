@@ -118,6 +118,7 @@ const SkuTable = ({...props}, ref) => {
     return (
       <Space>
         <GroupSku
+          style={{margin: '0 16px 16px 0'}}
           defaultSearchType={defaultSearchType}
           ref={skuListRef}
           align="start"
