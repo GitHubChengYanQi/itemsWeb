@@ -2,11 +2,11 @@ import React from 'react';
 import styles from './index.module.less';
 import Note from '@/components/Note';
 
-const SearchValueFormat = ({label = '', searchValue = '', maxWidth}) => {
+const SearchValueFormat = ({label = '', searchValue = '', maxWidth, style, color}) => {
 
   if (!searchValue) {
     if (maxWidth) {
-      return <Note maxWidth={maxWidth} value={label} />;
+      return <Note style={style} maxWidth={maxWidth} value={label} />;
     }
     return label || '-';
   }
@@ -19,10 +19,10 @@ const SearchValueFormat = ({label = '', searchValue = '', maxWidth}) => {
     const startValue = stringLabel.substring(0, lowerCaseLabel.indexOf(lowerCaseValue));
     const value = stringLabel.substring(lowerCaseLabel.indexOf(lowerCaseValue), lowerCaseLabel.indexOf(lowerCaseValue) + lowerCaseValue.length);
     const endValue = stringLabel.substring(lowerCaseLabel.indexOf(lowerCaseValue) + lowerCaseValue.length, lowerCaseLabel.length);
-    newLabel = <>{startValue}<span className={styles.searchValue}>{value}</span>{endValue}</>;
+    newLabel = <>{startValue}<span style={{color}} className={styles.searchValue}>{value}</span>{endValue}</>;
   }
   if (maxWidth) {
-    return <Note maxWidth={maxWidth} value={newLabel} />;
+    return <Note style={style} maxWidth={maxWidth} value={newLabel} />;
   }
   return newLabel;
 };

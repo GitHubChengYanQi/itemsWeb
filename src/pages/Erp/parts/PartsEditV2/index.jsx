@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {getSearchParams, useHistory} from 'ice';
-import {Tabs} from 'antd';
+import {Modal, Tabs} from 'antd';
 import PartsEdit from '@/pages/Erp/parts/PartsEdit';
 import PartsSelectSkus from '@/pages/Erp/parts/PartsEdit/components/PartsSelectSkus';
 import styles from './index.module.less';
@@ -81,7 +81,16 @@ const PartsEditV2 = () => {
         setParts={setParts}
         value={searchParams.id || false}
         onSuccess={() => {
-          history.goBack();
+          Modal.confirm({
+            centered: true,
+            title: '保存成功！',
+            content: '是否返回清单列表？',
+            okText: '返回列表',
+            cancelText: '继续编辑',
+            onOk() {
+              history.goBack();
+            },
+          });
         }}
       />
     </div>

@@ -95,10 +95,9 @@ const PartsEdit = (props) => {
     manual: true,
     onSuccess: (res) => {
       onSuccess(res.data);
-      message.success('添加成功！');
     },
     onError: () => {
-      message.error('添加失败！');
+      message.error('保存成功！');
     }
   });
 
@@ -190,7 +189,7 @@ const PartsEdit = (props) => {
           <div hidden={!show} className={styles.line} />
           <div style={{paddingTop: show && 24}} className={styles.skus}>
             <div hidden={show} className={styles.space} />
-            <div className={styles.list}>
+            <div hidden={!skuItem.skuId} className={styles.list}>
               {partsLoading ? <Spin /> : <AddSkuTable
                 isOpen={isOpen}
                 addSku={addSku}
@@ -213,6 +212,10 @@ const PartsEdit = (props) => {
                 value={parts}
               />}
             </div>
+            <div
+              hidden={skuItem.skuId}
+              style={{paddingRight: show ? 0 : 40, minHeight: isOpen ? '100vh' : 'calc(100vh - 296px)'}}
+            />
           </div>
         </div>
 

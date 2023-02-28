@@ -55,28 +55,36 @@ const Header = () => {
   const items = [
     {
       key: 'name',
-      style: {padding: 12, fontSize: 16,width:200, color: '#7f7f7f'},
+      style: {padding: 12, fontSize: 16, width: 200, color: '#7f7f7f'},
       label: userInfo.name,
     },
     {
       key: '/member',
-      label: <div className={styles.dropdownMenuItem} onClick={()=>{
+      label: <div className={styles.dropdownMenuItem} onClick={() => {
         history.push('/member');
       }}>个人中心</div>,
     },
     {
       key: '/password',
-      label: <div className={styles.dropdownMenuItem} onClick={()=>{
+      label: <div className={styles.dropdownMenuItem} onClick={() => {
         setVisiblePwd(true);
       }}>修改密码</div>,
     },
     {
       key: '/logout',
-      label: <div className={styles.dropdownMenuItem}  onClick={()=>{
+      label: <div className={styles.dropdownMenuItem} onClick={() => {
         history.push('/logout');
       }}>退出登录</div>,
     },
   ];
+
+  const avatar = () => {
+    if (userInfo.avatar.indexOf('http') !== -1) {
+      return `${userInfo.avatar}`;
+    } else {
+      return `${config.baseURI}${userInfo.avatar}`;
+    }
+  };
 
   return (
     <>
@@ -120,7 +128,7 @@ const Header = () => {
                 <Button type="text" size="large" style={{height: 60}}>
                   <Avatar
                     style={{float: 'left'}}
-                    src={`${config.baseURI}${userInfo.avatar}`}
+                    src={avatar()}
                   />
                 </Button>
               </Dropdown>

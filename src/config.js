@@ -42,7 +42,8 @@ export default {
   cheng: {
     logLevel: 'info',
     component: 'ant',
-    baseURI: 'http://192.168.0.111/',
+    baseURI: 'http://192.168.2.111/',
+    // baseURI: 'http://localhost/',
     // baseURI: 'http://10.147.20.68:8881/',
     // baseURI: 'http://10.147.20.68:8891/',
     // baseURI: 'https://api.hh.zz2025.com/',
@@ -66,7 +67,7 @@ export default {
   ren: {
     logLevel: 'info',
     component: 'ant',
-    baseURI: 'http://192.168.0.100/',
+    baseURI: 'http://192.168.2.43/',
     projectName: '道昕云',
     AMAP_KEY: '',
     AMAP_VERSION: '2.0'
