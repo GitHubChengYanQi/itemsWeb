@@ -4,7 +4,6 @@ import TweenOne from 'rc-tween-one';
 import {DeleteOutlined, SearchOutlined, DoubleRightOutlined} from '@ant-design/icons';
 import {Alert, Button, List, Select, Space, Spin} from 'antd';
 import styles from '@/pages/Erp/parts/components/AddSkuTable/index.module.less';
-import Note from '@/components/Note';
 import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
 import {isArray} from '@/util/Tools';
 import InputNumber from '@/components/InputNumber';
@@ -15,6 +14,7 @@ import {request, useRequest} from '@/util/Request';
 import {bomsByskuId} from '@/pages/Erp/parts/PartsUrl';
 import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
 import {skuV1List} from '@/pages/Erp/sku/skuUrl';
+import SearchValueFormat from '@/components/SearchValueFormat';
 
 export const scroll = (itemId) => {
   const partItemDom = document.getElementById(itemId);
@@ -27,6 +27,9 @@ export const scroll = (itemId) => {
   const visibleTop = boxScrollTop;
 
   const getOffsetHeight = (dom, num) => {
+    if (!dom) {
+      return num;
+    }
     if (!dom.parentNode) {
       return num;
     }
@@ -42,6 +45,7 @@ export const scroll = (itemId) => {
 
 const Item = (
   {
+    searchValue,
     isDragging,
     index,
     comparisonSku,
@@ -134,25 +138,22 @@ const Item = (
         onParts(item);
       }}>
         <List.Item.Meta
-          title={<Note style={{color: noExist && '#174ad4'}} maxWidth="94%" value={item.standard} />}
+          title={<SearchValueFormat
+            color='red'
+            maxWidth="94%"
+            style={{color: noExist && '#174ad4'}}
+            searchValue={searchValue}
+            label={item.standard || '-'}
+          />}
           description={
             <div>
-              <Note style={{color: noExist && '#174ad4'}} maxWidth="94%" value={SkuRender(item)} />
-              {/*
-
-                     {item.bomNum && <Button
-                      style={{padding: 0}}
-                      type="link"
-                      onClick={() => {
-                        bomsByskuIdRun({params: {skuId: item.skuId}});
-                        versionModalRef.current.open(false);
-                        setSkuId(item.skuId);
-                        setCurrentVer(item.bomId);
-                      }}
-                    >
-                      {item.bomId ? (item.version || '-') : '选择版本'}
-                    </Button>}
-                    */}
+              <SearchValueFormat
+                color='red'
+                maxWidth="94%"
+                style={{color: noExist && '#174ad4'}}
+                searchValue={searchValue}
+                label={SkuRender(item) || '-'}
+              />
             </div>}
         />
       </div>

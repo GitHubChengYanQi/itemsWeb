@@ -24,7 +24,7 @@ const PlanList = () => {
   const ref = useRef();
   const formRef = useRef();
 
-  const {loading, data, run} = useRequest({...productionPlanList, response: true});
+  const {loading, data, run} = useRequest(productionPlanList, {response: true});
 
   if (loading) {
     return <ProSkeleton type="descriptions" />;
@@ -33,7 +33,7 @@ const PlanList = () => {
   if (!data) {
     return <Empty />;
   }
-
+  console.log(data);
   return <>
     <Card title={<Breadcrumb />} extra={<Button type="primary" onClick={() => ref.current.open(false)}>增加生产计划</Button>}>
       <div className="div_center">

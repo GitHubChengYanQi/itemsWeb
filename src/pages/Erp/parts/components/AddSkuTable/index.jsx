@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {MenuOutlined, PlusOutlined} from '@ant-design/icons';
+import {Input, message} from 'antd';
 import styles from './index.module.less';
-import {isArray} from '@/util/Tools';
+import {isArray, queryString} from '@/util/Tools';
 import {Sortable} from '@/components/Table/components/DndKit/Sortable';
 import {Handle} from '@/components/Table/components/DndKit/Item';
-import Item from '@/pages/Erp/parts/components/Item';
+import Item, {scroll} from '@/pages/Erp/parts/components/Item';
+import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
 
 const AddSkuTable = ({
   isOpen,
@@ -21,49 +23,77 @@ const AddSkuTable = ({
   onSeletSku = () => {
   },
   addSku = () => {
-  }
+  },
 }) => {
+
+  const [searchValue, setSearchValue] = useState('');
 
   const dataSources = value;
 
-  const itemRender = (props) => {
-    const {value, item, index, ...other} = props;
+  const render = ({value, item, index, ...other}) => {
     const noExist = comparison && !isArray(comparisonParts).find(comparison => comparison.skuId === item.skuId);
+    if (item.add) {
+      return <a
+        style={{padding: '12px 0'}}
+        onClick={onSeletSku}
+      >
+        <PlusOutlined style={{fontSize: 24}} />
+      </a>;
+    } else if (item.search) {
+      return <Input.Search
+        value={searchValue}
+        style={{width: '90%'}}
+        onChange={({target: {value}}) => {
+          setSearchValue(value);
+        }}
+        onSearch={(value) => {
+          const searchSku = dataSources.filter(item => {
+            return queryString(value, item.standard + SkuRender(item));
+          });
+          if (searchSku.length > 0) {
+            scroll(`parts${searchSku[0].skuId}`);
+            onParts(searchSku[0]);
+          } else {
+            message.warn('未查询到物料');
+          }
+
+        }}
+      />;
+    } else {
+      return <div
+        style={noExist ? {color: '#174ad4'} : {}}
+        className={styles.item}
+      >
+        <Handle hidden={show} icon={<MenuOutlined />} {...other} />
+        <Item
+          searchValue={searchValue}
+          isDragging={item.isDragging}
+          index={index}
+          item={item}
+          comparison={comparison}
+          comparisonSku={comparisonSku}
+          addSku={addSku}
+          openNewEdit={openNewEdit}
+          onChange={onChange}
+          show={show}
+          dataSources={dataSources}
+          noExist={noExist}
+          onParts={onParts}
+        />
+      </div>;
+    }
+  };
+
+  const itemRender = (props) => {
+    const {index} = props;
 
     return <>
       <div className={styles.listItem}>
         <div
           style={{width: 50}}
-          className={index === dataSources.length - (show ? 1 : 0) ? styles.last : styles.leftBorder}
+          className={index === dataSources.length - (show ? 1 : -1) ? styles.last : styles.leftBorder}
         />
-        {item.add ?
-          <a
-            style={{padding: '12px 0'}}
-            onClick={onSeletSku}
-          >
-            <PlusOutlined style={{fontSize: 24}} />
-          </a>
-          :
-          <div
-            style={noExist ? {color: '#174ad4'} : {}}
-            className={styles.item}
-          >
-            <Handle hidden={show} icon={<MenuOutlined />} {...other} />
-            <Item
-              isDragging={item.isDragging}
-              index={index}
-              item={item}
-              comparison={comparison}
-              comparisonSku={comparisonSku}
-              addSku={addSku}
-              openNewEdit={openNewEdit}
-              onChange={onChange}
-              show={show}
-              dataSources={dataSources}
-              noExist={noExist}
-              onParts={onParts}
-            />
-          </div>}
+        {render(props)}
       </div>
     </>;
   };
@@ -72,7 +102,10 @@ const AddSkuTable = ({
 
     <div className={styles.checkList}>
       <div style={{left: 24.5}} className={styles.line} />
-      <div style={{paddingRight: show ? 0 : 40,minHeight:isOpen ? '100vh' : 'calc(100vh - 296px)'}} className={styles.list}>
+      <div
+        style={{paddingRight: show ? 0 : 40, minHeight: isOpen ? '100vh' : 'calc(100vh - 296px)'}}
+        className={styles.list}
+      >
         <Sortable
           handle
           getItemStyles={() => {
@@ -82,7 +115,10 @@ const AddSkuTable = ({
             };
           }}
           definedItem={itemRender}
-          items={(show ? dataSources : [...dataSources, {add: true, disabled: true}]).map((item) => {
+          items={(show ? dataSources : [{search: true, disabled: true}, ...dataSources, {
+            add: true,
+            disabled: true
+          }]).map((item) => {
             return {
               ...item,
               key: item.skuId || 'add',

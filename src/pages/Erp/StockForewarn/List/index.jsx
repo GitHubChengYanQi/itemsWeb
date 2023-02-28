@@ -51,6 +51,7 @@ const List = () => {
           <FormItem name="keyWords" label="基础物料" component={Input} />
           <FormItem name="classId" label="基础物料" component={Input} />
         </div>
+        <div style={{width: 24}} />
         <FormItem
           label="预警状态"
           name="forewarnStatus"
