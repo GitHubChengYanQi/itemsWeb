@@ -57,7 +57,7 @@ export const Values = (props) => {
   const [number, setNumber] = useState();
 
   const [type, setType] = useState('通用');
-
+  console.log(type);
   const moduleRules = isArray(codingRules?.modelRuleList).find(item => item.module === module);
 
   useEffect(() => {
@@ -96,11 +96,13 @@ export const Values = (props) => {
   ];
 
   const typeChange = (type) => {
-    onChange(null);
+
     if (type === '自定义') {
       setType('自定义');
-    } else if (type === 'serial') {
+      onChange(null);
+    } else if (type === '${serial}') {
       setType('流水号');
+      onChange(`\${serial[${value || 0}]}`);
     } else {
       setType('通用');
       onChange(type);

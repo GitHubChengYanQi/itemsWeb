@@ -43,7 +43,7 @@ export const codingRulesDelete = {
 };
 
 export const codingRulesV2Delete = {
-  url: '/codingRules/v2.0delete',
+  url: '/codingRules/v2.0/delete',
   method: 'POST',
   rowKey: 'codingRulesId'
 };
