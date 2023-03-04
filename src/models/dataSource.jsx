@@ -6,6 +6,7 @@ import {crmBusinessSalesListSelect} from '@/pages/Crm/business/BusinessUrl';
 import {originList} from '@/pages/Crm/origin/OriginUrl';
 import {dataClassificationSelect} from '@/pages/Crm/data/dataUrl';
 import {speechcraftType} from '@/pages/Crm/speechcraft/speechcraftUrl';
+import {getRuleV2} from '@/pages/BaseSystem/codingV2Rules/codingRulesUrl';
 
 export default {
   state: {},
@@ -33,6 +34,14 @@ export default {
           }
         });
         dispatch.dataSource.update({skuClass});
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async getCodingRules() {
+      try {
+        const codingRules = await request(getRuleV2);
+        dispatch.dataSource.update({codingRules});
       } catch (e) {
         console.log(e);
       }

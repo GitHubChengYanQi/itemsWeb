@@ -43,6 +43,7 @@ export default function BasicLayout({children}) {
       }
       await dispatchers.getUserInfo();
       await dataDispatchers.getSkuClass();
+      await dataDispatchers.getCodingRules();
       await dataDispatchers.getCustomerLevel();
       await dataDispatchers.getCommonArea();
       await dataDispatchers.getBusinessSale();
