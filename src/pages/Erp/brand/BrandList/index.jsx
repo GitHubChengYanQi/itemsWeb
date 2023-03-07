@@ -13,7 +13,6 @@ import DelButton from '@/components/DelButton';
 import AddButton from '@/components/AddButton';
 import EditButton from '@/components/EditButton';
 import Form from '@/components/Form';
-import Breadcrumb from '@/components/Breadcrumb';
 import {brandDelete, brandList} from '../BrandUrl';
 import BrandEdit from '../BrandEdit';
 import * as SysField from '../BrandField';

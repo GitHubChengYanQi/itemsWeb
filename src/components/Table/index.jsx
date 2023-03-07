@@ -36,6 +36,7 @@ const TableWarp = (
     bodyStyle,
     bordered,
     // c
+    checkedRows=[],
     children,
     columns,
     contentHeight,
@@ -81,6 +82,8 @@ const TableWarp = (
     otherActions,
     onChange = () => {
     },
+    onChangeRows = () => {
+    },
     onReset = () => {
     },
     // p
@@ -93,7 +96,7 @@ const TableWarp = (
     submitValues = {},
     sortAction,
     showCard,
-    selectedRowKeys,
+    selectedRowKeys = [],
     searchForm,
     SearchButton,
     selectionType,
@@ -393,8 +396,27 @@ const TableWarp = (
                   type: selectionType || 'checkbox',
                   defaultSelectedRowKeys,
                   selectedRowKeys,
-                  onChange: (selectedRowKeys, selectedRows) => {
-                    typeof onChange === 'function' && onChange(selectedRowKeys, selectedRows);
+                  onSelect: (record, selected) => {
+                    if (selected) {
+                      onChange([...selectedRowKeys, record[rowKey]]);
+                      onChangeRows([...checkedRows, record]);
+                    } else {
+                      onChange(selectedRowKeys.filter(key => key !== record[rowKey]));
+                      onChangeRows(checkedRows.filter(item => item[rowKey] !== record[rowKey]));
+                    }
+                  },
+                  onSelectAll: (selected, selectedRows, changeRows) => {
+                    if (selected) {
+                      const selectIds = changeRows.map(item => item[rowKey]);
+                      onChange([...selectedRowKeys, ...selectIds]);
+                      onChangeRows([...checkedRows, ...changeRows]);
+                    } else {
+                      const deleteIds = changeRows.map((item) => {
+                        return item[rowKey];
+                      });
+                      onChange(selectedRowKeys.filter(key => !deleteIds.some(deleKey => key === deleKey)));
+                      onChangeRows(checkedRows.filter(item => !deleteIds.some(deleKey => item[rowKey] === deleKey)));
+                    }
                   },
                   ...rowSelection,
                   getCheckboxProps,

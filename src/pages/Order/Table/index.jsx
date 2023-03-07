@@ -99,6 +99,11 @@ const OrderTable = (props) => {
       hidden: module.type === 2,
       render: (value) => <Render text={value?.customerName || '-'} />
     },
+    {
+      title: '采购进度',
+      hidden: module.type === 2,
+      render: (value) => <Render text={value?.customerName || '-'} />
+    },
     {title: '创建人', dataIndex: 'user', render: (value) => <Render text={value?.name || '-'} />},
     {title: '创建时间', dataIndex: 'createTime'},
     {

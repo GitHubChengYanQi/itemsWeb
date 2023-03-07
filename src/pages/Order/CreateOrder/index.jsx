@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  Affix,
   Button,
   Col,
   Drawer,
@@ -185,6 +184,7 @@ const CreateOrder = ({previewData, ...props}) => {
 
           value = {
             ...value,
+            purchaseListIds: state.purchaseListIds,
             type: module().type,
             detailParams: isArray(value.detailParams).map(item => ({
               ...item,

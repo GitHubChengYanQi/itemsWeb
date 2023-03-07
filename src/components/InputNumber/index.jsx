@@ -14,6 +14,7 @@ const InputNumber = (
     onChange = () => {
     },
     min,
+    max,
     addonAfter,
     addonBefore,
     status,
@@ -32,6 +33,7 @@ const InputNumber = (
     status={status}
     addonAfter={addonAfter}
     controls={false}
+    max={max}
     min={min === undefined ? 1 : min}
     style={{width: width || '100%', ...style}}
     value={value}

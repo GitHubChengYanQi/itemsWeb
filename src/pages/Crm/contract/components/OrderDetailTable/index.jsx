@@ -31,7 +31,8 @@ const OrderDetailTable = ({orderId}) => {
     {
       title: '型号 / 规格',
       dataIndex: 'skuResult',
-      render: (value) => <Render text={value && (`${value.skuName} / ${value.specifications}`)} />
+      render: (value) => <Render
+        text={value && (`${value.skuName} ${value.specifications ? `/${value.specifications}` : ''}`)} />
     },
     {title: '品牌', dataIndex: 'brandResult', render: (value) => <Render text={value && value.brandName} />},
     {title: '数量', dataIndex: 'purchaseNumber'},

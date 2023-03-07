@@ -119,7 +119,7 @@ const SkuConfiguration = ({
           <div style={{flexGrow: 1}}>
             <div style={{padding: 8}}>
               <Space>
-                名称：
+                项目：
                 <AutoComplete
                   value={items.label}
                   style={{border: sname(items.label) && 'solid 1px red'}}
@@ -202,7 +202,7 @@ const SkuConfiguration = ({
             </div>
             <div style={{padding: 8}}>
               <Space>
-                内容：
+                描述：
                 <AutoComplete
                   options={optionsValue(items)}
                   disabled={!items.label}
