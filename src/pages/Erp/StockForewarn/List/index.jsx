@@ -1,6 +1,7 @@
 import React, {useRef, useState} from 'react';
 import {Button, Input, notification, Popover, Select} from 'antd';
 import {useHistory} from 'ice';
+import useUrlState from '@ahooksjs/use-url-state';
 import Table from '@/components/Table';
 import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
@@ -36,6 +37,18 @@ const List = () => {
     }
   });
 
+  const [state] = useUrlState(
+    {
+      navigateMode: 'push',
+    },
+  );
+  const defaultTableQuery = state.params && JSON.parse(state.params) || {};
+  const tableQueryValues = defaultTableQuery.values || {};
+  let defaultSearchType = '';
+  if (tableQueryValues.classId) {
+    defaultSearchType = 'skuClass';
+  }
+
   const searchForm = () => {
 
     const types = [
@@ -47,11 +60,14 @@ const List = () => {
     return (
       <>
         <GroupSku
+          defaultSearchType={defaultSearchType}
+          value={tableQueryValues.showValue}
           ref={skuListRef}
           align="start"
           noSearchButton
           noParts
-          onChange={(id, type) => {
+          onChange={(id, type, showValue) => {
+            tableRef.current.formActions.setFieldValue('showValue', showValue);
             tableRef.current.formActions.setFieldValue('classId', null);
             tableRef.current.formActions.setFieldValue('keyWords', null);
             switch (type) {
@@ -67,6 +83,7 @@ const List = () => {
             tableRef.current.submit();
           }} />
         <div hidden>
+          <FormItem name="showValue" component={Input} />
           <FormItem name="keyWords" label="基础物料" component={Input} />
           <FormItem name="classId" label="基础物料" component={Input} />
         </div>
@@ -119,13 +136,15 @@ const List = () => {
     {
       title: '库存下限', width: 100, sorter: true, dataIndex: 'inventoryFloor', render: (text, record) => {
         return (
-          <Render style={{color: record.number <= record.inventoryFloor ? 'red' : ''}}>{text || '-'}</Render>);
+          <Render
+            style={{color: record.number <= record.inventoryFloor ? 'red' : ''}}>{typeof text === 'number' ? text : '-'}</Render>);
       }
     },
     {
       title: '库存上限', width: 100, sorter: true, dataIndex: 'inventoryCeiling', render: (text, record) => {
         return (
-          <Render style={{color: record.number >= record.inventoryCeiling ? 'red' : ''}}>{text || '-'}</Render>);
+          <Render
+            style={{color: record.number >= record.inventoryCeiling ? 'red' : ''}}>{typeof text === 'number' ? text : '-'}</Render>);
       }
     }, {
       title: '操作', width: 100, sorter: true, align: 'center', dataIndex: 'inventoryCeiling', render: (text, record) => {
@@ -207,6 +226,7 @@ const List = () => {
   };
   return <>
     <Table
+      isModal={false}
       noTableColumnSet
       onReset={() => {
         skuListRef.current.reset();

@@ -178,6 +178,7 @@ const ItemsList = (props) => {
         SearchButton={Search()}
         layout={search}
         formActions={formActionsPublic}
+        selectedRowKeys={ids}
         onChange={(keys)=>{
           setIds(keys);
         }}

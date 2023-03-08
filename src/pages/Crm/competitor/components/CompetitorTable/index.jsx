@@ -140,6 +140,7 @@ const CompetitorTable = (props) => {
         SearchButton={Search()}
         formActions={formActionsPublic}
         layout={search}
+        selectedRowKeys={ids}
         actions={actions()}
         ref={tableRef}
         footer={footer}

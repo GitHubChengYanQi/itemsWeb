@@ -184,7 +184,7 @@ const CreateOrder = ({previewData, ...props}) => {
 
           value = {
             ...value,
-            purchaseListIds: state.purchaseListIds,
+            purchaseListIds: initialValues.purchaseListIds,
             type: module().type,
             detailParams: isArray(value.detailParams).map(item => ({
               ...item,

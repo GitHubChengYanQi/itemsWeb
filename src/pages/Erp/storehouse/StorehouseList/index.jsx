@@ -123,6 +123,7 @@ const StorehouseList = (props) => {
         footer={footer}
         SearchButton={Search()}
         layout={search}
+        selectedRowKeys={ids}
         onChange={(value) => {
           setIds(value);
         }}

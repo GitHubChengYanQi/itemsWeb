@@ -257,11 +257,11 @@ export const SkuSize = ({value = '', onChange}) => {
     onChange(`${newSize.long || 0},${newSize.width || 0},${newSize.height || 0}`);
   };
   return (<Space>
-    <InputNumber value={size.long} placeholder="长" onChange={(num) => change({long: num})} addonAfter="mm" />
+    <InputNumber value={size.long} placeholder="长" onChange={(num) => change({long: num})} />
     ×
-    <InputNumber value={size.width} placeholder="宽" onChange={(num) => change({width: num})} addonAfter="mm" />
+    <InputNumber value={size.width} placeholder="宽" onChange={(num) => change({width: num})} />
     ×
-    <InputNumber value={size.height} placeholder="高" onChange={(num) => change({height: num})} addonAfter="mm" />
+    <InputNumber value={size.height} placeholder="高" onChange={(num) => change({height: num})} />
   </Space>);
 };
 

@@ -71,6 +71,7 @@ const MaterialList = () => {
         listHeader={false}
         ref={tableRef}
         footer={footer}
+        selectedRowKeys={ids}
         onChange={(value)=>{
           setIds(value);
         }}

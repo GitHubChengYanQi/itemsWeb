@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
-import {Input, Space, Spin, Tag} from 'antd';
-import {AppstoreOutlined, SearchOutlined, EnterOutlined, CloseOutlined} from '@ant-design/icons';
+import {Input, Spin} from 'antd';
+import {AppstoreOutlined, SearchOutlined, EnterOutlined, HistoryOutlined} from '@ant-design/icons';
 import styles from '@/pages/Erp/sku/components/GroupSku/index.module.less';
 import Icon from '@/components/Icon';
 import {isArray} from '@/util/Tools';
@@ -32,22 +32,19 @@ const SearchSku = (
 
   const inputRef = useRef();
 
-  const {loading: historyLoading, data: historyListData = [], refresh} = useRequest({
+  const {data: historyListData = [], refresh} = useRequest({
     ...historyList,
     data: {
       formType,
     },
+    params: {
+      page: 1,
+      limit: 10
+    }
   });
 
 
   const {run: addHistory} = useRequest(historyAdd, {
-    manual: true,
-    onSuccess: () => {
-      refresh();
-    },
-  });
-
-  const {run: deleteHistory} = useRequest(historyDelete, {
     manual: true,
     onSuccess: () => {
       refresh();
@@ -64,7 +61,7 @@ const SearchSku = (
     setSearchType('');
     setShowValue(val);
     onChange(val, 'skuName', val);
-    addHistory({data: {record: val, formType}});
+    !value && addHistory({data: {record: val, formType}});
   };
 
   return <div>
@@ -86,26 +83,23 @@ const SearchSku = (
       placeholder="请输入关键字搜索"
     />
 
-    {historyLoading ? <Spin size='small' /> :<Space wrap style={{paddingTop: 8}}>
-      {
-        historyListData.map((item, index) => {
-          return <Tag
-            onClick={() => {
+    <div hidden={searchValue}>
+      <div className={styles.groupTitle}>
+        历史搜索
+      </div>
+      <div>
+        {
+          isArray(historyListData).map((item, index) => {
+            return <div key={index} className={styles.valueItem} onClick={() => {
               searchSkuName(item.record);
-            }}
-            color="#cecece66"
-            key={index}
-            closeIcon={<CloseOutlined style={{color: '#000'}} />}
-            closable
-            onClose={() => {
-              deleteHistory({data: {queryLogId: item.queryLogId}});
             }}>
-            <span style={{color: '#000'}}>{item.record}</span>
-          </Tag>;
-        })
-      }
-    </Space>}
-
+              <HistoryOutlined style={{marginRight: 16}} />
+              {item.record}
+            </div>;
+          })
+        }
+      </div>
+    </div>
 
     <div hidden={!searchValue} className={styles.searchValues}>
       <div className={styles.groupTitle}>

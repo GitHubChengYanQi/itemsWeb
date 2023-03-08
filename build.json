@@ -1,5 +1,5 @@
 {
-  "hash": true,
+  "hash": "contenthash",
   "publicPath": "./",
   "plugins": [
     "build-plugin-fast-refresh",

@@ -260,7 +260,7 @@ const useTableSet = (column, tableKey) => {
     </div>
   );
 
-  const save = [
+  const items = [
     {
       key: '0', label: <div onClick={() => {
         setShowModal(true);
@@ -295,7 +295,9 @@ const useTableSet = (column, tableKey) => {
         {
           state
           &&
-          <Dropdown menu={save} placement="bottomLeft" trigger={['click']}>
+          <Dropdown menu={{
+            items,
+          }} placement="bottomLeft" trigger={['click']}>
             <Button style={{marginRight: 8}}>保存视图</Button>
           </Dropdown>
         }
@@ -303,33 +305,37 @@ const useTableSet = (column, tableKey) => {
           (loading || editLoading || delLoading) ?
             <Spin />
             :
-            <Select
-              options={isArray(data)}
-              style={{minWidth: 200}}
-              loading={loading}
-              placeholder="请选择视图"
-              bordered={false}
-              value={detail?.tableViewId}
-              dropdownRender={() => {
-                return isArray(data).map((item, index) => {
-                  const checked = detail?.tableViewId === item.value;
-                  return <div className={classNames(styles.item, checked && styles.checked)} key={index}>
-                    <div className={styles.label} onClick={() => {
-                      localStorage.setItem(md5TableKey(), item.value);
+            <div>
+              视图：
+              <Select
+                options={isArray(data)}
+                style={{minWidth: 200}}
+                loading={loading}
+                placeholder="请选择视图"
+                bordered={false}
+                value={detail?.tableViewId}
+                dropdownRender={() => {
+                  return isArray(data).map((item, index) => {
+                    const checked = detail?.tableViewId === item.value;
+                    return <div className={classNames(styles.item, checked && styles.checked)} key={index}>
+                      <div className={styles.label} onClick={() => {
+                        localStorage.setItem(md5TableKey(), item.value);
 
-                      viewDetail({
-                        data: {
-                          tableViewId: item.value,
-                        }
-                      });
-                    }}>{item.label}</div>
-                    <DeleteButton onClick={() => {
-                      deleteTableView({data: {tableViewId: item.value,}});
-                    }} />
-                  </div>;
-                });
-              }}
-            />
+                        viewDetail({
+                          data: {
+                            tableViewId: item.value,
+                          }
+                        });
+                      }}>{item.label}</div>
+                      <DeleteButton onClick={() => {
+                        deleteTableView({data: {tableViewId: item.value,}});
+                      }} />
+                    </div>;
+                  });
+                }}
+              />
+            </div>
+
         }
         <Popover
           overlayClassName={styles.popover}

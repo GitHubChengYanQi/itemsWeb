@@ -74,6 +74,7 @@ const SpuTable = ({type}) => {
         formActions={formActionsPublic}
         actions={actions()}
         ref={tableRef}
+        selectedRowKeys={ids}
         onChange={(value) => {
           setIds(value);
         }}

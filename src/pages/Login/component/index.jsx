@@ -1,34 +1,32 @@
 import React from 'react';
-import { Form, Input, Button, Alert } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useHistory, getSearchParams } from 'ice';
+import {Form, Input, Button, Alert} from 'antd';
+import {UserOutlined, LockOutlined} from '@ant-design/icons';
+import {useHistory, getSearchParams} from 'ice';
 import cookie from 'js-cookie';
-import { useRequest } from '@/util/Request';
-import { login as loginUrl } from '@/Config/ApiUrl';
+import {UseLogin} from 'MES-Apis/src/Login/hooks';
 
 
 const FormItem = Form.Item;
 
-export default function Login({ submitText }) {
+export default function Login({submitText}) {
 
   const history = useHistory();
   const params = getSearchParams();
 
-  const { run, data, error, loading } = useRequest(loginUrl, {
-    manual: true,
-    ready:true,
+  const {run, data, error, loading} = UseLogin.login({
+    manual: true
   });
 
   return (
     <Form
       size="large"
-      initialValues={{ remember: true }}
+      initialValues={{remember: true}}
       onFinish={async (values) => {
         const response = await run({
           data: values
         });
-        if (response) {
-          cookie.set('tianpeng-token', response);
+        if (response && response.data) {
+          cookie.set('tianpeng-token', response.data);
           setTimeout(() => {
             if (params.backUrl) {
               window.location.href = decodeURIComponent(params.backUrl);
@@ -41,10 +39,10 @@ export default function Login({ submitText }) {
     >
       <FormItem
         name="username"
-        rules={[{ required: true, message: '请填写：手机号/邮箱/账号' }]}
+        rules={[{required: true, message: '请填写：手机号/邮箱/账号'}]}
       >
         <Input
-          prefix={<UserOutlined/>}
+          prefix={<UserOutlined />}
           name="account"
           placeholder="手机号/邮箱/账号"
           autoComplete="off"
@@ -52,9 +50,9 @@ export default function Login({ submitText }) {
       </FormItem>
       <FormItem
         name="password"
-        validateTrigger='onBlur'
+        validateTrigger="onBlur"
         rules={[
-          { required: true, message: '请填写密码' },
+          {required: true, message: '请填写密码'},
           () => ({
             validator(rule, value) {
               if (!value || value.length >= 6) {
@@ -66,7 +64,7 @@ export default function Login({ submitText }) {
         ]}
       >
         <Input
-          prefix={<LockOutlined/>}
+          prefix={<LockOutlined />}
           type="password"
           placeholder="请填写最低长度为6位的密码"
         />
@@ -76,8 +74,8 @@ export default function Login({ submitText }) {
           {submitText || '登 录'}
         </Button>
       </FormItem>
-      {error && <Alert message={error.message} type="error"/>}
-      {data && <Alert message='登录成功，请稍候...' type='success'/>}
+      {error && <Alert message={error.message} type="error" />}
+      {data && <Alert message="登录成功，请稍候..." type="success" />}
     </Form>
   );
 }

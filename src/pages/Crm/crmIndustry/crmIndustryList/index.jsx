@@ -55,6 +55,7 @@ const CrmIndustryList = () => {
         SearchButton
         searchForm
         footer={footer}
+        selectedRowKeys={ids}
         onChange={(keys) => {
           setIds(keys);
         }}

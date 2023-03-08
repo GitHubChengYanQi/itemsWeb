@@ -80,6 +80,7 @@ const CrmBusinessSalesList = () => {
         searchForm={searchForm}
         actions={actions()}
         ref={tableRef}
+        selectedRowKeys={ids}
         formActions={formActions}
       >
         <Column title="分类名称" dataIndex="name" render={(text, record,) => {

@@ -52,6 +52,7 @@
     "@icedesign/dynamic-icon": "^0.1.8",
     "@icedesign/img": "^1.0.4",
     "@tinymce/tinymce-react": "^3.13.0",
+    "MES-Apis": "0.0.57",
     "ac-barcode": "^1.0.0",
     "ahooks": "^2.9.1",
     "antd": "^4.24.1",

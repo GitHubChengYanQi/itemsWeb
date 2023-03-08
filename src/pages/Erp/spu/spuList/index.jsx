@@ -85,6 +85,7 @@ const SpuList = () => {
         actions={actions()}
         ref={tableRef}
         footer={footer}
+        selectedRowKeys={ids}
         onChange={setIds}
       >
         <Column title="名称" key={1} dataIndex="name" render={(value, record) => {

@@ -58,6 +58,7 @@ const CrmCustomerLevelList = () => {
         SearchButton
         cardHeaderStyle={{display:'none'}}
         footer={footer}
+        selectedRowKeys={ids}
         onChange={(keys) => {
           setIds(keys);
         }}

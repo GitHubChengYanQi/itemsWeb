@@ -301,6 +301,7 @@ const SkuEdit = ({...props}, ref) => {
               break;
             case 'skuSize':
               formItemProps = {
+                label:`${item.filedName}(mm)`,
                 component: SysField.SkuSize,
               };
               break;
@@ -355,7 +356,7 @@ const SkuEdit = ({...props}, ref) => {
                       }
                       return formDataItem;
                     });
-                    if (!exits) {
+                    if (!exits && value) {
                       newFormData.push({fieldName: item.key, value});
                     }
                     return newFormData;

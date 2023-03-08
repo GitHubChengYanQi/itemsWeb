@@ -71,6 +71,7 @@ const BrandList = () => {
         actions={actions()}
         ref={tableRef}
         footer={footer}
+        selectedRowKeys={ids}
         onChange={(value)=>{
           setIds(value);
         }}

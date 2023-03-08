@@ -177,6 +177,7 @@ const ItemPackage = (props) => {
           ref={tableRef}
           listHeader={false}
           footer={footer}
+          selectedRowKeys={ids}
           onChange={(keys) => {
             setIds(keys);
           }}

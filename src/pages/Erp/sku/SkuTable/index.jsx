@@ -37,15 +37,6 @@ const {FormItem} = Form;
 
 const SkuTable = ({...props}, ref) => {
 
-  const [state] = useUrlState(
-    {
-      navigateMode: 'push',
-    },
-  );
-
-  const defaultTableQuery = state.params && JSON.parse(state.params) || {};
-  const tableQueryValues = defaultTableQuery.values || {};
-
   const {baseURI} = config;
 
   const skuListRef = useRef();
@@ -108,6 +99,13 @@ const SkuTable = ({...props}, ref) => {
     );
   };
 
+  const [state] = useUrlState(
+    {
+      navigateMode: 'push',
+    },
+  );
+  const defaultTableQuery = state.params && JSON.parse(state.params) || {};
+  const tableQueryValues = defaultTableQuery.values || {};
   let defaultSearchType = '';
   if (tableQueryValues.partsId) {
     defaultSearchType = 'parts';
@@ -477,11 +475,13 @@ const SkuTable = ({...props}, ref) => {
         searchForm={searchForm}
         actions={actions()}
         ref={tableRef}
+        selectedRowKeys={ids}
+        checkedRows={sku}
         footer={!spuId && footer}
-        onChange={(value, record) => {
+        onChange={(value) => {
           setIds(value);
-          setSku(record);
         }}
+        onChangeRows={setSku}
         {...other}
       />
 

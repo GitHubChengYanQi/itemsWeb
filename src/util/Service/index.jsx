@@ -1,8 +1,8 @@
-import React from 'react';
 import {config, useHistory} from 'ice';
 import cookie from 'js-cookie';
 import axios from 'axios';
 import {message, Modal} from 'antd';
+import {Init} from 'MES-Apis/src/Init';
 
 const baseURI = config.baseURI || window.sing.sysURI;
 
@@ -11,6 +11,32 @@ const GotoLogin = () => {
   history.push('/login');
 };
 
+Init.initBaseURL(baseURI.substring(0, baseURI.length - 1));
+
+try {
+  Init.responseConfig({
+    loginTimeOut: () => {
+      Modal.error({
+        title: '提示',
+        content: '您已登录超时，请重新登录。',
+        okText: '重新登录',
+        onOk: () => {
+          Modal.destroyAll();
+          try {
+            GotoLogin();
+          } catch (e) {
+            window.location.href = `/#/login?backUrl=${encodeURIComponent(window.location.href)}`;
+          }
+        }
+      });
+    },
+    errorMessage: (res) => {
+      message.error(res);
+    },
+  });
+}catch (e) {
+
+}
 const ajaxService = axios.create({
   baseURL: baseURI,
   withCredentials: true,

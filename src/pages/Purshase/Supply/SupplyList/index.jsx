@@ -226,6 +226,7 @@ const SupplyList = (props) => {
         footer={footer}
         layout={search}
         SearchButton={Search()}
+        selectedRowKeys={ids}
         onChange={(keys) => {
           setIds(keys);
         }}

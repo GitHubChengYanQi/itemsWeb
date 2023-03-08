@@ -71,6 +71,7 @@ const OriginList = () => {
         onChange={(keys) => {
           setIds(keys);
         }}
+        selectedRowKeys={ids}
         contentHeight
         api={originList}
         rowKey="originId"

@@ -63,6 +63,7 @@ const TemplateList = ({module}) => {
   return (
     <>
       <Table
+        selectedRowKeys={ids}
         formSubmit={(values) => {
           return {...values, module};
         }}

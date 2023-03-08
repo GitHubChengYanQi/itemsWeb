@@ -182,6 +182,7 @@ const ContractTable = (props) => {
         formActions={formActionsPublic}
         SearchButton={Search()}
         layout={search}
+        selectedRowKeys={ids}
         onChange={(value) => {
           setIds(value);
         }}
