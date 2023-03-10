@@ -29,6 +29,7 @@ import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 import Note from '@/components/Note';
 import SearchValueFormat from '@/components/SearchValueFormat';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
+import Scope from '@/components/Scope';
 
 const {baseURI} = config;
 const {FormItem} = Form;
@@ -107,7 +108,8 @@ const StockTable = (props) => {
         <FormItem
           label="库存范围"
           name="numbers"
-          component={StockNumbers}
+          component={Scope}
+          placeholder='库存'
         />
         <FormItem
           visible={isArray(storeHouse)[0] || false}

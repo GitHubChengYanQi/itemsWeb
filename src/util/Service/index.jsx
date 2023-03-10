@@ -37,6 +37,7 @@ try {
 }catch (e) {
 
 }
+
 const ajaxService = axios.create({
   baseURL: baseURI,
   withCredentials: true,

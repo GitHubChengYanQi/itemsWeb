@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react';
 import cookie from 'js-cookie';
 import {logger, useHistory} from 'ice';
 import {Alert, Spin, Layout} from 'antd';
+import {Login} from 'MES-Apis/src/Login/promise';
+import {Init} from 'MES-Apis/src/Init';
 import Header from '@/layouts/BasicLayout/components/Header';
 import store from '@/store';
 
 import WindowOpenImg from '@/components/Editor/components/WindowOpenImg';
 import WindowOpenPosition from '@/components/Editor/components/WindowOpenPosition';
 import GetUserInfo from '@/util/GetUserInfo';
-import {request as requestProivde} from '@/util/Service';
 import WindowOpenInkind from '@/components/Editor/components/WindowOpenInkind';
 import WindowOpenSku from '@/components/Editor/components/WindowOpenSku';
 
@@ -29,12 +30,13 @@ export default function BasicLayout({children}) {
       if (!token) {
         throw new Error('本地登录信息不存在');
       }
+      Init.setToken(token);
       const jwt = token.split('.');
       if (jwt.length !== 3) {
         throw new Error('本地登录信息错误');
       }
       if (GetUserInfo().tokenMinute >= 10) {
-        const res = await requestProivde({url: '/rest/refreshToken', method: 'GET'});
+        const res = await Login.refreshToken({});
         if (res.errCode === 0 && GetUserInfo(res.data).token) {
           cookie.set('tianpeng-token', res.data);
         }

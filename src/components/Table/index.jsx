@@ -137,7 +137,6 @@ const TableWarp = (
       console.log(e);
     }
   }
-
   if (!formActions) {
     formActions = formActionsPublic;
   }
@@ -164,7 +163,6 @@ const TableWarp = (
       field: sorter.field,
       order: sorter.order
     };
-
     const newValues = formSubmit({...values, ...submitValues});
     if (!isModal) {
       setState({

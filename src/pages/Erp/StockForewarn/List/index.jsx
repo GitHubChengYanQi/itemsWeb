@@ -2,6 +2,7 @@ import React, {useRef, useState} from 'react';
 import {Button, Input, notification, Popover, Select} from 'antd';
 import {useHistory} from 'ice';
 import useUrlState from '@ahooksjs/use-url-state';
+import {useBoolean} from 'ahooks';
 import Table from '@/components/Table';
 import Breadcrumb from '@/components/Breadcrumb';
 import Form from '@/components/Form';
@@ -11,6 +12,8 @@ import GroupSku from '@/pages/Erp/sku/components/GroupSku';
 import Render from '@/components/Render';
 import CreatePrePurchase, {purchaseListListBySkuId} from '@/pages/Erp/StockForewarn/components/CreatePrePurchase';
 import {useRequest} from '@/util/Request';
+import Scope from '@/components/Scope';
+import Icon from '@/components/Icon';
 
 const {FormItem} = Form;
 
@@ -19,6 +22,7 @@ const List = () => {
   const tableRef = useRef(null);
   const skuListRef = useRef(null);
 
+  const [search, {toggle}] = useBoolean(false);
 
   const history = useHistory();
 
@@ -42,6 +46,7 @@ const List = () => {
       navigateMode: 'push',
     },
   );
+
   const defaultTableQuery = state.params && JSON.parse(state.params) || {};
   const tableQueryValues = defaultTableQuery.values || {};
   let defaultSearchType = '';
@@ -60,6 +65,7 @@ const List = () => {
     return (
       <>
         <GroupSku
+          style={{marginRight: 12}}
           defaultSearchType={defaultSearchType}
           value={tableQueryValues.showValue}
           ref={skuListRef}
@@ -87,18 +93,51 @@ const List = () => {
           <FormItem name="keyWords" label="基础物料" component={Input} />
           <FormItem name="classId" label="基础物料" component={Input} />
         </div>
-        <div style={{width: 24}} />
-        <FormItem
-          label="预警状态"
-          name="forewarnStatus"
-          style={{width: '200px'}}
-          options={types}
-          placeholder="请选择"
-          component={Select} />
+        <div style={{height: 12}} />
+        <div hidden={!search}>
+          <FormItem
+            label="预警状态"
+            name="forewarnStatus"
+            style={{width: '230px'}}
+            options={types}
+            placeholder="请选择"
+            component={Select} />
+        </div>
+        <div hidden={!search}>
+          <FormItem
+            label="库存数量"
+            name="number"
+            component={Scope}
+            placeholder="值"
+          />
+        </div>
+        <div hidden={!search}>
+          <FormItem
+            label="在途数量"
+            name="floatingCargoNumber"
+            component={Scope}
+            placeholder="值"
+          />
+        </div>
+        <div hidden={!search}>
+          <FormItem
+            label="待采数量"
+            name="purchaseNumber"
+            component={Scope}
+            placeholder="值"
+          />
+        </div>
+        <div hidden={!search}>
+          <FormItem
+            label="缺欠数量"
+            name="storage"
+            component={Scope}
+            placeholder="值"
+          />
+        </div>
       </>
     );
   };
-
 
   const columns = [
     {
@@ -113,12 +152,14 @@ const List = () => {
     },
     {
       title: '物料', dataIndex: 'spuName', sorter: true, render: (value, record) => {
-        return <>{SkuResultSkuJsons({skuResult: record.skuResult})}</>;
+        return <Button type="link" onClick={() => {
+          history.push(`/SPU/sku/${record.skuId}`);
+        }}>
+          {SkuResultSkuJsons({skuResult: record.skuResult})}
+        </Button>;
       }
     },
-    {
-      title: '库存数量', width: 100, sorter: true, dataIndex: 'number'
-    },
+    {title: '库存数量', width: 100, sorter: true, dataIndex: 'number'},
     {
       title: '在途数量', width: 120, sorter: true, dataIndex: 'floatingCargoNumber', render(value) {
         return <Button type="link" onClick={() => {
@@ -131,6 +172,14 @@ const List = () => {
         return <Button type="link" onClick={() => {
           history.push('/purchase/toBuyPlan');
         }}>{value || 0}</Button>;
+      }
+    },
+    {
+      title: '缺欠数量', width: 100, sorter: true, dataIndex: 'storage', render: (text) => {
+        return (
+          <Render>
+            {typeof text === 'number' ? text : '-'}
+          </Render>);
       }
     },
     {
@@ -175,18 +224,6 @@ const List = () => {
                     placement: 'bottomRight',
                   });
                   tableRef.current.reset();
-                  // Modal.confirm({
-                  //   centered: true,
-                  //   title: '保存成功！',
-                  //   okText: '查看预购列表',
-                  //   cancelText: '继续操作',
-                  //   onOk() {
-                  //
-                  //   },
-                  //   onCancel(){
-                  //
-                  //   },
-                  // });
                 }}
               />}
               title="添加预购物料"
@@ -224,8 +261,39 @@ const List = () => {
       }}>预警设置</Button>
     </>;
   };
+
   return <>
     <Table
+      noRowSelection
+      layout={!search ? 'inline' : 'horizontal'}
+      otherActions={<Button
+        type="link"
+        title={search ? '收起高级搜索' : '展开高级搜索'}
+        onClick={() => {
+          toggle();
+        }}>
+        <Icon type={search ? 'icon-shouqi' : 'icon-gaojisousuo'}
+        />{search ? '收起' : '高级'}
+      </Button>}
+      formSubmit={(values) => {
+        Object.keys(values).forEach(item => {
+          switch (item) {
+            case 'number':
+            case 'floatingCargoNumber':
+            case 'purchaseNumber':
+            case 'storage':
+              values = {
+                ...values,
+                [`${item}Max`]: values[item].maxNum,
+                [`${item}Min`]: values[item].mixNum
+              };
+              break;
+            default:
+              break;
+          }
+        });
+        return values;
+      }}
       isModal={false}
       noTableColumnSet
       onReset={() => {

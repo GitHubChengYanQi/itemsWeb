@@ -5,6 +5,7 @@ import {useStockForewarn} from 'MES-Apis/src/StockForewarn/hooks';
 import InputNumber from '@/components/InputNumber';
 import Note from '@/components/Note';
 import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
+import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 
 export const purchaseListAdd = {url: '/purchaseList/add', method: 'POST'};
 export const purchaseListEdit = {url: '/purchaseList/edit', method: 'POST'};
@@ -49,7 +50,7 @@ const CreatePrePurchase = ({
     return <div>
       <List
         size="small"
-        header={<Space style={{color: '#000', fontSize: 16}}><ExclamationCircleOutlined style={{color: '#257bde'}} />物料已经待采购！</Space>}
+        header={<Space style={{color: '#000', fontSize: 16}}><ExclamationCircleOutlined style={{color: '#257bde'}} />已备物料</Space>}
         footer={<Button onClick={() => {
           setAction('add');
           const number = purchaseNumber - sku.floatingCargoNumber > 0 ? purchaseNumber - sku.floatingCargoNumber : 1;
@@ -92,6 +93,10 @@ const CreatePrePurchase = ({
 
   return <>
     <div>
+      <div style={{padding: '12px 50px', display: 'flex', alignItems: 'center'}}>
+        <div style={{width: 100, textAlign: 'right'}}><span style={{color: 'red'}}> * </span>物料：</div>
+        {SkuResultSkuJsons({skuResult: sku.skuResult})}
+      </div>
       <div style={{padding: '12px 50px', display: 'flex', alignItems: 'center'}}>
         <div style={{width: 100, textAlign: 'right'}}><span style={{color: 'red'}}> * </span>采购数量：</div>
         <InputNumber
