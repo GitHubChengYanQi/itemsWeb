@@ -100,18 +100,18 @@ const OrderTable = (props) => {
       render: (value) => <Render text={value?.customerName || '-'} />
     },
     {
-      title: '到货进度',
+      title: '入库进度',
       align: 'center',
       hidden: module.type === 2,
       render: (value, record) => {
         let purchaseNumber = 0;
-        let arrivalNumber = 0;
+        let inStockNumber = 0;
         isArray(record.detailResults).forEach(item => {
-          arrivalNumber += item.arrivalNumber;
+          inStockNumber += item.inStockNumber;
           purchaseNumber += item.purchaseNumber;
         });
         return <Render width={100}>
-          <Progress percent={Math.round((arrivalNumber / purchaseNumber) * 100) || 0} />
+          <Progress percent={Math.round((inStockNumber / purchaseNumber) * 100) || 0} />
         </Render>;
       }
     },

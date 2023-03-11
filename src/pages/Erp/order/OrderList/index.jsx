@@ -40,9 +40,16 @@ const OrderList = (props) => {
         <>
           <FormItem mega-props={{span: 1}} placeholder="货单状态" name="state" component={SysField.State} />
           {
-            customerId ? null :
-              <FormItem mega-props={{span: 1}} placeholder="客户名称" value={customerId || null} name="customerId"
-                        component={SysField.CustomerListSelect} />
+            customerId ?
+              null
+              :
+              <FormItem
+                mega-props={{span: 1}}
+                placeholder="客户名称"
+                value={customerId || null}
+                name="customerId"
+                component={SysField.CustomerListSelect}
+              />
           }
         </>
       );
