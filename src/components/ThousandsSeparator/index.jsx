@@ -1,14 +1,15 @@
 import React from 'react';
 import {Statistic} from 'antd';
 
-const ThousandsSeparator = ({value, suffix}) => {
+const ThousandsSeparator = ({value, suffix, style = {}, className}) => {
 
 
   return <Statistic
     suffix={suffix}
     valueStyle={{fontSize: 14}}
     value={value}
-    style={{display: 'inline-block'}}
+    className={className}
+    style={{display: 'inline-block', ...style}}
     precision={2}
   />;
 };

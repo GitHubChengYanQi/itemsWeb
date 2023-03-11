@@ -34,7 +34,12 @@ const PurshaseRouterConfig = [
         component: lazy(() => import('../../Order/Detail')),
         fallback: <div>loading...</div>,
         exact: true,
-      },{
+      }, {
+        path: '/orderStatistics',
+        component: lazy(() => import('../../Order/Statistics')),
+        fallback: <div>loading...</div>,
+        exact: true,
+      }, {
         redirect: '/purchase/supply',
       },
     ]

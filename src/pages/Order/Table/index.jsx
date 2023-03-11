@@ -37,6 +37,7 @@ const OrderTable = (props) => {
   switch (props.location.pathname) {
     case '/CRM/order':
       module = {
+        title: '销售单列表',
         createTitle: '创建销售单',
         createRoute: '/CRM/order/createOrder?module=SO',
         module: 'SO',
@@ -45,6 +46,7 @@ const OrderTable = (props) => {
       break;
     case '/purchase/order':
       module = {
+        title: '采购单列表',
         createTitle: '创建采购单',
         createRoute: '/purchase/order/createOrder?module=PO',
         module: 'PO',
@@ -175,7 +177,7 @@ const OrderTable = (props) => {
       <Table
         columns={columns}
         noRowSelection
-        title={<Breadcrumb />}
+        title={<Breadcrumb title={module.title} />}
         api={orderList}
         rowKey="orderId"
         tableKey="order"

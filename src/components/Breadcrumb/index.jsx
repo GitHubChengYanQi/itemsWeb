@@ -53,7 +53,7 @@ const Breadcrumb = ({title}) => {
 
   return (
     <div>
-      <AntBreadcrumb>
+      <AntBreadcrumb style={{lineHeight: '32px'}}>
         {
           routesArray.map((item, index) => {
             if (index === 0) {
