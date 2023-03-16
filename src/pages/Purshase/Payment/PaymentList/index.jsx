@@ -5,10 +5,11 @@
  * @Date 2022-02-24 14:55:10
  */
 
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {createFormActions} from '@formily/antd';
-import {Button, message} from 'antd';
-import {useHistory} from "ice";
+import {Button, Image, Input, message, Space} from 'antd';
+import {useHistory} from 'ice';
+import {FileImageOutlined} from '@ant-design/icons';
 import Table from '@/components/Table';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
@@ -18,17 +19,26 @@ import {paymentList} from '@/pages/Purshase/Payment/PaymentUrl';
 import {useRequest} from '@/util/Request';
 import Form from '@/components/Form';
 import {Money, Status} from '@/pages/Purshase/Payment/PaymentField';
+import ThousandsSeparator from '@/components/ThousandsSeparator';
+import Modal from '@/components/Modal';
+import {isArray} from '@/util/Tools';
 
 const formActionsPublic = createFormActions();
 const {FormItem} = Form;
 
 const PaymentList = (
   {
+    orderId,
     onClose = () => {
     }
   }) => {
+
+  const [preview, setPreview] = useState([]);
+
   const ref = useRef(null);
   const tableRef = useRef(null);
+
+  const compoentRef = useRef();
 
   const history = useHistory();
 
@@ -49,8 +59,9 @@ const PaymentList = (
 
   const searchForm = () => {
     return <>
-      <FormItem label="金额" name="money" component={Money}/>
-      <FormItem label="订单状态" name="status" component={Status}/>
+      <FormItem label="金额" name="money" component={Money} />
+      <FormItem hidden={orderId} name="orderId" value={orderId} component={Input} />
+      <FormItem label="订单状态" name="status" component={Status} />
     </>;
   };
 
@@ -64,9 +75,16 @@ const PaymentList = (
     );
   };
 
-  const columns = [
-    {dataIndex: 'paymentAmount', title: '金额(人民币)'},
+  let columns = [
     {
+      dataIndex: 'paymentAmount', title: '金额(人民币)', align: 'right', render: (value) => {
+        return <ThousandsSeparator prefix='￥' value={value} />;
+      }
+    },
+  ];
+
+  if (!orderId) {
+    columns = [...columns, {
       dataIndex: 'coding', title: '关联订单', render: (value, record) => {
         return <>
           <Button type="link" onClick={() => {
@@ -75,19 +93,31 @@ const PaymentList = (
           }}>{value}</Button>
         </>;
       }
-    },
-    {dataIndex: 'createTime', title: '创建时间'},
-    {dataIndex: 'remark', title: '备注'},
+    }];
+  }
+
+  columns = [
+    ...columns,
     {
-      dataIndex: 'orderId', title: '操作', render: (value, record) => {
+      dataIndex: 'enclosureId', title: '附件', align: 'center', render: (value, record) => {
+        return <Button type="link" onClick={() => {
+          setPreview(isArray(record.mediaUrlResults).map(item => item.url));
+        }}><FileImageOutlined /> x {isArray(record.mediaUrlResults).length}</Button>;
+      }
+    },
+    {dataIndex: 'remark', title: '备注'},
+    {dataIndex: 'paymentDate', title: '创建时间', width: 200, align: 'center'},
+    {},
+    {
+      dataIndex: 'orderId', title: '操作', width: 150, align: 'center', render: (value, record) => {
         return <>
           <EditButton onClick={() => {
             ref.current.open(record.recordId);
-          }}/>
+          }} />
           <Button
             disabled={record.status === 50}
             loading={fetches[record.recordId]?.loading}
-            type='link'
+            type="link"
             danger
             onClick={() => {
               run({data: {recordId: record.recordId}});
@@ -116,10 +146,51 @@ const PaymentList = (
         actions={actions()}
         ref={tableRef}
       />
-      <Drawer width={800} title="付款记录" component={PaymentEdit} onSuccess={() => {
-        tableRef.current.refresh();
-        ref.current.close();
-      }} ref={ref} />
+
+
+      {orderId
+        ?
+        <Modal
+          compoentRef={compoentRef}
+          title="付款记录"
+          noButton
+          orderId={orderId}
+          component={PaymentEdit}
+          onSuccess={() => {
+            tableRef.current.refresh();
+            ref.current.close();
+          }}
+          footer={<Space>
+            <Button onClick={() => {
+              ref.current.close();
+            }}>
+              取消
+            </Button>
+            <Button type="primary" onClick={() => {
+              compoentRef.current.submit();
+            }}>
+              确定
+            </Button>
+          </Space>}
+          ref={ref}
+        />
+        :
+        <Drawer width={800} title="付款记录" orderId={orderId} component={PaymentEdit} onSuccess={() => {
+          tableRef.current.refresh();
+          ref.current.close();
+        }} ref={ref} />}
+
+      <Image.PreviewGroup
+        preview={{visible: preview.length > 0, onVisibleChange: (vis) => setPreview(vis ? preview : [])}}>
+        {
+          preview.map((item, index) => {
+            return <Image
+              key={index}
+              src={item}
+            />;
+          })
+        }
+      </Image.PreviewGroup>
     </>
   );
 };

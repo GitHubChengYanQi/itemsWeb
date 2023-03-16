@@ -56,7 +56,7 @@ const FormLayout = (
   });
 
   useEffect(() => {
-    if (previewData){
+    if (previewData) {
       const newSteps = previewData.steps || [];
       setSteps(newSteps);
       setLayout({width: previewData.width, gutter: previewData.gutter, widthUnit: previewData.widthUnit});
@@ -71,6 +71,11 @@ const FormLayout = (
   return <>
     <div hidden={steps.length === 1} style={{marginBottom: 24}}>
       <Steps
+        items={steps.map((item, index) => {
+          return {
+            title: item.title || `步骤${index + 1}`
+          };
+        })}
         current={value}
         onChange={(step) => {
           if (!previewData && step >= value) {
@@ -78,17 +83,7 @@ const FormLayout = (
           }
           onChange({step, type: steps[step].type, steps});
         }}
-      >
-        {
-          steps.map((item, index) => {
-            return <Steps.Step
-              title={item.title || `步骤${index + 1}`}
-              // description={item.type === 'add' && '保存'}
-              key={index}
-            />;
-          })
-        }
-      </Steps>
+      />
     </div>
     {
       steps.map((setpItem, setpIndex) => {

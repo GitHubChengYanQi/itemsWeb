@@ -22,6 +22,7 @@ const getParentValue = (value, data) => {
 
 const Cascader = (
   {
+    autoFocus,
     value,
     width,
     changeOnSelect = true,
@@ -101,6 +102,7 @@ const Cascader = (
   };
 
   return (<AntCascader
+    autoFocus={autoFocus}
     // suffixIcon={null}
     // expandIcon={false}
     {...other}

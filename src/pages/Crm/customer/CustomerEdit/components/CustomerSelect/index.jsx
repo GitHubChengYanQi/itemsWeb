@@ -35,7 +35,7 @@ const CustomerSelect = (props) => {
     api = {...supplierList, params};
   } else if (supply === 0) {
     api = {...customerList, params};
-  }else {
+  } else {
     api = {...supplierList, params};
   }
 
@@ -46,7 +46,7 @@ const CustomerSelect = (props) => {
     detailApi = supplierDetail;
   } else if (supply === 0) {
     detailApi = customerDetail;
-  }else {
+  } else {
     detailApi = supplierDetail;
   }
 
@@ -80,6 +80,8 @@ const CustomerSelect = (props) => {
   useEffect(() => {
     if (value) {
       defaultValue();
+    } else {
+      setName(null);
     }
   }, [value]);
 
@@ -88,10 +90,10 @@ const CustomerSelect = (props) => {
     <div style={style}>
       <Select
         options={options}
-        style={{width:'100%'}}
+        style={{width: '100%'}}
         value={name}
         notFoundContent={loading && <div style={{textAlign: 'center', padding: 16}}><Spin /></div>}
-        placeholder={placeholder}
+        placeholder={placeholder || '请选择'}
         showSearch
         // getPopupContainer={() => document.getElementById('select')}
         allowClear

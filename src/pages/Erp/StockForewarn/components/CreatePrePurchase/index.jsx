@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, List, Popconfirm, Select, Space} from 'antd';
 import {ExclamationCircleOutlined} from '@ant-design/icons';
-import {useStockForewarn} from 'MES-Apis/src/StockForewarn/hooks';
+import {UseStockForewarn} from 'MES-Apis/src/StockForewarn/hooks';
 import InputNumber from '@/components/InputNumber';
 import Note from '@/components/Note';
 import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
@@ -44,7 +44,7 @@ const CreatePrePurchase = ({
     startReserve,
     setEdit,
     waitNumber,
-  } = useStockForewarn.Reserve({sku, purchaseListList, onSuccess});
+  } = UseStockForewarn.Reserve({sku, purchaseListList, onSuccess});
 
   if (waitNumber && !action) {
     return <div>

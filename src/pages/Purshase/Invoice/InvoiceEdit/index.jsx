@@ -5,7 +5,7 @@
  * @Date 2022-02-24 14:55:10
  */
 
-import React, {useRef, useState} from 'react';
+import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions, FormButtonGroup, Reset} from '@formily/antd';
 import {Button, Input} from 'antd';
 import Form from '@/components/Form';
@@ -29,7 +29,7 @@ const ApiConfig = {
   save: invoiceEdit
 };
 
-const InvoiceEdit = ({previewData, ...props}) => {
+const InvoiceEdit = ({previewData, orderId, ...props}, ref) => {
 
   const formRef = useRef();
 
@@ -38,10 +38,14 @@ const InvoiceEdit = ({previewData, ...props}) => {
   const [id, setId] = useState(props.value || false);
 
   const money = (props) => {
-    return <InputNumber addonAfter="人民币" {...props} />;
+    return <InputNumber precision={2} addonAfter="人民币" {...props} />;
   };
 
-  return <>
+  useImperativeHandle(ref, () => ({
+    submit: formRef.current.submit
+  }));
+
+  return <div style={{paddingTop: orderId && 24}}>
     <Form
       noButton
       {...props}
@@ -49,6 +53,12 @@ const InvoiceEdit = ({previewData, ...props}) => {
       ref={formRef}
       formActions={formActionsPublic}
       api={ApiConfig}
+      onSubmit={(values) => {
+        if (orderId) {
+          return {...values, orderId};
+        }
+        return values;
+      }}
       onSuccess={(res) => {
         if (currentStep.step < isArray(currentStep.steps).length - 1) {
           setCurrentStep({
@@ -77,6 +87,7 @@ const InvoiceEdit = ({previewData, ...props}) => {
               break;
             case 'enclosureId':
               formItemProps = {
+                privateUpload: true,
                 component: FileUpload,
               };
               break;
@@ -92,6 +103,9 @@ const InvoiceEdit = ({previewData, ...props}) => {
               };
               break;
             case 'orderId':
+              if (orderId) {
+                return;
+              }
               formItemProps = {
                 component: SelectOrder,
               };
@@ -110,15 +124,15 @@ const InvoiceEdit = ({previewData, ...props}) => {
       />
     </Form>
 
-    {!previewData && <FormButtonGroup offset={11} className={style.bottom}>
+    {(!previewData && !orderId) && <FormButtonGroup offset={11} className={style.bottom}>
       <Button
         type="primary"
-        onClick={() =>   FormLayoutSubmit({currentStep, setCurrentStep, formRef})}>
+        onClick={() => FormLayoutSubmit({currentStep, setCurrentStep, formRef})}>
         {currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}
       </Button>
       <Reset>取消</Reset>
     </FormButtonGroup>}
-  </>;
+  </div>;
 };
 
-export default InvoiceEdit;
+export default React.forwardRef(InvoiceEdit);

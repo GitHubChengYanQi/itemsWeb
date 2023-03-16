@@ -22,7 +22,10 @@ const SelectOrder = ({
 
   const options = (!loading && data) ? data.map((item) => {
     return {
-      label: item.coding,
+      label: <div>
+        <div>{item.coding}</div>
+        <div>{item.theme}</div>
+      </div>,
       value: item.orderId,
     };
   }) : [];

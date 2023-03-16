@@ -1,13 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {Button, DatePicker, Table} from 'antd';
+import {Button, DatePicker, Spin, Table} from 'antd';
 import moment from 'moment';
 import Breadcrumb from '@/components/Breadcrumb';
 import styles from './index.module.less';
 import ThousandsSeparator from '@/components/ThousandsSeparator';
 import {useRequest} from '@/util/Request';
-import {orderViewOrderDetail} from '@/pages/Order/url';
+import {orderView, orderViewOrderDetail} from '@/pages/Order/url';
+import {useHistory} from 'ice';
 
 const Statistics = () => {
+
+  const history = useHistory();
 
   const [year, setYear] = useState(moment().year());
 
@@ -15,42 +18,75 @@ const Statistics = () => {
     manual: true
   });
 
-  let totalPrice = 0;
-  let sellerCount = 0;
-  let purchaseNumber = 0;
-
-  data.forEach(item => {
-    totalPrice += item.totalPrice;
-    sellerCount += item.sellerCount;
-    purchaseNumber += item.purchaseNumber;
+  const {loading: viewLoading, run: viewRun, data: viewData = {}} = useRequest(orderView, {
+    manual: true
   });
 
+
   const columns = [
-    {title: '出账月份', dataIndex: 'month', align: 'center', width: 100},
+    {title: '出账月份', dataIndex: 'month', align: 'left'},
     {
-      title: '采购总金额', dataIndex: 'totalPrice', align: 'right', render(text) {
+      title: '采购总金额', width: 150, dataIndex: 'totalPrice', align: 'right', render(text) {
         return <div>
-          ¥
           <ThousandsSeparator
+            prefix="¥"
             value={text}
           />
         </div>;
       }
     },
-    {title: '采购供应商数', dataIndex: 'sellerCount', align: 'right',},
-    {title: '采购物料种类', dataIndex: 'skuCount', align: 'right',},
-    {title: '采购物料总数', dataIndex: 'purchaseNumber', align: 'right',},
-    // {
-    //   title: '操作', width: 100, dataIndex: 'month', align: 'center', render(value) {
-    //     return <Button type="link" onClick={() => {
-    //       console.log(value, moment(value).format('YYYY-MM-DD hh:mm:ss'));
-    //     }}>查看订单</Button>;
-    //   },
-    // },
+    {
+      title: '付款金额', width: 150, dataIndex: 'paymentPrice', align: 'right', render(text) {
+        return <div>
+          <ThousandsSeparator
+            prefix="¥"
+            value={text}
+          />
+        </div>;
+      }
+    },
+    {
+      title: '未付金额', width: 150, dataIndex: 'deficientPrice', align: 'right', render(text) {
+        return <div>
+          <ThousandsSeparator
+            prefix="¥"
+            value={text}
+          />
+        </div>;
+      }
+    },
+    {title: '采购供应商数', width: 120, dataIndex: 'sellerCount', align: 'right',},
+    {title: '采购物料种类', width: 120, dataIndex: 'skuCount', align: 'right',},
+    {title: '采购物料总数', width: 120, dataIndex: 'purchaseNumber', align: 'right',},
+    {title: '入库总数', width: 120, dataIndex: 'inStockCount', align: 'right'},
+    {
+      title: '入库百分比', width: 120, dataIndex: 'inStockRate', align: 'right', render(text) {
+        return `${text}%`;
+      }
+    },
+    {},
+    {
+      title: '操作', width: 100, dataIndex: 'month', align: 'center', render(value) {
+        return <Button type="link" onClick={() => {
+          history.push({
+            pathname: '/purchase/order',
+            state: {
+              startTime: moment(value).format('YYYY-MM-DD'),
+              endTime: moment(value).endOf('month').format('YYYY-MM-DD 23:59:59')
+            }
+          });
+        }}>查看订单</Button>;
+      },
+    },
   ];
 
   useEffect(() => {
     run({
+      data: {
+        year
+      }
+    });
+    viewRun({
       data: {
         year
       }
@@ -72,6 +108,11 @@ const Statistics = () => {
               year: dataString
             }
           });
+          viewRun({
+            data: {
+              year: dataString
+            }
+          });
           setYear(dataString);
         }} />
     </div>
@@ -87,18 +128,43 @@ const Statistics = () => {
           return index % 2 !== 0 ? styles.record : '';
         }}
         footer={() => {
-          return <div className={styles.total}>
+          return viewLoading ? <Spin /> : <div className={styles.total}>
             总金额：
             <span className={styles.number}>
               <ThousandsSeparator
+                prefix="¥"
                 className={styles.money}
-                value={totalPrice}
+                value={viewData.totalPrice}
               />
             </span>
 
-            供应商总数： <span className={styles.number}>{sellerCount}</span>
+            付款金额：
+            <span className={styles.number}>
+              <ThousandsSeparator
+                prefix="¥"
+                className={styles.money}
+                value={viewData.paymentPrice}
+              />
+            </span>
 
-            物料总数：<span className={styles.number}>{purchaseNumber}</span>
+            未付金额：
+            <span className={styles.number}>
+              <ThousandsSeparator
+                prefix="¥"
+                className={styles.money}
+                value={viewData.deficientPrice}
+              />
+            </span>
+
+            供应商总数： <span className={styles.number}>{viewData.sellerCount || 0}</span>
+
+            物料种类： <span className={styles.number}>{viewData.skuCount || 0}</span>
+
+            物料总数：<span className={styles.number}>{viewData.purchaseNumber || 0}</span>
+
+            入库总数：<span className={styles.number}>{viewData.inStockCount || 0}</span>
+
+            入库百分比：<span className={styles.number}>{viewData.inStockRate || 0} %</span>
           </div>;
         }}
       />

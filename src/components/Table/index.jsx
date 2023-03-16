@@ -36,7 +36,7 @@ const TableWarp = (
     bodyStyle,
     bordered,
     // c
-    checkedRows=[],
+    checkedRows = [],
     children,
     columns,
     contentHeight,
@@ -52,6 +52,7 @@ const TableWarp = (
     formSubmit = (values) => {
       return values;
     },
+    footerAlign,
     format = (data) => data,
     footer: parentFooter,
     formActions = null,
@@ -264,10 +265,16 @@ const TableWarp = (
 
   const footer = () => {
     return (
-      <div className={style.footer}>
-        {parentFooter && <div className={style.left}>{parentFooter()}</div>}
-        <br style={{clear: 'both'}} />
+      <div style={{display: 'flex', alignItems: 'center'}}>
+        <div hidden={noRowSelection}>
+          已选中 <Button style={{padding: 0}} type="link"> {checkedRows.length}</Button>
+        </div>
+        <div className={style.footer}>
+          {parentFooter && <div className={footerAlign === 'right' ? style.right : style.left}>{parentFooter()}</div>}
+          <br style={{clear: 'both'}} />
+        </div>
       </div>
+
     );
   };
 
@@ -289,7 +296,7 @@ const TableWarp = (
     }));
   };
 
-  const {tableColumn, setButton} = useTableSet(children || columnsFormat(), tableKey);
+  const {tableColumn, setButton} = useTableSet(children || columnsFormat(), tableKey, noTableColumnSet);
 
   return (
     <div className={style.tableWarp} id="listLayout" style={{height: '100%', overflowX: 'hidden'}}>

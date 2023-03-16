@@ -17,6 +17,7 @@ const SetSelectOrCascader = ({
   api,
   tableTitle,
   drawerWidth,
+  autoFocus,
   ...props
 }) => {
 
@@ -29,6 +30,7 @@ const SetSelectOrCascader = ({
       case 'cascader':
       case 'tree':
         return <Cascader
+          autoFocus={autoFocus}
           resh={state}
           options={options}
           disabled={disabled}
@@ -43,6 +45,7 @@ const SetSelectOrCascader = ({
         />;
       default:
         return <Select
+          autoFocus={autoFocus}
           resh={state}
           options={options}
           disabled={disabled}

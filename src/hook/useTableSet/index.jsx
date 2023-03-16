@@ -25,7 +25,7 @@ const md5 = require('md5');
  * @returns {{setButton: JSX.Element, tableColumn}}
  */
 
-const useTableSet = (column, tableKey) => {
+const useTableSet = (column, tableKey, noTableColumnSet) => {
 
   const defaultColumn = [];
 
@@ -274,6 +274,9 @@ const useTableSet = (column, tableKey) => {
   ];
 
   useEffect(() => {
+    if (!tableKey || noTableColumnSet) {
+      return;
+    }
     if (view) {
       viewDetail({
         data: {

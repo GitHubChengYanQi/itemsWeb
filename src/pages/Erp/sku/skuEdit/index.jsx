@@ -18,6 +18,7 @@ import BrandIds from '@/pages/Erp/brand/components/BrandIds';
 import {isArray, isObject} from '@/util/Tools';
 import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
 import styles from './index.module.less';
+import cookie from 'js-cookie';
 
 const {FormItem} = Form;
 
@@ -206,8 +207,12 @@ const SkuEdit = ({...props}, ref) => {
           name="spuClass"
           placeholder="请选择所属分类"
           triggerType="onBlur"
+          itemKey="spuClass"
           component={SysField.SpuClass}
           required
+          onFocus={() => {
+            cookie.set('skuEditFocus', 'spuClass');
+          }}
         />
         {skuFormLoading ? <Spin>
           <Alert
@@ -224,6 +229,7 @@ const SkuEdit = ({...props}, ref) => {
           switch (item.key) {
             case 'unitId':
               formItemProps = {
+                itemKey: item.key,
                 placeholder: `请选择${item.filedName}`,
                 component: SysField.UnitId,
                 title: `添加${item.filedName}`,
@@ -261,11 +267,13 @@ const SkuEdit = ({...props}, ref) => {
               break;
             case 'maintenancePeriod':
               formItemProps = {
+                itemKey: item.key,
                 component: SysField.MaintenancePeriod,
               };
               break;
             case 'weight':
               formItemProps = {
+                itemKey: item.key,
                 component: SysField.Weight,
               };
               break;
@@ -285,10 +293,12 @@ const SkuEdit = ({...props}, ref) => {
             case 'brandIds':
               formItemProps = {
                 component: BrandIds,
+                autoFocus:cookie.get('skuEditFocus') === item.key
               };
               break;
             case 'materialId':
               formItemProps = {
+                itemKey:item.key,
                 placeholder: `请选择${item.filedName}`,
                 component: SysField.Material,
                 title: `添加${item.filedName}`
@@ -296,12 +306,13 @@ const SkuEdit = ({...props}, ref) => {
               break;
             case 'remarks':
               formItemProps = {
+                itemKey:item.key,
                 component: SysField.Note,
               };
               break;
             case 'skuSize':
               formItemProps = {
-                label:`${item.filedName}(mm)`,
+                label: `${item.filedName}(mm)`,
                 component: SysField.SkuSize,
               };
               break;
@@ -366,6 +377,9 @@ const SkuEdit = ({...props}, ref) => {
               break;
           }
           return <FormItem
+            onFocus={() => {
+              cookie.set('skuEditFocus', item.key);
+            }}
             triggerType="onBlur"
             key={index}
             label={item.filedName}

@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "34528575",
+      "name": "采购单统计",
+      "font_class": "caigoudantongji",
+      "unicode": "e739",
+      "unicode_decimal": 59193
+    },
+    {
       "icon_id": "33745997",
       "name": "物料价格",
       "font_class": "wuliaojiage",

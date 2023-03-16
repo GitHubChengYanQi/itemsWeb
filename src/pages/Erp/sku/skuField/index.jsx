@@ -27,6 +27,7 @@ import UnitEdit from '@/pages/Erp/unit/unitEdit';
 import {materialListSelect} from '@/pages/Erp/material/MaterialUrl';
 import MaterialEdit from '@/pages/Erp/material/MaterialEdit';
 import {unitListSelect} from '@/pages/Erp/unit/unitUrl';
+import cookie from 'js-cookie';
 
 export const Type = (props) => {
 
@@ -51,7 +52,7 @@ export const SelectSpu = (props) => {
 
 export const SpuId = (props) => {
 
-  const {classId, value, onChange, onBlur,placeholder} = props;
+  const {classId, value, onChange, onBlur, placeholder} = props;
 
   const {loading, data, run} = useRequest(spuListSelect, {manual: true});
 
@@ -110,7 +111,7 @@ export const ClassCode = (props) => {
 
 export const SkuName = (props) => {
 
-  const {value, onChange, disabled, placeholder, fieldName} = props;
+  const {value, onChange, disabled, placeholder, fieldName, ...other} = props;
 
   const {loading, data, run} = useRequest({
     url: '/generalFormData/list',
@@ -129,6 +130,7 @@ export const SkuName = (props) => {
 
   return <>
     <AutoComplete
+      autoFocus={cookie.get('skuEditFocus') === fieldName}
       disabled={disabled}
       dropdownMatchSelectWidth={100}
       notFoundContent={loading && <Spin />}
@@ -139,6 +141,7 @@ export const SkuName = (props) => {
       }}
     >
       <Input
+        {...other}
         placeholder={placeholder}
         onChange={(value) => {
           onChange(value.target.value);
@@ -192,8 +195,15 @@ export const Codings = (props) => {
 
   </div>);
 };
-export const UnitId = (props) => {
-  return (<SetSelectOrCascader api={unitListSelect} width={200} title={props.title} component={UnitEdit} {...props} />);
+export const UnitId = ({itemKey, ...props}) => {
+  return (<SetSelectOrCascader
+    api={unitListSelect}
+    width={200}
+    title={props.title}
+    component={UnitEdit}
+    autoFocus={cookie.get('skuEditFocus') === itemKey}
+    {...props}
+  />);
 };
 
 export const Standard = (props) => {
@@ -210,9 +220,10 @@ export const SpuClass = (props) => {
 
   const [state] = store.useModel('dataSource');
 
-  const {...other} = props;
+  const {itemKey, ...other} = props;
 
   return (<SetSelectOrCascader
+    autoFocus={cookie.get('skuEditFocus') === itemKey}
     options={state.skuClass}
     moduleType="cascader"
     drawerWidth={1200}
@@ -224,13 +235,20 @@ export const SpuClass = (props) => {
   />);
 };
 
-export const Note = (props) => {
-  return (<Input.TextArea {...props} />);
+export const Note = ({itemKey, ...props}) => {
+  return (<Input.TextArea autoFocus={cookie.get('skuEditFocus') === itemKey} {...props} />);
 };
 
-export const Material = (props) => {
+export const Material = ({itemKey, ...props}) => {
   return (
-    <SetSelectOrCascader api={materialListSelect} width={200} title={props.title} component={MaterialEdit} {...props} />);
+    <SetSelectOrCascader
+      autoFocus={cookie.get('skuEditFocus') === itemKey}
+      api={materialListSelect}
+      width={200}
+      title={props.title}
+      component={MaterialEdit}
+      {...props}
+    />);
 };
 
 export const SkuSize = ({value = '', onChange}) => {
@@ -273,13 +291,14 @@ export const Specs = (props) => {
   return (<Input {...props} />);
 };
 
-export const MaintenancePeriod = (props) => {
-  return (<InputNumber addonAfter="天" {...props} />);
+export const MaintenancePeriod = ({itemKey, ...props}) => {
+  return (<InputNumber autoFocus={cookie.get('skuEditFocus') === itemKey} addonAfter="天" {...props} />);
 };
 
 
-export const Weight = (props) => {
-  return (<InputNumber min={0} precision={3} addonAfter="kg" {...props} />);
+export const Weight = ({itemKey, ...props}) => {
+  return (<InputNumber min={0} autoFocus={cookie.get('skuEditFocus') === itemKey} precision={3}
+                       addonAfter="kg" {...props} />);
 };
 
 export const FileId = (props) => {

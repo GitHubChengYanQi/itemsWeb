@@ -7,7 +7,7 @@ import Drawer from '@/components/Drawer';
 import BrandEdit from '@/pages/Erp/brand/BrandEdit';
 
 
-const BrandIds = ({value, onChange, placeholder}) => {
+const BrandIds = ({value, onChange, placeholder, autoFocus, ...props}) => {
 
   const ref = useRef();
 
@@ -38,6 +38,8 @@ const BrandIds = ({value, onChange, placeholder}) => {
   return (
     <>
       <AntSelect
+        autoFocus={autoFocus}
+        {...props}
         placeholder={placeholder || '请选择品牌'}
         mode="multiple"
         showArrow

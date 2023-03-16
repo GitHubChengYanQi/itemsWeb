@@ -142,6 +142,8 @@ export const PaymentFormData = [
   ...otherData,
   {key: 'paymentAmount', filedName: '金额', inputType: 'input', required: true, disabled: true},
   {key: 'remark', filedName: '备注', inputType: 'input'},
+  {key: 'paymentDate', filedName: '付款时间', inputType: 'date'},
+  {key: 'field', filedName: '附件', inputType: 'input'},
   {key: 'orderId', filedName: '关联订单', inputType: 'select'},
 ];
 

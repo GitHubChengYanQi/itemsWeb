@@ -9,6 +9,7 @@ const InputNumber = (
     placeholder,
     onBlur = () => {
     },
+    autoFocus,
     value,
     width,
     onChange = () => {
@@ -26,6 +27,7 @@ const InputNumber = (
   const [number, setNumber] = useState(value);
 
   return <AntInputNumber
+    autoFocus={autoFocus}
     addonBefore={addonBefore}
     precision={precision}
     defaultValue={defaultValue}

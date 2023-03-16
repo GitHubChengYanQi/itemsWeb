@@ -5,7 +5,7 @@
  * @Date 2022-02-24 14:55:10
  */
 
-import React, {useRef, useState} from 'react';
+import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions, FormButtonGroup, Reset} from '@formily/antd';
 import {Button, Input} from 'antd';
 import Form from '@/components/Form';
@@ -16,6 +16,8 @@ import {isArray} from '@/util/Tools';
 import InputNumber from '@/components/InputNumber';
 import SelectOrder from '@/pages/Order/components/SelectOrder';
 import {paymentAdd, paymentDetail, paymentEdit} from '@/pages/Purshase/Payment/PaymentUrl';
+import DatePicker from '@/components/DatePicker';
+import FileUpload from '@/components/FileUpload';
 
 const formActionsPublic = createFormActions();
 
@@ -27,7 +29,7 @@ const ApiConfig = {
   save: paymentEdit
 };
 
-const PaymentEdit = ({previewData, ...props}) => {
+const PaymentEdit = ({previewData, orderId, ...props}, ref) => {
 
   const formRef = useRef();
 
@@ -36,17 +38,27 @@ const PaymentEdit = ({previewData, ...props}) => {
   const [id, setId] = useState(props.value || false);
 
   const money = (props) => {
-    return <InputNumber addonAfter="人民币" {...props} />;
+    return <InputNumber precision={2} addonAfter="人民币" {...props} />;
   };
 
-  return <>
+  useImperativeHandle(ref, () => ({
+    submit: formRef.current.submit
+  }));
+
+  return <div style={{paddingTop: orderId && 12}}>
     <Form
       noButton
-      {...props}
       value={id}
       ref={formRef}
+      {...props}
       formActions={formActionsPublic}
       api={ApiConfig}
+      onSubmit={(values) => {
+        if (orderId) {
+          return {...values, orderId};
+        }
+        return {...values};
+      }}
       onSuccess={(res) => {
         if (currentStep.step < isArray(currentStep.steps).length - 1) {
           setCurrentStep({
@@ -79,8 +91,23 @@ const PaymentEdit = ({previewData, ...props}) => {
               };
               break;
             case 'orderId':
+              if (orderId) {
+                return;
+              }
               formItemProps = {
                 component: SelectOrder,
+              };
+              break;
+            case 'paymentDate':
+              formItemProps = {
+                component: DatePicker,
+                showTime: true,
+              };
+              break;
+            case 'field':
+              formItemProps = {
+                privateUpload: true,
+                component: FileUpload,
               };
               break;
             default:
@@ -97,7 +124,7 @@ const PaymentEdit = ({previewData, ...props}) => {
       />
     </Form>
 
-    {!previewData && <FormButtonGroup offset={11} className={style.bottom}>
+    {(!previewData && !orderId) && <FormButtonGroup offset={11} className={style.bottom}>
       <Button
         type="primary"
         onClick={() => FormLayoutSubmit({currentStep, setCurrentStep, formRef})}>
@@ -105,7 +132,7 @@ const PaymentEdit = ({previewData, ...props}) => {
       </Button>
       <Reset>取消</Reset>
     </FormButtonGroup>}
-  </>;
+  </div>;
 };
 
-export default PaymentEdit;
+export default React.forwardRef(PaymentEdit);

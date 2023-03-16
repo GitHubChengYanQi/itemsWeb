@@ -6,8 +6,24 @@
  */
 
 import React, {useRef, useState} from 'react';
-import {Button, Input, message, Progress, Space} from 'antd';
-import {useHistory} from 'ice';
+import {
+  Badge,
+  Button,
+  Divider,
+  Dropdown,
+  Input,
+  message,
+  Popover,
+  Progress,
+  Select,
+  Space,
+  Spin,
+  Tag,
+  Modal as AntModal
+} from 'antd';
+import {useHistory, useLocation} from 'ice';
+import moment from 'moment';
+import {CheckCircleOutlined, ExclamationCircleOutlined, QuestionCircleOutlined, SyncOutlined} from '@ant-design/icons';
 import Table from '@/components/Table';
 import Form from '@/components/Form';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -16,9 +32,14 @@ import Modal from '@/components/Modal';
 import CreateContract from '@/pages/Order/CreateContract';
 import Render from '@/components/Render';
 import {Customer} from '@/pages/Order/CreateOrder/components/CustomerAll';
-import {request} from '@/util/Request';
+import {request, useRequest} from '@/util/Request';
 import {contractDetail} from '@/pages/Crm/contract/ContractUrl';
 import {isArray} from '@/util/Tools';
+import ThousandsSeparator from '@/components/ThousandsSeparator';
+import styles from '@/pages/Order/Statistics/index.module.less';
+import {orderDoneOrder, orderListView} from '@/pages/Order/url';
+import DatePicker from '@/components/DatePicker';
+import Message from '@/components/Message';
 
 const {FormItem} = Form;
 
@@ -27,11 +48,27 @@ const OrderTable = (props) => {
   const history = useHistory(null);
   const tableRef = useRef(null);
 
+  const {state} = useLocation();
+
+  const initialData = state || {};
+
   const createContractRef = useRef();
 
   const compoentRef = useRef();
 
   const [loading, setLoading] = useState(false);
+
+  const {loading: viewLoading, run: viewRun, data: viewData = {}} = useRequest(orderListView, {
+    manual: true
+  });
+
+  const {run: doneRun} = useRequest(orderDoneOrder, {
+    manual: true,
+    onSuccess: () => {
+      Message.success('操作成功！');
+      tableRef.current.refresh();
+    }
+  });
 
   let module = {};
   switch (props.location.pathname) {
@@ -81,25 +118,205 @@ const OrderTable = (props) => {
           component={Customer}
           width={200}
         />
+        <FormItem
+          label="创建时间"
+          name="time"
+          component={DatePicker}
+          RangePicker
+          value={initialData.startTime ? [initialData.startTime, initialData.endTime] : []}
+        />
+        <FormItem
+          label="状态"
+          name="status"
+          component={({value, onChange}) => {
+            return <Select
+              style={{width: 100}}
+              defaultValue="all"
+              value={typeof value === 'number' ? value : 'all'}
+              options={[{label: '全部', value: 'all'}, {label: '已完成', value: 99}, {label: '进行中', value: 0}]}
+              onChange={(value) => {
+                onChange(value === 'all' ? null : value);
+              }}
+            />;
+          }}
+        />
         <FormItem hidden name="type" value={module.type} component={Input} />
       </>
     );
   };
 
+  const items = (record) => [
+    {
+      key: '1',
+      label: (
+        <Button style={{padding: 0}} type="link" onClick={async () => {
+          message.loading({content: '正在获取数据，请稍后...', duration: 0});
+          let contract = {};
+          const data = await request({
+            ...orderDetail,
+            data: {
+              orderId: record.orderId,
+            }
+          });
+
+          if (data && data.contractId) {
+            setLoading(false);
+            contract = await request({...contractDetail, data: {contractId: data.contractId}});
+          }
+          message.destroy();
+          const paymentResult = data.paymentResult || {};
+
+          history.push({
+            pathname: '/purchase/order/createOrder',
+            search: `?module=${data.type === 1 ? 'PO' : 'SO'}`,
+            state: {
+              ...paymentResult,
+              ...data,
+              detailParams: isArray(data.detailResults).length > 0 ? data.detailResults : null,
+              paymentDetail: isArray(paymentResult.detailResults).length > 0 ? paymentResult.detailResults : null,
+              templateId: contract?.templateId,
+              contractCoding: contract?.coding,
+            }
+          });
+        }}>再来一单</Button>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Button style={{padding: 0}} disabled={record.contractId || record.fileId} type="link" onClick={() => {
+          createContractRef.current.open(record.orderId);
+        }}>创建合同</Button>
+      )
+    },
+    {
+      key: '3',
+      label: (
+        <Button style={{padding: 0}} disabled={record.status === 99} type="link" onClick={() => {
+          AntModal.confirm({
+            centered: true,
+            title: '确定完成订单吗？',
+            icon: <ExclamationCircleOutlined />,
+            okButtonProps: {ghost: true},
+            okText: '确认',
+            cancelText: '取消',
+            onOk() {
+              return doneRun({
+                data: {
+                  orderId: record.orderId
+                }
+              });
+            }
+          });
+        }}>完成订单</Button>
+      )
+    }
+  ];
+
   const columns = [
-    {title: '采购单编号', dataIndex: 'coding'},
+    {
+      title: '采购单编号', dataIndex: 'coding', render: (value, record) => {
+        return <Button type="link" onClick={() => {
+          switch (props.location.pathname) {
+            case '/CRM/order':
+              history.push(`/CRM/order/detail?id=${record.orderId}`);
+              break;
+            case '/purchase/order':
+              history.push(`/purchase/order/detail?id=${record.orderId}`);
+              break;
+            default:
+              break;
+          }
+        }}>{value}</Button>;
+      }
+    },
     {title: '主题', dataIndex: 'theme', render: (value) => <Render text={value || '-'} />},
     {
-      title: '甲方',
+      title: module.type === 1 ? '卖方' : '买方',
       dataIndex: 'acustomer',
       hidden: module.type === 1,
       render: (value) => <Render text={value?.customerName || '-'} />
     },
     {
-      title: '乙方',
+      title: module.type === 2 ? '卖方' : '买方',
       dataIndex: 'bcustomer',
       hidden: module.type === 2,
       render: (value) => <Render text={value?.customerName || '-'} />
+    },
+    {
+      title: '单据状态',
+      dataIndex: 'status',
+      align: 'center',
+      width: 100,
+      render: (value) => {
+        if (value !== 99) {
+          return <Tag icon={<SyncOutlined />} color="processing">
+            进行中
+          </Tag>;
+        }
+        return <>
+          <Tag icon={<CheckCircleOutlined />} color="success">
+            完成
+          </Tag>
+        </>;
+      }
+    },
+    {
+      title: <Space>
+        付款信息
+        <Popover
+          placement="top"
+          content={<Space split={<Divider type="vertical" />}>
+            <Badge color="#000" text="总金额" />
+            <Badge color="green" text="付款金额" />
+            <Badge color="red" text="未付金额" />
+          </Space>}
+        >
+          <QuestionCircleOutlined />
+        </Popover>
+      </Space>,
+      align: 'center',
+      render: (value, record) => {
+        let totalPrice = 0;
+        isArray(record.detailResults).forEach(item => {
+          totalPrice += item.totalPrice / 100;
+        });
+
+        let number = 0;
+        isArray(record.paymentRecordResults).forEach(item => {
+          number += item.paymentAmount;
+        });
+        return <Render width={300}>
+          <Space size={12} split={<Divider type="vertical" />}>
+            <ThousandsSeparator value={totalPrice} prefix="￥" />
+            <ThousandsSeparator className={styles.green} value={number} prefix="￥" />
+            <ThousandsSeparator
+              className={styles.red}
+              value={(totalPrice - number) > 0 ? (totalPrice - number) : 0}
+              prefix="￥"
+            />
+          </Space>
+
+        </Render>;
+      }
+    },
+    {
+      title: '付款进度',
+      align: 'center',
+      hidden: module.type === 2,
+      render: (value, record) => {
+        let number = 0;
+        isArray(record.paymentRecordResults).forEach(item => {
+          number += item.paymentAmount;
+        });
+        let totalPrice = 0;
+        isArray(record.detailResults).forEach(item => {
+          totalPrice += item.totalPrice / 100;
+        });
+        return <Render width={200}>
+          <Progress percent={Math.round((number / totalPrice) * 100) || 0} />
+        </Render>;
+      }
     },
     {
       title: '入库进度',
@@ -112,49 +329,27 @@ const OrderTable = (props) => {
           inStockNumber += item.inStockNumber;
           purchaseNumber += item.purchaseNumber;
         });
-        return <Render width={100}>
+        return <Render width={200}>
           <Progress percent={Math.round((inStockNumber / purchaseNumber) * 100) || 0} />
         </Render>;
       }
     },
-    {title: '创建人', dataIndex: 'user', render: (value) => <Render text={value?.name || '-'} />},
-    {title: '创建时间', dataIndex: 'createTime'},
     {
-      title: '操作', width: 300, align: 'center', dataIndex: 'theme', render: (value, record) => {
+      title: '创建人',
+      dataIndex: 'user',
+      width: 100,
+      align: 'center',
+      render: (value) => <Render text={value?.name || '-'} />
+    },
+    {title: '创建时间', align: 'center', width: 170, dataIndex: 'createTime'},
+    {
+      title: '操作',
+      width: 150,
+      align: 'center',
+      dataIndex: 'theme',
+      fixed: 'right',
+      render: (value, record) => {
         return <>
-          <Button type="link" onClick={async () => {
-            message.loading({content: '正在获取数据，请稍后...', duration: 0});
-            let contract = {};
-            const data = await request({
-              ...orderDetail,
-              data: {
-                orderId: record.orderId,
-              }
-            });
-
-            if (data && data.contractId) {
-              setLoading(false);
-              contract = await request({...contractDetail, data: {contractId: data.contractId}});
-            }
-            message.destroy();
-            const paymentResult = data.paymentResult || {};
-
-            history.push({
-              pathname: '/purchase/order/createOrder',
-              search: `?module=${data.type === 1 ? 'PO' : 'SO'}`,
-              state: {
-                ...paymentResult,
-                ...data,
-                detailParams: isArray(data.detailResults).length > 0 ? data.detailResults : null,
-                paymentDetail: isArray(paymentResult.detailResults).length > 0 ? paymentResult.detailResults : null,
-                templateId: contract?.templateId,
-                contractCoding: contract?.coding,
-              }
-            });
-          }}>再来一单</Button>
-          <Button disabled={record.contractId || record.fileId} type="link" onClick={() => {
-            createContractRef.current.open(record.orderId);
-          }}>创建合同</Button>
           <Button type="link" onClick={() => {
             switch (props.location.pathname) {
               case '/CRM/order':
@@ -167,6 +362,17 @@ const OrderTable = (props) => {
                 break;
             }
           }}>详情</Button>
+          <Dropdown
+            menu={{
+              items: items(record),
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              <Space>
+                更多操作
+              </Space>
+            </a>
+          </Dropdown>
         </>;
       }
     },
@@ -175,6 +381,24 @@ const OrderTable = (props) => {
   return (
     <>
       <Table
+        isModal={false}
+        formSubmit={(values) => {
+          if (isArray(values.time).length > 0) {
+            values = {
+              ...values,
+              startTime: moment(values.time[0]).format('YYYY/MM/DD 00:00:00'),
+              endTime: moment(values.time[1]).format('YYYY/MM/DD 23:59:59'),
+            };
+          } else {
+            values = {
+              ...values,
+              startTime: null,
+              endTime: null,
+            };
+          }
+          viewRun({data: values});
+          return values;
+        }}
         columns={columns}
         noRowSelection
         title={<Breadcrumb title={module.title} />}
@@ -184,6 +408,47 @@ const OrderTable = (props) => {
         searchForm={searchForm}
         actions={actions()}
         ref={tableRef}
+        footerAlign="right"
+        footer={() => {
+          return viewLoading ? <Spin /> : <div className={styles.total}>
+            总金额：
+            <span className={styles.number}>
+              <ThousandsSeparator
+                prefix="¥"
+                className={styles.money}
+                value={viewData.totalPrice}
+              />
+            </span>
+
+            付款金额：
+            <span className={styles.number}>
+              <ThousandsSeparator
+                prefix="¥"
+                className={styles.money}
+                value={viewData.paymentPrice}
+              />
+            </span>
+
+            未付金额：
+            <span className={styles.number}>
+              <ThousandsSeparator
+                prefix="¥"
+                className={styles.money}
+                value={viewData.deficientPrice > 0 ? viewData.deficientPrice : 0}
+              />
+            </span>
+
+            供应商总数： <span className={styles.number}>{viewData.sellerCount || 0}</span>
+
+            物料种类： <span className={styles.number}>{viewData.skuCount || 0}</span>
+
+            物料总数：<span className={styles.number}>{viewData.purchaseNumber || 0}</span>
+
+            入库总数：<span className={styles.number}>{viewData.inStockCount || 0}</span>
+
+            入库百分比：<span className={styles.number}>{viewData.inStockRate || 0} %</span>
+          </div>;
+        }}
       />
 
       <Modal

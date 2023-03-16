@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 1686049 */
-  src: url('iconfont.woff2?t=1673485496107') format('woff2'),
-       url('iconfont.woff?t=1673485496107') format('woff'),
-       url('iconfont.ttf?t=1673485496107') format('truetype'),
-       url('iconfont.svg?t=1673485496107#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1678514923140') format('woff2'),
+       url('iconfont.woff?t=1678514923140') format('woff'),
+       url('iconfont.ttf?t=1678514923140') format('truetype'),
+       url('iconfont.svg?t=1678514923140#iconfont') format('svg');
 }
 
 .iconfont {
@@ -12,6 +12,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-caigoudantongji:before {
+  content: "\e739";
 }
 
 .icon-wuliaojiage:before {

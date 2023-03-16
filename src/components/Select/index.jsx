@@ -16,6 +16,7 @@ const Select = (
     placeholder,
     disabled,
     defaultValue,
+    autoFocus,
     onChange = () => {
     },
     onAdd = () => {
@@ -78,6 +79,7 @@ const Select = (
           <Spin />
           :
           <AntSelect
+            autoFocus={autoFocus}
             // suffixIcon={null}
             // open
             {...other}

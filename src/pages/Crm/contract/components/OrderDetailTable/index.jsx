@@ -37,8 +37,28 @@ const OrderDetailTable = ({orderId}) => {
     {title: '品牌', dataIndex: 'brandResult', render: (value) => <Render text={value && value.brandName} />},
     {title: '数量', dataIndex: 'purchaseNumber'},
     {title: '单位', dataIndex: 'unit', render: (value) => <Render text={value && value.unitName} />},
-    {title: '单价', dataIndex: 'onePrice', render: (value) => <ThousandsSeparator value={value / 100} />},
-    {title: '总价', dataIndex: 'totalPrice', render: (value) => <ThousandsSeparator value={value / 100} />},
+    {
+      title: '单价',
+      dataIndex: 'onePrice',
+      align: 'right',
+      render: (value, record) => <ThousandsSeparator prefix={record.sign} value={value / 100} />
+    },
+    {
+      title: '总价',
+      dataIndex: 'totalPrice',
+      align: 'right',
+      render: (value, record) => <ThousandsSeparator prefix={record.sign} value={value / 100} />
+    },
+    {
+      title: '已到货',
+      align: 'center',
+      dataIndex: 'arrivalNumber',
+    },
+    {
+      title: '已入库',
+      align: 'center',
+      dataIndex: 'inStockNumber',
+    },
   ];
 
   return (

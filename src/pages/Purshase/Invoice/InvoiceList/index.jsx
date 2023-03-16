@@ -5,9 +5,10 @@
  * @Date 2022-02-24 14:55:10
  */
 
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {createFormActions} from '@formily/antd';
-import {Button} from 'antd';
+import {Button, Image, Input, Space} from 'antd';
+import {FileImageOutlined} from '@ant-design/icons';
 import Table from '@/components/Table';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
@@ -15,13 +16,23 @@ import {invoiceList, invoiceDelete} from '@/pages/Purshase/Invoice/InvoiceUrl';
 import InvoiceEdit from '@/pages/Purshase/Invoice/InvoiceEdit';
 import EditButton from '@/components/EditButton';
 import DelButton from '@/components/DelButton';
+import ThousandsSeparator from '@/components/ThousandsSeparator';
+import Modal from '@/components/Modal';
+import {isArray} from '@/util/Tools';
+import {Money, Status} from '@/pages/Purshase/Payment/PaymentField';
+import Form from '@/components/Form';
 
 const formActionsPublic = createFormActions();
+const {FormItem} = Form;
 
-const InvoiceList = () => {
+const InvoiceList = ({orderId}) => {
+
+  const [preview, setPreview] = useState([]);
 
   const ref = useRef(null);
   const tableRef = useRef(null);
+
+  const compoentRef = useRef();
 
   const actions = () => {
     return (
@@ -33,20 +44,38 @@ const InvoiceList = () => {
     );
   };
 
-  const columns = [
+  const searchForm = () => {
+    return <>
+      <FormItem label="发票名称" name="name" component={Input} />
+    </>;
+  };
+
+  let columns = [
     {dataIndex: 'name', title: '发票名称'},
-    {dataIndex: 'invoiceDate', title: '发票日期'},
-    {dataIndex: 'money', title: '金额(人民币)'},
+    {
+      dataIndex: 'money', title: '金额(人民币)', align: 'right', width: 150, render(value) {
+        return <ThousandsSeparator value={value} />;
+      }
+    },
     {
       dataIndex: 'enclosureId', title: '附件', align: 'center', render: (value, record) => {
         return <Button type="link" onClick={() => {
-          window.open(record?.mediaUrlResult?.url);
-        }}>查看</Button>;
+          setPreview(isArray(record.mediaUrlResults).map(item => item.url));
+        }}><FileImageOutlined /> x {isArray(record.mediaUrlResults).length}</Button>;
       }
     },
-    {dataIndex: 'coding', title: '关联订单'},
+    {dataIndex: 'invoiceDate', title: '发票日期', width: 200,align:'center'},
+  ];
+
+  if (!orderId) {
+    columns = [...columns, {dataIndex: 'coding', title: '关联订单'}];
+  }
+
+  columns = [
+    ...columns,
+    {},
     {
-      dataIndex: 'orderId', title: '操作', render: (value, record) => {
+      dataIndex: 'orderId', title: '操作', width: 100, align: 'center', render: (value, record) => {
         return <>
           <EditButton onClick={() => {
             ref.current.open(record.invoiceBillId);
@@ -62,11 +91,15 @@ const InvoiceList = () => {
   return (
     <>
       <Table
+        formSubmit={(values) => {
+          return {...values, orderId};
+        }}
+        noTableColumnSet
         columns={columns}
         listHeader={false}
         cardHeaderStyle={{display: 'none'}}
         SearchButton
-        searchForm
+        searchForm={searchForm}
         formActions={formActionsPublic}
         api={invoiceList}
         rowKey="invoiceBillId"
@@ -75,10 +108,46 @@ const InvoiceList = () => {
         actions={actions()}
         ref={tableRef}
       />
-      <Drawer width={800} title="发票" component={InvoiceEdit} onSuccess={() => {
-        tableRef.current.refresh();
-        ref.current.close();
-      }} ref={ref} />
+      {orderId
+        ?
+        <Modal
+          title="发票"
+          orderId={orderId}
+          compoentRef={compoentRef}
+          component={InvoiceEdit}
+          onSuccess={() => {
+            tableRef.current.refresh();
+            ref.current.close();
+          }}
+          footer={<Space>
+            <Button onClick={() => {
+              ref.current.close();
+            }}>
+              取消
+            </Button>
+            <Button type="primary" onClick={() => {
+              compoentRef.current.submit();
+            }}>
+              确定
+            </Button>
+          </Space>}
+          ref={ref}
+        /> : <Drawer width={800} title="发票" orderId={orderId} component={InvoiceEdit} onSuccess={() => {
+          tableRef.current.refresh();
+          ref.current.close();
+        }} ref={ref} />}
+
+      <Image.PreviewGroup
+        preview={{visible: preview.length > 0, onVisibleChange: (vis) => setPreview(vis ? preview : [])}}>
+        {
+          preview.map((item, index) => {
+            return <Image
+              key={index}
+              src={item}
+            />;
+          })
+        }
+      </Image.PreviewGroup>
     </>
   );
 };
