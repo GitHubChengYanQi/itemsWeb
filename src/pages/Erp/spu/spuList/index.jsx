@@ -14,7 +14,7 @@ import DelButton from '@/components/DelButton';
 import AddButton from '@/components/AddButton';
 import EditButton from '@/components/EditButton';
 import Form from '@/components/Form';
-import {deleteBatch, spuDelete, spuList} from '../spuUrl';
+import {spuDelete, spuList} from '../spuUrl';
 import SpuEdit from '../spuEdit';
 import * as SysField from '../spuField';
 import Modal from '@/components/Modal';

@@ -215,7 +215,7 @@ const OrderTable = (props) => {
 
   const columns = [
     {
-      title: '采购单编号', dataIndex: 'coding', render: (value, record) => {
+      title: '采购单编号',sorter: true, dataIndex: 'coding', render: (value, record) => {
         return <Button type="link" onClick={() => {
           switch (props.location.pathname) {
             case '/CRM/order':
@@ -303,34 +303,24 @@ const OrderTable = (props) => {
     {
       title: '付款进度',
       align: 'center',
+      sorter: true,
+      dataIndex: 'paymentRate',
       hidden: module.type === 2,
-      render: (value, record) => {
-        let number = 0;
-        isArray(record.paymentRecordResults).forEach(item => {
-          number += item.paymentAmount;
-        });
-        let totalPrice = 0;
-        isArray(record.detailResults).forEach(item => {
-          totalPrice += item.totalPrice / 100;
-        });
+      render: (value) => {
         return <Render width={200}>
-          <Progress percent={Math.round((number / totalPrice) * 100) || 0} />
+          <Progress percent={value || 0} />
         </Render>;
       }
     },
     {
       title: '入库进度',
       align: 'center',
+      sorter: true,
+      dataIndex: 'inStockRate',
       hidden: module.type === 2,
-      render: (value, record) => {
-        let purchaseNumber = 0;
-        let inStockNumber = 0;
-        isArray(record.detailResults).forEach(item => {
-          inStockNumber += item.inStockNumber;
-          purchaseNumber += item.purchaseNumber;
-        });
+      render: (value) => {
         return <Render width={200}>
-          <Progress percent={Math.round((inStockNumber / purchaseNumber) * 100) || 0} />
+          <Progress percent={value || 0} />
         </Render>;
       }
     },
@@ -446,7 +436,7 @@ const OrderTable = (props) => {
 
             入库总数：<span className={styles.number}>{viewData.inStockCount || 0}</span>
 
-            入库百分比：<span className={styles.number}>{viewData.inStockRate || 0} %</span>
+            入库进度：<span className={styles.number}>{viewData.inStockRate || 0} %</span>
           </div>;
         }}
       />

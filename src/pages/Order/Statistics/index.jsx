@@ -164,7 +164,7 @@ const Statistics = () => {
 
             入库总数：<span className={styles.number}>{viewData.inStockCount || 0}</span>
 
-            入库百分比：<span className={styles.number}>{viewData.inStockRate || 0} %</span>
+            入库进度：<span className={styles.number}>{viewData.inStockRate || 0} %</span>
           </div>;
         }}
       />

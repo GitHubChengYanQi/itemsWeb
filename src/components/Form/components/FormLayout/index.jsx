@@ -50,7 +50,7 @@ const FormLayout = (
         const newSteps = pc.steps || [];
         setSteps(newSteps);
         setLayout({width: pc.width, gutter: pc.gutter, widthUnit: pc.widthUnit});
-        onChange({step: 0, type: newSteps[0].type, steps: newSteps});
+        onChange({step: 0, type: newSteps[0]?.type, steps: newSteps});
       }
     }
   });

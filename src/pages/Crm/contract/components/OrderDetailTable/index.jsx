@@ -67,6 +67,7 @@ const OrderDetailTable = ({orderId}) => {
         columns={columns}
         bordered={false}
         noRowSelection
+        contentHeight={orderId && 'auto'}
         bodyStyle={{padding: 0}}
         headStyle={{display: 'none'}}
         api={{

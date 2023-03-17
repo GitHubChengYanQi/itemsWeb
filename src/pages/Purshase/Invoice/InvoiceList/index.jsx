@@ -19,7 +19,6 @@ import DelButton from '@/components/DelButton';
 import ThousandsSeparator from '@/components/ThousandsSeparator';
 import Modal from '@/components/Modal';
 import {isArray} from '@/util/Tools';
-import {Money, Status} from '@/pages/Purshase/Payment/PaymentField';
 import Form from '@/components/Form';
 
 const formActionsPublic = createFormActions();
@@ -46,7 +45,7 @@ const InvoiceList = ({orderId}) => {
 
   const searchForm = () => {
     return <>
-      <FormItem label="发票名称" name="name" component={Input} />
+      <FormItem label="发票名称" name="name" component={Input} placeholder='请输入发票名称' />
     </>;
   };
 
@@ -98,7 +97,6 @@ const InvoiceList = ({orderId}) => {
         columns={columns}
         listHeader={false}
         cardHeaderStyle={{display: 'none'}}
-        SearchButton
         searchForm={searchForm}
         formActions={formActionsPublic}
         api={invoiceList}
