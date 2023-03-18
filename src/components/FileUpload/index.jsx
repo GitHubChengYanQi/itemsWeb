@@ -84,6 +84,9 @@ const FileUpload = ({
         oss.OSSAccessKeyId = res.data.OSSAccessKeyId;
         setOss({...oss});
       }
+    },
+    onError:()=>{
+      message.error('上传失败！');
     }
   });
 
@@ -102,6 +105,9 @@ const FileUpload = ({
         oss.OSSAccessKeyId = res.data.OSSAccessKeyId;
         setOss({...oss});
       }
+    },
+    onError:()=>{
+      message.error('上传失败！');
     }
   });
 
@@ -112,6 +118,9 @@ const FileUpload = ({
     manual: true,
     onSuccess: (res) => {
       onChange(res.fileId);
+    },
+    onError:()=>{
+      message.error('上传失败！');
     }
   });
 

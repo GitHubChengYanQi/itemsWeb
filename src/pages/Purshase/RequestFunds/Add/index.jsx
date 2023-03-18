@@ -14,6 +14,10 @@ const Add = () => {
     manual: true
   });
 
+  const {loading: saveLoading, run: save} = UseOrder.requestFundsPost({}, {
+    manual: true
+  });
+
   useEffect(() => {
     run();
   }, []);
@@ -40,32 +44,80 @@ const Add = () => {
           remember: true,
         }}
         onFinish={(values) => {
-          console.log(values);
-
-          Object.keys(values).map(item => {
-            switch (isArray(data?.data?.templateContent?.controls)) {
+          const contents = [];
+          Object.keys(values).map(id => {
+            const control = isArray(data?.data?.templateContent?.controls).find(item => item.property.id === id);
+            switch (control.property.control) {
               case 'Text':
-
-                break;
               case 'Textarea':
-
+                contents.push({
+                  'control': control.property.control,
+                  'id': id,
+                  'value': {
+                    'text': values[id]
+                  }
+                });
                 break;
               case 'Money':
-
+                contents.push({
+                  'control': control.property.control,
+                  'id': id,
+                  'value': {
+                    'new_money': values[id]
+                  }
+                });
                 break;
               case 'Selector':
-
+                contents.push({
+                  'control': control.property.control,
+                  'id': id,
+                  'value': {
+                    'selector': {
+                      'type': control.config.selector.type,
+                      'options': control.config.selector.type === 'multi' ? values[id].map(item => ({
+                        key: item
+                      })) : [{
+                        key: values[id]
+                      }]
+                    }
+                  }
+                });
                 break;
               case 'Date':
-
+                contents.push({
+                  'control': control.property.control,
+                  'id': id,
+                  'value': {
+                    'date': {
+                      'type': control.config.date.type,
+                      's_timestamp': values[id]
+                    }
+                  }
+                });
                 break;
               case 'File':
-
+                contents.push({
+                  'control': control.property.control,
+                  'id': id,
+                  'value': {
+                    'files': values[id].split(',').map(item => ({
+                      'file_id': item
+                    }))
+                  }
+                });
                 break;
               default:
                 break;
             }
             return {};
+          });
+          console.log(contents);
+          save({
+            data: {
+              applyData: {
+                contents
+              }
+            }
           });
         }}
         autoComplete="off"
@@ -101,7 +153,7 @@ const Add = () => {
                 components = <Date showTime={item.config.date.type === 'hour'} />;
                 break;
               case 'File':
-                components = <FileUpload maxCount={5} />;
+                components = <FileUpload privateUpload={false} maxCount={5} />;
                 break;
               default:
                 break;

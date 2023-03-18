@@ -94,15 +94,13 @@ const List = () => {
           <FormItem name="classId" label="基础物料" component={Input} />
         </div>
         <div style={{height: 12}} />
-        <div hidden={!search}>
-          <FormItem
-            label="预警状态"
-            name="forewarnStatus"
-            style={{width: '230px'}}
-            options={types}
-            placeholder="请选择"
-            component={Select} />
-        </div>
+        <FormItem
+          label="预警状态"
+          name="forewarnStatus"
+          style={{width: '230px'}}
+          options={types}
+          placeholder="请选择"
+          component={Select} />
         <div hidden={!search}>
           <FormItem
             label="库存数量"
