@@ -1,7 +1,6 @@
 import {FormEffectHooks, FormPath} from '@formily/antd';
 import {message} from 'antd';
 import {getSearchParams} from 'ice';
-import moment from 'moment';
 import {request} from '@/util/Request';
 import {customerDetail} from '@/pages/Crm/customer/CustomerUrl';
 import {contactsDetail} from '@/pages/Crm/contacts/contactsUrl';
@@ -322,13 +321,14 @@ const paymentAction = (setFieldState, getFieldState) => {
     }
   });
 
-  FormEffectHooks.onFieldValueChange$('money').subscribe(async ({value}) => {
-    setFieldState('floatingAmount', (state) => {
-      state.value = 0;
-    });
+  FormEffectHooks.onFieldValueChange$('money').subscribe(async ({value, inputed}) => {
+
+    const floatingAmount = await new Promise((resolve) => {
+      resolve(getFieldState('floatingAmount'));
+    }) || {};
 
     setFieldState('totalAmount', (state) => {
-      state.value = value;
+      state.value = value + (floatingAmount.value || 0);
     });
   });
 
@@ -352,7 +352,7 @@ const paymentAction = (setFieldState, getFieldState) => {
       resolve(getFieldState('money'));
     }) || {};
     setFieldState('floatingAmount', (state) => {
-      state.value = MathCalc(value,money.value,'jian');
+      state.value = MathCalc(value, money.value, 'jian');
     });
 
     const paymentDetail = await new Promise((resolve) => {
@@ -364,7 +364,7 @@ const paymentAction = (setFieldState, getFieldState) => {
           if (item) {
             return {
               ...item,
-              money: MathCalc(MathCalc(item.percentum,100,'chu'),value,'cheng'),
+              money: MathCalc(MathCalc(item.percentum, 100, 'chu'), value, 'cheng'),
             };
           }
           return item;
@@ -419,7 +419,7 @@ const paymentAction = (setFieldState, getFieldState) => {
     setFieldState(FormPath.transform(name, /\d/, ($1) => {
       return paymentDetail.value[$1] && `paymentDetail.${$1}.money`;
     }), (state) => {
-      state.value = MathCalc(money.value,(value / 100),'cheng');
+      state.value = MathCalc(money.value, (value / 100), 'cheng');
     });
     if (paymentDetail.value) {
       let percentum = 0;
@@ -434,7 +434,7 @@ const paymentAction = (setFieldState, getFieldState) => {
 
       if (percentum && !(paymentDetail.value[paymentDetail.value.length - 1] && paymentDetail.value[paymentDetail.value.length - 1].percentum)) {
         setFieldState(`paymentDetail.${paymentDetail.value.length - 1}.percentum`, (state) => {
-          state.value = MathCalc(100,percentum,'jian');
+          state.value = MathCalc(100, percentum, 'jian');
         });
       }
     }
@@ -486,7 +486,7 @@ const paymentAction = (setFieldState, getFieldState) => {
       if (!value) {
         return state.value = 0;
       }
-      state.value = MathCalc(MathCalc(value,money.value,'chu'),100,'cheng');
+      state.value = MathCalc(MathCalc(value, money.value, 'chu'), 100, 'cheng');
     });
   });
 };

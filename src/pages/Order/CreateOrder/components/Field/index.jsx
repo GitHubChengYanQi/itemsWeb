@@ -78,7 +78,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
   const [hidden, setHidden] = useState(true);
 
   return (<>
-    <Space size={24} align="start">
+    <div className={styles.addSku}>
       <div>
         {hidden ? <div style={{padding: 24}} onClick={() => setHidden(false)}>
           <Tooltip title="搜索物料进行选择">
@@ -92,6 +92,10 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
             }}
             onChange={(sku) => {
               onChange([...value, sku]);
+              setTimeout(() => {
+                const skuItem = document.getElementById(`addSkuTabl${[...value, sku].length}`);
+                skuItem.scrollIntoView({block: 'center', behavior: 'smooth'});
+              }, 0);
             }}
           />
         </div>}
@@ -116,8 +120,9 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
             addSku.current.open(true);
           }}
         />
+        <div hidden={hidden} style={{height: '100vh'}} />
       </div>
-    </Space>
+    </div>
 
     <Modal
       headTitle="供应商绑定物料"

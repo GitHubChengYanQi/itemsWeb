@@ -188,14 +188,14 @@ const CreateOrder = ({previewData, ...props}) => {
             type: module().type,
             detailParams: isArray(value.detailParams).map(item => ({
               ...item,
-              totalPrice: item.totalPrice * 100,
-              onePrice: item.onePrice * 100
+              totalPrice: item.totalPrice,
+              onePrice: item.onePrice
             })),
             paymentParam: {
-              money: value.money * 100,
+              money: value.money,
               detailParams: isArray(value.paymentDetail).map(item => ({
                 ...item,
-                money: item.money * 100,
+                money: item.money,
               })),
               payMethod: value.payMethod,
               freight: value.freight,
@@ -203,8 +203,8 @@ const CreateOrder = ({previewData, ...props}) => {
               adressId: value.adressId,
               payPlan: value.payPlan,
               remark: value.remark,
-              floatingAmount: value.floatingAmount * 100,
-              totalAmount: value.totalAmount * 100,
+              floatingAmount: value.floatingAmount,
+              totalAmount: value.totalAmount,
               paperType: value.paperType,
               rate: value.rate,
             },
