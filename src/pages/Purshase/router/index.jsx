@@ -6,6 +6,7 @@ import {ToBuyPlanRouter} from '@/pages/Purshase/ToBuyPlan/router';
 import {ProcurementPlanRouter} from '@/pages/Purshase/procurementPlan/procurementPlanRouter';
 import {PurchaseQuotationRouter} from '@/pages/Purshase/purchaseQuotation/purchaseQuotationRouter';
 import {InquiryTaskRouter} from '@/pages/Purshase/inquiryTask/inquiryTaskRouter';
+import {RequestFundsRouter} from '@/pages/Purshase/RequestFunds/route';
 
 const PurshaseRouterConfig = [
   {
@@ -19,6 +20,7 @@ const PurshaseRouterConfig = [
       ...ProcurementPlanRouter,
       ...PurchaseQuotationRouter,
       ...InquiryTaskRouter,
+      ...RequestFundsRouter,
       {
         path: '/order',
         component: lazy(() => import('../../Order/Table/index')),
