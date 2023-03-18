@@ -12,6 +12,8 @@ import Empty from '@/components/Empty';
 import {isArray} from '@/util/Tools';
 import InvoiceList from '@/pages/Purshase/Invoice/InvoiceList';
 import DetailLayout from '@/components/DetailLayout';
+import PaymentList from '@/pages/Purshase/Payment/PaymentList';
+import ThousandsSeparator from '@/components/ThousandsSeparator';
 
 const {baseURI} = config;
 
@@ -28,7 +30,8 @@ const Detail = ({id}) => {
   const {data: contract, run} = useRequest(contractDetail,
     {
       manual: true,
-      onSuccess: () => setLoading(false)
+      onSuccess: () => setLoading(false),
+      onError: () => setLoading(false)
     });
 
   const {data} = useRequest(orderDetail, {
@@ -46,9 +49,10 @@ const Detail = ({id}) => {
         return;
       }
       setLoading(false);
-    }
+    },
+    onError: () => setLoading(false)
   });
-
+  console.log(data);
 
   if (loading) {
     return (<ProSkeleton type="descriptions" />);
@@ -68,18 +72,12 @@ const Detail = ({id}) => {
           state: {
             ...paymentResult,
             ...data,
-            money: data.money / 100,
-            floatingAmount: data.floatingAmount / 100,
-            totalAmount: data.totalAmount / 100,
             detailParams: isArray(data.detailResults).length > 0 ? isArray(data.detailResults).map(item => ({
               ...item,
-              totalPrice: item.totalPrice / 100,
-              onePrice: item.onePrice / 100
+              totalPrice: item.totalPrice,
+              onePrice: item.onePrice
             })) : null,
-            paymentDetail: isArray(paymentResult.detailResults).length > 0 ? isArray(paymentResult.detailResults).map(item => ({
-              ...item,
-              money: item.money / 100,
-            })) : 0,
+            paymentDetail: paymentResult.detailResults,
             templateId: contract?.templateId,
             contractCoding: contract?.coding,
 
@@ -157,21 +155,39 @@ const Detail = ({id}) => {
       </Card>
     </div>
 
+    <div id="财务信息">
+      <Card bordered={false} title="财务信息">
+        <Descriptions>
+          <Descriptions.Item label="总金额">
+            <ThousandsSeparator prefix="￥" value={data.paymentResult?.totalAmount || 0} />
+          </Descriptions.Item>
+          <Descriptions.Item label="币种">{data.currency || '--'}</Descriptions.Item>
+          <Descriptions.Item label="票据类型">{data.paymentResult?.paperType ? '专票' : '普票'}</Descriptions.Item>
+          <Descriptions.Item label="浮动金额">
+            <ThousandsSeparator prefix="￥" value={data.paymentResult?.floatingAmount || 0} />
+          </Descriptions.Item>
+          <Descriptions.Item label="是否含运费" span={2}>
+            {data.paymentResult?.freight ? '是' : '否'}
+          </Descriptions.Item>
+          <Descriptions.Item label="采购总价">
+            <ThousandsSeparator prefix="￥" value={data.paymentResult?.money || 0} />
+          </Descriptions.Item>
+          <Descriptions.Item label="结算方式">
+            {data.payMethod || '---'}
+          </Descriptions.Item>
+        </Descriptions>
+      </Card>
+    </div>
+
     <div id="付款记录">
       <Card bordered={false} title="付款记录">
-        <InvoiceList PaymentList={data.orderId} />
+        <PaymentList orderId={data.orderId} />
       </Card>
     </div>
 
     <div id="发票信息">
       <Card bordered={false} title="发票信息">
         <InvoiceList orderId={data.orderId} />
-      </Card>
-    </div>
-
-    <div id="合同内容">
-      <Card bordered={false} title="合同内容">
-        <Empty description="开发中..." />
       </Card>
     </div>
   </DetailLayout>;

@@ -279,7 +279,7 @@ const OrderTable = (props) => {
       render: (value, record) => {
         let totalPrice = 0;
         isArray(record.detailResults).forEach(item => {
-          totalPrice += item.totalPrice / 100;
+          totalPrice += item.totalPrice;
         });
 
         let number = 0;

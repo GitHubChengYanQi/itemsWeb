@@ -62,7 +62,7 @@ const AddSkuTable = ({
       dataSource={dataSources}
       pagination={false}
       rowKey="index"
-      scroll={{x: 'max-content', y: 'calc(100vh - 200px)'}}
+      scroll={{x: 'max-content'}}
       footer={() => {
         return <Space>
           <Button
@@ -118,7 +118,7 @@ const AddSkuTable = ({
         align="center"
         dataIndex="index"
         render={(value) => {
-          return value + 1;
+          return <div id={`addSkuTabl${value + 1}`}>{value + 1}</div>;
         }} />
       <Table.Column
         fixed="left"

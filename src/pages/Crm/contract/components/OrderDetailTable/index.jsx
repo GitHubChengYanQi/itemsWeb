@@ -41,13 +41,13 @@ const OrderDetailTable = ({orderId}) => {
       title: '单价',
       dataIndex: 'onePrice',
       align: 'right',
-      render: (value, record) => <ThousandsSeparator prefix={record.sign} value={value / 100} />
+      render: (value, record) => <ThousandsSeparator prefix={record.sign} value={value} />
     },
     {
       title: '总价',
       dataIndex: 'totalPrice',
       align: 'right',
-      render: (value, record) => <ThousandsSeparator prefix={record.sign} value={value / 100} />
+      render: (value, record) => <ThousandsSeparator prefix={record.sign} value={value} />
     },
     {
       title: '已到货',

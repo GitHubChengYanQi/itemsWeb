@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Dropdown, List, Modal, Spin} from 'antd';
+import {Button, Dropdown, List, Modal, Popover, Spin} from 'antd';
 import * as pako from 'pako';
 import {EllipsisOutlined} from '@ant-design/icons';
 import Empty from '@/components/Empty';
@@ -133,39 +133,36 @@ const Draft = (
 
 
   return <>
-    <Dropdown.Button
-      placement="topRight"
-      open={visible}
-      trigger="click"
-      buttonsRender={() => {
-        return [
-          <Button
-            disabled={disabled}
-            type="primary"
-            loading={addLoading || detailLoading || deleteLoading}
-            ghost
-            onClick={() => {
-              Modal.confirm({
-                title: '是否储存此草稿？',
-                onOk: async () => {
-                  addRun({
-                    data: {
-                      info: save(await getValues()),
-                      name,
-                      type,
-                    }
-                  });
-                }
-              });
+    <Button
+      disabled={disabled}
+      type="primary"
+      loading={addLoading || detailLoading || deleteLoading}
+      ghost
+      onClick={() => {
+        Modal.confirm({
+          title: '是否储存此草稿？',
+          onOk: async () => {
+            addRun({
+              data: {
+                info: save(await getValues()),
+                name,
+                type,
+              }
+            });
+          }
+        });
 
-            }}
-          >存草稿</Button>,
-          <Button type="primary" ghost><EllipsisOutlined /></Button>
-        ];
       }}
+    >存草稿</Button>
+    <Popover
+      open={visible}
       onOpenChange={setVisible}
-      overlay={menu}
-    />
+      content={menu}
+      trigger="click"
+    >
+      <Button type="primary" ghost><EllipsisOutlined /></Button>
+    </Popover>
+
   </>;
 };
 

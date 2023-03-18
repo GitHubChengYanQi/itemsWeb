@@ -154,7 +154,8 @@ const SelectSkusUtil = (
               </Button>
               {exit ? <div style={{width: 47}}>已添加</div> : <Button
                 size="small"
-                // type="link"
+                type="primary"
+                ghost
                 onClick={() => {
                   onChange(item);
                 }}
