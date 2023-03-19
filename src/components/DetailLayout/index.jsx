@@ -5,10 +5,12 @@ import styles from './index.module.less';
 import Breadcrumb from '@/components/Breadcrumb';
 import {isArray} from '@/util/Tools';
 
-const DetailLayout = ({
-  children,
-  extra
-}) => {
+const DetailLayout = (
+  {
+    children,
+    extra,
+    title
+  }) => {
 
   const [state, setState] = useUrlState(
     {
@@ -21,7 +23,7 @@ const DetailLayout = ({
   return <>
     <div className={styles.header}>
       <div className={styles.breadcrumb}>
-        <Breadcrumb title="采购单统计" />
+        <Breadcrumb title={title}/>
       </div>
       <div>
         {extra}
@@ -47,7 +49,7 @@ const DetailLayout = ({
                     //   params: ''
                     // });
                   }}>{item.props.id}</Button>
-                <div style={{backgroundColor: !check && '#eee'}} className={styles.line} />
+                <div style={{backgroundColor: !check && '#eee'}} className={styles.line}/>
               </div>;
             })
           }

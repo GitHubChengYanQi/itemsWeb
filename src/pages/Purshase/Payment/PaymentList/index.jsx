@@ -106,7 +106,7 @@ const PaymentList = (
       }
     },
     {dataIndex: 'remark', title: '备注'},
-    {dataIndex: 'paymentDate', title: '创建时间', width: 200, align: 'center'},
+    {dataIndex: 'paymentDate', title: '付款时间', width: 200, align: 'center'},
     {},
     {
       dataIndex: 'orderId', title: '操作', width: 150, align: 'center', render: (value, record) => {

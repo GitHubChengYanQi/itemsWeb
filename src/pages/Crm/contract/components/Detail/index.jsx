@@ -63,6 +63,7 @@ const Detail = ({id}) => {
   }
 
   return <DetailLayout
+    title='采购单详情'
     extra={<Space>
       <Button type="link" onClick={() => {
         const paymentResult = data.paymentResult || {};
