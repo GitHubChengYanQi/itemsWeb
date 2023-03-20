@@ -3,7 +3,7 @@ import {Form, Input, Button, Alert} from 'antd';
 import {UserOutlined, LockOutlined} from '@ant-design/icons';
 import {useHistory, getSearchParams} from 'ice';
 import cookie from 'js-cookie';
-import {UseLogin} from 'MES-Apis/src/Login/hooks';
+import {UseLogin} from 'MES-Apis/lib/Login/hooks';
 
 
 const FormItem = Form.Item;

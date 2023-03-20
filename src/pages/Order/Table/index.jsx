@@ -40,6 +40,7 @@ import styles from '@/pages/Order/Statistics/index.module.less';
 import {orderDoneOrder, orderListView} from '@/pages/Order/url';
 import DatePicker from '@/components/DatePicker';
 import Message from '@/components/Message';
+import RequestFundsAdd from '@/pages/Purshase/RequestFunds/RequestFundsAdd';
 
 const {FormItem} = Form;
 
@@ -56,7 +57,13 @@ const OrderTable = (props) => {
 
   const compoentRef = useRef();
 
+  const requestFundsRef = useRef();
+
+  const addRequestFundsRef = useRef();
+
   const [loading, setLoading] = useState(false);
+
+  const [order, setOrder] = useState({});
 
   const {loading: viewLoading, run: viewRun, data: viewData = {}} = useRequest(orderListView, {
     manual: true
@@ -147,6 +154,23 @@ const OrderTable = (props) => {
 
   const items = (record) => [
     {
+      key: '0',
+      label: (
+        <Button style={{padding: 0}} type="link" onClick={async () => {
+          message.loading({content: '正在获取数据，请稍后...', duration: 0});
+          const data = await request({
+            ...orderDetail,
+            data: {
+              orderId: record.orderId,
+            }
+          });
+          message.destroy();
+          setOrder(data);
+          requestFundsRef.current.open(true);
+        }}>请款申请</Button>
+      ),
+    },
+    {
       key: '1',
       label: (
         <Button style={{padding: 0}} type="link" onClick={async () => {
@@ -215,7 +239,7 @@ const OrderTable = (props) => {
 
   const columns = [
     {
-      title: '采购单编号',sorter: true, dataIndex: 'coding', render: (value, record) => {
+      title: '采购单编号', sorter: true, dataIndex: 'coding', render: (value, record) => {
         return <Button type="link" onClick={() => {
           switch (props.location.pathname) {
             case '/CRM/order':
@@ -277,22 +301,13 @@ const OrderTable = (props) => {
       </Space>,
       align: 'center',
       render: (value, record) => {
-        let totalPrice = 0;
-        isArray(record.detailResults).forEach(item => {
-          totalPrice += item.totalPrice;
-        });
-
-        let number = 0;
-        isArray(record.paymentRecordResults).forEach(item => {
-          number += item.paymentAmount;
-        });
         return <Render width={300}>
           <Space size={12} split={<Divider type="vertical" />}>
-            <ThousandsSeparator value={totalPrice} prefix="￥" />
-            <ThousandsSeparator className={styles.green} value={number} prefix="￥" />
+            <ThousandsSeparator value={record.totalAmount} prefix="￥" />
+            <ThousandsSeparator className={styles.green} value={record.paymentPrice} prefix="￥" />
             <ThousandsSeparator
               className={styles.red}
-              value={(totalPrice - number) > 0 ? (totalPrice - number) : 0}
+              value={record.deficientPrice}
               prefix="￥"
             />
           </Space>
@@ -462,6 +477,33 @@ const OrderTable = (props) => {
           }}>取消</Button>
         </Space>}
       />
+
+      <Modal
+        headTitle="请款申请"
+        ref={requestFundsRef}
+        footer={<Space>
+          <Button onClick={() => {
+            addRequestFundsRef.current.reset();
+          }}>
+            重置
+          </Button>
+          <Button type="primary" onClick={() => {
+            addRequestFundsRef.current.submit();
+          }}>
+            保存
+          </Button>
+        </Space>}
+      >
+        <RequestFundsAdd
+          remark={order.paymentResult?.remark}
+          contactsName="contactsName"
+          bankAccount="bankAccount"
+          bankName={order.bbank?.bankName}
+          money={order.paymentResult?.totalAmount}
+          orderId={order.orderId}
+          ref={addRequestFundsRef}
+        />
+      </Modal>
 
     </>
   );

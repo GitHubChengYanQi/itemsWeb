@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Button, DatePicker, Spin, Table} from 'antd';
 import moment from 'moment';
+import {useHistory} from 'ice';
 import Breadcrumb from '@/components/Breadcrumb';
 import styles from './index.module.less';
 import ThousandsSeparator from '@/components/ThousandsSeparator';
 import {useRequest} from '@/util/Request';
 import {orderView, orderViewOrderDetail} from '@/pages/Order/url';
-import {useHistory} from 'ice';
 
 const Statistics = () => {
 

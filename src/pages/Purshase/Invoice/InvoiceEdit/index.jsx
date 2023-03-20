@@ -38,7 +38,7 @@ const InvoiceEdit = ({previewData, orderId, ...props}, ref) => {
   const [id, setId] = useState(props.value || false);
 
   const money = (props) => {
-    return <InputNumber precision={2} addonAfter="人民币" {...props} />;
+    return <InputNumber min={0.01} precision={2} addonAfter="人民币" {...props} />;
   };
 
   useImperativeHandle(ref, () => ({

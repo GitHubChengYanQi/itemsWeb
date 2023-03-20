@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import cookie from 'js-cookie';
 import {logger, useHistory} from 'ice';
 import {Alert, Spin, Layout} from 'antd';
-import {Login} from 'MES-Apis/src/Login/promise';
-import {Init} from 'MES-Apis/src/Init';
+import {Login} from 'MES-Apis/lib/Login/promise';
+import {Init} from 'MES-Apis/lib/Init';
 import Header from '@/layouts/BasicLayout/components/Header';
 import store from '@/store';
 

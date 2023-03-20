@@ -1,12 +1,19 @@
-import React, {useEffect} from 'react';
-import {Button, Form, Input, InputNumber, Select, Space} from 'antd';
-import {UseOrder} from 'MES-Apis/src/Order';
+import React, {useEffect, useImperativeHandle} from 'react';
+import {Form, Input, InputNumber, Select} from 'antd';
+import {UseOrder} from 'MES-Apis/lib/Order';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {isArray} from '@/util/Tools';
 import FileUpload from '@/components/FileUpload';
-import Date from '@/pages/Purshase/RequestFunds/Add/components/Date';
+import Date from '@/pages/Purshase/RequestFunds/RequestFundsAdd/components/Date';
 
-const Add = () => {
+const RequestFundsAdd = ({
+  orderId,
+  bankName,
+  bankAccount,
+  money,
+  contactsName,
+  remark,
+}, ref) => {
 
   const [form] = Form.useForm();
 
@@ -22,17 +29,31 @@ const Add = () => {
     run();
   }, []);
 
+  const submit = () => {
+    form.submit();
+  };
+
+  const reset = () => {
+    form.resetFields();
+  };
+
+  useImperativeHandle(ref, () => ({
+    submit,
+    reset,
+    loading: saveLoading
+  }));
+
   if (loading) {
     return <ProSkeleton />;
   }
 
   return <>
-    <div>
+    <div style={{padding: '24px 0'}}>
       <Form
         form={form}
         name="basic"
         labelCol={{
-          span: 8,
+          span: 6,
         }}
         wrapperCol={{
           span: 16,
@@ -41,7 +62,11 @@ const Add = () => {
           maxWidth: 600,
         }}
         initialValues={{
-          remember: true,
+          'item-1494251052639': money,
+          'item-1494251194643': bankName,
+          'item-1494251179316': bankAccount,
+          'item-1494251166594': contactsName,
+          'item-1494251203122': remark,
         }}
         onFinish={(values) => {
           const contents = [];
@@ -114,6 +139,7 @@ const Add = () => {
           console.log(contents);
           save({
             data: {
+              orderId,
               applyData: {
                 contents
               }
@@ -137,7 +163,7 @@ const Add = () => {
                 components = <Input.TextArea rows={3} placeholder={`请输入${label}`} />;
                 break;
               case 'Money':
-                components = <InputNumber style={{minWidth: 200}} precision={2} placeholder={`请输入${label}`} />;
+                components = <InputNumber  addonBefore='￥' style={{minWidth: 200}} precision={2} placeholder={`请输入${label}`} />;
                 break;
               case 'Selector':
                 components = <Select
@@ -175,23 +201,9 @@ const Add = () => {
             </div>;
           })
         }
-
-        <div style={{textAlign: 'center'}}>
-          <Space>
-            <Button type="primary" htmlType="submit">
-              保存
-            </Button>
-            <Button htmlType="button" onClick={() => {
-              form.resetFields();
-            }}>
-              取消
-            </Button>
-          </Space>
-        </div>
-
       </Form>
     </div>
   </>;
 };
 
-export default Add;
+export default React.forwardRef(RequestFundsAdd);

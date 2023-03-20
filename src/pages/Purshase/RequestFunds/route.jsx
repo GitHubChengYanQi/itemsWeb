@@ -11,14 +11,14 @@ export const RequestFundsRouter = [
   {
     path: '/requestFunds',
     name: '请款申请列表',
-    component: lazy(() => import('./Add/index')),
+    component: lazy(() => import('./RequestFundsAdd/index')),
     fallback: <div>loading...</div>,
     exact: true,
   },
   {
     path: '/requestFundsAdd',
     name: '请款申请',
-    component: lazy(() => import('./Add/index')),
+    component: lazy(() => import('./RequestFundsAdd/index')),
     fallback: <div>loading...</div>,
     exact: true,
   },

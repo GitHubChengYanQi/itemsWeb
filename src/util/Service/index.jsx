@@ -2,7 +2,7 @@ import {config, useHistory} from 'ice';
 import cookie from 'js-cookie';
 import axios from 'axios';
 import {message, Modal} from 'antd';
-import {Init} from 'MES-Apis/src/Init';
+import {Init} from 'MES-Apis/lib/Init';
 
 const baseURI = config.baseURI || window.sing.sysURI;
 
