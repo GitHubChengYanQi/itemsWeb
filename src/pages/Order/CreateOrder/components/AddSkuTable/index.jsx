@@ -178,6 +178,7 @@ const AddSkuTable = ({
         dataIndex="purchaseNumber"
         render={(value, record, index) => {
           return <InputNumber
+            precision={0}
             placeholder="请输入数量"
             value={value}
             min={0}

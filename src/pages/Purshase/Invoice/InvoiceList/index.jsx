@@ -53,7 +53,7 @@ const InvoiceList = ({orderId}) => {
     {dataIndex: 'name', title: '发票名称'},
     {
       dataIndex: 'money', title: '金额(人民币)', align: 'right', width: 150, render(value) {
-        return <ThousandsSeparator value={value} />;
+        return <ThousandsSeparator prefix='￥' value={value} />;
       }
     },
     {
