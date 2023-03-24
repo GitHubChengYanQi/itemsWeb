@@ -41,6 +41,7 @@ import {orderDoneOrder, orderListView} from '@/pages/Order/url';
 import DatePicker from '@/components/DatePicker';
 import Message from '@/components/Message';
 import RequestFundsAdd from '@/pages/Purshase/RequestFunds/RequestFundsAdd';
+import Note from '@/components/Note';
 
 const {FormItem} = Form;
 
@@ -64,6 +65,8 @@ const OrderTable = (props) => {
   const [loading, setLoading] = useState(false);
 
   const [order, setOrder] = useState({});
+
+  const [addRequestFundsLoading, setAddRequestFundsLoading] = useState(false);
 
   const {loading: viewLoading, run: viewRun, data: viewData = {}} = useRequest(orderListView, {
     manual: true
@@ -254,15 +257,19 @@ const OrderTable = (props) => {
         }}>{value}</Button>;
       }
     },
-    {title: '主题', dataIndex: 'theme', render: (value) => <Render text={value || '-'} />},
     {
-      title: module.type === 1 ? '卖方' : '买方',
+      title: '主题', dataIndex: 'theme', render: (value) => <Render>
+        <Note value={value || '-'} maxWidth={300} />
+      </Render>
+    },
+    {
+      title: '买方',
       dataIndex: 'acustomer',
       hidden: module.type === 1,
       render: (value) => <Render text={value?.customerName || '-'} />
     },
     {
-      title: module.type === 2 ? '卖方' : '买方',
+      title: '卖方',
       dataIndex: 'bcustomer',
       hidden: module.type === 2,
       render: (value) => <Render text={value?.customerName || '-'} />
@@ -483,11 +490,16 @@ const OrderTable = (props) => {
         ref={requestFundsRef}
         footer={<Space>
           <Button onClick={() => {
+            requestFundsRef.current.close();
+          }}>
+            取消
+          </Button>
+          <Button onClick={() => {
             addRequestFundsRef.current.reset();
           }}>
             重置
           </Button>
-          <Button type="primary" onClick={() => {
+          <Button loading={addRequestFundsLoading} type="primary" onClick={() => {
             addRequestFundsRef.current.submit();
           }}>
             保存
@@ -495,13 +507,17 @@ const OrderTable = (props) => {
         </Space>}
       >
         <RequestFundsAdd
+          onLoading={setAddRequestFundsLoading}
           remark={order.paymentResult?.remark}
-          contactsName="contactsName"
-          bankAccount="bankAccount"
+          contactsName={order.bcontacts?.contactsName}
+          bankAccount={order.partyBBankAccount}
           bankName={order.bbank?.bankName}
           money={order.paymentResult?.totalAmount}
           orderId={order.orderId}
           ref={addRequestFundsRef}
+          onSuccess={() => {
+            requestFundsRef.current.close();
+          }}
         />
       </Modal>
 

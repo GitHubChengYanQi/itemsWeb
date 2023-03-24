@@ -6,14 +6,11 @@
  */
 
 import React, {useRef} from 'react';
-import Table from '@/components/Table';
 import {Table as AntTable} from 'antd';
-import DelButton from '@/components/DelButton';
+import Table from '@/components/Table';
 import Drawer from '@/components/Drawer';
-import AddButton from '@/components/AddButton';
-import EditButton from '@/components/EditButton';
 import Form from '@/components/Form';
-import {operationLogDelete, operationLogList} from '../operationLogUrl';
+import {operationLogList} from '../operationLogUrl';
 import OperationLogEdit from '../operationLogEdit';
 import * as SysField from '../operationLogField';
 
@@ -23,15 +20,6 @@ const {FormItem} = Form;
 const OperationLogList = () => {
   const ref = useRef(null);
   const tableRef = useRef(null);
-  const actions = () => {
-    return (
-      <>
-        <AddButton onClick={() => {
-          ref.current.open(false);
-        }} />
-      </>
-    );
-  };
 
   const searchForm = () => {
     return (
@@ -49,11 +37,11 @@ const OperationLogList = () => {
         api={operationLogList}
         rowKey="operationLogId"
         searchForm={searchForm}
+        cardHeaderStyle={{display:'none'}}
         // actions={actions()}
         ref={tableRef}
       >
         <Column title="日志类型" dataIndex="logType" />
-        <Column title="日志名称" dataIndex="logName" />
         <Column title="用户" dataIndex="userName" width={100} />
         <Column title="类名称" dataIndex="className" />
         <Column title="方法名称" dataIndex="method" />

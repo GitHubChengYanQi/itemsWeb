@@ -84,6 +84,7 @@ const AmapSearch = ({
               location: [value.lng, value.lat],
               city: position.district || position.city || position.province
             };
+            console.log(position);
             setadinfo(m);
             setCity(position.city);
           }

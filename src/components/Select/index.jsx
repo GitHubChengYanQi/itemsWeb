@@ -24,7 +24,7 @@ const Select = (
     onSearch = () => {
     },
     addLabel = false,
-    width: wid,
+    width = 200,
     ...other
   }
 ) => {
@@ -72,7 +72,7 @@ const Select = (
   }
 
   return (
-    <div id="select" style={{width: wid || '100%'}}>
+    <div id="select" style={{width: width || '100%'}}>
       {
         loading
           ?

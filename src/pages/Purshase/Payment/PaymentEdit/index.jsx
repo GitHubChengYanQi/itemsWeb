@@ -8,6 +8,7 @@
 import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions, FormButtonGroup, Reset} from '@formily/antd';
 import {Button, Input} from 'antd';
+import moment from 'moment';
 import Form from '@/components/Form';
 import {ReceiptsEnums} from '@/pages/BaseSystem/Documents/Enums';
 import style from '@/pages/Order/CreateOrder/index.module.less';
@@ -29,7 +30,12 @@ const ApiConfig = {
   save: paymentEdit
 };
 
-const PaymentEdit = ({previewData, orderId, ...props}, ref) => {
+const PaymentEdit = ({
+  previewData,
+  orderId,
+  requestFunds,
+  ...props
+}, ref) => {
 
   const formRef = useRef();
 
@@ -45,17 +51,25 @@ const PaymentEdit = ({previewData, orderId, ...props}, ref) => {
     submit: formRef.current.submit
   }));
 
+  const contents = requestFunds?.applyEventRequest?.applyData?.contents || [];
+
   return <div style={{paddingTop: orderId && 12}}>
     <Form
       noButton
       value={id}
       ref={formRef}
       {...props}
+      initialValues={requestFunds ? {
+        paymentAmount: requestFunds.newMoney,
+        remark: contents.find(item => item.id === 'item-1494251203122')?.value?.text,
+        field: requestFunds.filed,
+        paymentDate: moment(Number(contents.find(item => item.id === 'item-1494251158679')?.value?.date?.timestamp) * 1000).format('YYYY-MM-DD'),
+      } : {}}
       formActions={formActionsPublic}
       api={ApiConfig}
       onSubmit={(values) => {
         if (orderId) {
-          return {...values, orderId};
+          return {...values, orderId, spNo: requestFunds ? requestFunds.spNo : null};
         }
         return {...values};
       }}
@@ -107,7 +121,10 @@ const PaymentEdit = ({previewData, orderId, ...props}, ref) => {
             case 'field':
               formItemProps = {
                 privateUpload: true,
+                imgPreview: true,
                 component: FileUpload,
+                uploadTypes: ['jpg', 'jpeg', 'png'],
+                prompt: '只能上传jpg、jpeg、png类型'
               };
               break;
             default:

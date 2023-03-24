@@ -11,6 +11,7 @@ import Render from '@/components/Render';
 import {isArray} from '@/util/Tools';
 import Empty from '@/components/Empty';
 import Breadcrumb from '@/components/Breadcrumb';
+import store from '@/store';
 
 
 const {Column} = AntdTable;
@@ -47,6 +48,7 @@ const TableWarp = (
     dataSource: dataSources,
     defaultSelectedRowKeys,
     // e
+    emptyAdd,
     expandable,
     // f
     formSubmit = (values) => {
@@ -72,6 +74,7 @@ const TableWarp = (
     // m
     maxHeight,
     // n
+    unsetOverflow,
     noTableColumnSet,
     NoChildren,
     noPagination,
@@ -93,6 +96,7 @@ const TableWarp = (
     rowSelection,
     rowKey,
     // s
+    service,
     searchStyle,
     submitValues = {},
     sortAction,
@@ -118,6 +122,7 @@ const TableWarp = (
     console.warn('Table component: rowKey cannot be empty,But now it doesn\'t exist!');
   }
 
+  const [, dispatchersTableStore] = store.useModel('table');
   // 排序
   const [sorts, setSorts] = useState([]);
 
@@ -155,6 +160,7 @@ const TableWarp = (
   };
 
   const requestMethod = async (params) => {
+    dispatchersTableStore.onLoading(true);
     onLoading(true);
     const {values, pagination, sorter, ...other} = params;
     const page = {};
@@ -175,19 +181,26 @@ const TableWarp = (
     let response;
 
     try {
+      const serviceParams = {
+        data: {
+          ...newValues,
+        },
+        ...other,
+        params: page
+      };
       if (dataSources) {
         response = {
           data: dataSources
         };
+      } else if (typeof service === 'function') {
+        response = await service(serviceParams).catch(() => {
+          format({});
+          return {
+            dataSource: []
+          };
+        });
       } else {
-        response = await ajaxService({
-          ...api,
-          data: {
-            ...newValues,
-          },
-          ...other,
-          params: page
-        }).catch(() => {
+        response = await ajaxService({...api, ...serviceParams}).catch(() => {
           format({});
           return {
             dataSource: []
@@ -196,6 +209,7 @@ const TableWarp = (
       }
       response.data = await format(response.data);
       return new Promise((resolve) => {
+        dispatchersTableStore.onLoading(false);
         onLoading(false);
         resolve({
           dataSource: Array.isArray(response.data) ? response.data.map((items) => {
@@ -207,6 +221,7 @@ const TableWarp = (
         });
       });
     } catch (e) {
+      dispatchersTableStore.onLoading(false);
       onLoading(false);
       console.warn(e.message);
       return new Promise((resolve, reject) => {
@@ -299,7 +314,11 @@ const TableWarp = (
   const {tableColumn, setButton} = useTableSet(children || columnsFormat(), tableKey, noTableColumnSet);
 
   return (
-    <div className={style.tableWarp} id="listLayout" style={{height: '100%', overflowX: 'hidden'}}>
+    <div
+      className={style.tableWarp}
+      id="listLayout"
+      style={{height: '100%', overflowX: unsetOverflow ? 'unset' : 'hidden'}}
+    >
       <div style={headStyle}>
         {title ? <div className={style.listHeader}>
           <div className="title">{title}</div>
@@ -310,7 +329,7 @@ const TableWarp = (
           {left}
         </Sider>}
         <Content
-          style={{height: contentHeight || 'calc(100vh - 165px)', overflow: 'auto'}}
+          style={{height: contentHeight || 'calc(100vh - 165px)', overflow: unsetOverflow ? 'unset' : 'auto'}}
           id="tableContent"
         >
           {searchForm ? <div className="search" style={headStyle || searchStyle}>
@@ -367,7 +386,9 @@ const TableWarp = (
           >
             {showCard}
             {isArray(dataSources || dataSource).length === 0 ?
-              <Spin spinning={Loading || loading}><Empty /></Spin> :
+              <Spin spinning={Loading || loading}>
+                <Empty description={emptyAdd || '暂无数据'}  />
+              </Spin> :
               <AntdTable
                 className={style.table}
                 showTotal

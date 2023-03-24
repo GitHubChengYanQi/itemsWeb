@@ -45,25 +45,25 @@ const InvoiceList = ({orderId}) => {
 
   const searchForm = () => {
     return <>
-      <FormItem label="发票名称" name="name" component={Input} placeholder='请输入发票名称' />
+      <FormItem label="发票名称" name="name" component={Input} placeholder="请输入发票名称" />
     </>;
   };
 
   let columns = [
     {dataIndex: 'name', title: '发票名称'},
     {
-      dataIndex: 'money', title: '金额(人民币)', align: 'right', width: 150, render(value) {
-        return <ThousandsSeparator prefix='￥' value={value} />;
+      dataIndex: 'money', title: '金额(人民币)', align: 'right', width: 120, render(value) {
+        return <ThousandsSeparator prefix="￥" value={value} />;
       }
     },
     {
-      dataIndex: 'enclosureId', title: '附件', align: 'center', render: (value, record) => {
+      dataIndex: 'enclosureId', title: '附件', align: 'center', width: 100, render: (value, record) => {
         return <Button type="link" onClick={() => {
           setPreview(isArray(record.mediaUrlResults).map(item => item.url));
         }}><FileImageOutlined /> x {isArray(record.mediaUrlResults).length}</Button>;
       }
     },
-    {dataIndex: 'invoiceDate', title: '发票日期', width: 200,align:'center'},
+    {dataIndex: 'invoiceDate', title: '发票日期', width: 200, align: 'center'},
   ];
 
   if (!orderId) {
@@ -90,9 +90,13 @@ const InvoiceList = ({orderId}) => {
   return (
     <>
       <Table
+        emptyAdd={<Button type="link" onClick={() => ref.current.open(false)}>暂无数据，请添加</Button>}
+        searchStyle={{padding: 0}}
         formSubmit={(values) => {
           return {...values, orderId};
         }}
+        maxHeight="auto"
+        unsetOverflow
         noTableColumnSet
         columns={columns}
         listHeader={false}
@@ -140,6 +144,9 @@ const InvoiceList = ({orderId}) => {
         {
           preview.map((item, index) => {
             return <Image
+              style={{
+                display: 'none',
+              }}
               key={index}
               src={item}
             />;

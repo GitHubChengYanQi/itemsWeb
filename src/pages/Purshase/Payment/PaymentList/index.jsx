@@ -5,9 +5,9 @@
  * @Date 2022-02-24 14:55:10
  */
 
-import React, {useRef, useState} from 'react';
+import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions} from '@formily/antd';
-import {Button, Image, Input, message, Space} from 'antd';
+import {Button, Image, Input, message, Space, Modal as AntModal} from 'antd';
 import {useHistory} from 'ice';
 import {FileImageOutlined} from '@ant-design/icons';
 import Table from '@/components/Table';
@@ -31,11 +31,11 @@ const PaymentList = (
     orderId,
     onClose = () => {
     }
-  }) => {
+  }, ref) => {
 
   const [preview, setPreview] = useState([]);
 
-  const ref = useRef(null);
+  const editRef = useRef(null);
   const tableRef = useRef(null);
 
   const compoentRef = useRef();
@@ -57,6 +57,10 @@ const PaymentList = (
     }
   });
 
+  useImperativeHandle(ref, () => ({
+    refresh: tableRef.current.submit
+  }));
+
   const searchForm = () => {
     return <>
       <FormItem label="金额" name="money" component={Money} />
@@ -69,7 +73,7 @@ const PaymentList = (
     return (
       <>
         <AddButton onClick={() => {
-          ref.current.open(false);
+          editRef.current.open(false);
         }} />
       </>
     );
@@ -77,8 +81,8 @@ const PaymentList = (
 
   let columns = [
     {
-      dataIndex: 'paymentAmount', title: '金额(人民币)', align: 'right', render: (value) => {
-        return <ThousandsSeparator prefix='￥' value={value} />;
+      dataIndex: 'paymentAmount',width:120, title: '金额(人民币)', align: 'right', render: (value) => {
+        return <ThousandsSeparator prefix="￥" value={value} />;
       }
     },
   ];
@@ -99,20 +103,20 @@ const PaymentList = (
   columns = [
     ...columns,
     {
-      dataIndex: 'enclosureId', title: '附件', align: 'center', render: (value, record) => {
+      dataIndex: 'enclosureId', title: '附件',width:120, align: 'center', render: (value, record) => {
         return <Button type="link" onClick={() => {
           setPreview(isArray(record.mediaUrlResults).map(item => item.url));
         }}><FileImageOutlined /> x {isArray(record.mediaUrlResults).length}</Button>;
       }
     },
-    {dataIndex: 'remark', title: '备注'},
     {dataIndex: 'paymentDate', title: '付款时间', width: 200, align: 'center'},
+    {dataIndex: 'remark', title: '备注'},
     {},
     {
       dataIndex: 'orderId', title: '操作', width: 150, align: 'center', render: (value, record) => {
         return <>
           <EditButton onClick={() => {
-            ref.current.open(record.recordId);
+            editRef.current.open(record.recordId);
           }} />
           <Button
             disabled={record.status === 50}
@@ -120,10 +124,20 @@ const PaymentList = (
             type="link"
             danger
             onClick={() => {
-              run({data: {recordId: record.recordId}});
+              AntModal.confirm({
+                centered: true,
+                title: '作废之后不可恢复！',
+                content: '是否进行作废操作？',
+                okText: '作废',
+                okButtonProps: {danger: true},
+                cancelText: '取消',
+                onOk() {
+                  return run({data: {recordId: record.recordId}});
+                },
+              });
             }}
           >
-            作废
+            {record.status === 50 ? '已作废' : '作废'}
           </Button>
         </>;
       }
@@ -133,6 +147,10 @@ const PaymentList = (
   return (
     <>
       <Table
+        emptyAdd={<Button type="link" onClick={() => editRef.current.open(false)}>暂无数据，请添加</Button>}
+        searchStyle={{padding: 0}}
+        maxHeight="auto"
+        unsetOverflow
         noTableColumnSet
         columns={columns}
         listHeader={false}
@@ -158,11 +176,11 @@ const PaymentList = (
           component={PaymentEdit}
           onSuccess={() => {
             tableRef.current.refresh();
-            ref.current.close();
+            editRef.current.close();
           }}
           footer={<Space>
             <Button onClick={() => {
-              ref.current.close();
+              editRef.current.close();
             }}>
               取消
             </Button>
@@ -172,19 +190,22 @@ const PaymentList = (
               确定
             </Button>
           </Space>}
-          ref={ref}
+          ref={editRef}
         />
         :
         <Drawer width={800} title="付款记录" orderId={orderId} component={PaymentEdit} onSuccess={() => {
           tableRef.current.refresh();
-          ref.current.close();
-        }} ref={ref} />}
+          editRef.current.close();
+        }} ref={editRef} />}
 
       <Image.PreviewGroup
         preview={{visible: preview.length > 0, onVisibleChange: (vis) => setPreview(vis ? preview : [])}}>
         {
           preview.map((item, index) => {
             return <Image
+              style={{
+                display: 'none',
+              }}
               key={index}
               src={item}
             />;
@@ -195,4 +216,4 @@ const PaymentList = (
   );
 };
 
-export default PaymentList;
+export default React.forwardRef(PaymentList);

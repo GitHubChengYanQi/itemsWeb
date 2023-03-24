@@ -24,7 +24,7 @@ const Cascader = (
   {
     autoFocus,
     value,
-    width,
+    width = 200,
     changeOnSelect = true,
     defaultParams = {},
     placeholder,

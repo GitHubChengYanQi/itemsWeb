@@ -5,6 +5,7 @@ import ProSkeleton from '@ant-design/pro-skeleton';
 import {isArray} from '@/util/Tools';
 import FileUpload from '@/components/FileUpload';
 import Date from '@/pages/Purshase/RequestFunds/RequestFundsAdd/components/Date';
+import Message from '@/components/Message';
 
 const RequestFundsAdd = ({
   orderId,
@@ -13,6 +14,10 @@ const RequestFundsAdd = ({
   money,
   contactsName,
   remark,
+  onLoading = () => {
+  },
+  onSuccess = () => {
+  }
 }, ref) => {
 
   const [form] = Form.useForm();
@@ -21,8 +26,17 @@ const RequestFundsAdd = ({
     manual: true
   });
 
-  const {loading: saveLoading, run: save} = UseOrder.requestFundsPost({}, {
-    manual: true
+  const {run: save} = UseOrder.requestFundsPost({}, {
+    manual: true,
+    onSuccess: () => {
+      onSuccess();
+      onLoading(false);
+      Message.success('提交请款申请成功！');
+    },
+    onError: () => {
+      onLoading(false);
+      Message.error('提交请款申请失败！');
+    }
   });
 
   useEffect(() => {
@@ -39,8 +53,7 @@ const RequestFundsAdd = ({
 
   useImperativeHandle(ref, () => ({
     submit,
-    reset,
-    loading: saveLoading
+    reset
   }));
 
   if (loading) {
@@ -59,7 +72,7 @@ const RequestFundsAdd = ({
           span: 16,
         }}
         style={{
-          maxWidth: 600,
+          maxWidth: 800,
         }}
         initialValues={{
           'item-1494251052639': money,
@@ -70,14 +83,19 @@ const RequestFundsAdd = ({
         }}
         onFinish={(values) => {
           const contents = [];
-          Object.keys(values).map(id => {
+          Object.keys(values).forEach(id => {
             const control = isArray(data?.data?.templateContent?.controls).find(item => item.property.id === id);
+            if (!values[id]) {
+              return;
+            }
+            const title = control.property.title;
             switch (control.property.control) {
               case 'Text':
               case 'Textarea':
                 contents.push({
                   'control': control.property.control,
                   'id': id,
+                  'titles': title,
                   'value': {
                     'text': values[id]
                   }
@@ -87,6 +105,7 @@ const RequestFundsAdd = ({
                 contents.push({
                   'control': control.property.control,
                   'id': id,
+                  'titles': title,
                   'value': {
                     'new_money': values[id]
                   }
@@ -96,13 +115,19 @@ const RequestFundsAdd = ({
                 contents.push({
                   'control': control.property.control,
                   'id': id,
+                  'titles': title,
                   'value': {
                     'selector': {
                       'type': control.config.selector.type,
-                      'options': control.config.selector.type === 'multi' ? values[id].map(item => ({
-                        key: item
-                      })) : [{
-                        key: values[id]
+                      'options': control.config.selector.type === 'multi' ? values[id].map(item => {
+                        const option = control.config.selector.options.find(option => option.key === item);
+                        return {
+                          key: item,
+                          values: option.value,
+                        };
+                      }) : [{
+                        key: values[id],
+                        values: control.config.selector.options[0].value
                       }]
                     }
                   }
@@ -112,10 +137,11 @@ const RequestFundsAdd = ({
                 contents.push({
                   'control': control.property.control,
                   'id': id,
+                  'titles': title,
                   'value': {
                     'date': {
                       'type': control.config.date.type,
-                      's_timestamp': values[id]
+                      'timestamp': values[id]
                     }
                   }
                 });
@@ -124,6 +150,7 @@ const RequestFundsAdd = ({
                 contents.push({
                   'control': control.property.control,
                   'id': id,
+                  'titles': title,
                   'value': {
                     'files': values[id].split(',').map(item => ({
                       'file_id': item
@@ -134,9 +161,8 @@ const RequestFundsAdd = ({
               default:
                 break;
             }
-            return {};
           });
-          console.log(contents);
+          onLoading(true);
           save({
             data: {
               orderId,
@@ -163,7 +189,8 @@ const RequestFundsAdd = ({
                 components = <Input.TextArea rows={3} placeholder={`请输入${label}`} />;
                 break;
               case 'Money':
-                components = <InputNumber  addonBefore='￥' style={{minWidth: 200}} precision={2} placeholder={`请输入${label}`} />;
+                components =
+                  <InputNumber addonBefore="￥" style={{minWidth: 200}} precision={2} placeholder={`请输入${label}`} />;
                 break;
               case 'Selector':
                 components = <Select
@@ -179,7 +206,7 @@ const RequestFundsAdd = ({
                 components = <Date showTime={item.config.date.type === 'hour'} />;
                 break;
               case 'File':
-                components = <FileUpload privateUpload={false} maxCount={5} />;
+                components = <FileUpload privateUpload maxCount={5} />;
                 break;
               default:
                 break;

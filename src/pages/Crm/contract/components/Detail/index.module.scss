@@ -1,26 +1,9 @@
-.detail {
-  padding: 12px 0;
+.process {
+  display: flex;
+  align-items: center;
+  padding: 0 16px 16px;
 
-  :global{
-    h3{
-      margin: 0;
-      font-weight: bold;
-    }
-  }
-  .main{
-    padding: 12px 12px 0 12px;
-    background-color: #e8e8e8;
-  }
-  .title{
-    float: left;
-    line-height: 34px;
-  }
-  .titleButton{
-    float: right;
-    :global{
-      .ant-btn{
-        margin-left: 8px;
-      }
-    }
+  .label {
+    min-width: 100px;
   }
 }

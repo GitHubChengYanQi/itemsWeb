@@ -164,14 +164,6 @@ const AddSkuTable = ({
                 }
               }} />;
         }} />
-      {!SO && <Table.Column
-        title="预购数量"
-        align="center"
-        width={100}
-        dataIndex="preordeNumber"
-        render={(value) => {
-          return value || 0;
-        }} />}
       <Table.Column
         title={SO ? '销售数量' : '采购数量'}
         width={120}
@@ -187,20 +179,6 @@ const AddSkuTable = ({
                 purchaseNumber: value,
                 totalPrice: (record.onePrice || 0) * (value || 0),
               }, index);
-            }}
-          />;
-        }} />
-      <Table.Column
-        title="单位"
-        width={120}
-        dataIndex="unitId"
-        render={(value, record, index) => {
-          return <Select
-            placeholder="请选择单位"
-            options={unitData}
-            value={value}
-            onChange={(value) => {
-              setValue({unitId: value}, index);
             }}
           />;
         }} />
@@ -230,12 +208,26 @@ const AddSkuTable = ({
           return <InputNumber
             placeholder="请输入总价"
             precision={2}
-            min={1}
+            min={0}
             value={value}
             onChange={(value) => {
               setValue({
                 totalPrice: value,
               }, index);
+            }}
+          />;
+        }} />
+      <Table.Column
+        title="单位"
+        width={120}
+        dataIndex="unitId"
+        render={(value, record, index) => {
+          return <Select
+            placeholder="请选择单位"
+            options={unitData}
+            value={value}
+            onChange={(value) => {
+              setValue({unitId: value}, index);
             }}
           />;
         }} />

@@ -1,10 +1,12 @@
 import React, {useRef} from 'react';
 import {createFormActions} from '@formily/antd';
+import {Space} from 'antd';
 import Form from '@/components/Form';
 import * as SysField from '@/pages/Crm/business/crmBusinessSalesProcess/crmBusinessSalesProcessField';
 import Table from '@/components/Table';
 import ThousandsSeparator from '@/components/ThousandsSeparator';
 import Render from '@/components/Render';
+import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
 
 const {FormItem} = Form;
 
@@ -24,41 +26,44 @@ const OrderDetailTable = ({orderId}) => {
   const columns = [
     {title: '物料编码', dataIndex: 'skuResult', render: (value) => <Render text={value && value.standard} />},
     {
-      title: '物料名称',
+      title: '物料信息',
       dataIndex: 'skuResult',
-      render: (value) => <Render text={value && value.spuResult && value.spuResult.name} />
-    },
-    {
-      title: '型号 / 规格',
-      dataIndex: 'skuResult',
-      render: (value) => <Render
-        text={value && (`${value.skuName} ${value.specifications ? `/${value.specifications}` : ''}`)} />
+      render: (value) => <Render text={SkuResultSkuJsons({skuResult: value})} />
     },
     {title: '品牌', dataIndex: 'brandResult', render: (value) => <Render text={value && value.brandName} />},
-    {title: '数量', dataIndex: 'purchaseNumber'},
-    {title: '单位', dataIndex: 'unit', render: (value) => <Render text={value && value.unitName} />},
     {
-      title: '单价',
-      dataIndex: 'onePrice',
-      align: 'right',
-      render: (value, record) => <ThousandsSeparator prefix={record.sign} value={value} />
-    },
-    {
-      title: '总价',
+      title: '数量价格',
       dataIndex: 'totalPrice',
       align: 'right',
-      render: (value, record) => <ThousandsSeparator prefix={record.sign} value={value} />
+      sorter: true,
+      render: (value, record) => <Space>
+        <ThousandsSeparator prefix={record.sign} value={record.onePrice} />
+        x
+        <div>{record.purchaseNumber} {record.unit?.unitName}</div>
+        =
+        <ThousandsSeparator prefix={record.sign} value={record.totalPrice} />
+      </Space>
     },
     {
       title: '已到货',
-      align: 'center',
+      align: 'right',
+      width: 120,
+      sorter: true,
       dataIndex: 'arrivalNumber',
+      render: (value) => {
+        return <Render style={{color: '#1677ff'}}>{value}</Render>;
+      }
     },
     {
       title: '已入库',
-      align: 'center',
+      align: 'right',
+      width: 120,
+      sorter: true,
       dataIndex: 'inStockNumber',
-    },
+      render: (value) => {
+        return <Render style={{color: '#52c41a'}}>{value}</Render>;
+      }
+    }
   ];
 
   return (
@@ -74,6 +79,8 @@ const OrderDetailTable = ({orderId}) => {
           url: '/orderDetail/list',
           method: 'POST'
         }}
+        maxHeight="auto"
+        unsetOverflow
         formActions={formActionsPublic}
         rowKey="detailId"
         showSearchButton={false}

@@ -31,7 +31,7 @@ const notice = (config) => {
     title: '日志：',
     ...content,
   });
-}
+};
 const help = (config) => {
   const content = typeof config === 'object' ? config : {content: config};
   AfdMessage.help({
@@ -39,7 +39,7 @@ const help = (config) => {
     title: '帮助：',
     ...content,
   });
-}
+};
 const loading = (config) => {
   const content = typeof config === 'object' ? config : {content: config};
   AfdMessage.loading({
@@ -48,7 +48,7 @@ const loading = (config) => {
     title: '载入中：',
     ...content,
   });
-}
+};
 
 const Message = {
   success,

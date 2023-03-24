@@ -158,17 +158,6 @@ const ToBuyPlanList = () => {
     </div>;
   };
 
-  const searchForm = () => {
-    return (
-      <>
-        <FormItem label="物料" placeholder="搜索物料信息" name="name" component={Input} />
-        <div hidden>
-          <FormItem name="customerId" component={Input} />
-        </div>
-      </>
-    );
-  };
-
   return <div>
     <div className={styles.title}>
       <Breadcrumb title="预购管理" />
@@ -176,7 +165,7 @@ const ToBuyPlanList = () => {
     <div className={styles.supplys}>
       {actions()}
       <Table
-        rowSelection={{
+        rowSelection={!customerId ? false : {
           type: 'checkbox',
           selectedRowKeys: skus.map(item => item.purchaseListId),
           onChange(keys, rows) {

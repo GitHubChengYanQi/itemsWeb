@@ -1,10 +1,9 @@
 import React, {useRef, useState} from 'react';
-import {Button, Card, Descriptions, Space} from 'antd';
+import {Button, Card, Descriptions, Progress, Space} from 'antd';
 import {config, useHistory, useParams} from 'ice';
 import cookie from 'js-cookie';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {useRequest} from '@/util/Request';
-import Icon from '@/components/Icon';
 import {contractDetail} from '@/pages/Crm/contract/ContractUrl';
 import OrderDetailTable from '@/pages/Crm/contract/components/OrderDetailTable';
 import {orderDetail} from '@/pages/Erp/order/OrderUrl';
@@ -14,8 +13,10 @@ import InvoiceList from '@/pages/Purshase/Invoice/InvoiceList';
 import DetailLayout from '@/components/DetailLayout';
 import PaymentList from '@/pages/Purshase/Payment/PaymentList';
 import ThousandsSeparator from '@/components/ThousandsSeparator';
+import RequestFundsList from '@/pages/Purshase/RequestFunds/RequestFundsList';
 import Modal from '@/components/Modal';
-import RequestFundsAdd from '@/pages/Purshase/RequestFunds/RequestFundsAdd';
+import RelevanceTasks from '@/pages/Crm/contract/components/Detail/components/RelevanceTasks';
+import styles from './index.module.scss';
 
 const {baseURI} = config;
 
@@ -29,9 +30,11 @@ const Detail = ({id}) => {
 
   const history = useHistory();
 
-  const requestFundsRef = useRef();
+  const requestFundsListRef = useRef();
 
-  const addRequestFundsRef = useRef();
+  const paymentListRef = useRef();
+
+  const relevanceTasksRef = useRef();
 
   const [loading, setLoading] = useState(true);
 
@@ -69,14 +72,16 @@ const Detail = ({id}) => {
     return <Empty />;
   }
 
+  const cardProps = {
+    bordered: false,
+    bodyStyle: {padding: 16}
+  };
+
   return <div>
     <DetailLayout
       title="采购单详情"
       extra={<Space>
-        <Button type="link" onClick={() => {
-          requestFundsRef.current.open(true);
-        }}>请款申请</Button>
-        <Button type="link" onClick={() => {
+        <Button type="primary" ghost onClick={() => {
           const paymentResult = data.paymentResult || {};
           history.push({
             pathname: '/purchase/order/createOrder',
@@ -95,28 +100,26 @@ const Detail = ({id}) => {
             }
           });
         }}>再来一单</Button>
-        {contract &&
-        <a
-          href={`${baseURI}Excel/exportContractWord?id=${contract.contractId}&authorization=${token}`}
-          target="_blank"
-          rel="noreferrer">
-          合同导出word
-        </a>
+        {
+          contract &&
+          <Button type="primary" ghost onClick={() => {
+            window.open(`${baseURI}Excel/exportContractWord?id=${contract.contractId}&authorization=${token}`);
+          }}> 合同导出word</Button>
         }
         <Button
           onClick={() => {
             history.goBack();
-          }}><Icon type="icon-back" />返回</Button>
+          }}>返回</Button>
       </Space>}
     >
       <div id="基本信息">
-        <Card bordered={false} title="基本信息">
+        <Card {...cardProps} title="基本信息">
           <Descriptions>
             <Descriptions.Item label="订单编码">
               {data.coding}
             </Descriptions.Item>
             <Descriptions.Item label="主题">{data.theme || '--'}</Descriptions.Item>
-            <Descriptions.Item label="创建人">--</Descriptions.Item>
+            <Descriptions.Item label="创建人">{data?.user?.name || ''}</Descriptions.Item>
             <Descriptions.Item label="创建时间">
               {data.createTime}
             </Descriptions.Item>
@@ -124,8 +127,8 @@ const Detail = ({id}) => {
         </Card>
       </div>
 
-      <div id="卖方信息">
-        <Card bordered={false} title="卖方信息">
+      <div id="买方信息">
+        <Card {...cardProps} title="买方信息">
           <Descriptions>
             <Descriptions.Item label="公司名称">
               <Button type="link" style={{padding: 0, height: 'fit-content'}} onClick={() => {
@@ -142,14 +145,14 @@ const Detail = ({id}) => {
               {data.abank?.bankName || '--'}
             </Descriptions.Item>
             <Descriptions.Item label="开户行账号">
-              {'--'}
+              {data.partyABankAccount || '--'}
             </Descriptions.Item>
           </Descriptions>
         </Card>
       </div>
 
-      <div id="买方信息">
-        <Card bordered={false} title="买方信息">
+      <div id="卖方信息">
+        <Card {...cardProps} title="卖方信息">
           <Descriptions>
             <Descriptions.Item label="公司名称">
               <Button type="link" style={{padding: 0, height: 'fit-content'}} onClick={() => {
@@ -166,20 +169,30 @@ const Detail = ({id}) => {
               {data.bbank?.bankName || '--'}
             </Descriptions.Item>
             <Descriptions.Item label="开户行账号">
-              {'--'}
+              {data.partyBBankAccount || '--'}
             </Descriptions.Item>
           </Descriptions>
         </Card>
       </div>
 
       <div id="产品明细">
-        <Card bordered={false} title="产品明细">
+        <Card
+          {...cardProps}
+          title="产品明细"
+          extra={<Button type="primary" ghost onClick={() => {
+            relevanceTasksRef.current.open(true);
+          }}>查看入库任务</Button>}
+        >
+          <div className={styles.process}>
+            <div className={styles.label}>入库进度：</div><Progress style={{}} percent={data.inStockRate || 0} />
+          </div>
+
           <OrderDetailTable orderId={data.orderId} />
         </Card>
       </div>
 
       <div id="财务信息">
-        <Card bordered={false} title="财务信息">
+        <Card {...cardProps} title="财务信息">
           <Descriptions>
             <Descriptions.Item label="总金额">
               <ThousandsSeparator prefix="￥" value={data.paymentResult?.totalAmount || 0} />
@@ -202,44 +215,43 @@ const Detail = ({id}) => {
         </Card>
       </div>
 
+      <div id="请款记录">
+        <Card {...cardProps} title="请款记录">
+          <RequestFundsList
+            order={data || {}}
+            orderId={data.orderId}
+            ref={requestFundsListRef}
+            complete={() => {
+              paymentListRef.current.refresh();
+            }}
+          />
+        </Card>
+      </div>
+
       <div id="付款记录">
-        <Card bordered={false} title="付款记录">
-          <PaymentList orderId={data.orderId} />
+        <Card {...cardProps} title="付款记录">
+          <div className={styles.process}>
+            <div className={styles.label}>付款进度：</div><Progress style={{}} percent={data.paymentRate || 0} />
+          </div>
+          <PaymentList
+            ref={paymentListRef}
+            orderId={data.orderId}
+          />
         </Card>
       </div>
 
       <div id="发票信息">
-        <Card bordered={false} title="发票信息">
+        <Card {...cardProps} title="发票信息">
           <InvoiceList orderId={data.orderId} />
         </Card>
       </div>
     </DetailLayout>
 
     <Modal
-      headTitle="请款申请"
-      ref={requestFundsRef}
-      footer={<Space>
-        <Button onClick={() => {
-          addRequestFundsRef.current.reset();
-        }}>
-          重置
-        </Button>
-        <Button type="primary" onClick={() => {
-          addRequestFundsRef.current.submit();
-        }}>
-          保存
-        </Button>
-      </Space>}
+      headTitle="入库任务"
+      ref={relevanceTasksRef}
     >
-      <RequestFundsAdd
-        remark={data.paymentResult?.remark}
-        contactsName='contactsName'
-        bankAccount='bankAccount'
-        bankName={data.bbank?.bankName}
-        money={data.paymentResult?.totalAmount}
-        orderId={orderId}
-        ref={addRequestFundsRef}
-      />
+      <RelevanceTasks orderId={orderId} />
     </Modal>
   </div>;
 };

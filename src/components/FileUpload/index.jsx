@@ -11,10 +11,12 @@ const FileUpload = ({
   onChange = () => {
   },
   prompt,
+  show,
   privateUpload,
+  imgPreview,
   maxCount,
   refresh,
-  imageType,
+  uploadTypes,
 }) => {
 
   const [fileList, setFileList] = useState([]);
@@ -47,6 +49,7 @@ const FileUpload = ({
         }
       });
       setFileList(res.map(item => ({
+        id: item.mediaId,
         name: item.filedName,
         url: item.url
       })));
@@ -85,7 +88,7 @@ const FileUpload = ({
         setOss({...oss});
       }
     },
-    onError:()=>{
+    onError: () => {
       message.error('上传失败！');
     }
   });
@@ -106,7 +109,7 @@ const FileUpload = ({
         setOss({...oss});
       }
     },
-    onError:()=>{
+    onError: () => {
       message.error('上传失败！');
     }
   });
@@ -119,7 +122,7 @@ const FileUpload = ({
     onSuccess: (res) => {
       onChange(res.fileId);
     },
-    onError:()=>{
+    onError: () => {
       message.error('上传失败！');
     }
   });
@@ -130,9 +133,16 @@ const FileUpload = ({
 
   return (
     <Spin spinning={fileLoading} tip="上传中...">
-      <div className={styles.upload}>
+      <div className={!show ? styles.upload : ''}>
         <Upload
+          showUploadList={{
+            showRemoveIcon:!show
+          }}
           onPreview={async (file) => {
+            if (!privateUpload && !imgPreview) {
+              window.open(file.url);
+              return;
+            }
             const res = await getMediaUrls({
               data: {
                 model: 'PRI',
@@ -140,9 +150,15 @@ const FileUpload = ({
               }
             });
             if (isArray(res).length > 0) {
-              setPreview(res[0].url);
+              const fileSuffix = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
+              if (['jpg', 'jpeg', 'png', 'webp'].includes(fileSuffix)) {
+                setPreview(res[0].url);
+              } else {
+                window.open(res[0].url);
+              }
             }
           }}
+          className={show ? styles.showUpload : ''}
           listType="picture"
           action={oss && oss.host}
           data={oss}
@@ -192,7 +208,12 @@ const FileUpload = ({
             }
           }}
           beforeUpload={async (file) => {
-            if (!imageType || imageType.includes(file.name && file.name.split('.') && file.name.split('.')[file.name.split('.').length - 1])) {
+            const fileSuffix = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
+            let flag = true;
+            if (uploadTypes) {
+              flag = uploadTypes.includes(fileSuffix);
+            }
+            if (flag) {
               if (fileUpload) {
                 const formData = new FormData();
                 formData.append('file', file);
@@ -231,7 +252,7 @@ const FileUpload = ({
 
           }}
         >
-          <div>
+          <div hidden={show}>
             <p className={styles.icon}>
               <InboxOutlined />
             </p>

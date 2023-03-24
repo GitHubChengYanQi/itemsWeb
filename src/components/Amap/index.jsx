@@ -32,7 +32,7 @@ const Amap = ({
     dragend: () => {
       mapRef.current.setCenter(true);
     },
-    dragging: (v) => {
+    dragging: () => {
       mapRef.current.setCenter(false);
     }
   };
@@ -58,7 +58,7 @@ const Amap = ({
               setCenter({longitude: value.lgn, latitude: value.lat});
             }} onChange={(value) => {
               setAddress(value.address);
-              setCenter({longitude: value.location[0], latitude:  value.location[1]});
+              // setCenter({longitude: value.location[0], latitude:  value.location[1]});
               setVisible(false);
               onChange(value);
             }} />

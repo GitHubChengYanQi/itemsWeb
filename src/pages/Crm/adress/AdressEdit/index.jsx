@@ -68,7 +68,7 @@ const AdressEdit = ({...props}, ref) => {
         onError={() => {
         }}
       >
-        <FormItem label="定位地址" name="map" component={SysField.Map} disabled required />
+        <FormItem label="定位地址" name="map" component={SysField.Map} disabled />
         <FormItem
           label="省市区地址"
           name="region"

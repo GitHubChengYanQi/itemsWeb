@@ -514,7 +514,7 @@ const CustomerEdit = (
                   name="file"
                   maxCount={5}
                   prompt="支持格式：jpg/png/pdf/docx，单一文件不超过10M，最多上传5份，建议上传营业执照、开户许可证、资质奖项证书等"
-                  imageType={['JPG', 'PNG', 'PDF', 'DOCX', 'jpg', 'png', 'pdf', 'docx',]}
+                  uploadTypes={['jpg', 'png', 'pdf', 'docx']}
                   component={SysField.File} />
               </Space>
             </Overflow>

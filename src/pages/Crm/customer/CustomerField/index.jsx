@@ -451,7 +451,7 @@ export const Url = (props) => {
 export const Avatar = (props) => {
   return (
     <div>
-      <UpLoadImg text="格式支持：JPG/PNG格式，单个文件不能超过20MB" imageType={['JPG', 'PNG', 'jpg', 'png']}  {...props} />
+      <UpLoadImg text="格式支持：JPG/PNG格式，单个文件不能超过20MB" uploadTypes={['JPG', 'PNG', 'jpg', 'png']}  {...props} />
     </div>
   );
 };
