@@ -44,6 +44,7 @@ export default function BasicLayout({children}) {
         cookie.set('tianpeng-token', token);
       }
       await dispatchers.getUserInfo();
+      await dataDispatchers.publicInfo();
       await dataDispatchers.getSkuClass();
       await dataDispatchers.getCodingRules();
       await dataDispatchers.getCustomerLevel();

@@ -1,9 +1,10 @@
 import React from 'react';
-import {Avatar, List, Progress, Space, Spin, Tabs, Tag} from 'antd';
+import {Avatar, Image, List, Progress, Space, Spin, Tabs, Tag} from 'antd';
+import {UserOutlined} from '@ant-design/icons';
 import {useRequest} from '@/util/Request';
 import {isArray, timeDifference} from '@/util/Tools';
-import {UserOutlined} from '@ant-design/icons';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
+import store from '@/store';
 
 export const skuHandleRecordList = {url: '/skuHandleRecord/list', method: 'POST'};
 export const relevanceTasksUrl = {url: '/activitiProcessTask/aboutOrderInStockTaskList', method: 'POST'};
@@ -11,6 +12,8 @@ export const relevanceTasksUrl = {url: '/activitiProcessTask/aboutOrderInStockTa
 const RelevanceTasks = ({
   orderId
 }) => {
+
+  const [dataSource] = store.useModel('dataSource');
 
   const {loading, data} = useRequest({...relevanceTasksUrl, data: {orderId}});
   const {loading: skuLogLoading, data: skuLogs} = useRequest({...skuHandleRecordList, data: {orderId}});
@@ -45,7 +48,9 @@ const RelevanceTasks = ({
               const percent = Number(((receipts.inStockNum / receipts.applyNum) * 100).toFixed(2)) || 0;
 
               return <List.Item
-                extra={timeDifference(item.createTime)}
+                extra={<div style={{fontSize: 12}}>
+                  {timeDifference(item.createTime)}
+                </div>}
               >
                 <List.Item.Meta
                   title={<div>
@@ -70,21 +75,22 @@ const RelevanceTasks = ({
             dataSource={isArray(skuLogs)}
             renderItem={(item) => {
               const user = item.user || {};
+              const imgResults = isArray(item.skuResult?.imgResults)[0] || {};
+              const imgUrl = imgResults.thumbUrl;
               return <List.Item
-                extra={timeDifference(item.operationTime)}
+                extra={<div style={{fontSize: 12}}>
+                  {timeDifference(item.operationTime)}
+                </div>}
               >
                 <List.Item.Meta
-                  avatar={<Avatar
-                    src={user.avatar}
-                    style={{
-                      borderRadius: 4,
-                    }}
-                    shape="square"
-                    icon={<UserOutlined />}
+                  avatar={<Image
+                    style={{borderRadius: 4}}
+                    width={75}
+                    src={imgUrl || dataSource?.publicInfo?.imgLogo}
                   />}
-                  title={user.name}
-                  description={<div style={{color:'#000'}}>
-                    {SkuResultSkuJsons({skuResult: item.skuResult})}
+                  title={SkuResultSkuJsons({skuResult: item.skuResult})}
+                  description={<div>
+                    操作人员：{user.name}
                     <div>
                       <Space size={24}>
                         <div style={{color: '#1677ff'}}>入库数量 x{item.operationNumber}</div>

@@ -7,6 +7,7 @@ import {originList} from '@/pages/Crm/origin/OriginUrl';
 import {dataClassificationSelect} from '@/pages/Crm/data/dataUrl';
 import {speechcraftType} from '@/pages/Crm/speechcraft/speechcraftUrl';
 import {getRuleV2} from '@/pages/BaseSystem/codingV2Rules/codingRulesUrl';
+import {Init} from 'MES-Apis/lib/Init';
 
 export default {
   state: {},
@@ -22,6 +23,14 @@ export default {
     async opentaskList(value) {
       try {
         dispatch.dataSource.update({showTaskList: value});
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async publicInfo() {
+      try {
+        const publicInfo = await Init.getPublicInfo();
+        dispatch.dataSource.update({publicInfo: publicInfo.data || {}});
       } catch (e) {
         console.log(e);
       }

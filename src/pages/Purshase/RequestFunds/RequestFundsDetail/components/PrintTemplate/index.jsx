@@ -15,6 +15,8 @@ const PrintTemplate = (
   }
 ) => {
 
+  const [dataSource] = store.useModel('dataSource');
+
   const [state] = store.useModel('user');
 
   const labelStyle = {
@@ -98,7 +100,9 @@ const PrintTemplate = (
             marginBottom: 4,
             fontSize: 12,
             color: '#000',
-          }}>沈阳浑河工业有限责任公司
+          }}
+        >
+          {dataSource?.publicInfo?.enterprise || ''}
         </div>
       </div>
       <table
