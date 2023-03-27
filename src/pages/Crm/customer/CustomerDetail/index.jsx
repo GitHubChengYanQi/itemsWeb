@@ -26,12 +26,10 @@ import store from '@/store';
 import Empty from '@/components/Empty';
 import {supplierDetail} from '@/pages/Purshase/Supply/SupplyUrl';
 
-const {TabPane} = Tabs;
-
 const CustomerDetail = ({id, supply = 0, status,}) => {
 
   const params = useParams();
-  const addRef = useRef(null);
+
   const refTrack = useRef(null);
   const submitRef = useRef(null);
   const history = useHistory();
@@ -71,6 +69,36 @@ const CustomerDetail = ({id, supply = 0, status,}) => {
   const enterprise = data.status === 99;
 
   const title = supply ? '供应商详情' : '客户详情';
+
+  let tabs = [];
+
+  if (supply) {
+    tabs = [{key: '1', label: '可供物料', children: <SupplyList customer={data} />}];
+  }
+
+  tabs = [
+    ...tabs,
+    {
+      key: '2', label: '联系信息', children: <ContactsTable customer={data} refresh={() => {
+        refresh();
+      }} />
+    },
+    {key: '3', label: '合同记录', children: <ContractTable customerId={data && data.customerId} />},
+    {
+      key: '4', label: '财务信息', children: <InvoiceList customer={data} refresh={() => {
+        refresh();
+      }} />
+    },
+    {
+      key: '5', label: '地址', children: <AdressList customer={data} refresh={() => {
+        refresh();
+      }} />
+    },
+    {key: '6', label: '货单', children: <Empty />},
+    {key: '7', label: '回款', children: <Empty />},
+    {key: '8', label: '附件', children: <Upload customerId={data && data.customerId} />},
+    {key: '9', label: '企业信息', children: <Description enterprise={enterprise} data={data} />}
+  ];
 
   return (
     <div className={styles.detail}>
@@ -200,29 +228,7 @@ const CustomerDetail = ({id, supply = 0, status,}) => {
               <Tabs
                 destroyInactiveTabPane
                 defaultActiveKey="1"
-                items={[
-                  {key: '1', label: '可供物料', children: <SupplyList customer={data} />},
-                  {
-                    key: '2', label: '联系信息', children: <ContactsTable customer={data} refresh={() => {
-                      refresh();
-                    }} />
-                  },
-                  {key: '3', label: '合同记录', children: <ContractTable customerId={data && data.customerId} />},
-                  {
-                    key: '4', label: '财务信息', children: <InvoiceList customer={data} refresh={() => {
-                      refresh();
-                    }} />
-                  },
-                  {
-                    key: '5', label: '地址', children: <AdressList customer={data} refresh={() => {
-                      refresh();
-                    }} />
-                  },
-                  {key: '6', label: '货单', children: <Empty />},
-                  {key: '7', label: '回款', children: <Empty />},
-                  {key: '8', label: '附件', children: <Upload customerId={data && data.customerId} />},
-                  {key: '9', label: '企业信息', children: <Description enterprise={enterprise} data={data} />},
-                ]}
+                items={tabs}
               />
             </Card>
           </Col>

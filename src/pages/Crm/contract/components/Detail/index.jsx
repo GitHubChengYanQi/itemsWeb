@@ -74,7 +74,8 @@ const Detail = ({id}) => {
 
   const cardProps = {
     bordered: false,
-    bodyStyle: {padding: 16}
+    bodyStyle: {padding: 16},
+    headStyle: {fontWeight: 'bold'}
   };
 
   return <div>
@@ -132,7 +133,7 @@ const Detail = ({id}) => {
           <Descriptions>
             <Descriptions.Item label="公司名称">
               <Button type="link" style={{padding: 0, height: 'fit-content'}} onClick={() => {
-                history.push(`/CRM/customer/${data.partyA}`);
+                history.push('/BASE_SYSTEM/enterprise');
               }}>{data.acustomer ? data.acustomer.customerName : null}
               </Button>
             </Descriptions.Item>
@@ -156,7 +157,7 @@ const Detail = ({id}) => {
           <Descriptions>
             <Descriptions.Item label="公司名称">
               <Button type="link" style={{padding: 0, height: 'fit-content'}} onClick={() => {
-                history.push(`/CRM/customer/${data.partyBA}`);
+                history.push(`/purchase/supply/detail/${data.partyBA}`);
               }}>{data.bcustomer ? data.bcustomer.customerName : null}
               </Button>
             </Descriptions.Item>
@@ -184,7 +185,8 @@ const Detail = ({id}) => {
           }}>查看入库任务</Button>}
         >
           <div className={styles.process}>
-            <div className={styles.label}>入库进度：</div><Progress style={{}} percent={data.inStockRate || 0} />
+            <div className={styles.label}>入库进度：</div>
+            <Progress style={{}} percent={data.inStockRate || 0} />
           </div>
 
           <OrderDetailTable orderId={data.orderId} />
@@ -193,23 +195,48 @@ const Detail = ({id}) => {
 
       <div id="财务信息">
         <Card {...cardProps} title="财务信息">
-          <Descriptions>
-            <Descriptions.Item label="总金额">
-              <ThousandsSeparator prefix="￥" value={data.paymentResult?.totalAmount || 0} />
+          <Descriptions column={2}>
+            <Descriptions.Item label="总金额（采购总价 + 浮动金额）">
+              {(data.paymentResult?.floatingAmount || 0) ? <Space>
+                <ThousandsSeparator
+                  prefix="￥"
+                  value={data.paymentResult?.money || 0}
+                  shopNumber
+                  style={{marginTop: -12}}
+                />
+                +
+                <ThousandsSeparator
+                  prefix="￥"
+                  value={data.paymentResult?.floatingAmount || 0}
+                  shopNumber
+                  style={{marginTop: -12}}
+                />
+                =
+                <ThousandsSeparator
+                  valueStyle={{color: 'red'}}
+                  prefix="￥"
+                  value={data.paymentResult?.totalAmount || 0}
+                  shopNumber
+                  style={{marginTop: -12}}
+                />
+              </Space> : <ThousandsSeparator
+                valueStyle={{color: 'red'}}
+                prefix="￥"
+                value={data.paymentResult?.totalAmount || 0}
+                shopNumber
+                style={{marginTop: -12}}
+              />}
             </Descriptions.Item>
             <Descriptions.Item label="币种">{data.currency || '--'}</Descriptions.Item>
             <Descriptions.Item label="票据类型">{data.paymentResult?.paperType ? '专票' : '普票'}</Descriptions.Item>
-            <Descriptions.Item label="浮动金额">
-              <ThousandsSeparator prefix="￥" value={data.paymentResult?.floatingAmount || 0} />
-            </Descriptions.Item>
             <Descriptions.Item label="是否含运费" span={2}>
               {data.paymentResult?.freight ? '是' : '否'}
             </Descriptions.Item>
-            <Descriptions.Item label="采购总价">
-              <ThousandsSeparator prefix="￥" value={data.paymentResult?.money || 0} />
-            </Descriptions.Item>
-            <Descriptions.Item label="结算方式">
+            <Descriptions.Item label="结算方式" span={2}>
               {data.payMethod || '---'}
+            </Descriptions.Item>
+            <Descriptions.Item label="付款进度" span={1}>
+              <Progress style={{}} percent={data.paymentRate || 0} />
             </Descriptions.Item>
           </Descriptions>
         </Card>
@@ -230,9 +257,6 @@ const Detail = ({id}) => {
 
       <div id="付款记录">
         <Card {...cardProps} title="付款记录">
-          <div className={styles.process}>
-            <div className={styles.label}>付款进度：</div><Progress style={{}} percent={data.paymentRate || 0} />
-          </div>
           <PaymentList
             ref={paymentListRef}
             orderId={data.orderId}

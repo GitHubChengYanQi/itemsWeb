@@ -1,6 +1,5 @@
 import React from 'react';
-import {Avatar, Image, List, Progress, Space, Spin, Tabs, Tag} from 'antd';
-import {UserOutlined} from '@ant-design/icons';
+import {Image, List, Progress, Space, Spin, Tabs, Tag} from 'antd';
 import {useRequest} from '@/util/Request';
 import {isArray, timeDifference} from '@/util/Tools';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
@@ -58,7 +57,7 @@ const RelevanceTasks = ({
                   </div>}
                   description={<div>
                     <div>{item.theme}</div>
-                    <div>执行人：{isArray(item.processUsers).map(item => item.userName).join(',') || '--'}</div>
+                    <div>执行人：{isArray(item.processUsers).map(item => item.name).join(',') || '--'}</div>
                     <Progress percent={percent} />
                   </div>}
                 />

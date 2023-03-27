@@ -30,18 +30,29 @@ const OrderDetailTable = ({orderId}) => {
       dataIndex: 'skuResult',
       render: (value) => <Render text={SkuResultSkuJsons({skuResult: value})} />
     },
-    {title: '品牌', dataIndex: 'brandResult', render: (value) => <Render text={value && value.brandName} />},
+    {title: '品牌', dataIndex: 'brandResult', render: (value) => <Render text={value && value.brandName || '无'} />},
     {
       title: '数量价格',
       dataIndex: 'totalPrice',
       align: 'right',
       sorter: true,
-      render: (value, record) => <Space>
-        <ThousandsSeparator prefix={record.sign} value={record.onePrice} />
+      render: (value, record) => <Space style={{marginBottom:-12}}>
+        <ThousandsSeparator
+          prefix={record.sign}
+          value={record.onePrice}
+          style={{paddingBottom: 8}}
+          shopNumber
+        />
         x
-        <div>{record.purchaseNumber} {record.unit?.unitName}</div>
+        <div>{record.purchaseNumber}{record.unit?.unitName}</div>
         =
-        <ThousandsSeparator prefix={record.sign} value={record.totalPrice} />
+        <ThousandsSeparator
+          prefix={record.sign}
+          valueStyle={{color: 'red'}}
+          style={{paddingBottom: 8}}
+          shopNumber
+          value={record.totalPrice}
+        />
       </Space>
     },
     {
@@ -67,7 +78,7 @@ const OrderDetailTable = ({orderId}) => {
   ];
 
   return (
-    <>
+    <div>
       <Table
         columns={columns}
         bordered={false}
@@ -87,7 +98,7 @@ const OrderDetailTable = ({orderId}) => {
         searchForm={searchForm}
         ref={tableRef}
       />
-    </>
+    </div>
   );
 };
 
