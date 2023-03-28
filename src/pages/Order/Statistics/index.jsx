@@ -40,6 +40,7 @@ const Statistics = () => {
         return <div>
           <ThousandsSeparator
             prefix="¥"
+            valueStyle={{color: '#52c41a'}}
             value={text}
           />
         </div>;
@@ -50,6 +51,7 @@ const Statistics = () => {
         return <div>
           <ThousandsSeparator
             prefix="¥"
+            valueStyle={{color: 'red'}}
             value={text}
           />
         </div>;
@@ -134,7 +136,7 @@ const Statistics = () => {
               <ThousandsSeparator
                 prefix="¥"
                 shopNumber
-                valueStyle={{color:'#257bde'}}
+                valueStyle={{color: '#257bde'}}
                 value={viewData.totalPrice}
               />
             </span>
@@ -144,7 +146,7 @@ const Statistics = () => {
               <ThousandsSeparator
                 prefix="¥"
                 shopNumber
-                valueStyle={{color:'#257bde'}}
+                valueStyle={{color: '#52c41a'}}
                 value={viewData.paymentPrice}
               />
             </span>
@@ -153,11 +155,13 @@ const Statistics = () => {
             <span className={styles.number}>
               <ThousandsSeparator
                 shopNumber
-                valueStyle={{color:'red'}}
+                valueStyle={{color: 'red'}}
                 prefix="¥"
                 value={viewData.deficientPrice}
               />
             </span>
+
+            <br />
 
             供应商总数： <span className={styles.number}>{viewData.sellerCount || 0}</span>
 

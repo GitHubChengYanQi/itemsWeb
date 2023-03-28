@@ -293,46 +293,49 @@ const OrderTable = (props) => {
       }
     },
     {
-      title: <Space>
-        付款信息
-        <Popover
-          placement="top"
-          content={<Space split={<Divider type="vertical" />}>
-            <Badge color="#000" text="总金额" />
-            <Badge color="green" text="付款金额" />
-            <Badge color="red" text="未付金额" />
-          </Space>}
-        >
-          <QuestionCircleOutlined />
-        </Popover>
-      </Space>,
+      title: '付款信息',
       align: 'center',
-      render: (value, record) => {
-        return <Render width={300} style={{textAlign: 'center'}}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            width: 'fit-content',
-            margin: 'auto',
-          }}>
-            <ThousandsSeparator style={{textAlign: 'right', width: 100}} value={record.totalAmount} prefix="￥" />
-            <Divider type="vertical" />
-            <ThousandsSeparator
-              style={{textAlign: 'center', width: 100}}
-              className={styles.green}
-              value={record.paymentPrice}
+      dataIndex: 'payInfo',
+      children: [
+        {
+          title: '总金额',
+          width: 150,
+          align: 'center',
+          dataIndex: 'totalAmount',
+          render: (value) => {
+            return <ThousandsSeparator
+              value={value}
               prefix="￥"
-            />
-            <Divider type="vertical" />
-            <ThousandsSeparator
-              style={{textAlign: 'left', width: 100}}
-              className={styles.red}
-              value={record.deficientPrice}
+            />;
+          }
+        },
+        {
+          title: '付款金额',
+          width: 150,
+          align: 'center',
+          dataIndex: 'paymentPrice',
+          render: (value) => {
+            return <ThousandsSeparator
+              value={value}
               prefix="￥"
-            />
-          </div>
-        </Render>;
-      }
+              valueStyle={{color: '#52c41a'}}
+            />;
+          }
+        },
+        {
+          title: '未付金额',
+          width: 150,
+          align: 'center',
+          dataIndex: 'deficientPrice',
+          render: (value) => {
+            return <ThousandsSeparator
+              value={value}
+              prefix="￥"
+              valueStyle={{color: 'red'}}
+            />;
+          }
+        }
+      ],
     },
     {
       title: '付款进度',
@@ -405,6 +408,11 @@ const OrderTable = (props) => {
   return (
     <>
       <Table
+        onHeaderRow={() => {
+          return {
+            className: styles.headerRow
+          };
+        }}
         isModal={false}
         formSubmit={(values) => {
           if (isArray(values.time).length > 0) {
@@ -440,7 +448,7 @@ const OrderTable = (props) => {
               <ThousandsSeparator
                 prefix="¥"
                 shopNumber
-                valueStyle={{color:'#257bde'}}
+                valueStyle={{color: '#257bde'}}
                 value={viewData.totalPrice}
               />
             </span>
@@ -450,7 +458,7 @@ const OrderTable = (props) => {
               <ThousandsSeparator
                 shopNumber
                 prefix="¥"
-                valueStyle={{color:'#257bde'}}
+                valueStyle={{color: '#52c41a'}}
                 value={viewData.paymentPrice}
               />
             </span>
@@ -464,6 +472,8 @@ const OrderTable = (props) => {
                 value={viewData.deficientPrice > 0 ? viewData.deficientPrice : 0}
               />
             </span>
+
+            <br />
 
             供应商总数： <span className={styles.number}>{viewData.sellerCount || 0}</span>
 
