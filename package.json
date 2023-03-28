@@ -82,8 +82,10 @@
     "react-eva": "^1.1.12",
     "react-json-view": "^1.19.1",
     "react-sortable-hoc": "^2.0.0",
+    "sass": "^1.60.0",
     "styled-components": "4.1.1",
     "tinymce": "^5.10.3",
+    "typescript": "^3.9.4",
     "wangeditor": "4.7.12",
     "wangeditor-for-react": "1.5.3"
   },

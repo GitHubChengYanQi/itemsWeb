@@ -1,0 +1,155 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\Administrator\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add sass
+
+PATH: 
+  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;D:\微信web开发者工具\dll;C:\Python27;C:\Python27\Scripts;D:\BtSoft\panel\script;C:\ProgramData\chocolatey\bin;%NVM_HOME%;%NVM_SYMLINK%;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;C:\Users\Administrator\AppData\Local\JetBrains\Toolbox\scripts;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\AppData\Roaming\nvm;C:\Program Files\nodejs;D:\11.7\itemsWeb\node_modules\.bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  14.21.3
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.npmmirror.com/MES-Apis: Not found
+      at Request.params.callback [as _callback] (C:\Users\Administrator\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66145:18)
+      at Request.self.callback (C:\Users\Administrator\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140890:22)
+      at Request.emit (events.js:400:28)
+      at Request.<anonymous> (C:\Users\Administrator\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141862:10)
+      at Request.emit (events.js:400:28)
+      at IncomingMessage.<anonymous> (C:\Users\Administrator\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141784:12)
+      at Object.onceWrapper (events.js:519:28)
+      at IncomingMessage.emit (events.js:412:35)
+      at endReadableNT (internal/streams/readable.js:1333:12)
+      at processTicksAndRejections (internal/process/task_queues.js:82:21)
+
+npm manifest: 
+  {
+    "name": "@sing/base",
+    "version": "0.1.0",
+    "description": "基础框架模板",
+    "files": [
+      "src/",
+      "build/",
+      "public/",
+      "tests/",
+      "_gitignore",
+      "_editorconfig",
+      "_eslintignore",
+      "_eslintrc.js",
+      "_prettierignore",
+      "_prettierrc.js",
+      "_stylelintignore",
+      "_stylelintrc.js",
+      "build.json",
+      "screenshot.png",
+      "tsconfig.json",
+      "jsconfig.json"
+    ],
+    "scripts": {
+      "start": "icejs start --port 5555",
+      "home": "icejs start --port 5555 --mode home",
+      "cheng": "icejs start --port 7777 --mode cheng",
+      "jin": "icejs start --port 0416 --mode jin",
+      "ren": "icejs start --port 5555 --mode ren",
+      "sun": "icejs start --port 5555 --mode sun",
+      "zhu": "icejs start --port 5555 --mode zhu",
+      "devOnline": "icejs build --mode devOnline",
+      "buildZjzc": "icejs build --mode buildZjzc",
+      "buildHunHeBate": "icejs build --mode buildHunHeBate",
+      "buildHunHe": "icejs build --mode buildHunHe",
+      "song": "icejs start --port 5555 --mode song",
+      "build": "icejs build",
+      "screenshot": "screenshot -l",
+      "lint": "npm run eslint && npm run stylelint",
+      "eslint": "eslint --cache --ext .js,.jsx ./",
+      "stylelint": "stylelint ./**/*.scss"
+    },
+    "dependencies": {
+      "@ahooksjs/use-url-state": "^2.5.8",
+      "@alifd/next": "^1.19.4",
+      "@alifd/theme-atsoft-sing": "^0.2.7",
+      "@alifd/theme-design-pro": "^0.x",
+      "@ant-design/icons": "^4.6.4",
+      "@ant-design/pro-card": "^1.14.9",
+      "@ant-design/pro-skeleton": "^1.0.1",
+      "@dnd-kit/sortable": "^7.0.1",
+      "@formily/antd": "^1.3.6",
+      "@icedesign/dynamic-icon": "^0.1.8",
+      "@icedesign/img": "^1.0.4",
+      "@tinymce/tinymce-react": "^3.13.0",
+      "MES-Apis": "^0.2.43",
+      "ac-barcode": "^1.0.0",
+      "ahooks": "^2.9.1",
+      "antd": "^4.24.1",
+      "array-move": "^4.0.0",
+      "braft-editor": "^2.3.9",
+      "braft-utils": "^3.0.12",
+      "crypto-js": "^4.1.1",
+      "enc": "^0.4.0",
+      "html-react-parser": "^1.2.7",
+      "jr-qrcode": "^1.1.4",
+      "js-cookie": "^2.2.1",
+      "md5": "^2.3.0",
+      "moment": "^2.24.0",
+      "nzh": "^1.0.8",
+      "pako": "^2.0.4",
+      "qs": "^6.9.4",
+      "rc-queue-anim": "^2.0.0",
+      "rc-resize-observer": "^1.0.0",
+      "rc-tween-one": "^3.0.6",
+      "react": "^16.14.0",
+      "react-amap": "^1.2.8",
+      "react-amap-plugin-geolocation": "0.0.2",
+      "react-custom-scrollbars-2": "^4.2.3",
+      "react-dom": "^16.14.0",
+      "react-draggable": "^4.4.5",
+      "react-error-overlay": "^6.0.9",
+      "react-eva": "^1.1.12",
+      "react-json-view": "^1.19.1",
+      "react-sortable-hoc": "^2.0.0",
+      "styled-components": "4.1.1",
+      "tinymce": "^5.10.3",
+      "wangeditor": "4.7.12",
+      "wangeditor-for-react": "1.5.3"
+    },
+    "devDependencies": {
+      "@dnd-kit/core": "^6.0.5",
+      "@ice/spec": "^1.0.0",
+      "build-plugin-antd": "^0.1.1",
+      "build-plugin-css-assets-local": "^0.1.0",
+      "build-plugin-fast-refresh": "^1.7.1",
+      "build-plugin-fusion": "^0.1.0",
+      "build-plugin-moment-locales": "^0.1.0",
+      "eslint": "^6.0.1",
+      "ice.js": "^1.17.2",
+      "stylelint": "^13.2.0"
+    },
+    "publishConfig": {
+      "access": "public"
+    },
+    "scaffoldConfig": {
+      "name": "@sing/base",
+      "title": "Base",
+      "category": "Basic"
+    },
+    "ideMode": {
+      "name": "ice-react"
+    },
+    "iceworks": {
+      "type": "react",
+      "adapter": "adapter-react-v3"
+    },
+    "engines": {
+      "node": ">=8.0.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

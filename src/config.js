@@ -56,8 +56,8 @@ export default {
   jin: {
     logLevel: 'info',
     component: 'ant',
-    baseURI: 'http://192.168.0.111/',
-    // baseURI: 'http://192.168.0.220:8881',
+    // baseURI: 'http://192.168.0.111/',
+    baseURI: 'http://192.168.2.220:8885/',
     projectName: '道昕云',
     AMAP_KEY: '',
     AMAP_VERSION: '2.0',
