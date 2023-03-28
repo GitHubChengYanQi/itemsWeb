@@ -308,17 +308,29 @@ const OrderTable = (props) => {
       </Space>,
       align: 'center',
       render: (value, record) => {
-        return <Render width={300}>
-          <Space size={12} split={<Divider type="vertical" />}>
-            <ThousandsSeparator value={record.totalAmount} prefix="￥" />
-            <ThousandsSeparator className={styles.green} value={record.paymentPrice} prefix="￥" />
+        return <Render width={300} style={{textAlign: 'center'}}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            width: 'fit-content',
+            margin: 'auto',
+          }}>
+            <ThousandsSeparator style={{textAlign: 'right', width: 100}} value={record.totalAmount} prefix="￥" />
+            <Divider type="vertical" />
             <ThousandsSeparator
+              style={{textAlign: 'center', width: 100}}
+              className={styles.green}
+              value={record.paymentPrice}
+              prefix="￥"
+            />
+            <Divider type="vertical" />
+            <ThousandsSeparator
+              style={{textAlign: 'left', width: 100}}
               className={styles.red}
               value={record.deficientPrice}
               prefix="￥"
             />
-          </Space>
-
+          </div>
         </Render>;
       }
     },
@@ -427,7 +439,8 @@ const OrderTable = (props) => {
             <span className={styles.number}>
               <ThousandsSeparator
                 prefix="¥"
-                className={styles.money}
+                shopNumber
+                valueStyle={{color:'#257bde'}}
                 value={viewData.totalPrice}
               />
             </span>
@@ -435,8 +448,9 @@ const OrderTable = (props) => {
             付款金额：
             <span className={styles.number}>
               <ThousandsSeparator
+                shopNumber
                 prefix="¥"
-                className={styles.money}
+                valueStyle={{color:'#257bde'}}
                 value={viewData.paymentPrice}
               />
             </span>
@@ -444,8 +458,9 @@ const OrderTable = (props) => {
             未付金额：
             <span className={styles.number}>
               <ThousandsSeparator
+                shopNumber
+                valueStyle={{color: 'red'}}
                 prefix="¥"
-                className={styles.money}
                 value={viewData.deficientPrice > 0 ? viewData.deficientPrice : 0}
               />
             </span>

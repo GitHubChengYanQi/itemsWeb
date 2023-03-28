@@ -133,7 +133,8 @@ const Statistics = () => {
             <span className={styles.number}>
               <ThousandsSeparator
                 prefix="¥"
-                className={styles.money}
+                shopNumber
+                valueStyle={{color:'#257bde'}}
                 value={viewData.totalPrice}
               />
             </span>
@@ -142,7 +143,8 @@ const Statistics = () => {
             <span className={styles.number}>
               <ThousandsSeparator
                 prefix="¥"
-                className={styles.money}
+                shopNumber
+                valueStyle={{color:'#257bde'}}
                 value={viewData.paymentPrice}
               />
             </span>
@@ -150,8 +152,9 @@ const Statistics = () => {
             未付金额：
             <span className={styles.number}>
               <ThousandsSeparator
+                shopNumber
+                valueStyle={{color:'red'}}
                 prefix="¥"
-                className={styles.money}
                 value={viewData.deficientPrice}
               />
             </span>

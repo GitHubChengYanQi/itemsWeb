@@ -13,7 +13,14 @@ const randomString = (len) => {
   }
   return str;
 };
-
+// 查找字符串返回 true / false
+const queryString = (value = '', string) => {
+  if (value.includes('\\')) {
+    value = value.replaceAll('\\', '|');
+  }
+  const patt = new RegExp(value, 'i');
+  return patt.test(string);
+};
 // 返回空对象
 const isObject = (object) => {
   return (object && typeof object === 'object') ? object : {};
@@ -91,15 +98,6 @@ const MathCalc = (a, b, type) => {// 加减乘除
       break;
   }
   return Number(r.toFixed(2));
-};
-
-// 查找字符串返回 true / false
-const queryString = (value = '', string) => {
-  if (value.includes('\\')) {
-    value = value.replaceAll('\\', '|');
-  }
-  const patt = new RegExp(value, 'i');
-  return patt.test(string);
 };
 
 const ShowDate = (date) => {
