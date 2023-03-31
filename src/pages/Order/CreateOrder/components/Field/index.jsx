@@ -450,7 +450,7 @@ export const TemplateId = (props) => {
 };
 
 export const Upload = (props) => {
-  return <FileUpload {...props} title="上传合同" />;
+  return <FileUpload privateUpload {...props} title="上传合同" />;
 };
 
 export const Freight = (props) => {

@@ -51,6 +51,7 @@ const InvoiceList = ({orderId}) => {
 
   let columns = [
     {dataIndex: 'name', title: '发票名称'},
+    {dataIndex: 'invoiceBillNo', title: '发票号'},
     {
       dataIndex: 'money', title: '金额(人民币)', align: 'right', width: 120, render(value) {
         return <ThousandsSeparator prefix="￥" value={value} />;
@@ -91,7 +92,7 @@ const InvoiceList = ({orderId}) => {
     <>
       <Table
         emptyAdd={<Button type="link" onClick={() => ref.current.open(false)}>暂无数据，请添加</Button>}
-        searchStyle={{padding: 0}}
+        searchStyle={{padding: orderId && 0}}
         formSubmit={(values) => {
           return {...values, orderId};
         }}

@@ -1,0 +1,33 @@
+.list {
+  width: 100%;
+
+  .checkboxItem {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    .show {
+      flex-grow: 1;
+      margin-left: 8px;
+      max-width: 90%;
+
+      .upload {
+        :global {
+          .ant-upload-list-picture-container {
+            transition: none;
+          }
+
+          //.ant-upload-animate-leave {
+          //  height: 74px !important;
+          //  opacity: 1 !important;
+          //}
+          //
+          //.ant-upload-animate-appear {
+          //  height: 0 !important;
+          //  opacity: 0 !important;
+          //}
+        }
+      }
+    }
+  }
+}

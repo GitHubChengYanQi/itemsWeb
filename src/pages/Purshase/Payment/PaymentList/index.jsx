@@ -148,7 +148,7 @@ const PaymentList = (
     <>
       <Table
         emptyAdd={<Button type="link" onClick={() => editRef.current.open(false)}>暂无数据，请添加</Button>}
-        searchStyle={{padding: 0}}
+        searchStyle={{padding: orderId && 0}}
         maxHeight="auto"
         unsetOverflow
         noTableColumnSet

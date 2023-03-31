@@ -10,11 +10,11 @@ import {isArray} from '@/util/Tools';
 import styles from './index.module.less';
 import Icon from '@/components/Icon';
 import PrintTemplate from '@/pages/Purshase/RequestFunds/RequestFundsDetail/components/PrintTemplate';
+import FileUpload from '@/components/FileUpload';
 
 const RequestFundsDetail = (
   {
     record = {},
-    hiddenFile,
     onDetail = () => {
     }
   }
@@ -63,7 +63,7 @@ const RequestFundsDetail = (
 
   const send = spStatus === 'PASSED';
 
-  const contentRender = (item) => {
+  const contentRender = (item, label) => {
     switch (item.control) {
       case 'Text':
       case 'Textarea':
@@ -75,7 +75,14 @@ const RequestFundsDetail = (
       case 'Date':
         return item?.value?.date?.timestamp ? moment.unix(item?.value?.date?.timestamp).format(item?.value?.date?.type === 'day' ? 'YYYY/MM/DD' : 'YYYY/MM/DD hh:mm') : null;
       case 'File':
-        return null;
+        if (record.filed) {
+          if (label) {
+            return true;
+          }
+          return <FileUpload show value={record.filed} privateUpload />;
+        } else {
+          return null;
+        }
       default:
         break;
     }
@@ -189,15 +196,13 @@ const RequestFundsDetail = (
       <div className={styles.left}>
         {
           contents.map((item, index) => {
-            if (item.control === 'File' && !hiddenFile) {
-              return <div key={index} />;
-            }
-            const content = contentRender(item);
+            const content = contentRender(item, true);
             if (content) {
               const label = isArray(item.titles).find(item => item.lang === 'zh_CN')?.text;
               return <div
                 key={index}
                 className={styles.leftItem}
+                // item.control === 'File' &&
               >
                 {label || '--'}
                 <div hidden={item.control !== 'Money'} style={{height: 20}} />

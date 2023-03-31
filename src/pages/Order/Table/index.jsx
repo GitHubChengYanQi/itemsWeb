@@ -7,23 +7,20 @@
 
 import React, {useRef, useState} from 'react';
 import {
-  Badge,
   Button,
-  Divider,
   Dropdown,
   Input,
   message,
-  Popover,
   Progress,
-  Select,
   Space,
   Spin,
   Tag,
-  Modal as AntModal
+  Modal as AntModal, Tabs, Radio
 } from 'antd';
 import {useHistory, useLocation} from 'ice';
 import moment from 'moment';
-import {CheckCircleOutlined, ExclamationCircleOutlined, QuestionCircleOutlined, SyncOutlined} from '@ant-design/icons';
+import {CheckCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from '@ant-design/icons';
+import useUrlState from '@ahooksjs/use-url-state';
 import Table from '@/components/Table';
 import Form from '@/components/Form';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -47,6 +44,21 @@ const {FormItem} = Form;
 
 const OrderTable = (props) => {
 
+  const [urlState] = useUrlState(
+    {
+      navigateMode: 'push',
+    },
+  );
+
+
+  let defaultTableQuery = {};
+
+  try {
+    defaultTableQuery = urlState.params && JSON.parse(urlState.params) || {};
+  } catch (e) {
+    console.log(e);
+  }
+
   const history = useHistory(null);
   const tableRef = useRef(null);
 
@@ -65,6 +77,11 @@ const OrderTable = (props) => {
   const [loading, setLoading] = useState(false);
 
   const [order, setOrder] = useState({});
+
+  const defaultStatus = typeof defaultTableQuery.values?.status === 'number' ? defaultTableQuery.values?.status : 'all';
+  const [listStatus, setListStatus] = useState(typeof defaultTableQuery.values?.status === 'undefined' ? 0 : defaultStatus);
+
+  const [ingStatus, setIngStatus] = useState(defaultTableQuery.values?.completeStatus || 'all');
 
   const [addRequestFundsLoading, setAddRequestFundsLoading] = useState(false);
 
@@ -104,6 +121,8 @@ const OrderTable = (props) => {
       break;
   }
 
+  const statuTabs = [{label: '全部', key: 'all'}, {label: '进行中', key: 0}, {label: '已完成', key: 99}];
+
   const actions = () => {
     return (
       <>
@@ -136,19 +155,15 @@ const OrderTable = (props) => {
           value={initialData.startTime ? [initialData.startTime, initialData.endTime] : []}
         />
         <FormItem
-          label="状态"
+          hidden
           name="status"
-          component={({value, onChange}) => {
-            return <Select
-              style={{width: 100}}
-              defaultValue="all"
-              value={typeof value === 'number' ? value : 'all'}
-              options={[{label: '全部', value: 'all'}, {label: '已完成', value: 99}, {label: '进行中', value: 0}]}
-              onChange={(value) => {
-                onChange(value === 'all' ? null : value);
-              }}
-            />;
-          }}
+          value={0}
+          component={Input}
+        />
+        <FormItem
+          hidden
+          name="completeStatus"
+          component={Input}
         />
         <FormItem hidden name="type" value={module.type} component={Input} />
       </>
@@ -242,7 +257,11 @@ const OrderTable = (props) => {
 
   const columns = [
     {
-      title: '采购单编号', sorter: true, dataIndex: 'coding', render: (value, record) => {
+      title: '编号',
+      sorter: true,
+      align: 'center',
+      dataIndex: 'coding',
+      render: (value, record) => {
         return <Button type="link" onClick={() => {
           switch (props.location.pathname) {
             case '/CRM/order':
@@ -298,7 +317,7 @@ const OrderTable = (props) => {
       dataIndex: 'payInfo',
       children: [
         {
-          title: '总金额',
+          title: <span style={{color: 'rgba(0,0,0,0.5)'}}>总金额</span>,
           width: 150,
           align: 'center',
           dataIndex: 'totalAmount',
@@ -310,7 +329,7 @@ const OrderTable = (props) => {
           }
         },
         {
-          title: '付款金额',
+          title: <span style={{color: 'rgba(0,0,0,0.5)'}}>已付金额</span>,
           width: 150,
           align: 'center',
           dataIndex: 'paymentPrice',
@@ -323,7 +342,7 @@ const OrderTable = (props) => {
           }
         },
         {
-          title: '未付金额',
+          title: <span style={{color: 'rgba(0,0,0,0.5)'}}>未付金额</span>,
           width: 150,
           align: 'center',
           dataIndex: 'deficientPrice',
@@ -344,7 +363,7 @@ const OrderTable = (props) => {
       dataIndex: 'paymentRate',
       hidden: module.type === 2,
       render: (value) => {
-        return <Render width={200}>
+        return <Render width={150}>
           <Progress percent={value || 0} />
         </Render>;
       }
@@ -356,9 +375,20 @@ const OrderTable = (props) => {
       dataIndex: 'inStockRate',
       hidden: module.type === 2,
       render: (value) => {
-        return <Render width={200}>
+        return <Render width={150}>
           <Progress percent={value || 0} />
         </Render>;
+      }
+    },
+    {
+      title: '开票率',
+      align: 'right',
+      sorter: true,
+      width: 100,
+      dataIndex: 'invoiceBillRate',
+      hidden: module.type === 2,
+      render: (value) => {
+        return `${value || 0}%`;
       }
     },
     {
@@ -368,7 +398,7 @@ const OrderTable = (props) => {
       align: 'center',
       render: (value) => <Render text={value?.name || '-'} />
     },
-    {title: '创建时间', align: 'center', width: 170, dataIndex: 'createTime'},
+    {title: '创建时间', align: 'center', width: 170, sorter: true, dataIndex: 'createTime'},
     {
       title: '操作',
       width: 150,
@@ -390,6 +420,7 @@ const OrderTable = (props) => {
             }
           }}>详情</Button>
           <Dropdown
+            placement="bottom"
             menu={{
               items: items(record),
             }}
@@ -408,6 +439,35 @@ const OrderTable = (props) => {
   return (
     <>
       <Table
+        bodyStyle={{paddingTop: 0}}
+        showCard={<>
+          <Tabs
+            className={styles.tabs}
+            // size='large'
+            activeKey={listStatus}
+            items={statuTabs}
+            onChange={(key) => {
+              setListStatus(key);
+              tableRef.current.formActions.setFieldValue('completeStatus', null);
+              tableRef.current.formActions.setFieldValue('status', key === 'all' ? null : key);
+              tableRef.current.submit();
+            }} />
+          <div style={{padding: '16px 0'}}>
+            {listStatus === 0 && <Radio.Group
+              value={ingStatus}
+              onChange={({target: {value}}) => {
+                setIngStatus(value);
+                tableRef.current.formActions.setFieldValue('completeStatus', value === 'all' ? null : value);
+                tableRef.current.submit();
+              }}
+            >
+              <Radio value="all">全部</Radio>
+              <Radio value="inStock">入库完成</Radio>
+              <Radio value="payment">付款完成</Radio>
+              <Radio value="invoice">发票完成</Radio>
+            </Radio.Group>}
+          </div>
+        </>}
         onHeaderRow={() => {
           return {
             className: styles.headerRow
@@ -473,6 +533,8 @@ const OrderTable = (props) => {
               />
             </span>
 
+            开票率： <span className={styles.number}>{viewData.invoiceBillRate || 0} %</span>
+
             <br />
 
             供应商总数： <span className={styles.number}>{viewData.sellerCount || 0}</span>
@@ -511,6 +573,7 @@ const OrderTable = (props) => {
       />
 
       <Modal
+        mask={false}
         headTitle="请款申请"
         ref={requestFundsRef}
         footer={<Space>
@@ -534,7 +597,7 @@ const OrderTable = (props) => {
         <RequestFundsAdd
           onLoading={setAddRequestFundsLoading}
           remark={order.paymentResult?.remark}
-          contactsName={order.bcontacts?.contactsName}
+          contactsName={order.bcustomer?.customerName}
           bankAccount={order.partyBBankAccount}
           bankName={order.bbank?.bankName}
           money={order.paymentResult?.totalAmount}

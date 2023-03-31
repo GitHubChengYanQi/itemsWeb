@@ -57,13 +57,18 @@ const Statistics = () => {
         </div>;
       }
     },
+    {
+      title: '开票率', width: 120, dataIndex: 'invoiceBillRate', align: 'right', render(text) {
+        return `${text || 0}%`;
+      }
+    },
     {title: '采购供应商数', width: 120, dataIndex: 'sellerCount', align: 'right',},
     {title: '采购物料种类', width: 120, dataIndex: 'skuCount', align: 'right',},
     {title: '采购物料总数', width: 120, dataIndex: 'purchaseNumber', align: 'right',},
     {title: '入库总数', width: 120, dataIndex: 'inStockCount', align: 'right'},
     {
       title: '入库百分比', width: 120, dataIndex: 'inStockRate', align: 'right', render(text) {
-        return `${text}%`;
+        return `${text || 0}%`;
       }
     },
     {},
@@ -160,6 +165,8 @@ const Statistics = () => {
                 value={viewData.deficientPrice}
               />
             </span>
+
+            开票率： <span className={styles.number}>{viewData.invoiceBillRate || 0} %</span>
 
             <br />
 

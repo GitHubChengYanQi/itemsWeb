@@ -17,12 +17,17 @@ import RequestFundsList from '@/pages/Purshase/RequestFunds/RequestFundsList';
 import Modal from '@/components/Modal';
 import RelevanceTasks from '@/pages/Crm/contract/components/Detail/components/RelevanceTasks';
 import styles from './index.module.scss';
+import FileUpload from '@/components/FileUpload';
 
 const {baseURI} = config;
+
+const addFiles = {url: '/order/addFile', method: 'POST'};
 
 const Detail = ({id}) => {
 
   const token = cookie.get('tianpeng-token');
+
+  const uploadRef = useRef();
 
   const params = useParams();
 
@@ -37,6 +42,10 @@ const Detail = ({id}) => {
   const relevanceTasksRef = useRef();
 
   const [loading, setLoading] = useState(true);
+
+  const {loading: addFilesLoading, run: addFilesRun} = useRequest(addFiles, {
+    manual: true,
+  });
 
   const {data: contract, run} = useRequest(contractDetail,
     {
@@ -119,10 +128,36 @@ const Detail = ({id}) => {
             <Descriptions.Item label="订单编码">
               {data.coding}
             </Descriptions.Item>
-            <Descriptions.Item label="主题">{data.theme || '--'}</Descriptions.Item>
+            <Descriptions.Item label="主题">
+              <div style={{paddingRight: 24}}>{data.theme || '--'}</div>
+            </Descriptions.Item>
             <Descriptions.Item label="创建人">{data?.user?.name || ''}</Descriptions.Item>
-            <Descriptions.Item label="创建时间">
+            <Descriptions.Item label="创建时间" span={3}>
               {data.createTime}
+            </Descriptions.Item>
+            <Descriptions.Item label="附件" span={3}>
+              <div style={{width: 500}}>
+                <a onClick={() => {
+                  uploadRef.current.upload();
+                }}>上传</a>
+                <div style={{height: 8}} />
+                <FileUpload
+                  value={data.fileId}
+                  ref={uploadRef}
+                  privateUpload
+                  show
+                  removeIcon={false}
+                  fileUploadId="orderDetailFileId"
+                  onChange={(value) => {
+                    addFilesRun({
+                      data: {
+                        orderId,
+                        mediaIds: value.split(',')
+                      }
+                    });
+                  }}
+                />
+              </div>
             </Descriptions.Item>
           </Descriptions>
         </Card>
@@ -157,7 +192,7 @@ const Detail = ({id}) => {
           <Descriptions>
             <Descriptions.Item label="公司名称">
               <Button type="link" style={{padding: 0, height: 'fit-content'}} onClick={() => {
-                history.push(`/purchase/supply/detail/${data.partyBA}`);
+                history.push(`/purchase/supply/detail/${data.sellerId}`);
               }}>{data.bcustomer ? data.bcustomer.customerName : null}
               </Button>
             </Descriptions.Item>
@@ -229,7 +264,7 @@ const Detail = ({id}) => {
             </Descriptions.Item>
             <Descriptions.Item label="币种">{data.currency || '--'}</Descriptions.Item>
             <Descriptions.Item label="票据类型">{data.paymentResult?.paperType ? '专票' : '普票'}</Descriptions.Item>
-            <Descriptions.Item label="是否含运费" span={2}>
+            <Descriptions.Item label="是否含运费">
               {data.paymentResult?.freight ? '是' : '否'}
             </Descriptions.Item>
             <Descriptions.Item label="结算方式" span={2}>

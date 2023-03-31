@@ -375,11 +375,12 @@ const TableWarp = (
           />}
           <Card
             bordered={bordered || false}
-            title={listHeader ? actions : null}
+            title={cardTitle}
             headStyle={headStyle || cardHeaderStyle}
             className={style.card}
             bodyStyle={bodyStyle}
             extra={<Space>
+              {listHeader ? actions : null}
               {actionButton}
               {!headStyle && !noTableColumnSet && setButton}
             </Space>}
