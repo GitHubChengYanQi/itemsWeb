@@ -5,29 +5,20 @@
     width: 100%;
     display: flex;
     align-items: center;
+    margin: 4px 0;
 
     .show {
       flex-grow: 1;
       margin-left: 8px;
       max-width: 90%;
-
-      .upload {
-        :global {
-          .ant-upload-list-picture-container {
-            transition: none;
-          }
-
-          //.ant-upload-animate-leave {
-          //  height: 74px !important;
-          //  opacity: 1 !important;
-          //}
-          //
-          //.ant-upload-animate-appear {
-          //  height: 0 !important;
-          //  opacity: 0 !important;
-          //}
-        }
-      }
+      height: 66px;
+      padding: 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
     }
   }
 }

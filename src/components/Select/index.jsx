@@ -19,6 +19,7 @@ const Select = (
     autoFocus,
     onChange = () => {
     },
+    style,
     onAdd = () => {
     },
     onSearch = () => {
@@ -72,7 +73,7 @@ const Select = (
   }
 
   return (
-    <div id="select" style={{width: width || '100%'}}>
+    <div style={{width: width || '100%', ...style}}>
       {
         loading
           ?

@@ -142,7 +142,7 @@ const CreateOrder = ({previewData, ...props}) => {
   return <div style={{padding: 16}}>
     <Spin spinning={resultVisible ? false : loading}>
 
-      <div hidden={previewData} style={{padding: '16px 0'}}>
+      <div hidden={previewData}>
         <Breadcrumb title={module().title} />
       </div>
 
@@ -711,12 +711,12 @@ const CreateOrder = ({previewData, ...props}) => {
                   取消
                 </Button>,
                 <Button type="primary" key="console" onClick={() => {
-                  history.push(`/purchase/order`);
+                  history.goBack();
                 }}>
-                  返回订单列表
+                  返回
                 </Button>,
                 success && <Button key="buy" onClick={() => {
-                  history.push(`/purchase/order/detail?id=${success.orderId}`);
+                  history.push(module().type === 1 ? `/purchase/order/detail?id=${success.orderId}` : `/CRM/order/detail?id=${success.orderId}` );
                 }}>
                   查看详情
                 </Button>

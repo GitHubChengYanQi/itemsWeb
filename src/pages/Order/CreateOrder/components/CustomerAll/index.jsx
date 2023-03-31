@@ -38,7 +38,7 @@ export const Adress = (props) => {
   const submitRef = useRef();
 
   return <>
-    <Select options={option || []} {...other} />
+    <Select options={option || []} {...other} style={{flexGrow: 1}} />
 
     <Button type="link" icon={<PlusOutlined />} style={{margin: 0}} onClick={() => {
       if (customerId) {
@@ -108,7 +108,7 @@ export const Contacts = (props) => {
   const submitRef = useRef();
 
   return <>
-    <Select options={option || []} {...other} />
+    <Select options={option || []} {...other}  style={{flexGrow: 1}} />
 
     <Button type="link" icon={<PlusOutlined />} style={{margin: 0}} onClick={() => {
       if (customerId) {
@@ -176,7 +176,7 @@ export const Phone = (props) => {
   const submitRef = useRef();
 
   return <>
-    <Select options={option || []} {...other} />
+    <Select options={option || []} {...other}  style={{flexGrow: 1}} />
 
     <Button type="link" icon={<PlusOutlined />} style={{margin: 0}} onClick={() => {
       if (contactsId) {
@@ -255,7 +255,7 @@ export const BankAccount = (props) => {
   const submitRef = useRef();
 
   return <>
-    <Select options={option || []} {...other} />
+    <Select options={option || []} {...other}  style={{flexGrow: 1}} />
 
     <Button type="link" icon={<PlusOutlined />} style={{margin: 0}} onClick={() => {
       if (customerId) {
@@ -319,7 +319,7 @@ export const Bank = (props) => {
   const submitRef = useRef();
 
   return loading ? <Spin /> : <>
-    <Select options={data || []} {...other} />
+    <Select options={data || []} {...other}  style={{flexGrow: 1}} />
 
     <Button type="link" icon={<PlusOutlined />} style={{margin: 0}} onClick={() => {
       ref.current.open(false);
@@ -342,7 +342,7 @@ export const Bank = (props) => {
         </Button>
       </>}
     >
-      <div style={{paddingTop:12}}>
+      <div style={{paddingTop: 12}}>
         <BankEdit ref={submitRef} value={false} NoButton onSuccess={(res) => {
           refresh();
           if (res && res.data) {

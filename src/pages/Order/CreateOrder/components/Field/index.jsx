@@ -16,6 +16,7 @@ import {
   AutoComplete,
   Descriptions, Tooltip
 } from 'antd';
+import {SearchOutlined} from '@ant-design/icons';
 import Coding from '@/pages/Erp/tool/components/Coding';
 import DatePicker from '@/components/DatePicker';
 import {useRequest} from '@/util/Request';
@@ -40,7 +41,6 @@ import Empty from '@/components/Empty';
 import CheckSku from '@/pages/Order/CreateOrder/components/CheckSku';
 import SelectSkusUtil from '@/pages/Erp/sku/components/SelectSkusUtil';
 import styles from './index.module.less';
-import {SearchOutlined} from '@ant-design/icons';
 
 export const orderDetailRecord = {url: '/orderDetail/record', method: 'POST'};
 
@@ -108,13 +108,11 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
           value={value}
           onChange={onChange}
           onAddSku={() => {
-            if (module === 'PO') {
-              setHidden(false);
-              return;
-            }
-            setSku(null);
-            setSkuId(null);
-            addSpu.current.open(true);
+            setHidden(false);
+
+            // setSku(null);
+            // setSkuId(null);
+            // addSpu.current.open(true);
           }}
           onCusTomerBind={() => {
             addSku.current.open(true);

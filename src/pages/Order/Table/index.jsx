@@ -139,11 +139,10 @@ const OrderTable = (props) => {
         <FormItem label="主题" name="theme" placeholder="请输入主题" component={Input} />
         <FormItem label="编号" name="coding" placeholder="请输入编号" component={Input} />
         <FormItem
-          hidden={module.type !== 1}
-          label="供应商"
+          label={module.type === 1 ? '供应商' : '客户'}
           name="sellerId"
           placeholder="请选择供应商"
-          supply={1}
+          supply={module.type === 1 ? 1 : 0}
           component={Customer}
           width={200}
         />
