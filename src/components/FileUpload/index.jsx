@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Image, message, Spin, Upload} from 'antd';
 import {InboxOutlined} from '@ant-design/icons';
 import {useRequest} from '@/util/Request';
@@ -13,11 +13,13 @@ const FileUpload = ({
   prompt,
   show,
   privateUpload,
-  imgPreview,
   maxCount,
-  refresh,
+  removeIcon = true,
   uploadTypes,
-}) => {
+  fileUploadId = 'fileUploadId'
+}, ref) => {
+
+  const uploadRef = useRef();
 
   const [fileList, setFileList] = useState([]);
 
@@ -62,13 +64,27 @@ const FileUpload = ({
     }
   };
 
+  const refUpload = () => {
+    const fileUploadDom = document.getElementById(fileUploadId);
+    fileUploadDom.click();
+  };
+
+  const insertFiles = (insertFileList) => {
+    setFileList([...fileList, ...insertFileList]);
+  };
+
+  useImperativeHandle(ref, () => ({
+    upload: refUpload,
+    insertFiles
+  }));
+
   useEffect(() => {
     if (value && !fileUpload) {
       initImgs();
     } else {
       setFileList([]);
     }
-  }, [refresh]);
+  }, []);
 
   const [oss, setOss] = useState({});
 
@@ -135,11 +151,13 @@ const FileUpload = ({
     <Spin spinning={fileLoading} tip="上传中...">
       <div className={!show ? styles.upload : ''}>
         <Upload
+          id={fileUploadId}
+          ref={uploadRef}
           showUploadList={{
-            showRemoveIcon:!show
+            showRemoveIcon: !show && removeIcon
           }}
           onPreview={async (file) => {
-            if (!privateUpload && !imgPreview) {
+            if (!file.name) {
               window.open(file.url);
               return;
             }
@@ -162,7 +180,7 @@ const FileUpload = ({
           listType="picture"
           action={oss && oss.host}
           data={oss}
-          fileList={fileList}
+          fileList={fileList.filter(item => item.id)}
           maxCount={maxCount || 5}
           onChange={(file) => {
             switch (file.file.status) {
@@ -185,24 +203,22 @@ const FileUpload = ({
               setFileList(file.fileList);
               onChange(file.fileList.map((item) => {
                 return item.id;
-              }).toString());
+              }).toString(), true);
               return;
             }
 
-            if (file.fileList.length === 1) {
-              setFileList([{...file.fileList[0], id: oss.mediaId, url: `${oss.host}/${oss.key}`}]);
-              onChange([oss.mediaId].toString());
-            } else {
-              const array = [];
-              for (let i = 0; i < file.fileList.length; i++) {
-                if (i === file.fileList.length - 1) {
-                  array.push({...file.fileList[i], id: oss.mediaId, url: `${oss.host}/${oss.key}`});
-                } else {
-                  array.push(file.fileList[i]);
-                }
+            const newFileList = file.fileList.map((item, index) => {
+              if (index === file.fileList.length - 1) {
+                return {...item, id: oss.mediaId, url: `${oss.host}/${oss.key}`};
               }
-              setFileList(array);
-              onChange(array.map((item) => {
+              return item;
+            });
+
+            setFileList(newFileList);
+
+
+            if (file.file.status === 'done') {
+              onChange(newFileList.map((item) => {
                 return item.id;
               }).toString());
             }
@@ -217,12 +233,12 @@ const FileUpload = ({
               if (fileUpload) {
                 const formData = new FormData();
                 formData.append('file', file);
-                await fileRun(
+                const res = await fileRun(
                   {
                     data: formData
                   }
                 );
-                setFileList([file]);
+                setFileList([{...file, id: res.fileId}]);
                 return Upload.LIST_IGNORE;
               } else if (privateUpload) {
                 const data = await runV12(
@@ -261,7 +277,6 @@ const FileUpload = ({
         </Upload>
       </div>
       {prompt}
-
       <Image
         width={200}
         src={preview}
@@ -281,4 +296,4 @@ const FileUpload = ({
   );
 };
 
-export default FileUpload;
+export default React.forwardRef(FileUpload);

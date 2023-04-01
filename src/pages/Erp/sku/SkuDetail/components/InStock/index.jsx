@@ -17,7 +17,7 @@ const InStock = ({skuId}) => {
   return <>
     <Table
       formSubmit={(value) => {
-        return {...value, skuId, types: [ReceiptsEnums.instockOrder]};
+        return {...value, skuId, types: [ReceiptsEnums.instockOrder, ReceiptsEnums.outstockOrder]};
       }}
       noRowSelection
       formActions={formActionsPublic}
@@ -27,11 +27,21 @@ const InStock = ({skuId}) => {
       api={skuHandleRecord}
       rowKey="recordId"
     >
+      <Column title="类型" dataIndex="source" render={(value) => {
+        switch (value) {
+          case ReceiptsEnums.instockOrder:
+            return '入库';
+          case ReceiptsEnums.outstockOrder:
+            return '出库';
+          default:
+            break;
+        }
+      }} />
       <Column title="时间" dataIndex="operationTime" sorter />
       <Column title="原库存" dataIndex="nowStockNumber" render={(value) => {
         return <Render>{value || 0}</Render>;
       }} />
-      <Column title="入库数量" dataIndex="operationNumber" render={(value) => {
+      <Column title="数量" dataIndex="operationNumber" render={(value) => {
         return <Render>{value || 0}</Render>;
       }} />
       <Column title="结余" dataIndex="balanceNumber" render={(value) => {

@@ -13,6 +13,7 @@ const Modal = (
     overflowY,
     loading = () => {
     },
+    mask = true,
     footer,
     closable = true,
     padding,
@@ -54,6 +55,9 @@ const Modal = (
 
   return (
     <AntdModal
+      // getContainer={false}
+      mask={mask}
+      wrapClassName={!mask && styles.modal}
       open={visible}
       footer={footer || null}
       centered

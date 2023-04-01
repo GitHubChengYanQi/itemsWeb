@@ -7,8 +7,8 @@
 
 import React, {useRef, useState} from 'react';
 import {createFormActions} from '@formily/antd';
-import {Button, Image, Input, Space} from 'antd';
-import {FileImageOutlined} from '@ant-design/icons';
+import {Button, Input, Space} from 'antd';
+import {FileOutlined} from '@ant-design/icons';
 import Table from '@/components/Table';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
@@ -20,13 +20,16 @@ import ThousandsSeparator from '@/components/ThousandsSeparator';
 import Modal from '@/components/Modal';
 import {isArray} from '@/util/Tools';
 import Form from '@/components/Form';
+import FileUpload from '@/components/FileUpload';
 
 const formActionsPublic = createFormActions();
 const {FormItem} = Form;
 
 const InvoiceList = ({orderId}) => {
 
-  const [preview, setPreview] = useState([]);
+  const showFileRef = useRef(null);
+
+  const [item, setItem] = useState({});
 
   const ref = useRef(null);
   const tableRef = useRef(null);
@@ -51,6 +54,7 @@ const InvoiceList = ({orderId}) => {
 
   let columns = [
     {dataIndex: 'name', title: '发票名称'},
+    {dataIndex: 'invoiceBillNo', title: '发票号'},
     {
       dataIndex: 'money', title: '金额(人民币)', align: 'right', width: 120, render(value) {
         return <ThousandsSeparator prefix="￥" value={value} />;
@@ -59,8 +63,9 @@ const InvoiceList = ({orderId}) => {
     {
       dataIndex: 'enclosureId', title: '附件', align: 'center', width: 100, render: (value, record) => {
         return <Button type="link" onClick={() => {
-          setPreview(isArray(record.mediaUrlResults).map(item => item.url));
-        }}><FileImageOutlined /> x {isArray(record.mediaUrlResults).length}</Button>;
+          showFileRef.current.open(true);
+          setItem(record);
+        }}><FileOutlined /> x {isArray(record.mediaUrlResults).length}</Button>;
       }
     },
     {dataIndex: 'invoiceDate', title: '发票日期', width: 200, align: 'center'},
@@ -91,7 +96,7 @@ const InvoiceList = ({orderId}) => {
     <>
       <Table
         emptyAdd={<Button type="link" onClick={() => ref.current.open(false)}>暂无数据，请添加</Button>}
-        searchStyle={{padding: 0}}
+        searchStyle={{padding: orderId && 0}}
         formSubmit={(values) => {
           return {...values, orderId};
         }}
@@ -139,20 +144,14 @@ const InvoiceList = ({orderId}) => {
           ref.current.close();
         }} ref={ref} />}
 
-      <Image.PreviewGroup
-        preview={{visible: preview.length > 0, onVisibleChange: (vis) => setPreview(vis ? preview : [])}}>
-        {
-          preview.map((item, index) => {
-            return <Image
-              style={{
-                display: 'none',
-              }}
-              key={index}
-              src={item}
-            />;
-          })
-        }
-      </Image.PreviewGroup>
+      <Modal
+        headTitle="查看附件"
+        ref={showFileRef}
+      >
+        <div style={{padding: 16}}>
+          <FileUpload privateUpload show value={item.enclosureId} />
+        </div>
+      </Modal>
     </>
   );
 };

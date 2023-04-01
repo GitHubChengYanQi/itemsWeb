@@ -125,7 +125,7 @@ const AddSkuTable = ({
             };
           })}
           onDragEnd={(allIems) => {
-            onChange(allIems.filter(item => !item.add));
+            onChange(allIems.filter(item => !item.add && !item.search));
           }}
         />
       </div>

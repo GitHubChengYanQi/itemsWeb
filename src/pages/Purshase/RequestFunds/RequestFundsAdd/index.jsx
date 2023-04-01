@@ -1,11 +1,13 @@
 import React, {useEffect, useImperativeHandle} from 'react';
-import {Form, Input, InputNumber, Select} from 'antd';
+import {Button, Form, Input, InputNumber, Modal, Select} from 'antd';
 import {UseOrder} from 'MES-Apis/lib/Order';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {isArray} from '@/util/Tools';
 import FileUpload from '@/components/FileUpload';
 import Date from '@/pages/Purshase/RequestFunds/RequestFundsAdd/components/Date';
 import Message from '@/components/Message';
+import {Init} from 'MES-Apis/lib/Init';
+import UpLoad from '@/pages/Purshase/RequestFunds/RequestFundsAdd/components/UpLoad';
 
 const RequestFundsAdd = ({
   orderId,
@@ -35,7 +37,11 @@ const RequestFundsAdd = ({
     },
     onError: () => {
       onLoading(false);
-      Message.error('提交请款申请失败！');
+      console.log(Init.getNewErrorMessage());
+      Modal.error({
+        title: '提交请款申请失败！',
+        content: Init.getNewErrorMessage(),
+      });
     }
   });
 
@@ -206,7 +212,7 @@ const RequestFundsAdd = ({
                 components = <Date showTime={item.config.date.type === 'hour'} />;
                 break;
               case 'File':
-                components = <FileUpload privateUpload maxCount={5} />;
+                components = <UpLoad orderId={orderId} />;
                 break;
               default:
                 break;

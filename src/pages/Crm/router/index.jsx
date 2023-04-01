@@ -53,6 +53,12 @@ const CrmRouterConfig = [
         exact: true,
       },
       {
+        path: '/orderStatistics',
+        component: lazy(() => import('../../Order/Statistics')),
+        fallback: <div>loading...</div>,
+        exact: true,
+      },
+      {
         redirect: '/CRM/customer',
       },
     ]

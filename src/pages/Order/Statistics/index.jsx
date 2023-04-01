@@ -40,6 +40,7 @@ const Statistics = () => {
         return <div>
           <ThousandsSeparator
             prefix="¥"
+            valueStyle={{color: '#52c41a'}}
             value={text}
           />
         </div>;
@@ -50,9 +51,15 @@ const Statistics = () => {
         return <div>
           <ThousandsSeparator
             prefix="¥"
+            valueStyle={{color: 'red'}}
             value={text}
           />
         </div>;
+      }
+    },
+    {
+      title: '开票率', width: 120, dataIndex: 'invoiceBillRate', align: 'right', render(text) {
+        return `${text || 0}%`;
       }
     },
     {title: '采购供应商数', width: 120, dataIndex: 'sellerCount', align: 'right',},
@@ -61,7 +68,7 @@ const Statistics = () => {
     {title: '入库总数', width: 120, dataIndex: 'inStockCount', align: 'right'},
     {
       title: '入库百分比', width: 120, dataIndex: 'inStockRate', align: 'right', render(text) {
-        return `${text}%`;
+        return `${text || 0}%`;
       }
     },
     {},
@@ -134,7 +141,7 @@ const Statistics = () => {
               <ThousandsSeparator
                 prefix="¥"
                 shopNumber
-                valueStyle={{color:'#257bde'}}
+                valueStyle={{color: '#257bde'}}
                 value={viewData.totalPrice}
               />
             </span>
@@ -144,7 +151,7 @@ const Statistics = () => {
               <ThousandsSeparator
                 prefix="¥"
                 shopNumber
-                valueStyle={{color:'#257bde'}}
+                valueStyle={{color: '#52c41a'}}
                 value={viewData.paymentPrice}
               />
             </span>
@@ -153,11 +160,15 @@ const Statistics = () => {
             <span className={styles.number}>
               <ThousandsSeparator
                 shopNumber
-                valueStyle={{color:'red'}}
+                valueStyle={{color: 'red'}}
                 prefix="¥"
                 value={viewData.deficientPrice}
               />
             </span>
+
+            开票率： <span className={styles.number}>{viewData.invoiceBillRate || 0} %</span>
+
+            <br />
 
             供应商总数： <span className={styles.number}>{viewData.sellerCount || 0}</span>
 

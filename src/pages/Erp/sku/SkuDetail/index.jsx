@@ -106,8 +106,8 @@ const SkuDetail = ({value}) => {
             <Col span={22}>
               <Descriptions column={4}>
                 {
-
                   typeSetting.filter(item => item.show).map((item, index) => {
+                    let label = item.filedName;
                     let children;
                     switch (item.key) {
                       case 'standard':
@@ -155,6 +155,7 @@ const SkuDetail = ({value}) => {
                         children = isArray(data.brandResults).map(item => item.brandName).join('、');
                         break;
                       case 'skuSize':
+                        label = `${item.filedName}(mm)`;
                         children = data.skuSize && data.skuSize.split(',').join('×') || '无';
                         break;
                       case 'images':
@@ -187,7 +188,7 @@ const SkuDetail = ({value}) => {
                         children = data[item.key] || '-';
                         console.log(data);
                     }
-                    return <Descriptions.Item key={index} label={item.filedName}>
+                    return <Descriptions.Item key={index} label={label}>
                       {children}
                     </Descriptions.Item>;
                   })
@@ -219,8 +220,7 @@ const SkuDetail = ({value}) => {
               {key: '1', label: '关联物料清单', children: <SkuPartsList value={data.skuId} />},
               {key: '2', label: '关联供应商', children: <Supply skuId={data.skuId} />},
               {key: '3', label: '库存明细', children: <StockDetail skuId={data.skuId} />},
-              {key: '4', label: '入库记录', children: <InStock skuId={data.skuId} />},
-              {key: '5', label: '出库记录', children: <OutStock skuId={data.skuId} />},
+              {key: '4', label: '出入库记录', children: <InStock skuId={data.skuId} />},
               {key: '6', label: '盘点记录', children: <Stocktaking skuId={data.skuId} />},
               {key: '7', label: '养护记录', children: <Maintenance skuId={data.skuId} />},
               {key: '8', label: '调拨记录', children: <Allocation skuId={data.skuId} />},

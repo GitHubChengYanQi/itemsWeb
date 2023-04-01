@@ -36,7 +36,7 @@ const OrderDetailTable = ({orderId}) => {
       dataIndex: 'totalPrice',
       align: 'right',
       sorter: true,
-      render: (value, record) => <Space style={{marginBottom:-12}}>
+      render: (value, record) => <Space style={{marginBottom: -12}}>
         <ThousandsSeparator
           prefix={record.sign}
           value={record.onePrice}
@@ -44,7 +44,7 @@ const OrderDetailTable = ({orderId}) => {
           shopNumber
         />
         x
-        <div>{record.purchaseNumber}{record.unit?.unitName}</div>
+        <div>{record.purchaseNumber} {record.unit?.unitName}</div>
         =
         <ThousandsSeparator
           prefix={record.sign}
@@ -61,8 +61,8 @@ const OrderDetailTable = ({orderId}) => {
       width: 120,
       sorter: true,
       dataIndex: 'arrivalNumber',
-      render: (value) => {
-        return <Render style={{color: '#1677ff'}}>{value}</Render>;
+      render: (value, record) => {
+        return <Render style={{color: '#1677ff'}}>{value} {record.unit?.unitName}</Render>;
       }
     },
     {
@@ -71,8 +71,8 @@ const OrderDetailTable = ({orderId}) => {
       width: 120,
       sorter: true,
       dataIndex: 'inStockNumber',
-      render: (value) => {
-        return <Render style={{color: '#52c41a'}}>{value}</Render>;
+      render: (value, record) => {
+        return <Render style={{color: '#52c41a'}}>{value} {record.unit?.unitName}</Render>;
       }
     }
   ];

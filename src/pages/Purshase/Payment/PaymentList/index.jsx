@@ -7,9 +7,9 @@
 
 import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions} from '@formily/antd';
-import {Button, Image, Input, message, Space, Modal as AntModal} from 'antd';
+import {Button, Input, message, Space, Modal as AntModal} from 'antd';
 import {useHistory} from 'ice';
-import {FileImageOutlined} from '@ant-design/icons';
+import {FileOutlined} from '@ant-design/icons';
 import Table from '@/components/Table';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
@@ -22,6 +22,7 @@ import {Money, Status} from '@/pages/Purshase/Payment/PaymentField';
 import ThousandsSeparator from '@/components/ThousandsSeparator';
 import Modal from '@/components/Modal';
 import {isArray} from '@/util/Tools';
+import FileUpload from '@/components/FileUpload';
 
 const formActionsPublic = createFormActions();
 const {FormItem} = Form;
@@ -33,10 +34,12 @@ const PaymentList = (
     }
   }, ref) => {
 
-  const [preview, setPreview] = useState([]);
-
   const editRef = useRef(null);
   const tableRef = useRef(null);
+
+  const showFileRef = useRef(null);
+
+  const [item, setItem] = useState({});
 
   const compoentRef = useRef();
 
@@ -81,7 +84,7 @@ const PaymentList = (
 
   let columns = [
     {
-      dataIndex: 'paymentAmount',width:120, title: '金额(人民币)', align: 'right', render: (value) => {
+      dataIndex: 'paymentAmount', width: 120, title: '金额(人民币)', align: 'right', render: (value) => {
         return <ThousandsSeparator prefix="￥" value={value} />;
       }
     },
@@ -103,10 +106,11 @@ const PaymentList = (
   columns = [
     ...columns,
     {
-      dataIndex: 'enclosureId', title: '附件',width:120, align: 'center', render: (value, record) => {
+      dataIndex: 'enclosureId', title: '附件', width: 120, align: 'center', render: (value, record) => {
         return <Button type="link" onClick={() => {
-          setPreview(isArray(record.mediaUrlResults).map(item => item.url));
-        }}><FileImageOutlined /> x {isArray(record.mediaUrlResults).length}</Button>;
+          showFileRef.current.open(true);
+          setItem(record);
+        }}><FileOutlined /> x {isArray(record.mediaUrlResults).length}</Button>;
       }
     },
     {dataIndex: 'paymentDate', title: '付款时间', width: 200, align: 'center'},
@@ -148,7 +152,7 @@ const PaymentList = (
     <>
       <Table
         emptyAdd={<Button type="link" onClick={() => editRef.current.open(false)}>暂无数据，请添加</Button>}
-        searchStyle={{padding: 0}}
+        searchStyle={{padding: orderId && 0}}
         maxHeight="auto"
         unsetOverflow
         noTableColumnSet
@@ -198,20 +202,14 @@ const PaymentList = (
           editRef.current.close();
         }} ref={editRef} />}
 
-      <Image.PreviewGroup
-        preview={{visible: preview.length > 0, onVisibleChange: (vis) => setPreview(vis ? preview : [])}}>
-        {
-          preview.map((item, index) => {
-            return <Image
-              style={{
-                display: 'none',
-              }}
-              key={index}
-              src={item}
-            />;
-          })
-        }
-      </Image.PreviewGroup>
+      <Modal
+        headTitle="查看附件"
+        ref={showFileRef}
+      >
+        <div style={{padding: 16}}>
+          <FileUpload privateUpload show value={item.field} />
+        </div>
+      </Modal>
     </>
   );
 };

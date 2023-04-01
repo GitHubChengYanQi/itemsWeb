@@ -309,7 +309,7 @@ const useTableSet = (column, tableKey, noTableColumnSet) => {
             <Spin />
             :
             <div>
-              视图：
+              {detail?.tableViewId && '视图：'}
               <Select
                 options={isArray(data)}
                 style={{minWidth: 200}}

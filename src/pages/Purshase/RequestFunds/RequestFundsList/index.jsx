@@ -196,7 +196,7 @@ const RequestFundsList = (
         actions={<Button type="primary" onClick={() => {
           requestFundsRef.current.open(true);
         }}>请款申请</Button>}
-        searchStyle={{padding: 0}}
+        searchStyle={{padding: orderId && 0}}
         maxHeight="auto"
         unsetOverflow
         noTableColumnSet
@@ -273,6 +273,7 @@ const RequestFundsList = (
 
 
       <Modal
+        mask={false}
         width={820}
         headTitle="请款申请"
         ref={requestFundsRef}
@@ -300,7 +301,7 @@ const RequestFundsList = (
         <RequestFundsAdd
           onLoading={setAddRequestFundsLoading}
           remark={order.paymentResult?.remark}
-          contactsName={order.bcontacts?.contactsName}
+          contactsName={order.bcustomer?.customerName}
           bankAccount={order.partyBBankAccount}
           bankName={order.bbank?.bankName}
           money={order.paymentResult?.totalAmount}

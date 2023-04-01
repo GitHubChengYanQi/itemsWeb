@@ -197,6 +197,7 @@ const SkuTable = ({...props}, ref) => {
             ...deleteBatch,
           }}
           onSuccess={() => {
+            setIds([]);
             tableRef.current.refresh();
           }}
           value={ids}>批量删除</DelButton>
@@ -354,7 +355,7 @@ const SkuTable = ({...props}, ref) => {
     },
     {
       dataIndex: 'skuSize',
-      title: '尺寸',
+      title: '尺寸(mm)',
       render: (value, record, index, formActions) => render(value && value.split(',').join('×') || '-', record, index, formActions)
     },
     {
@@ -410,10 +411,13 @@ const SkuTable = ({...props}, ref) => {
       title: '操作',
       align: 'center',
       fixed: 'right',
-      width: 100,
+      width: 150,
       render: (value, record) => {
         return (
           <>
+            <Button type="link" onClick={() => {
+              history.push(`/SPU/sku/${record.skuId}`);
+            }}>详情</Button>
             <EditButton onClick={() => {
               addRef.current.open(record);
               setCopy(false);
@@ -431,6 +435,7 @@ const SkuTable = ({...props}, ref) => {
                 partsListRef.current.open(partsList);
                 return;
               }
+              setIds([]);
               tableRef.current.refresh();
             }} />
           </>

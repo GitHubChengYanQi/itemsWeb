@@ -134,6 +134,9 @@ const PrintTemplate = (
         </tr>
         {
           contents.map((item, index) => {
+            if (item.control === 'File') {
+              return <tr key={index} />
+            }
             const label = isArray(item.titles).find(item => item.lang === 'zh_CN')?.text;
             if (item.control === 'Textarea' || index === contents.length - 1) {
               return <tr key={index}>
