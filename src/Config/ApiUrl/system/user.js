@@ -48,3 +48,9 @@ export const userUnfreeze = {
   url: '/rest/mgr/unfreeze',
   method: 'POST',
 };
+
+
+export const userSelect = {
+  url: '/rest/mgr/Select',
+  method: 'POST'
+};

@@ -89,9 +89,7 @@ const InvoiceEdit = ({previewData, orderId, ...props}, ref) => {
               formItemProps = {
                 privateUpload: true,
                 imgPreview: true,
-                component: FileUpload,
-                uploadTypes: ['jpg', 'jpeg', 'png'],
-                prompt: '只能上传jpg、jpeg、png类型'
+                component: FileUpload
               };
               break;
             case 'name':

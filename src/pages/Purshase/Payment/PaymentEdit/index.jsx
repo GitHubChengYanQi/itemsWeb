@@ -123,8 +123,6 @@ const PaymentEdit = ({
                 privateUpload: true,
                 imgPreview: true,
                 component: FileUpload,
-                uploadTypes: ['jpg', 'jpeg', 'png'],
-                prompt: '只能上传jpg、jpeg、png类型'
               };
               break;
             default:

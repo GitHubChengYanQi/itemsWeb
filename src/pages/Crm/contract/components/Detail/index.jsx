@@ -87,9 +87,11 @@ const Detail = ({id}) => {
     headStyle: {fontWeight: 'bold'}
   };
 
+  const po = data.type === 1;
+
   return <div>
     <DetailLayout
-      title="采购单详情"
+      title={po ? '采购单详情' : '销售单详情'}
       extra={<Space>
         <Button type="primary" ghost onClick={() => {
           const paymentResult = data.paymentResult || {};

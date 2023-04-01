@@ -31,7 +31,7 @@ const TableWarp = (
   {
     // a
     actions,
-    api,
+    api = {},
     actionButton,
     // b
     bodyStyle,
@@ -108,6 +108,7 @@ const TableWarp = (
     sortList,
     submitAction,
     // t
+    tableBorder,
     title,
     tableData,
     tab,
@@ -388,7 +389,7 @@ const TableWarp = (
             {showCard}
             {isArray(dataSources || dataSource).length === 0 ?
               <Spin spinning={Loading || loading}>
-                <Empty description={emptyAdd || '暂无数据'}  />
+                <Empty description={emptyAdd || '暂无数据'} />
               </Spin> :
               <AntdTable
                 className={style.table}
@@ -397,6 +398,7 @@ const TableWarp = (
                 loading={Loading || loading}
                 dataSource={dataSources || dataSource || []}
                 rowKey={rowKey}
+                bordered={tableBorder}
                 columns={children ? null : [
                   ...(noSort ? [] : [{
                     title: '序号',

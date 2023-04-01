@@ -75,10 +75,10 @@ const UpLoad = ({value, onChange, orderId}) => {
         openSelectList('order');
       }}>订单附件</Button>
       <Button loading={getAllFileLoading} type="link" onClick={() => {
-        openSelectList('invoiceBill');
+        openSelectList('paymentRecord');
       }}>付款附件</Button>
       <Button loading={getAllFileLoading} type="link" onClick={() => {
-        openSelectList('paymentRecord');
+        openSelectList('invoiceBill');
       }}>发票附件</Button>
     </div>
 

@@ -463,7 +463,7 @@ const OrderTable = (props) => {
               <Radio value="all">全部</Radio>
               <Radio value="inStock">入库完成</Radio>
               <Radio value="payment">付款完成</Radio>
-              <Radio value="invoice">发票完成</Radio>
+              <Radio value="invoice">开票完成</Radio>
             </Radio.Group>}
           </div>
         </>}
