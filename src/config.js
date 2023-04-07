@@ -42,10 +42,10 @@ export default {
   cheng: {
     logLevel: 'info',
     component: 'ant',
-    baseURI: 'http://192.168.2.100/',
+    // baseURI: 'http://192.168.2.100/',
     // baseURI: 'http://localhost/',
     // baseURI: 'http://10.147.20.68:8881/',
-    // baseURI: 'http://192.168.2.220:8885/',
+    baseURI: 'http://192.168.2.220:8885/',
     // baseURI: 'https://api.hh.zz2025.com/',
     projectName: '道昕云',
     AMAP_KEY: '',

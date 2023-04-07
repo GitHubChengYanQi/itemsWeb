@@ -16,16 +16,32 @@ const NetworkDisk = () => {
 
   const addSpaceRef = useRef();
 
+  const listRef = useRef();
+
   const [openPopover, setOpenPopover] = useState(false);
 
   const {loading: detailLoading, run: detailRun} = useRequest(detailUrl, {
     manual: true,
-    onSuccess:(res)=>{
+    onSuccess: (res) => {
       console.log(res);
     }
   });
 
   const columns = [
+    {
+      title: '类型', width: 100, dataIndex: 'type', render: (value) => {
+        switch (value) {
+          case 'order':
+            return '订单';
+          case 'paymentRecord':
+            return '付款';
+          case 'invoiceBill':
+            return '发票';
+          default:
+            return '-';
+        }
+      }
+    },
     {
       title: '空间名称', dataIndex: 'spaceName', render: (value) => {
         return <Typography.Paragraph
@@ -85,7 +101,9 @@ const NetworkDisk = () => {
         }}><PlusOutlined /> 添加</Button>
       </div>
       <Table
+        noRowSelection
         tableBorder
+        ref={listRef}
         headStyle={{display: 'none'}}
         bodyStyle={{padding: 0}}
         rowKey="spaceId"
@@ -99,6 +117,7 @@ const NetworkDisk = () => {
     />
 
     <Add addSpaceRef={addSpaceRef} onSuccess={() => {
+      listRef.current.submit();
       addSpaceRef.current.close();
     }} />
   </div>;

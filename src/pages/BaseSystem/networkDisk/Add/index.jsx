@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Divider, Space} from 'antd';
+import {Button, Divider, Form, Select, Space} from 'antd';
 import AutoFocus from '@/components/AutoFocus';
 import TranserUsers from '@/pages/BaseSystem/user/components/TranserUsers';
 import Modal from '@/components/Modal';
@@ -22,8 +22,11 @@ const Add = (
 
   const [userIds, setUserIds] = useState([]);
 
+  const [type, setType] = useState([]);
+
   return <>
     <Modal
+      width={600}
       headTitle="添加空间"
       ref={addSpaceRef}
       footer={<Space>
@@ -34,27 +37,37 @@ const Add = (
           addRun({
             data: {
               userIds,
-              spaceName
+              spaceName,
+              type
             }
           });
         }}>确认</Button>
       </Space>}
     >
       <div style={{padding: '16px 32px'}}>
-        <div>
-          空间名
-          <Divider style={{margin: '16px 0'}} />
-        </div>
-        <AutoFocus value={spaceName} placeholder="请输入空间名" onChange={({target: {value}}) => {
-          setSpaceName(value);
-        }} />
-        <div style={{paddingTop: 24}}>
-          设置权限
-          <Divider style={{margin: '16px 0'}} />
-          <TranserUsers value={userIds} onChange={(userIds) => {
-            setUserIds(userIds);
-          }} />
-        </div>
+        <Form
+          labelCol={{
+            span: 4,
+          }}
+        >
+          <Form.Item label="类型" name="type">
+            <Select
+              options={[
+                {value: 'order', label: '订单'},
+                {value: 'paymentRecord', label: '付款'},
+                {value: 'invoiceBill', label: '发票'}
+              ]}
+              placeholder="请选择空间类型"
+              onChange={setType}
+            />
+          </Form.Item>
+          <Form.Item label="空间名" name="spaceName">
+            <AutoFocus placeholder="请输入空间名" onChange={setSpaceName} />
+          </Form.Item>
+          <Form.Item label="设置权限" name="userIds">
+            <TranserUsers onChange={setUserIds} />
+          </Form.Item>
+        </Form>
       </div>
     </Modal>
   </>;

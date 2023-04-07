@@ -436,6 +436,7 @@ export const TemplateId = (props) => {
 
   return <SelectCreate
     component={TemplateEdit}
+    placeholder='选择合同模板'
     title="创建合同"
     width="100vw"
     createTitle="创建合同"

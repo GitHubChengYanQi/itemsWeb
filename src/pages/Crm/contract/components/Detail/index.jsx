@@ -1,7 +1,6 @@
 import React, {useRef, useState} from 'react';
-import {Button, Card, Descriptions, Progress, Space} from 'antd';
-import {config, useHistory, useParams} from 'ice';
-import cookie from 'js-cookie';
+import {Button, Card, Descriptions, Progress, Space, Dropdown} from 'antd';
+import {useHistory, useParams} from 'ice';
 import ProSkeleton from '@ant-design/pro-skeleton';
 import {useRequest} from '@/util/Request';
 import {contractDetail} from '@/pages/Crm/contract/ContractUrl';
@@ -18,14 +17,15 @@ import Modal from '@/components/Modal';
 import RelevanceTasks from '@/pages/Crm/contract/components/Detail/components/RelevanceTasks';
 import styles from './index.module.scss';
 import FileUpload from '@/components/FileUpload';
-
-const {baseURI} = config;
+import Message from '@/components/Message';
+import {DownOutlined} from '@ant-design/icons';
 
 const addFiles = {url: '/order/addFile', method: 'POST'};
 
-const Detail = ({id}) => {
+const createWord = {url: '/Excel/exportContractWord', method: 'GET'};
+const createUploadWord = {url: '/Excel/v1.1/exportContractWord', method: 'GET'};
 
-  const token = cookie.get('tianpeng-token');
+const Detail = ({id}) => {
 
   const uploadRef = useRef();
 
@@ -43,6 +43,8 @@ const Detail = ({id}) => {
 
   const [loading, setLoading] = useState(true);
 
+  const [createOpen, setCreateOpen] = useState(false);
+
   const {loading: addFilesLoading, run: addFilesRun} = useRequest(addFiles, {
     manual: true,
   });
@@ -54,7 +56,7 @@ const Detail = ({id}) => {
       onError: () => setLoading(false)
     });
 
-  const {data} = useRequest(orderDetail, {
+  const {data, refresh} = useRequest(orderDetail, {
     defaultParams: {
       data: {
         orderId,
@@ -73,6 +75,38 @@ const Detail = ({id}) => {
     onError: () => setLoading(false)
   });
 
+  const {loading: createWordLoading, run: createWordRun} = useRequest(createWord, {
+    manual: true,
+    onSuccess() {
+      setLoading(true);
+      refresh();
+      Message.success('生成成功！');
+      setCreateOpen(false);
+    },
+    onError: () => {
+      setLoading(true);
+      refresh();
+      Message.success('生成成功！');
+      setCreateOpen(false);
+    }
+  });
+
+  const {loading: createUploadWordLoading, run: createUploadWordRun} = useRequest(createUploadWord, {
+    manual: true,
+    onSuccess() {
+      setLoading(true);
+      refresh();
+      Message.success('上传成功！');
+      setCreateOpen(false);
+    },
+    onError: () => {
+      setLoading(true);
+      refresh();
+      Message.success('生成成功！');
+      setCreateOpen(false);
+    }
+  });
+
   if (loading) {
     return (<ProSkeleton type="descriptions" />);
   }
@@ -86,6 +120,37 @@ const Detail = ({id}) => {
     bodyStyle: {padding: 16},
     headStyle: {fontWeight: 'bold'}
   };
+
+  const items = [
+    {
+      key: '1',
+      label: (
+        <Button loading={createWordLoading} type="link" onClick={() => {
+          createWordRun({
+            params: {
+              id: contract.contractId
+            }
+          });
+        }}>
+          生成合同
+        </Button>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Button loading={createUploadWordLoading} type="link" onClick={() => {
+          createUploadWordRun({
+            params: {
+              id: contract.contractId
+            }
+          });
+        }}>
+          生成合同并上传微盘
+        </Button>
+      ),
+    }
+  ];
 
   const po = data.type === 1;
 
@@ -114,9 +179,25 @@ const Detail = ({id}) => {
         }}>再来一单</Button>
         {
           contract &&
-          <Button type="primary" ghost onClick={() => {
-            window.open(`${baseURI}Excel/exportContractWord?id=${contract.contractId}&authorization=${token}`);
-          }}> 合同导出word</Button>
+          <Dropdown
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            menu={{
+              items,
+            }}
+            trigger="click"
+            placement="bottom"
+          >
+            <Button
+              type="primary"
+              ghost
+            >
+              <Space align="center">
+                合同导出
+                <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
         }
         <Button
           onClick={() => {
@@ -314,6 +395,7 @@ const Detail = ({id}) => {
     >
       <RelevanceTasks orderId={orderId} />
     </Modal>
+
   </div>;
 };
 

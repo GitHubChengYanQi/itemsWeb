@@ -225,7 +225,7 @@ const OrderTable = (props) => {
     {
       key: '2',
       label: (
-        <Button style={{padding: 0}} disabled={record.contractId || record.fileId} type="link" onClick={() => {
+        <Button style={{padding: 0}} disabled={record.contractId} type="link" onClick={() => {
           createContractRef.current.open(record.orderId);
         }}>创建合同</Button>
       )

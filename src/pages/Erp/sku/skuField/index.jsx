@@ -52,7 +52,7 @@ export const SelectSpu = (props) => {
 
 export const SpuId = (props) => {
 
-  const {classId, value, onChange, onBlur, placeholder} = props;
+  const {classId, value, onChange, onBlur, placeholder, onFocus, autoFocus} = props;
 
   const {loading, data, run} = useRequest(spuListSelect, {manual: true});
 
@@ -79,6 +79,8 @@ export const SpuId = (props) => {
   });
 
   return (<AutoComplete
+    autoFocus={autoFocus}
+    onFocus={onFocus}
     value={value?.name || null}
     notFoundContent={loading && <Spin />}
     options={options || []}
@@ -223,6 +225,7 @@ export const SpuClass = (props) => {
   const {itemKey, ...other} = props;
 
   return (<SetSelectOrCascader
+    width="100%"
     autoFocus={cookie.get('skuEditFocus') === itemKey}
     options={state.skuClass}
     moduleType="cascader"

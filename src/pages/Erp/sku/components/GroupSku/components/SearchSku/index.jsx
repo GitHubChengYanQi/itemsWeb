@@ -6,11 +6,11 @@ import Icon from '@/components/Icon';
 import {isArray} from '@/util/Tools';
 import SearchValueFormat from '@/components/SearchValueFormat';
 import {useRequest} from '@/util/Request';
+import DeleteButton from '@/components/DeleteButton';
 
 const historyList = {url: '/queryLog/list', method: 'POST'};
 const historyAdd = {url: '/queryLog/add', method: 'POST'};
 const historyDeleteBatch = {url: '/queryLog/deleteBatch', method: 'POST'};
-const historyDelete = {url: '/queryLog/delete', method: 'POST'};
 
 const SearchSku = (
   {
@@ -51,8 +51,17 @@ const SearchSku = (
     },
   });
 
+  const {run: deleteHistory} = useRequest(historyDeleteBatch, {
+    manual: true,
+    onSuccess: () => {
+      refresh();
+    },
+  });
+
   useEffect(() => {
-    inputRef.current?.focus();
+    if (inputRef.current){
+      inputRef.current.focus();
+    }
   }, []);
 
   const searchSkuName = (value) => {
@@ -86,6 +95,14 @@ const SearchSku = (
     <div hidden={searchValue}>
       <div className={styles.groupTitle}>
         历史搜索
+
+        <DeleteButton onClick={() => {
+          return deleteHistory({
+            data: {
+              formType
+            }
+          });
+        }} />
       </div>
       <div>
         {

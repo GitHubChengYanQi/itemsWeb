@@ -17,7 +17,7 @@ const AutoFocus = (
   }, []);
 
   return <>
-    <Input ref={inputRef} value={value} placeholder={placeholder} onChange={onChange} />
+    <Input ref={inputRef} value={value} placeholder={placeholder} onChange={({target:{value}})=>onChange(value)} />
   </>;
 };
 

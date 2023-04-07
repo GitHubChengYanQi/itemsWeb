@@ -10,6 +10,7 @@ import {ProductionStationRouter} from '@/pages/BaseSystem/productionStation/prod
 import DesignConfig from '@/pages/Design/router';
 import {CodingV2RulesRouter} from '@/pages/BaseSystem/codingV2Rules/codingRulesRouter';
 import NetworkDiskConfig from '@/pages/BaseSystem/networkDisk/route';
+import {TenantRouter} from '@/pages/BaseSystem/tenant/tenantRouter';
 
 const systemConfig = [
 
@@ -28,6 +29,7 @@ const systemConfig = [
       ...ProductionStationRouter,
       ...DesignConfig,
       ...NetworkDiskConfig,
+      ...TenantRouter,
       {
         path: '/enterprise',
         name: '企业信息',

@@ -198,6 +198,7 @@ const SkuTable = ({...props}, ref) => {
           }}
           onSuccess={() => {
             setIds([]);
+            setSku([]);
             tableRef.current.refresh();
           }}
           value={ids}>批量删除</DelButton>
@@ -436,6 +437,7 @@ const SkuTable = ({...props}, ref) => {
                 return;
               }
               setIds([]);
+              setSku([]);
               tableRef.current.refresh();
             }} />
           </>
@@ -459,7 +461,7 @@ const SkuTable = ({...props}, ref) => {
         tableKey={`sku${spuClass || '0'}`}
         columns={columns}
         actionButton={<Space size={24}>
-          <a>查看日志</a>
+          <a hidden>查看日志</a>
           <Import
             url={`${baseURI}Excel/importSku`}
             title="导入物料"

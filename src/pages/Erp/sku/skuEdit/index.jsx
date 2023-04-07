@@ -247,6 +247,7 @@ const SkuEdit = ({...props}, ref) => {
               break;
             case 'spu':
               formItemProps = {
+                autoFocus:cookie.get('skuEditFocus') === item.key,
                 component: SysField.SpuId,
                 required: true,
                 skuId: value.skuId,
