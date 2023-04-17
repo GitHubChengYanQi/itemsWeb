@@ -9,6 +9,7 @@ import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
 import {isArray} from '@/util/Tools';
 import SearchValueFormat from '@/components/SearchValueFormat';
 import AddSkuModal from '@/pages/Erp/sku/SkuTable/AddSkuModal';
+import classNames from 'classnames';
 
 const SelectSkusUtil = (
   {
@@ -18,6 +19,7 @@ const SelectSkusUtil = (
     small,
     onSmall = () => {
     },
+    className
   }, ref
 ) => {
 
@@ -130,7 +132,7 @@ const SelectSkusUtil = (
       }}
     />
     <List
-      className={styles.list}
+      className={classNames(styles.list, className)}
       loading={loading}
       itemLayout="horizontal"
       loadMore={loadMore}

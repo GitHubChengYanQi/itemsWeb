@@ -63,7 +63,7 @@ const PaymentEdit = ({
         paymentAmount: requestFunds.newMoney,
         remark: contents.find(item => item.id === 'item-1494251203122')?.value?.text,
         field: requestFunds.filed,
-        paymentDate: moment(Number(contents.find(item => item.id === 'item-1494251158679')?.value?.date?.timestamp) * 1000).format('YYYY-MM-DD'),
+        paymentDate: requestFunds.doneTime,
       } : {}}
       formActions={formActionsPublic}
       api={ApiConfig}

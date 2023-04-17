@@ -1,181 +1,162 @@
-import React, {useState} from 'react';
-import Table from 'antd/lib/table';
-import Button from 'antd/lib/button';
-import styles from './index.module.less';
+import React from 'react';
+import store from '@/store';
 
-import QueueAnim from 'rc-queue-anim';
-import TweenOne, {TweenOneGroup} from 'rc-tween-one';
-
-const TableContext = React.createContext(false);
 
 const Test = () => {
 
-  const data = [
-    {
-      key: 1,
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No.1 Lake Park',
-    },
-    {
-      key: 2,
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No.1 Lake Park',
-    },
-    {
-      key: 3,
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No.1 Lake Park',
-    },
-    {
-      key: 4,
-      name: 'Jim Red',
-      age: 18,
-      address: 'London No.1 Lake Park',
-    },
-  ];
+  const [dataSource] = store.useModel('dataSource');
 
-  const [state, setState] = useState(data);
-  console.log(state);
-  const onEnd = (e) => {
-    const dom = e.target;
-    dom.style.height = 'auto';
+  const tdStyle = {
+    textAlign: 'center',
+    padding: 4
   };
 
-  const onAdd = () => {
-    const data = state;
-    const i = Math.round(Math.random() * (data.length - 1));
-    setState([{
-      key: Date.now(),
-      name: data[i].name,
-      age: data.length,
-      address: data[i].address,
-    }, ...data]);
-  };
-
-  const onDelete = (key, e) => {
-    e.preventDefault();
-    const data = state.filter(item => item.key !== key);
-    setState(data);
-  };
-
-  const className = 'table-enter-leave-demo';
-  const columns = [
-    {title: 'Name', dataIndex: 'name', key: 'name'},
-    {title: 'Age', dataIndex: 'age', key: 'age'},
-    {title: 'Address', dataIndex: 'address', key: 'address'},
-    {
-      title: 'Action',
-      dataIndex: '',
-      key: 'x',
-      render: (text, record) => (
-        <span
-          className={styles[`${className}-delete`]}
-          onClick={(e) => {
-            onDelete(record.key, e);
-          }}
-        >
-            Delete
-        </span>
-      ),
-    },
-  ];
-  const enterAnim = [
-    {
-      opacity: 1, x: 0, backgroundColor: '#fffeee', duration: 1, moment: 0
-    },
-    {
-      duration: 200,
-      type: 'from',
-      delay: 250,
-      ease: 'easeOutQuad',
-      onComplete: () => {
-        setState(state.map((item, index) => ({...item, start: index === 1 && false})));
-      },
-    },
-    {
-      opacity: 1, x: 0, duration: 250, ease: 'easeOutQuad',
-    },
-    {delay: 1000, backgroundColor: '#fff'},
-  ];
-  const pageEnterAnim = [
-    {
-      opacity: 0, duration: 0,
-    },
-    {
-      height: 0,
-      duration: 150,
-      type: 'from',
-      delay: 150,
-      ease: 'easeOutQuad',
-      onComplete: onEnd,
-    },
-    {
-      opacity: 1, duration: 150, ease: 'easeOutQuad',
-    },
-  ];
-  const leaveAnim = [
-    {duration: 250, opacity: 0},
-    {height: 0, duration: 200, ease: 'easeOutQuad'},
-  ];
-  const pageLeaveAnim = [
-    {duration: 150, opacity: 0},
-    {height: 0, duration: 150, ease: 'easeOutQuad'},
-  ];
-  // 动画标签，页面切换时改用 context 传递参数；
-
-  return <>
-    <Button onClick={() => setState(state.map((item, index) => ({...item, start: index === 1})))}>add</Button>
-    <div>
-      {state.map((item, index) => {
-        return <TweenOne
-          moment={item.start ? 0 : null}
-          animation={enterAnim}
-          style={{height: 30}}
-          key={index}>123</TweenOne>;
-      })}
-    </div>
-  </>;
-
-
-  return (
-    <div className={styles[`${className}-wrapper`]}>
-      <div className={styles[className]}>
-        <div className={styles[`${className}-table-wrapper`]}>
-          <div className={styles[`${className}-action-bar`]}>
-            <Button type="primary" onClick={onAdd}>Add</Button>
-          </div>
-          <Table
-            columns={columns}
-            pagination={{pageSize: 4}}
-            dataSource={state}
-            className={styles[`${className}-table`]}
-            components={{
-              body: {
-                wrapper: (props) => {
-                  console.log(props);
-                  return <TweenOneGroup
-                    component="tbody"
-                    enter={enterAnim}
-                    leave={leaveAnim}
-                    appear={false}
-                    exclusive
-                    className={props.className}
-                  >
-                    {props.children}
-                  </TweenOneGroup>;
-                }
-              }
-            }}
-          />
-        </div>
+  return <div>
+    <div style={{
+      width: 670,
+      margin: '0 auto',
+      paddingTop: 18,
+      fontWeight: 'bold'
+    }}>
+      <div
+        style={{padding: '0 10%'}}
+      >
+        <h2 style={{
+          textAlign: 'center',
+          borderBottom: 'solid 1px #000',
+          fontWeight: 'bold'
+        }}>
+          {dataSource?.publicInfo?.enterprise || ''}
+        </h2>
+        <h2 style={{
+          textAlign: 'center',
+          borderBottom: 'solid 1px #000',
+          fontWeight: 'bold'
+        }}>
+          订货卡片
+        </h2>
       </div>
+      <table
+        border={1}
+        style={{
+          width: '100%',
+          borderSpacing: 1,
+          borderCollapse: 'collapse',
+          tableLayout: 'fixed',
+        }}
+      >
+        <tbody>
+        <tr>
+          <td style={tdStyle} colSpan={1} rowSpan={3}>编号</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>卡片编号</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>T515DD230214135</td>
+          <td style={tdStyle} colSpan={1} rowSpan={3}>产品</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>产品名称</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>普通车床</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>合同编号</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>HH-CA-T5-230214</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>产品型号</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>T5</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>机床编号</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>T515DD2303007</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>产品规格</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>中500X1500 mm</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>订货日期</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>2023年01月19 日</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>交货日期</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>2023年03月31日</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>订货单位</td>
+          <td style={tdStyle} colSpan={9} rowSpan={1}>加拿大STANKO公司</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>项目</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>本机配置</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>项目</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>本机配置</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>开机界面</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>STANKO界面</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>机床床身</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>无马鞍</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>开机界面</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>STANKO界面</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>机床床身</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>无马鞍</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>开机界面</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>STANKO界面</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>机床床身</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>无马鞍</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>开机界面</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>STANKO界面</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>机床床身</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>无马鞍</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>卡盘形式</td>
+          <td style={tdStyle} colSpan={9} rowSpan={1}>K11-315/D11;通孔中104，正安装在机床上</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>机床防护</td>
+          <td style={tdStyle} colSpan={9} rowSpan={1}>卡盘架/丝杠/后防护/接水盘</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>随机附件</td>
+          <td style={tdStyle} colSpan={9} rowSpan={1}>
+            附件箱、死顶尖 MT5、钥匙 2 把、度检验单、装箱单、电气原理图、U盘、卡盘扳手、地脚螺栓 M16*260 数量6个、平垫中16数量6个螺母 M16 数量6个卡盘自带反爪3 件快换刀夹50/41]数量3
+            个、快换刀夹 540/422 数量 1个、快换刀架扳手数量2个
+          </td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={1} rowSpan={3}>特殊配置</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>名称</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>规格</td>
+          <td style={tdStyle} colSpan={1} rowSpan={1}>数量</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>名称</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>规格</td>
+          <td style={tdStyle} colSpan={1} rowSpan={1}>数量</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>跟刀架</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>中20-80mm</td>
+          <td style={tdStyle} colSpan={1} rowSpan={1}>1套</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>跟刀架</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>中20-80mm</td>
+          <td style={tdStyle} colSpan={1} rowSpan={1}>1套</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>跟刀架</td>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>中20-80mm</td>
+          <td style={tdStyle} colSpan={1} rowSpan={1}>1套</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>跟刀架</td>
+          <td style={tdStyle} colSpan={2} rowSpan={1}>中20-80mm</td>
+          <td style={tdStyle} colSpan={1} rowSpan={1}>1套</td>
+        </tr>
+        <tr>
+          <td style={tdStyle} colSpan={3} rowSpan={1}>特殊要求</td>
+          <td style={tdStyle} colSpan={9} rowSpan={1}>
+            1.机床装配好后，解体发货;
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-  );
+  </div>;
 };
-;
 
 
 export default Test;

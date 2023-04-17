@@ -321,7 +321,7 @@ const RequestFundsDetail = (
                       </div>
                       <div hidden={!send} style={{color: '#000'}}>
                         已抄送
-                        · {moment.unix(isArray(spRecords[spRecords.length - 1].detail).find(item => item.spStatus === 'PASSED')?.spTime).format('YYYY/MM/DD hh:mm')}
+                        · {moment.unix(isArray(spRecords[spRecords.length - 1]?.details).find(item => item.spStatus === 'PASSED')?.spTime).format('YYYY/MM/DD hh:mm')}
                       </div>
                     </div>;
                   })

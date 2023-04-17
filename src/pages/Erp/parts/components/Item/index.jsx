@@ -45,6 +45,7 @@ export const scroll = (itemId) => {
 
 const Item = (
   {
+    readOnly,
     searchValue,
     isDragging,
     index,
@@ -130,30 +131,47 @@ const Item = (
       id={`${show ? 'comparison' : 'parts'}${item.skuId}`}
       className={classNames(styles.content, !exits && index % 2 === 0 && styles.row, !exits && noExist && styles.noComparison, !exits && isDragging && styles.isDragging)}
     >
-      <div className={styles.sku} onClick={() => {
-        if (noExist || !comparison) {
-          return;
-        }
-        scroll(`${!show ? 'comparison' : 'parts'}${item.skuId}`);
-        onParts(item);
-      }}>
+      <div className={styles.sku}>
         <List.Item.Meta
-          title={<SearchValueFormat
-            color='red'
-            maxWidth="94%"
-            style={{color: noExist && '#174ad4'}}
-            searchValue={searchValue}
-            label={item.standard || '-'}
-          />}
           description={
             <div>
-              <SearchValueFormat
-                color='red'
-                maxWidth="94%"
-                style={{color: noExist && '#174ad4'}}
-                searchValue={searchValue}
-                label={SkuRender(item) || '-'}
-              />
+              <div onClick={() => {
+                if (noExist || !comparison) {
+                  return;
+                }
+                scroll(`${!show ? 'comparison' : 'parts'}${item.skuId}`);
+                onParts(item);
+              }}>
+                <SearchValueFormat
+                  color="red"
+                  maxWidth="94%"
+                  style={{color: noExist && '#174ad4', fontWeight: 'bold'}}
+                  searchValue={searchValue}
+                  label={item.standard || '-'}
+                />
+                <SearchValueFormat
+                  color="red"
+                  maxWidth="94%"
+                  style={{color: noExist && '#174ad4'}}
+                  searchValue={searchValue}
+                  label={SkuRender(item) || '-'}
+                />
+              </div>
+              {(item.bomNum > 0 && !show) ? <Button
+                style={{padding: 0, height: 19}}
+                type="link"
+                onClick={() => {
+                  if (readOnly) {
+                    return;
+                  }
+                  bomsByskuIdRun({params: {skuId: item.skuId}});
+                  versionModalRef.current?.open(false);
+                  setSkuId(item.skuId);
+                  setCurrentVer(item.versionBomId);
+                }}
+              >
+                {item.versionBomId ? (item.version || '-') : '选择版本'}
+              </Button> : (item.version || '-')}
             </div>}
         />
       </div>
@@ -171,7 +189,7 @@ const Item = (
               openNewEdit(isArray(res)[0]?.partsId, item.skuId);
               return;
             }
-            openNewEdit(item.bomId, item.skuId);
+            openNewEdit(item.versionBomId, item.skuId);
           }}
         >
           <SearchOutlined />
@@ -179,6 +197,7 @@ const Item = (
         <Button
           style={{padding: 0}}
           type="link"
+          disabled={readOnly}
           onClick={() => {
             addRef.current.open({...item, copy: true});
             setCopy(true);
@@ -186,7 +205,7 @@ const Item = (
         >
           复制
         </Button>
-        {noExist ? <Button
+        {(noExist && !readOnly) ? <Button
           style={{padding: 0}}
           type="link"
           onClick={() => {
@@ -198,11 +217,19 @@ const Item = (
       </Space> : <Space>
         <Space align="center">
           数量：
-          <InputNumber addonBefore="" width={100} value={item.number || 1} min={1} onChange={(value) => {
-            setValue({number: value}, item.skuId);
-          }} />
+          <InputNumber
+            readOnly={readOnly}
+            addonBefore=""
+            width={100}
+            value={item.number || 1} min={1}
+            onChange={(value) => {
+              setValue({number: value}, item.skuId);
+            }}
+          />
         </Space>
         <Select
+          showArrow={!readOnly}
+          open={readOnly ? false : undefined}
           bordered={false}
           value={typeof item.autoOutstock === 'number' ? item.autoOutstock : 1}
           options={[
@@ -211,8 +238,7 @@ const Item = (
           ]}
           onChange={(value) => setValue({autoOutstock: value}, item.skuId)}
         />
-
-        <Warning onOk={() => {
+        {!readOnly && <Warning onOk={() => {
           const array = dataSources.filter((dataItem) => {
             return item.skuId !== dataItem.skuId;
           });
@@ -226,24 +252,72 @@ const Item = (
           >
             <DeleteOutlined />
           </Button>
-        </Warning>
+        </Warning>}
         <Button
-          // disabled={item.bomNum ? !item.bomId : false}
+          disabled={item.bomNum ? !item.versionBomId : false}
           style={{padding: 0}}
           type="link"
-          loading={bomsByskuIdLoading}
           onClick={async () => {
-            if (item.bomNum) {
-              const res = await bomsByskuIdRun({params: {skuId: item.skuId}});
-              openNewEdit(isArray(res)[0]?.partsId, item.skuId);
-              return;
-            }
-            openNewEdit(item.bomId, item.skuId);
+            // if (item.bomNum) {
+            //   // const res = await bomsByskuIdRun({params: {skuId: item.skuId}});
+            //   openNewEdit(item.bomId, item.skuId);
+            //   return;
+            // }
+            openNewEdit(item.versionBomId, item.skuId);
           }}
         >
           {item.bomNum ? <Space style={{width: 56}}><SearchOutlined />详情</Space> : '添加bom'}
         </Button>
       </Space>}
+
+      <Modal
+        ref={versionModalRef}
+        headTitle="选择版本"
+        footer={null}
+      >
+        <div style={{padding: 16}}>
+          {
+            bomsByskuIdLoading ?
+              <Spin spinning>
+                <Alert
+                  message="正在获取BOM版本信息"
+                  description="加载中..."
+                  type="info"
+                />
+              </Spin>
+              :
+              bomVersions.map((item, index) => {
+                return <div
+                  key={index}
+                  className={styles.versionIndex}
+                  style={{border: currentVer === item.partsId ? 'solid 1px #c5e8ff' : 'none'}}
+                  onClick={() => {
+                    setValue({version: item.name, versionBomId: item.partsId}, skuId);
+                    versionModalRef.current.close();
+                  }}
+                >
+                  <Icon type="icon-a-kehuliebiao2" style={{marginRight: 16}} />
+                  <div>
+                    版本号：{item.name || '-'}
+                    <br />
+                    创建时间：{item.createTime}
+                  </div>
+                </div>;
+              })
+          }
+        </div>
+      </Modal>
+
+      <AddSkuModal
+        edit={copy}
+        addRef={addRef}
+        copy={copy}
+        onSuccess={async () => {
+          addRef.current.close();
+          const list = await request({...skuV1List, data: {}, params: {limit: 1, page: 1}});
+          addSku(isArray(list)[0]);
+        }}
+      />
     </div>;
   };
 
@@ -256,57 +330,7 @@ const Item = (
     </TweenOne>;
   }
 
-  return <>
-    {render()}
-    <Modal
-      ref={versionModalRef}
-      headTitle="选择版本"
-      footer={null}
-    >
-      <div style={{padding: 16}}>
-        {
-          bomsByskuIdLoading ?
-            <Spin spinning>
-              <Alert
-                message="正在获取BOM版本信息"
-                description="加载中..."
-                type="info"
-              />
-            </Spin>
-            :
-            bomVersions.map((item, index) => {
-              return <div
-                key={index}
-                className={styles.versionIndex}
-                style={{border: currentVer === item.partsId ? 'solid 1px #c5e8ff' : 'none'}}
-                onClick={() => {
-                  setValue({version: item.name, bomId: item.partsId}, skuId);
-                  versionModalRef.current.close();
-                }}
-              >
-                <Icon type="icon-a-kehuliebiao2" style={{marginRight: 16}} />
-                <div>
-                  版本号：{item.name || '-'}
-                  <br />
-                  创建时间：{item.createTime}
-                </div>
-              </div>;
-            })
-        }
-      </div>
-    </Modal>
-
-    <AddSkuModal
-      edit={copy}
-      addRef={addRef}
-      copy={copy}
-      onSuccess={async () => {
-        addRef.current.close();
-        const list = await request({...skuV1List, data: {}, params: {limit: 1, page: 1}});
-        addSku(isArray(list)[0]);
-      }}
-    />
-  </>;
+  return render();
 };
 
 export default Item;

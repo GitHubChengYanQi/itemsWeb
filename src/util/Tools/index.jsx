@@ -144,6 +144,29 @@ const timeDifference = (tmpTime) => {
   return ansTimeDifference;
 };
 
+export const rateTool = (value, total, num) => {
+  if (typeof total !== "number") {
+    return value > 0 ? `${value}%` : 0;
+  }
+  if (total === 0) {
+    return 0
+  }
+  const val = (value / total) * 100
+  let rate
+  if (val > 0 && val < 1) {
+    rate = 1
+  } else if (val > 99 && val < 100) {
+    rate = 99
+  } else {
+    rate = Math.round(val)
+  }
+  if (num) {
+    return rate
+  }
+  return rate > 0 ? `${rate}%` : 0;
+};
+
+
 export {
   timeDifference,
   randomString,

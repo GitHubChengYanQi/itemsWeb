@@ -7,6 +7,7 @@ import {Sortable} from '@/components/Table/components/DndKit/Sortable';
 import {Handle} from '@/components/Table/components/DndKit/Item';
 import Item, {scroll} from '@/pages/Erp/parts/components/Item';
 import {SkuRender} from '@/pages/Erp/sku/components/SkuRender';
+import {getSearchParams} from 'ice';
 
 const AddSkuTable = ({
   isOpen,
@@ -30,6 +31,18 @@ const AddSkuTable = ({
 
   const dataSources = value;
 
+  const searchParams = getSearchParams();
+
+  const readOnly = searchParams.type === 'show';
+
+  let items = [];
+
+  if (show) {
+    items = [{search: true, disabled: true}, ...dataSources];
+  } else {
+    items = [{search: true, disabled: true}, ...dataSources, {add: true, disabled: true}];
+  }
+
   const render = ({value, item, index, ...other}) => {
     const noExist = comparison && !isArray(comparisonParts).find(comparison => comparison.skuId === item.skuId);
     if (item.add) {
@@ -51,7 +64,7 @@ const AddSkuTable = ({
             return queryString(value, item.standard + SkuRender(item));
           });
           if (searchSku.length > 0) {
-            scroll(`parts${searchSku[0].skuId}`);
+            scroll(`${show ? 'comparison' : 'parts'}${searchSku[0].skuId}`);
             onParts(searchSku[0]);
           } else {
             message.warn('未查询到物料');
@@ -64,8 +77,9 @@ const AddSkuTable = ({
         style={noExist ? {color: '#174ad4'} : {}}
         className={styles.item}
       >
-        <Handle hidden={show} icon={<MenuOutlined />} {...other} />
+        <Handle hidden={show || readOnly} icon={<MenuOutlined />} {...other} />
         <Item
+          readOnly={readOnly}
           searchValue={searchValue}
           isDragging={item.isDragging}
           index={index}
@@ -91,7 +105,7 @@ const AddSkuTable = ({
       <div className={styles.listItem}>
         <div
           style={{width: 50}}
-          className={index === dataSources.length - (show ? 1 : -1) ? styles.last : styles.leftBorder}
+          className={index === items.length - 1 ? styles.last : styles.leftBorder}
         />
         {render(props)}
       </div>
@@ -115,10 +129,7 @@ const AddSkuTable = ({
             };
           }}
           definedItem={itemRender}
-          items={(show ? dataSources : [{search: true, disabled: true}, ...dataSources, {
-            add: true,
-            disabled: true
-          }]).map((item) => {
+          items={items.map((item) => {
             return {
               ...item,
               key: item.skuId || 'add',

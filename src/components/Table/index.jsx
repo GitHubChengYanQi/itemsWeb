@@ -83,6 +83,8 @@ const TableWarp = (
     // o
     onLoading = () => {
     },
+    onResponse = () => {
+    },
     otherActions,
     onChange = () => {
     },
@@ -208,6 +210,7 @@ const TableWarp = (
           };
         });
       }
+      onResponse(response);
       response.data = await format(response.data);
       return new Promise((resolve) => {
         dispatchersTableStore.onLoading(false);

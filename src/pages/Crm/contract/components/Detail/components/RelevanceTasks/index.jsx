@@ -16,7 +16,7 @@ const RelevanceTasks = ({
 
   const {loading, data} = useRequest({...relevanceTasksUrl, data: {orderId}});
   const {loading: skuLogLoading, data: skuLogs} = useRequest({...skuHandleRecordList, data: {orderId}});
-  console.log(skuLogs);
+
   return <div style={{padding: '0 24px 24px'}}>
     <Tabs defaultActiveKey="1" items={[
       {

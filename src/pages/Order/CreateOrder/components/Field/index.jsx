@@ -79,13 +79,14 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
 
   return (<>
     <div className={styles.addSku}>
-      <div>
+      {module === 'PO' && <div>
         {hidden ? <div style={{padding: 24}} onClick={() => setHidden(false)}>
           <Tooltip title="搜索物料进行选择">
             <Button type="primary" shape="circle" icon={<SearchOutlined />} />
           </Tooltip>
         </div> : <div className={styles.selectSkus}>
           <SelectSkusUtil
+            className={styles.list}
             small
             onSmall={() => {
               setHidden(true);
@@ -99,7 +100,7 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
             }}
           />
         </div>}
-      </div>
+      </div>}
       <div style={{width: `calc(100vw - ${hidden ? '80px' : '20vw'} - 300px)`}}>
         <AddSkuTable
           customerId={customerId}
@@ -108,11 +109,13 @@ export const AddSku = ({value = [], customerId, brandName, onChange, module, cur
           value={value}
           onChange={onChange}
           onAddSku={() => {
-            setHidden(false);
-
-            // setSku(null);
-            // setSkuId(null);
-            // addSpu.current.open(true);
+            if (module === 'PO') {
+              setHidden(false);
+            } else {
+              setSku(null);
+              setSkuId(null);
+              addSpu.current.open(true);
+            }
           }}
           onCusTomerBind={() => {
             addSku.current.open(true);
@@ -436,7 +439,7 @@ export const TemplateId = (props) => {
 
   return <SelectCreate
     component={TemplateEdit}
-    placeholder='选择合同模板'
+    placeholder="选择合同模板"
     title="创建合同"
     width="100vw"
     createTitle="创建合同"

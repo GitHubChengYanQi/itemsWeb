@@ -191,7 +191,7 @@ const CreateOrder = ({previewData, ...props}) => {
               adressId: value.adressId,
               payPlan: value.payPlan,
               remark: value.remark,
-              floatingAmount: value.floatingAmount,
+              floatingAmount: value.floatingAmount || 0,
               totalAmount: value.totalAmount,
               paperType: value.paperType,
               rate: value.rate,

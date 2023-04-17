@@ -275,32 +275,32 @@ export const Values = (props) => {
   </div>);
 };
 
+export const ModuleOptions = [
+  {label: '物料', value: 0},
+  {label: '入库', value: 1},
+  {label: '出库', value: 2},
+  {label: '质检', value: 3},
+  {label: '质检任务', value: 4},
+  {label: '采购申请', value: 5},
+  {label: '盘点任务', value: 6},
+  {label: '采购询价', value: 7},
+  {label: '作业指导编码', value: 8},
+  {label: '作业指导版本', value: 9},
+  {label: '工序编码', value: 10},
+  {label: '采购单', value: 11},
+  {label: '合同', value: 12},
+  {label: '生产计划', value: 13},
+  {label: '产品', value: 14},
+  {label: '入库异常', value: 15},
+  {label: '养护任务', value: 16},
+  {label: '调拨任务', value: 17},
+  {label: '生产任务', value: 18},
+  {label: '型号编码', value: 19},
+  {label: '生产卡片编号', value: 20},
+];
+
 
 export const Module = (props) => {
 
-  const options = [
-    {label: '物料', value: 0},
-    {label: '入库', value: 1},
-    {label: '出库', value: 2},
-    {label: '质检', value: 3},
-    {label: '质检任务', value: 4},
-    {label: '采购申请', value: 5},
-    {label: '盘点任务', value: 6},
-    {label: '采购询价', value: 7},
-    {label: '作业指导编码', value: 8},
-    {label: '作业指导版本', value: 9},
-    {label: '工序编码', value: 10},
-    {label: '采购单', value: 11},
-    {label: '合同', value: 12},
-    {label: '生产计划', value: 13},
-    {label: '产品', value: 14},
-    {label: '入库异常', value: 15},
-    {label: '养护任务', value: 16},
-    {label: '调拨任务', value: 17},
-    {label: '生产任务', value: 18},
-    {label: '型号编码', value: 19},
-    {label: '机床编号', value: 20},
-  ];
-
-  return (<AntdSelect options={options} {...props} placeholder="请选择对应模块" />);
+  return (<AntdSelect options={ModuleOptions} {...props} placeholder="请选择对应模块" />);
 };

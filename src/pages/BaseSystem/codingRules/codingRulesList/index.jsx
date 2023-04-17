@@ -19,6 +19,7 @@ import * as SysField from '../codingRulesField';
 import Breadcrumb from '@/components/Breadcrumb';
 import Modal from '@/components/Modal';
 import {useRequest} from '@/util/Request';
+import {ModuleOptions} from '../codingRulesField';
 
 const formActionsPublic = createFormActions();
 const {Column} = AntTable;
@@ -54,55 +55,6 @@ const CodingRulesList = () => {
     );
   };
 
-  const module = (value) => {
-    switch (value) {
-      case 0:
-        return '物料';
-      case 1:
-        return '入库';
-      case 2:
-        return '出库';
-      case 3:
-        return '质检';
-      case 4:
-        return '质检任务';
-      case 5:
-        return '采购申请';
-      case 6:
-        return '盘点任务';
-      case 7:
-        return '采购询价';
-      case 8:
-        return '作业指导编码';
-      case 9:
-        return '作业指导版本';
-      case 10:
-        return '工序编码';
-      case 11:
-        return '采购单';
-      case 12:
-        return '合同';
-      case 13:
-        return '生产计划';
-      case 14:
-        return '产品';
-      case 15:
-        return '入库异常';
-      case 16:
-        return '养护任务';
-      case 17:
-        return '调拨任务';
-      case 18:
-        return '生产任务';
-      case 19:
-        return '型号编码';
-      case 20:
-        return '机床编号';
-      default:
-        break;
-    }
-  };
-
 
   return (
     <>
@@ -119,9 +71,8 @@ const CodingRulesList = () => {
       >
         <Column title="规则名称" dataIndex="name" />
         <Column title="对应模块" dataIndex="module" render={(value) => {
-          return (
-            <>{module(value)}</>
-          );
+          const module = ModuleOptions.find(item => `${item.value}` === value) || {};
+          return module.label;
         }} />
         <Column title="默认规则" dataIndex="state" render={(value, record) => {
           return (

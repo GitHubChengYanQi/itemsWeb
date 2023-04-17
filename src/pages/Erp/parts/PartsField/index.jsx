@@ -11,9 +11,10 @@ import {
   InputNumber,
   Select as AntdSelect,
   Radio,
-  Spin, Descriptions, Row, Col,
+  Spin, Descriptions,
 } from 'antd';
 import ProCard from '@ant-design/pro-card';
+import {getSearchParams} from 'ice';
 import Select from '@/components/Select';
 import * as apiUrl from '../PartsUrl';
 import {partsListSelect, spuListSelect} from '../PartsUrl';
@@ -33,7 +34,13 @@ export const Item = (props) => {
 };
 
 export const Name = (props) => {
-  return (<Input placeholder="请输入版本号"  {...props} />);
+
+
+  const searchParams = getSearchParams();
+
+  const show = searchParams.type === 'show';
+
+  return (<Input readOnly={show} placeholder="请输入版本号"  {...props} />);
 };
 
 export const SkuInput = (props) => {

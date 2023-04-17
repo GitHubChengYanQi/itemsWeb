@@ -1,5 +1,5 @@
-import React, { useRef} from 'react';
-import {Form, Input, Button, Switch, Modal, message} from 'antd';
+import React, {useRef} from 'react';
+import {Button, Switch, Modal, message, Input} from 'antd';
 import {userFreeze, userList, userReset, userUnfreeze} from '@/Config/ApiUrl/system/user';
 import Table from '@/components/Table';
 import {useRequest} from '@/util/Request';
@@ -9,6 +9,10 @@ import UserEdit from '@/pages/BaseSystem/user/UserEdit';
 import Drawer from '@/components/Drawer';
 import UserRole from '@/pages/BaseSystem/user/UserRole';
 import Breadcrumb from '@/components/Breadcrumb';
+import Form from '@/components/Form';
+
+
+const {FormItem} = Form;
 
 const UserList = () => {
   const ref = useRef(null);
@@ -18,9 +22,7 @@ const UserList = () => {
   const searchForm = () => {
     return (
       <>
-        <Form.Item name="name" label="名称">
-          <Input placeholder="请输入名称"/>
-        </Form.Item>
+        <FormItem name="name" label="名称" component={Input} />
       </>
     );
   };
@@ -30,7 +32,7 @@ const UserList = () => {
       <>
         <AddButton onClick={() => {
           dfRef.current.open(false);
-        }}/>
+        }} />
       </>
     );
   };
@@ -86,6 +88,10 @@ const UserList = () => {
       dataIndex: 'name'
     },
     {
+      title: '手机号',
+      dataIndex: 'phone'
+    },
+    {
       title: '性别',
       dataIndex: 'sexName'
     },
@@ -131,10 +137,10 @@ const UserList = () => {
       render: (value, record) => {
         return (
           <>
-            <Button type='ghost' className="button-left-margin" onClick={() => {
+            <Button type="ghost" className="button-left-margin" onClick={() => {
               roRef.current.open(record.userId);
             }}>分配角色</Button>
-            <Button type='ghost' className="button-left-margin" onClick={() => {
+            <Button type="ghost" className="button-left-margin" onClick={() => {
               Modal.confirm({
                 title: '提示',
                 content: '系统初始化为111111，实际请参考系统设置。',
@@ -147,7 +153,7 @@ const UserList = () => {
             }}>重置密码</Button>
             <EditButton onClick={() => {
               dfRef.current.open(record.userId);
-            }}/>
+            }} />
           </>
         );
       }
@@ -165,14 +171,14 @@ const UserList = () => {
         searchForm={searchForm}
         actions={actions()}
       />
-      <Drawer ref={dfRef} title='用户' component={UserEdit} onSuccess={() => {
+      <Drawer ref={dfRef} title="用户" component={UserEdit} onSuccess={() => {
         ref.current.refresh();
         dfRef.current.close();
-      }}/>
+      }} />
       <Drawer ref={roRef} component={UserRole} onSuccess={() => {
         ref.current.refresh();
         roRef.current.close();
-      }}/>
+      }} />
     </>
   );
 };

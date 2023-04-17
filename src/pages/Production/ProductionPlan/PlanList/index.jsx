@@ -1,135 +1,142 @@
 import React, {useRef, useState} from 'react';
-import ProSkeleton from '@ant-design/pro-skeleton';
-import {Button, Card, List, Pagination, Space} from 'antd';
+import {Button, Divider, Input, Progress, Space, Tag} from 'antd';
 import {useHistory} from 'ice';
-import {useRequest} from '@/util/Request';
-import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-import Breadcrumb from '@/components/Breadcrumb';
-import Label from '@/components/Label';
-import styles from './index.module.less';
 import {productionPlanList} from '@/pages/Production/Url';
-import Empty from '@/components/Empty';
 import Modal from '@/components/Modal';
-import AddProductionPlan from '@/pages/Production/ProductionPlan/AddProductionPlan';
-import {isArray} from '@/util/Tools';
+import {isArray, rateTool} from '@/util/Tools';
+import Table from '@/components/Table';
+import Breadcrumb from '@/components/Breadcrumb';
+import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
+import Form from '@/components/Form';
+import PlanAdd from '@/pages/Production/ProductionPlan/PlanAdd';
+import styles from './index.module.less';
 import Note from '@/components/Note';
-import {FormLayoutSubmit} from '@/components/Form/components/FormLayout';
+
+const {FormItem} = Form;
 
 const PlanList = () => {
 
   const history = useHistory();
 
-  const [currentStep, setCurrentStep] = useState({});
+  const [currentStep, setCurrentStep] = useState(0);
+  const [addLoading, setAddLoading] = useState(false);
 
   const ref = useRef();
+  const listRef = useRef();
   const formRef = useRef();
 
-  const {loading, data, run} = useRequest(productionPlanList, {response: true});
+  const columns = [
+    {title: '计划编号', dataIndex: 'coding'},
+    {
+      title: '生产Bom', dataIndex: 'skuResult', render(skuResult) {
+        return SkuResultSkuJsons({skuResult});
+      }
+    },
+    {
+      title: '版本号', dataIndex: 'partsResult', width: 100, align: 'center', render(partsResult) {
+        return <Tag color="processing"><Note maxWidth={200}>{partsResult.version || '-'}</Note></Tag>;
+      }
+    },
+    {
+      title: '生产数量', dataIndex: 'planNumber', width: 100, align: 'center', render(value) {
+        return <div style={{marginTop: -8}}>x <span style={{fontSize: 20, fontWeight: 'bold'}}>{value}</span></div>;
+      }
+    },
+    {
+      title: '出库信息', dataIndex: 'skuCount', align: 'center', render(value, record) {
+        return <div>
+          物料总数：{record.skuCount}
+          <Divider type="vertical" />
+          <span style={{color: '#1890ff'}}>
+            出库中：{record.numberCount} ({rateTool(record.numberCount, record.skuCount)})
+          </span>
+          <Divider type="vertical" />
+          <span style={{color: '#52c41a'}}>
+            已出库： {record.receivedCount} ({rateTool(record.receivedCount, record.skuCount)})
+          </span>
+        </div>;
+      }
+    },
+    {
+      title: '出库进度', dataIndex: 'skuCount', align: 'center', width: 200, render(value, record) {
+        return <Progress
+          className={styles.progress}
+          format={() => <></>}
+          percent={rateTool(record.numberCount, record.skuCount, true)}
+          success={{
+            percent: rateTool(record.receivedCount, record.skuCount, true),
+          }}
+        />;
+      }
+    },
+    {
+      title: '生产信息', align: 'center', dataIndex: 'doneBomCount', render(value, record) {
+        return <div>
+          Bom总数：{record.bomCount}
+          <Divider type="vertical" />
+          <span style={{color: '#52c41a'}}>生产完成：{value}</span>
+        </div>;
+      }
+    },
+    {
+      title: '生产进度', dataIndex: 'skuCount', align: 'center', width: 200, render(value, record) {
+        return <Progress
+          strokeColor="#52c41a"
+          percent={rateTool(record.doneBomCount, record.bomCount, true)}
+        />;
+      }
+    },
+    {
+      title: '创建人', dataIndex: 'createUserResult', align: 'center', width: 150, render(createUserResult) {
+        return createUserResult?.name;
+      }
+    },
+    {title: '创建时间', dataIndex: 'createTime', align: 'center', width: 200},
+    {
+      title: '操作', align: 'center', width: 100, render(value, record) {
+        return <>
+          <Button type="link" onClick={() => {
+            history.push(`/production/productionPlan/detail?id=${record.productionPlanId}`);
+          }}>详情</Button>
+        </>;
+      }
+    },
+  ];
 
-  if (loading) {
-    return <ProSkeleton type="descriptions" />;
-  }
+  const searchForm = () => {
+    return <>
+      <FormItem name="coding" label="编码" component={Input} placeholder="请输入编码" />
+    </>;
+  };
 
-  if (!data) {
-    return <Empty />;
-  }
-  console.log(data);
   return <>
-    <Card title={<Breadcrumb />} extra={<Button type="primary" onClick={() => ref.current.open(false)}>增加生产计划</Button>}>
-      <div className="div_center">
-        <List
-          bordered={false}
-          dataSource={data.data || []}
-          renderItem={(planItem) => (
-            <div style={{margin: '16px 0'}}>
-              <Card
-                type="inner"
-                title={<Space size={24}>
-                  <div><Label>计划编号：</Label> {planItem.coding}</div>
-                  <div><Label>主题：</Label>{planItem.theme}</div>
-                  <div><Label>负责人：</Label> {planItem.userResult && planItem.userResult.name}</div>
-                </Space>}
-                bodyStyle={{padding: 0}}
-                extra={<Space size={24}>
-                  <div>
-                    <Label>创建时间：</Label>{planItem.createTime}
-                  </div>
-                  <div>
-                    <Label>执行时间：</Label>{planItem.executionTime} - {planItem.endTime}
-                  </div>
-                </Space>}
-              >
-                <List
-                  bordered={false}
-                  dataSource={[1]}
-                  renderItem={() => {
-                    const details = isArray(planItem.planDetailResults);
-                    return <div className={styles.parent}>
-                      <div className={styles.leftDiv}>
-                        {details.length === 0 && <Empty />}
-                        {
-                          details.map((rowItem, index) => {
-                            const skuResult = rowItem.skuResult || {};
-                            return <div key={index} style={{padding: 24, borderBottom: 'solid #eee 1px'}}>
-                              <Space size={24}>
-                                <Space direction="vertical">
-                                  <div>
-                                    <Label>物料编码：</Label>{skuResult && skuResult.standard}
-                                  </div>
-                                  <Button type="link" style={{padding: 0}}>
-                                    <SkuResultSkuJsons skuResult={skuResult} />
-                                  </Button>
-                                </Space>
-                                <div>
-                                  × {rowItem.planNumber}
-                                </div>
-                              </Space>
-                              <div style={{float: 'right', lineHeight: '62px', display: 'flex'}}>
-                                <Label>物料描述：</Label>
-                                <Note maxWidth={300}><SkuResultSkuJsons describe skuResult={skuResult} /></Note>
-                              </div>
-                            </div>;
-                          })
-                        }</div>
-                      <div className={styles.rightDiv} onClick={() => {
-                        history.push(`/production/productionPlan/detail?id=${planItem.productionPlanId}`);
-                      }}>详情
-                      </div>
-                    </div>;
-                  }} />
-              </Card>
-            </div>
-          )}
-        />
-      </div>
-    </Card>
-    <div style={{textAlign: 'center', padding: 8}}>
-      <Pagination
-        total={data.count}
-        current={data.current}
-        pageSize={data.pageSize}
-        pageSizeOptions={[5, 10, 15, 20, 50]}
-        onChange={(page, limit) => {
-          run({
-            params: {
-              limit,
-              page
-            }
-          });
-        }}
-        onShowSizeChange={(page, limit) => {
-          run({
-            params: {
-              limit,
-              page
-            }
-          });
-        }}
-        showSizeChanger
-        showQuickJumper
-        showTotal={total => `共${total}条`}
-      />
-    </div>
+    <Table
+      ref={listRef}
+      tableKey="productionPlan"
+      actions={<>
+        <Button type="primary" onClick={() => {
+          setCurrentStep(0);
+          ref.current.open(false);
+        }}>创建生产计划</Button>
+      </>}
+      format={(data) => {
+        return data.map(item => {
+          const planDetailResult = isArray(item.planDetailResults)[0] || {};
+          return {
+            ...item,
+            skuResult: planDetailResult.skuResult,
+            partsResult: planDetailResult.partsResult,
+            planNumber: planDetailResult.planNumber,
+          };
+        });
+      }}
+      rowKey="productionPlanId"
+      noRowSelection
+      searchForm={searchForm}
+      title={<Breadcrumb title="生产计划" />}
+      api={productionPlanList}
+      columns={columns}
+    />
 
     <Modal
       currentStep={currentStep}
@@ -138,23 +145,21 @@ const PlanList = () => {
       title="生产计划"
       width="auto"
       ref={ref}
-      component={AddProductionPlan}
+      component={PlanAdd}
+      onLoading={setAddLoading}
       onSuccess={() => {
         ref.current.close();
-        run({
-          params: {
-            limit: 10,
-            page: 1
-          }
-        });
+        listRef.current.submit();
       }}
       footer={<Space>
         <Button onClick={() => ref.current.close()}>取消</Button>
-        <Button type="primary" onClick={() => FormLayoutSubmit({
-          currentStep,
-          setCurrentStep,
-          formRef
-        })}>{currentStep.step < isArray(currentStep.steps).length - 1 ? '下一步' : '保存'}</Button>
+        <Button
+          loading={addLoading}
+          disabled={currentStep < 1}
+          type="primary"
+          onClick={() => {
+            formRef.current.submit();
+          }}>保存</Button>
       </Space>}
     />
   </>;

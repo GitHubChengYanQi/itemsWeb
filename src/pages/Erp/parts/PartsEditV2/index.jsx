@@ -13,6 +13,8 @@ const PartsEditV2 = () => {
 
   const searchParams = getSearchParams();
 
+  const show = searchParams.type === 'show';
+
   const [parts, setParts] = useState([]);
 
   const [tabKey, setTabKey] = useState('1');
@@ -94,7 +96,7 @@ const PartsEditV2 = () => {
         }}
       />
     </div>
-    <div hidden={!skuDetail?.skuId} className={styles.search}>
+    <div hidden={!skuDetail?.skuId || show} className={styles.search}>
       <SelectSkusUtil ref={searchRef} value={parts} onChange={(sku) => {
         setParts([...parts, sku]);
         scrollTo(sku.skuId);

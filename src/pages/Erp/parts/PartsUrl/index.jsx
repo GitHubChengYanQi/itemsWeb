@@ -18,6 +18,12 @@ export const partsV2Add = {
   rowKey: 'partsId'
 };
 
+export const bomV2Add = {
+  url: '/bom/v2.0/add',
+  method: 'POST',
+  rowKey: 'partsId'
+};
+
 export const bomsByskuId = {
   url: '/parts/bomsByskuId',
   method: 'GET',
@@ -69,6 +75,11 @@ export const partsList = {
   url: '/parts/list',
   method: 'POST',
   rowKey: 'partsId'
+};
+
+export const bomListV2Url = {
+  url: '/bom/v2.0/list',
+  method: 'POST'
 };
 
 export const partsOldList = {

@@ -92,32 +92,34 @@ const PartsList = (
           placeholder="搜索物料"
           name="skuName"
           component={SysField.SkuInput} />
-        <FormItem
-          hidden
-          name="skuId"
-          value={value || null}
-          component={SysField.SkuInput} />
-        <FormItem
-          hidden
-          name="partsId"
-          value={state.partsId || null}
-          component={SysField.SkuInput} />
-        <FormItem
-          hidden
-          placeholder="请选择物料"
-          name="spuId"
-          value={spuId}
-          component={SysField.PartName} />
-        <FormItem
-          hidden
-          name="type"
-          value={type}
-          component={SysField.PartName} />
-        <FormItem
-          hidden
-          name="status"
-          value={99}
-          component={SysField.PartName} />
+        <div style={{display: 'none'}}>
+          <FormItem
+            name="skuId"
+            value={value || null}
+            component={SysField.SkuInput}
+          />
+          <FormItem
+            name="partsId"
+            value={state.partsId || null}
+            component={SysField.SkuInput}
+          />
+          <FormItem
+            placeholder="请选择物料"
+            name="spuId"
+            value={spuId}
+            component={SysField.PartName}
+          />
+          <FormItem
+            name="type"
+            value={type}
+            component={SysField.PartName}
+          />
+          <FormItem
+            name="status"
+            value={99}
+            component={SysField.PartName}
+          />
+        </div>
       </>
     );
   };
@@ -148,6 +150,7 @@ const PartsList = (
         </div>}
 
         <Table
+          isModal={false}
           actionButton={<Space>
             <Import
               url={`${baseURI}Excel/importBom`}
@@ -262,10 +265,12 @@ const PartsList = (
                         pathname: '/SPU/parts/edit',
                         search: `id=${record.id || value}`
                       });
-                      // refAdd.current.open(record.id || value);
                     }} />
                     <Button type="link" onClick={() => {
-                      showRef.current.open(record.id || value);
+                      history.push({
+                        pathname: '/SPU/parts/edit',
+                        search: `id=${record.id || value}&type=show`
+                      });
                     }}>详情</Button>
                   </>;
                 }

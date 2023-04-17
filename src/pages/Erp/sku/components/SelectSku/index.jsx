@@ -287,7 +287,7 @@ const SelectSku = (
           </div>
           <div><Note maxWidth="100%" value={SkuResultSkuJsons({skuResult: detailData})} /></div>
         </div>
-        <div>
+        <div hidden={disabled}>
           {(hover && detailData.skuId && !disabled) ?
             <CloseCircleOutlined style={{color: '#7d8389'}} onClick={() => {
               onChange(null);

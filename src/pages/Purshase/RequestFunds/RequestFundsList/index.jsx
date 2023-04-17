@@ -150,7 +150,7 @@ const RequestFundsList = (
       }
     },
     {dataIndex: 'createTime', width: 200, title: '申请时间', align: 'center'},
-    {dataIndex: 'doneTime', width: 200, title: '通过时间', align: 'center'},
+    {dataIndex: 'doneTime', width: 200, title: '最后审批时间', align: 'center'},
     {},
     {
       dataIndex: 'orderId', title: '操作', width: 150, align: 'center', render: (value, record) => {
@@ -171,9 +171,9 @@ const RequestFundsList = (
             onClick={() => {
               AntModal.confirm({
                 centered: true,
-                title: '完成请款需增加对应付款记录',
-                content: '请选择是否完成',
-                okText: '完成',
+                title: '此操作会增加对应付款记录',
+                content: '请选择是否同步',
+                okText: '同步',
                 cancelText: '取消',
                 onOk: () => {
                   setRecord(record);
@@ -182,7 +182,7 @@ const RequestFundsList = (
               });
             }}
           >
-            {record.status === 2 ? '已付款' : text}
+            {record.status === 2 ? '同步到付款记录' : text}
           </Button>
         </Space>;
       }

@@ -9,6 +9,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Affix, Button, Col, Drawer, message, Row, Spin} from 'antd';
 import ProCard from '@ant-design/pro-card';
 import ProSkeleton from '@ant-design/pro-skeleton';
+import {getSearchParams} from 'ice';
 import {partsAdd, partsDetail} from '../PartsUrl';
 import {useRequest} from '@/util/Request';
 import Modal from '@/components/Modal';
@@ -18,15 +19,6 @@ import styles from './index.module.less';
 import {Name, Sku} from '../PartsField';
 import AddSkuTable from '@/pages/Erp/parts/components/AddSkuTable';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
-
-export const partApiConfig = {
-  // view: partsV1Detail,
-  // add: partsV2Add,
-  // save: partsV2Add
-  view: partsDetail,
-  add: partsAdd,
-  save: partsAdd
-};
 
 const PartsEdit = (props) => {
 
@@ -61,6 +53,10 @@ const PartsEdit = (props) => {
     },
   } = props;
 
+  const searchParams = getSearchParams();
+
+  const readOnly = searchParams.type === 'show';
+
   let total = 0;
 
   parts.forEach(item => total += (item.number || 0));
@@ -94,10 +90,10 @@ const PartsEdit = (props) => {
   const {loading: addLoading, run: addRun} = useRequest(partsAdd, {
     manual: true,
     onSuccess: (res) => {
-      onSuccess(res.data);
+      onSuccess(res);
     },
     onError: () => {
-      message.error('保存成功！');
+      message.error('保存失败！');
     }
   });
 
@@ -219,16 +215,17 @@ const PartsEdit = (props) => {
           </div>
         </div>
 
-        {!open && <Affix offsetBottom={11}>
+        {!open && <Affix offsetBottom={0}>
           <div className={styles.footer}>
             <div
+              style={{minHeight: 49}}
               hidden={show}
               className={styles.bottom}
             >
               <div className={styles.total}>
                 总计：<span>{parts.length}</span> 类 <span>{total}</span> 件 物料
               </div>
-              <Button
+              {readOnly && <Button
                 size="large"
                 loading={addLoading}
                 type="primary"
@@ -261,7 +258,7 @@ const PartsEdit = (props) => {
                       })
                     }
                   });
-                }}>保存</Button>
+                }}>保存</Button>}
             </div>
           </div>
 
@@ -316,10 +313,11 @@ const PartsEdit = (props) => {
               value={open?.id || false}
               onFull={setFull}
               onSuccess={(data) => {
+                console.log(data);
                 closeDrawer(true);
                 const newParts = checks.map(item => {
                   if (item.skuId === open.skuId) {
-                    return {...item, bomNum: item.bomNum + 1, bomId: data?.partsId};
+                    return {...item, bomNum: item.bomNum + 1, versionBomId: data?.partsId, version: data?.name};
                   }
                   return item;
                 });

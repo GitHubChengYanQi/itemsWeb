@@ -76,6 +76,10 @@ const UserEdit = (props) => {
     >
       <FormItem component={Input} label="账号" required placeholder="请输入账号" name="account" />
       <FormItem component={Input} label="姓名" required placeholder="请输入姓名" name="name" />
+      <FormItem component={Input} label="手机号" required placeholder="请输入手机号" name="phone" rules={[{
+        message: '请输入正确的手机号码!',
+        pattern: /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/
+      }]} />
       <FormItem component={Input} label="工号" required placeholder="请输入工号" name="jobNo" />
       <FormItem label="生日" name="birthday" component={DatePicker} />
       {value === false &&
@@ -84,8 +88,8 @@ const UserEdit = (props) => {
         rules={[{
           required: true,
           message: '密码长度不应低于6位！',
-          type:'string',
-          min:6,
+          type: 'string',
+          min: 6,
         }]}
         component={Input.Password}
         placeholder="请输入密码"

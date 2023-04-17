@@ -31,7 +31,7 @@ import Render from '@/components/Render';
 import {Customer} from '@/pages/Order/CreateOrder/components/CustomerAll';
 import {request, useRequest} from '@/util/Request';
 import {contractDetail} from '@/pages/Crm/contract/ContractUrl';
-import {isArray} from '@/util/Tools';
+import {isArray, rateTool} from '@/util/Tools';
 import ThousandsSeparator from '@/components/ThousandsSeparator';
 import styles from '@/pages/Order/Statistics/index.module.less';
 import {orderDoneOrder, orderListView} from '@/pages/Order/url';
@@ -387,7 +387,7 @@ const OrderTable = (props) => {
       dataIndex: 'invoiceBillRate',
       hidden: module.type === 2,
       render: (value) => {
-        return `${value || 0}%`;
+        return rateTool(value);
       }
     },
     {
@@ -532,7 +532,7 @@ const OrderTable = (props) => {
               />
             </span>
 
-            开票率： <span className={styles.number}>{viewData.invoiceBillRate || 0} %</span>
+            开票率： <span className={styles.number}>{rateTool(viewData.invoiceBillRate)}</span>
 
             <br />
 
@@ -544,7 +544,7 @@ const OrderTable = (props) => {
 
             入库总数：<span className={styles.number}>{viewData.inStockCount || 0}</span>
 
-            入库进度：<span className={styles.number}>{viewData.inStockRate || 0} %</span>
+            入库进度：<span className={styles.number}>{rateTool(viewData.inStockRate)} </span>
           </div>;
         }}
       />

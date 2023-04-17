@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Divider, Form, Select, Space} from 'antd';
+import {Button, Form, Select, Space} from 'antd';
 import AutoFocus from '@/components/AutoFocus';
 import TranserUsers from '@/pages/BaseSystem/user/components/TranserUsers';
 import Modal from '@/components/Modal';

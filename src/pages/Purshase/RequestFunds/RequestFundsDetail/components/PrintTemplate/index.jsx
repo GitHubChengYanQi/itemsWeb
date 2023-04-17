@@ -58,7 +58,7 @@ const PrintTemplate = (
 
   const auditValueStyle = {...valueStyle, textAlign: 'center'};
 
-  const contents = info?.applyData?.contents || [];
+  const contents = (info?.applyData?.contents || []).filter(item=>item.control !== 'File');
 
   const spRecords = info?.spRecords || [];
 
@@ -87,7 +87,7 @@ const PrintTemplate = (
         marginBottom: 20,
         fontSize: 15,
         textAlign: 'center'
-      }}>付款测试</h1>
+      }}>{info.spName}</h1>
       <div>
         <div
           style={{
@@ -135,7 +135,7 @@ const PrintTemplate = (
         {
           contents.map((item, index) => {
             if (item.control === 'File') {
-              return <tr key={index} />
+              return <tr key={index} />;
             }
             const label = isArray(item.titles).find(item => item.lang === 'zh_CN')?.text;
             if (item.control === 'Textarea' || index === contents.length - 1) {
@@ -187,7 +187,7 @@ const PrintTemplate = (
                   <div>审批人 ({item.approverAttr === 'ONE_SIGN' ? '或签' : '依次审批'})</div>
                   <div>{statusName}</div>
                 </td>
-                <td style={auditValueStyle}>{user.name}</td>
+                <td style={auditValueStyle}>{user.name || '-'}</td>
                 <td style={auditValueStyle} colSpan="2">
                   <div hidden={!userStatusName}>
                     {userStatusName} {moment.unix(userItem.spTime).format('MM/DD hh:mm')}
@@ -204,13 +204,13 @@ const PrintTemplate = (
               <div>{send && '已抄送'}</div>
             </td>
             <td style={auditValueStyle} colSpan="4">
-              {sendUser.name}
+              {sendUser.name || '-'}
               &nbsp;
               共{notifiers.length}人
               &nbsp;
               已抄送
               &nbsp;
-              {moment.unix(isArray(spRecords[spRecords.length - 1].detail).find(item => item.spStatus === 'PASSED')?.spTime).format('YYYY/MM/DD hh:mm')}
+              {moment.unix(isArray(spRecords[spRecords.length - 1].details).find(item => item.spStatus === 'PASSED')?.spTime).format('YYYY/MM/DD hh:mm')}
             </td>
           </tr>
         }

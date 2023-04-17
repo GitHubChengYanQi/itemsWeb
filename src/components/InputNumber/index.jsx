@@ -5,6 +5,7 @@ import styles from './index.module.less';
 
 const InputNumber = (
   {
+    readOnly,
     defaultValue,
     placeholder,
     onBlur = () => {
@@ -27,6 +28,7 @@ const InputNumber = (
   const [number, setNumber] = useState(value);
 
   return <AntInputNumber
+    readOnly={readOnly}
     autoFocus={autoFocus}
     addonBefore={addonBefore}
     precision={precision}

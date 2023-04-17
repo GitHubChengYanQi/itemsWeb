@@ -7,6 +7,7 @@ import styles from './index.module.less';
 import ThousandsSeparator from '@/components/ThousandsSeparator';
 import {useRequest} from '@/util/Request';
 import {orderView, orderViewOrderDetail} from '@/pages/Order/url';
+import {rateTool} from '@/util/Tools';
 
 const Statistics = () => {
 
@@ -59,7 +60,7 @@ const Statistics = () => {
     },
     {
       title: '开票率', width: 120, dataIndex: 'invoiceBillRate', align: 'right', render(text) {
-        return `${text || 0}%`;
+        return rateTool(text);
       }
     },
     {title: '采购供应商数', width: 120, dataIndex: 'sellerCount', align: 'right',},
@@ -68,7 +69,7 @@ const Statistics = () => {
     {title: '入库总数', width: 120, dataIndex: 'inStockCount', align: 'right'},
     {
       title: '入库百分比', width: 120, dataIndex: 'inStockRate', align: 'right', render(text) {
-        return `${text || 0}%`;
+        return rateTool(text);
       }
     },
     {},
@@ -166,7 +167,7 @@ const Statistics = () => {
               />
             </span>
 
-            开票率： <span className={styles.number}>{viewData.invoiceBillRate || 0} %</span>
+            开票率： <span className={styles.number}>{rateTool(viewData.invoiceBillRate)}</span>
 
             <br />
 
@@ -178,7 +179,7 @@ const Statistics = () => {
 
             入库总数：<span className={styles.number}>{viewData.inStockCount || 0}</span>
 
-            入库进度：<span className={styles.number}>{viewData.inStockRate || 0} %</span>
+            入库进度：<span className={styles.number}>{rateTool(viewData.inStockRate)} %</span>
           </div>;
         }}
       />

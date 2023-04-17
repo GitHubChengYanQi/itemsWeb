@@ -53,7 +53,8 @@ const FileUpload = ({
       setFileList(res.map(item => ({
         id: item.mediaId,
         name: item.filedName,
-        url: item.url
+        url: item.url,
+        show: true
       })));
     } else {
       getUrl({
@@ -161,19 +162,28 @@ const FileUpload = ({
               window.open(file.url);
               return;
             }
-            const res = await getMediaUrls({
-              data: {
-                model: 'PRI',
-                mediaIds: [file.id]
-              }
-            });
-            if (isArray(res).length > 0) {
+            let imgUrl = '';
+            if (file.show) {
+              imgUrl = file.url;
+            } else {
+              const res = await getMediaUrls({
+                data: {
+                  model: 'PRI',
+                  mediaIds: [file.id]
+                }
+              });
+              imgUrl = res[0].url;
+            }
+
+            if (imgUrl) {
               const fileSuffix = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
               if (['jpg', 'jpeg', 'png', 'webp'].includes(fileSuffix)) {
-                setPreview(res[0].url);
+                setPreview(imgUrl);
               } else {
-                window.open(res[0].url);
+                window.open(imgUrl);
               }
+            }else {
+              window.open(file.url);
             }
           }}
           className={show ? styles.showUpload : ''}
