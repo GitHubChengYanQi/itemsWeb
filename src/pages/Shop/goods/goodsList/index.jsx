@@ -6,19 +6,19 @@
  */
 
 import React, {useRef} from 'react';
-import Table from '@/components/Table';
 import {Button, Image, Table as AntTable} from 'antd';
+import Table from '@/components/Table';
 import DelButton from '@/components/DelButton';
 import Drawer from '@/components/Drawer';
 import AddButton from '@/components/AddButton';
 import EditButton from '@/components/EditButton';
 import Form from '@/components/Form';
 import Modal2 from '@/components/Modal';
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from '@/components/Breadcrumb';
 import {goodsDelete, goodsList} from '../goodsUrl';
 import GoodsEdit from '../goodsEdit';
 import * as SysField from '../goodsField';
-import GoodsDetailsList from "@/pages/Shop/goodsDetails/goodsDetailsList";
+import GoodsDetailsList from '@/pages/Shop/goodsDetails/goodsDetailsList';
 
 
 const {Column} = AntTable;

@@ -11,6 +11,12 @@ export const brandAdd = {
   rowKey:'brandId'
 };
 
+export const brandList = {
+  url: '/brand/list',
+  method: 'POST',
+  rowKey:'brandId'
+};
+
 export const brandEdit = {
   url: '/brand/edit',
   method: 'POST',
@@ -30,12 +36,6 @@ export const batchDelete = {
 
 export const brandDetail = {
   url: '/brand/detail',
-  method: 'POST',
-  rowKey:'brandId'
-};
-
-export const brandList = {
-  url: '/brand/list',
   method: 'POST',
   rowKey:'brandId'
 };

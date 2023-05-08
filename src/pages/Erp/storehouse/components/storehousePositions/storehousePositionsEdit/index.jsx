@@ -6,7 +6,6 @@
  */
 
 import React, {useRef} from 'react';
-import {Input} from 'antd';
 import Form from '@/components/Form';
 import {storehousePositionsDetail, storehousePositionsAdd, storehousePositionsEdit} from '../storehousePositionsUrl';
 import * as SysField from '../storehousePositionsField';

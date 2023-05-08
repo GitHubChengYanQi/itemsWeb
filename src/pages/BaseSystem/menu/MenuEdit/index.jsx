@@ -48,14 +48,23 @@ const MenuEdit = ({...props}) => {
       <FormItem
         label="菜单"
         name="menuFlag"
+        initialValue='N'
         component={AntRadio.Group}
         options={[{label: '是', value: 'Y'}, {label: '否', value: 'N'}]}
       />
       <FormItem
         label="移动端菜单"
         name="type"
+        initialValue='0'
         component={AntRadio.Group}
         options={[{label: '是', value: '1'}, {label: '否', value: '0'}]}
+      />
+      <FormItem
+        label="小程序菜单"
+        name="miniapp"
+        initialValue={0}
+        component={AntRadio.Group}
+        options={[{label: '是', value: 2}, {label: '否', value: 0}]}
       />
       <FormItem label="图标" name="icon" component={Input} />
       <FormItem label="请求地址" required name="url" component={Input} />

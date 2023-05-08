@@ -39,7 +39,7 @@ const GoodsEdit = ({...props}) => {
       <FormItem label="品牌" name="brand" component={SysField.Pin} required/>
       <FormItem label="库存" name="inventoryNumber" component={SysField.Ku} required/>
       <FormItem label="销量" name="sales" component={SysField.Xiao} required/>
-      <FormItem label="详情" name="details" component={SysField.Attachment} required/>
+      <FormItem label="详情" name="details" component={SysField.Attachment}/>
     </Form>
   );
 };

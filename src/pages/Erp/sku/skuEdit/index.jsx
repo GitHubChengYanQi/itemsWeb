@@ -18,7 +18,6 @@ import BrandIds from '@/pages/Erp/brand/components/BrandIds';
 import {isArray, isObject} from '@/util/Tools';
 import {spuClassificationDetail} from '@/pages/Erp/spu/components/spuClassification/spuClassificationUrl';
 import styles from './index.module.less';
-import cookie from 'js-cookie';
 
 const {FormItem} = Form;
 

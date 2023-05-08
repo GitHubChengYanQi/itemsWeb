@@ -12,6 +12,7 @@ import WindowOpenPosition from '@/components/Editor/components/WindowOpenPositio
 import GetUserInfo from '@/util/GetUserInfo';
 import WindowOpenInkind from '@/components/Editor/components/WindowOpenInkind';
 import WindowOpenSku from '@/components/Editor/components/WindowOpenSku';
+import {Tenant} from 'MES-Apis/lib/Tenant/promise';
 
 const {Content} = Layout;
 
@@ -42,6 +43,14 @@ export default function BasicLayout({children}) {
         }
       } else {
         cookie.set('tianpeng-token', token);
+      }
+      const tenantId = GetUserInfo().userInfo.tenantId;
+      if (tenantId && `${tenantId}` !== '7355608') {
+        await Tenant.switchTenant({data: {tenantId: '7355608'}}, {
+          onSuccess: (res) => {
+            cookie.set('tianpeng-token', res);
+          }
+        });
       }
       await dispatchers.getUserInfo();
       await dataDispatchers.publicInfo();

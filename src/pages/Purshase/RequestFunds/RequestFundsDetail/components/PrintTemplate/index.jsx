@@ -122,7 +122,7 @@ const PrintTemplate = (
         </tr>
         <tr>
           <td style={labelStyle}>提交时间</td>
-          <td style={valueStyle}>{moment.unix(info.applyTime).format('YYYY/MM/DD hh:mm:ss')}</td>
+          <td style={valueStyle}>{moment.unix(info.applyTime).format('YYYY/MM/DD HH:mm:ss')}</td>
           <td style={labelStyle}>当前审批状态</td>
           <td style={valueStyle}>{statusData(info.spStatus).text}</td>
         </tr>
@@ -190,7 +190,7 @@ const PrintTemplate = (
                 <td style={auditValueStyle}>{user.name || '-'}</td>
                 <td style={auditValueStyle} colSpan="2">
                   <div hidden={!userStatusName}>
-                    {userStatusName} {moment.unix(userItem.spTime).format('MM/DD hh:mm')}
+                    {userStatusName} {moment.unix(userItem.spTime).format('MM/DD HH:mm')}
                   </div>
                 </td>
               </tr>;
@@ -210,7 +210,7 @@ const PrintTemplate = (
               &nbsp;
               已抄送
               &nbsp;
-              {moment.unix(isArray(spRecords[spRecords.length - 1].details).find(item => item.spStatus === 'PASSED')?.spTime).format('YYYY/MM/DD hh:mm')}
+              {moment.unix(isArray(spRecords[spRecords.length - 1].details).find(item => item.spStatus === 'PASSED')?.spTime).format('YYYY/MM/DD HH:mm')}
             </td>
           </tr>
         }
@@ -235,7 +235,7 @@ const PrintTemplate = (
               marginLeft: 30,
             }}
           >
-            打印日期：{moment().format('YYYY/MM/DD hh:mm')}
+            打印日期：{moment().format('YYYY/MM/DD HH:mm')}
           </div>
           <br />
           <div

@@ -11,6 +11,7 @@ import DesignConfig from '@/pages/Design/router';
 import {CodingV2RulesRouter} from '@/pages/BaseSystem/codingV2Rules/codingRulesRouter';
 import NetworkDiskConfig from '@/pages/BaseSystem/networkDisk/route';
 import {TenantRouter} from '@/pages/BaseSystem/tenant/tenantRouter';
+import {WxMaConfigRouter} from '@/pages/BaseSystem/wxMaConfig/wxMaConfigRouter';
 
 const systemConfig = [
 
@@ -30,6 +31,7 @@ const systemConfig = [
       ...DesignConfig,
       ...NetworkDiskConfig,
       ...TenantRouter,
+      ...WxMaConfigRouter,
       {
         path: '/enterprise',
         name: '企业信息',
@@ -44,7 +46,7 @@ const systemConfig = [
       },
       {
         path: '/role',
-        name: '用户管理',
+        name: '角色管理',
         component: lazy(() => import('@/pages/BaseSystem/role/RoleList')),
         exact: true,
       },

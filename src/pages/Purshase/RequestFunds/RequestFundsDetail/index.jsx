@@ -73,7 +73,7 @@ const RequestFundsDetail = (
       case 'Selector':
         return isArray(item?.value?.selector?.options).length > 0 ? isArray(item.value.selector.options).map(item => item.values.find(item => item.lang === 'zh_CN')?.text) : null;
       case 'Date':
-        return item?.value?.date?.timestamp ? moment.unix(item?.value?.date?.timestamp).format(item?.value?.date?.type === 'day' ? 'YYYY/MM/DD' : 'YYYY/MM/DD hh:mm') : null;
+        return item?.value?.date?.timestamp ? moment.unix(item?.value?.date?.timestamp).format(item?.value?.date?.type === 'day' ? 'YYYY/MM/DD' : 'YYYY/MM/DD HH:mm') : null;
       case 'File':
         if (record.filed) {
           if (label) {
@@ -288,7 +288,7 @@ const RequestFundsDetail = (
                           {user.name || userItem?.approver?.userId}
                         </div>
                         <div hidden={!userStatusName} style={{color: '#000'}}>
-                          {userStatusName} · {moment.unix(userItem.spTime).format('YYYY/MM/DD hh:mm')}
+                          {userStatusName} · {moment.unix(userItem.spTime).format('YYYY/MM/DD HH:mm')}
                         </div>
                       </div>;
                     })
@@ -321,7 +321,7 @@ const RequestFundsDetail = (
                       </div>
                       <div hidden={!send} style={{color: '#000'}}>
                         已抄送
-                        · {moment.unix(isArray(spRecords[spRecords.length - 1]?.details).find(item => item.spStatus === 'PASSED')?.spTime).format('YYYY/MM/DD hh:mm')}
+                        · {moment.unix(isArray(spRecords[spRecords.length - 1]?.details).find(item => item.spStatus === 'PASSED')?.spTime).format('YYYY/MM/DD HH:mm')}
                       </div>
                     </div>;
                   })

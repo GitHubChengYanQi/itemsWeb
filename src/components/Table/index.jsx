@@ -146,6 +146,9 @@ const TableWarp = (
       console.log(e);
     }
   }
+
+  const [sortOrder, setSortOrder] = useState(defaultTableQuery.sorter || {});
+
   if (!formActions) {
     formActions = formActionsPublic;
   }
@@ -268,7 +271,7 @@ const TableWarp = (
     formActions.submit();
   };
 
-  const {loading, dataSource, pagination, ...other} = tableProps;
+  const {loading, dataSource, pagination, onChange: tableOnChange} = tableProps;
 
   const getDataSource = () => {
     return dataSource;
@@ -397,6 +400,7 @@ const TableWarp = (
               <AntdTable
                 className={style.table}
                 showTotal
+                showSorterTooltip={false}
                 expandable={expandable}
                 loading={Loading || loading}
                 dataSource={dataSources || dataSource || []}
@@ -412,7 +416,9 @@ const TableWarp = (
                     render: (value, record, index) => <Render
                       text={(pagination.current - 1) * pagination.pageSize + (index + 1)} width={40} maxWidth={40} />
                   }]),
-                  ...(noTableColumnSet ? columns : tableColumn.filter(item => !(item && (item.checked === false)))),
+                  ...(noTableColumnSet ? columns : tableColumn.filter(item => !(item && (item.checked === false)))).map((item) => {
+                    return {...item, sortOrder: sortOrder.field === item.dataIndex ? sortOrder.order : null};
+                  }),
                 ]}
                 pagination={
                   noPagination ? false : {
@@ -463,7 +469,10 @@ const TableWarp = (
                   },
                   offsetScroll: 'max-content'
                 }}
-                {...other}
+                onChange={(config, record, sorter, current) => {
+                  setSortOrder({field: sorter.field, order: sorter.order || 'ascend'});
+                  tableOnChange(config, record, {...sorter, order: sorter.order || 'ascend'}, current);
+                }}
                 {...props}
               >
                 {noSort || <Column
