@@ -16,6 +16,7 @@ const DatePicker = (
     picker,
     RangePicker,
     allowClear,
+    format
   }) => {
 
   // currentDate && currentDate < moment().subtract(1, 'days') 禁用今天之前的时间
@@ -25,6 +26,7 @@ const DatePicker = (
     return <AntDatePicker.RangePicker
       allowClear={allowClear}
       disabled={disabled}
+      format={format}
       disabledDate={disabledDate}
       style={{...style, width: width || null}}
       value={isArray(value).length > 0 ? [moment(value[0]), moment(value[1])] : []}
@@ -36,6 +38,7 @@ const DatePicker = (
   }
   return <AntDatePicker
     allowClear={allowClear}
+    format={format}
     picker={picker}
     disabled={disabled}
     disabledDate={disabledDate}

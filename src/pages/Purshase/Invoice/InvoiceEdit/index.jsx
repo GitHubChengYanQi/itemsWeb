@@ -101,6 +101,7 @@ const InvoiceEdit = ({previewData, orderId, ...props}, ref) => {
             case 'InvoiceDate':
               formItemProps = {
                 component: DatePicker,
+                format: 'YYYY/MM/DD HH:mm',
                 showTime: true,
               };
               break;

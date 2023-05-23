@@ -21,6 +21,7 @@ import Modal from '@/components/Modal';
 import Breadcrumb from '@/components/Breadcrumb';
 import Code from '@/pages/Erp/spu/components/Code';
 import Import from '@/pages/Erp/sku/SkuTable/Import';
+import {deleteBatch} from '@/pages/Erp/sku/skuUrl';
 
 const {Column} = AntTable;
 const {FormItem} = Form;

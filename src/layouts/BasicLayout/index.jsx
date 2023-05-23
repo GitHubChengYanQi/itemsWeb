@@ -36,21 +36,18 @@ export default function BasicLayout({children}) {
       if (jwt.length !== 3) {
         throw new Error('本地登录信息错误');
       }
-      if (GetUserInfo().tokenMinute >= 10) {
-        const res = await Login.refreshToken({});
-        if (res.errCode === 0 && GetUserInfo(res.data).token) {
-          cookie.set('tianpeng-token', res.data);
-        }
-      } else {
-        cookie.set('tianpeng-token', token);
-      }
-      const tenantId = GetUserInfo().userInfo.tenantId;
-      if (tenantId && `${tenantId}` !== '7355608') {
-        await Tenant.switchTenant({data: {tenantId: '7355608'}}, {
-          onSuccess: (res) => {
-            cookie.set('tianpeng-token', res);
-          }
-        });
+      // if (GetUserInfo().tokenMinute >= 10) {
+      //   const res = await Login.refreshToken({});
+      //   if (res.errCode === 0 && GetUserInfo(res.data).token) {
+      //     cookie.set('tianpeng-token', res.data);
+      //   }
+      // } else {
+      //   cookie.set('tianpeng-token', token);
+      // }
+
+      const res = await Login.refreshToken({});
+      if (res.errCode === 0 && GetUserInfo(res.data).token) {
+        cookie.set('tianpeng-token', res.data);
       }
       await dispatchers.getUserInfo();
       await dataDispatchers.publicInfo();

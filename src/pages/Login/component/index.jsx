@@ -4,6 +4,8 @@ import {UserOutlined, LockOutlined} from '@ant-design/icons';
 import {useHistory, getSearchParams} from 'ice';
 import cookie from 'js-cookie';
 import {UseLogin} from 'MES-Apis/lib/Login/hooks';
+import GetUserInfo from '@/util/GetUserInfo';
+import {Tenant} from 'MES-Apis/lib/Tenant/promise';
 
 
 const FormItem = Form.Item;
@@ -27,6 +29,16 @@ export default function Login({submitText}) {
         });
         if (response && response.data) {
           cookie.set('tianpeng-token', response.data);
+          const tenantId = GetUserInfo().userInfo.tenantId;
+          if (tenantId && `${tenantId}` !== '7355608') {
+            await Tenant.switchTenant({data: {tenantId: '7355608'}}, {
+              onSuccess: (res) => {
+                cookie.set('tianpeng-token', res);
+              }
+            }).catch(()=>{
+
+            });
+          }
           setTimeout(() => {
             if (params.backUrl) {
               window.location.href = decodeURIComponent(params.backUrl);

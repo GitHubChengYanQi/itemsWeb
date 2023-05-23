@@ -225,7 +225,7 @@ const PartsEdit = (props) => {
               <div className={styles.total}>
                 总计：<span>{parts.length}</span> 类 <span>{total}</span> 件 物料
               </div>
-              {readOnly && <Button
+              {!readOnly && <Button
                 size="large"
                 loading={addLoading}
                 type="primary"

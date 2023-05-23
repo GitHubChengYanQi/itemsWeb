@@ -9,6 +9,7 @@ import React, {useImperativeHandle, useRef, useState} from 'react';
 import {createFormActions, FormEffectHooks} from '@formily/antd';
 import {Alert, Input, notification, Popover, Space, Spin} from 'antd';
 import {QuestionCircleOutlined} from '@ant-design/icons';
+import cookie from 'js-cookie';
 import Form from '@/components/Form';
 import {skuDetail, skuAdd, skuEdit, skuMarge} from '../skuUrl';
 import * as SysField from '../skuField';

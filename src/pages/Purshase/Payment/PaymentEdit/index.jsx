@@ -115,6 +115,7 @@ const PaymentEdit = ({
             case 'paymentDate':
               formItemProps = {
                 component: DatePicker,
+                format: 'YYYY/MM/DD HH:mm',
                 showTime: true,
               };
               break;
