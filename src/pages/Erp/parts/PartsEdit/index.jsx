@@ -9,7 +9,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Affix, Button, Col, Drawer, message, Row, Spin} from 'antd';
 import ProCard from '@ant-design/pro-card';
 import ProSkeleton from '@ant-design/pro-skeleton';
-import {getSearchParams} from 'ice';
+import {config, getSearchParams} from 'ice';
 import {partsAdd, partsDetail} from '../PartsUrl';
 import {useRequest} from '@/util/Request';
 import Modal from '@/components/Modal';
@@ -19,7 +19,9 @@ import styles from './index.module.less';
 import {Name, Sku} from '../PartsField';
 import AddSkuTable from '@/pages/Erp/parts/components/AddSkuTable';
 import SkuResultSkuJsons from '@/pages/Erp/sku/components/SkuResult_skuJsons';
+import cookie from 'js-cookie';
 
+const {baseURI} = config;
 const PartsEdit = (props) => {
 
   const {
@@ -142,14 +144,24 @@ const PartsEdit = (props) => {
   };
 
   if (detailLoading) {
-    return show ? <div style={{textAlign: 'center', padding: 12}}><Spin /></div> : <ProSkeleton />;
+    return show ? <div style={{textAlign: 'center', padding: 12}}><Spin/></div> : <ProSkeleton/>;
   }
 
   return (
     <>
       <div className={styles.edit}>
         <div style={{padding}}>
-          <ProCard hidden={show} className="h2Card" headerBordered title="BOM信息">
+          <ProCard
+            hidden={show}
+            className="h2Card"
+            headerBordered
+            title="BOM信息"
+            bodyStyle={{paddingBottom: 0}}
+            extra={value && <Button onClick={() => {
+              const token = cookie.get('tianpeng-token');
+              window.open(`${baseURI}parts/excelExport?authorization=${token}&partsId=${value}`);
+            }}>导出</Button>}
+          >
             <Row align="middle">
               <Col span={14}>
                 <div className={styles.formItem}>
@@ -177,16 +189,16 @@ const PartsEdit = (props) => {
                 </div>
               </Col>
             </Row>
-            <div className={styles.line} />
+            <div className={styles.line}/>
           </ProCard>
           <div style={{padding: '15px 15px 36px'}} hidden={!show || firstEdit}>
             {SkuResultSkuJsons({skuResult: skuItem.sku})}
           </div>
-          <div hidden={!show} className={styles.line} />
-          <div style={{paddingTop: show && 24}} className={styles.skus}>
-            <div hidden={show} className={styles.space} />
+          <div hidden={!show} className={styles.line}/>
+          <div style={{paddingTop: 24}} className={styles.skus} id={show ? 'comparisonSkusId' : 'partsEditSkusId'}>
+            <div hidden={show} className={styles.space}/>
             <div hidden={!skuItem.skuId} className={styles.list}>
-              {partsLoading ? <Spin /> : <AddSkuTable
+              {partsLoading ? <Spin/> : <AddSkuTable
                 isOpen={isOpen}
                 addSku={addSku}
                 comparison={comparison}
@@ -215,54 +227,51 @@ const PartsEdit = (props) => {
           </div>
         </div>
 
-        {!open && <Affix offsetBottom={0}>
-          <div className={styles.footer}>
-            <div
-              style={{minHeight: 49}}
-              hidden={show}
-              className={styles.bottom}
-            >
-              <div className={styles.total}>
-                总计：<span>{parts.length}</span> 类 <span>{total}</span> 件 物料
-              </div>
-              {!readOnly && <Button
-                size="large"
-                loading={addLoading}
-                type="primary"
-                onClick={() => {
-                  if (!name) {
-                    message.warn('请添加版本号！');
-                    return false;
-                  } else if (!skuItem?.skuId) {
-                    message.warn('请添加物料！');
-                    return false;
-                  } else if (!parts.length === 0) {
-                    message.warn('请添加物料清单！');
-                    return false;
-                  }
-                  addRun({
-                    data: {
-                      name,
-                      item: skuItem,
-                      ...skuItem,
-                      type: 1,
-                      batch: 0,
-                      status: 0,
-                      partsId: value.partsId || '1',
-                      parts: parts.map(item => {
-                        return {
-                          ...item,
-                          number: item.number || 1,
-                          autoOutstock: typeof item.autoOutstock === 'number' ? item.autoOutstock : 1
-                        };
-                      })
-                    }
-                  });
-                }}>保存</Button>}
+        {!open && <div className={styles.footer}>
+          <div
+            style={{minHeight: 49}}
+            hidden={show}
+            className={styles.bottom}
+          >
+            <div className={styles.total}>
+              总计：<span>{parts.length}</span> 类 <span>{Math.round(total)}</span> 件 物料
             </div>
+            {!readOnly && <Button
+              size="large"
+              loading={addLoading}
+              type="primary"
+              onClick={() => {
+                if (!name) {
+                  message.warn('请添加版本号！');
+                  return false;
+                } else if (!skuItem?.skuId) {
+                  message.warn('请添加物料！');
+                  return false;
+                } else if (!parts.length === 0) {
+                  message.warn('请添加物料清单！');
+                  return false;
+                }
+                addRun({
+                  data: {
+                    name,
+                    item: skuItem,
+                    ...skuItem,
+                    type: 1,
+                    batch: 0,
+                    status: 0,
+                    partsId: value.partsId || '1',
+                    parts: parts.map(item => {
+                      return {
+                        ...item,
+                        number: item.number || 1,
+                        autoOutstock: typeof item.autoOutstock === 'number' ? item.autoOutstock : 1
+                      };
+                    })
+                  }
+                });
+              }}>保存</Button>}
           </div>
-
-        </Affix>}
+        </div>}
 
         <Drawer
           height="100vh"
@@ -277,8 +286,10 @@ const PartsEdit = (props) => {
           }}
           afterOpenChange={(status) => {
             if (status) {
-              const partsEditId = document.getElementById('partsEditId');
-              partsEditId.scrollTop = 0;
+              // const partsEditId = document.getElementById('partsEditId');
+              // partsEditId.scrollTop = 0;
+              const partsEditSkusId = document.getElementById('partsEditSkusId');
+              partsEditSkusId.scrollTop = 0;
             }
           }}
           open={open}
@@ -292,7 +303,7 @@ const PartsEdit = (props) => {
               }}
               className={styles.back}
             >
-              返 <br />回
+              返 <br/>回
             </div>
             {open && <PartsEdit
               scrollTo={scrollTo}

@@ -79,7 +79,7 @@ const SelectBoms = (
             prefix={<SearchOutlined />}
             onChange={({target: {value}}) => {
               setSearchValue(value);
-              getList({keyWord: value});
+              getList({skuName: value});
             }}
           />
           <div className={styles.skuList}>

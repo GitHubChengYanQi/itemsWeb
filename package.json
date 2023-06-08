@@ -55,7 +55,7 @@
     "MES-Apis": "^0.2.112",
     "ac-barcode": "^1.0.0",
     "ahooks": "^2.9.1",
-    "antd": "^4.24.1",
+    "antd": "4.24.8",
     "array-move": "^4.0.0",
     "braft-editor": "^2.3.9",
     "braft-utils": "^3.0.12",
@@ -89,7 +89,9 @@
     "tinymce": "^5.10.3",
     "typescript": "^3.9.4",
     "wangeditor": "4.7.12",
-    "wangeditor-for-react": "1.5.3"
+    "wangeditor-for-react": "1.5.3",
+    "less": "^3.11.3",
+    "less-loader": "5.0.0"
   },
   "devDependencies": {
     "@dnd-kit/core": "^6.0.5",

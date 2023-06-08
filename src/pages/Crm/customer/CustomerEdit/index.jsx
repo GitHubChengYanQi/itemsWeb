@@ -72,7 +72,7 @@ const CustomerEdit = (
   return (
     <div>
       {!add && <div style={{padding: 8}}>
-        <Breadcrumb title="创建供应商" />
+        <Breadcrumb title="创建供应商"/>
       </div>}
       <Card title={!add && '创建供应商'} bodyStyle={{padding: add ? 0 : 24}} bordered={!add}>
         <Form
@@ -292,7 +292,8 @@ const CustomerEdit = (
                 />
               </Col>
               <Col span={span}>
-                <FormItem label="企业简称" name="abbreviation" placeholder="请输入供应商简称" component={SysField.Abbreviation} />
+                <FormItem label="企业简称" name="abbreviation" placeholder="请输入供应商简称"
+                          component={SysField.Abbreviation}/>
               </Col>
               <Col span={span}>
                 <div style={{position: 'absolute', maxHeight: 104, overflow: 'hidden'}}>
@@ -316,10 +317,10 @@ const CustomerEdit = (
 
               </Col>
               <Col span={span}>
-                {supply === 0 && <FormItem label="客户状态" name="status" component={SysField.Status} />}
+                {supply === 0 && <FormItem label="客户状态" name="status" component={SysField.Status}/>}
               </Col>
               <Col span={span}>
-                {supply === 0 && <FormItem label="客户分类" name="classification" component={SysField.Classification} />}
+                {supply === 0 && <FormItem label="客户分类" name="classification" component={SysField.Classification}/>}
               </Col>
             </Row>
             <Row className={style.formItem} gutter={24}>
@@ -438,7 +439,7 @@ const CustomerEdit = (
             </Row>
             <Row gutter={24}>
               <Col span={12}>
-                <FormItem label="备注说明" name="note" placeholder="请输入备注内容" component={SysField.RowsNote} />
+                <FormItem label="备注说明" name="note" placeholder="请输入备注内容" component={SysField.RowsNote}/>
               </Col>
             </Row>
           </ProCard>
@@ -452,17 +453,18 @@ const CustomerEdit = (
             <Overflow>
               <Row gutter={24}>
                 <Col span={span}>
-                  <FormItem label="法人" name="legal" placeholder="请输入法人姓名" component={SysField.Legal} />
+                  <FormItem label="法人" name="legal" placeholder="请输入法人姓名" component={SysField.Legal}/>
                 </Col>
                 <Col span={span}>
                   <FormItem
                     label="统一社会信用代码"
                     placeholder="请输入企业社会信用代码"
                     name="utscc"
-                    component={SysField.Utscc} />
+                    component={SysField.Utscc}/>
                 </Col>
                 <Col span={span}>
-                  <FormItem label="企业类型" name="companyType" placeholder="请选择企业类型" component={SysField.CompanyType} />
+                  <FormItem label="企业类型" name="companyType" placeholder="请选择企业类型"
+                            component={SysField.CompanyType}/>
                 </Col>
                 <Col span={span}>
                   <FormItem
@@ -475,39 +477,42 @@ const CustomerEdit = (
               </Row>
               <Row gutter={24}>
                 <Col span={span}>
-                  <FormItem label="所属行业" placeholder="请选择企业行业" name="industryId" component={SysField.IndustryOne} />
+                  <FormItem label="所属行业" placeholder="请选择企业行业" name="industryId"
+                            component={SysField.IndustryOne}/>
                 </Col>
                 <Col span={span}>
-                  <FormItem label="成立日期" name="setup" placeholder="请选择成立日期" component={SysField.Setup} />
+                  <FormItem label="成立日期" name="setup" placeholder="请选择成立日期" component={SysField.Setup}/>
                 </Col>
                 <Col span={span}>
-                  <FormItem label="企业电话" name="telephone" placeholder="请输入企业电话" component={SysField.Name} />
+                  <FormItem label="企业电话" name="telephone" placeholder="请输入企业电话" component={SysField.Name}/>
                 </Col>
                 <Col span={span}>
-                  <FormItem label="企业传真" placeholder="请输入企业传真" name="fax" component={SysField.Name} />
+                  <FormItem label="企业传真" placeholder="请输入企业传真" name="fax" component={SysField.Name}/>
                 </Col>
               </Row>
               <Row gutter={24}>
                 <Col span={span}>
-                  <FormItem label="邮政编码" name="zipCode" placeholder="请输入邮政编码" component={SysField.Name} />
+                  <FormItem label="邮政编码" name="zipCode" placeholder="请输入邮政编码" component={SysField.Name}/>
                 </Col>
                 <Col span={span}>
-                  <FormItem label="企业邮箱" placeholder="请输入邮箱地址" name="emall" component={SysField.Emall} rules={[{
-                    message: '请输入正确的邮箱',
-                    pattern: '^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$'
-                  }]} />
+                  <FormItem label="企业邮箱" placeholder="请输入邮箱地址" name="emall" component={SysField.Emall}
+                            rules={[{
+                              message: '请输入正确的邮箱',
+                              pattern: '^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$'
+                            }]}/>
                 </Col>
                 <Col span={span}>
                   <FormItem label="网址" name="url" placeholder="请输入供应商网址" component={SysField.Url} rules={[{
                     message: '请输入正确的网址',
                     pattern: '^(http(s)?:\\/\\/)?(www\\.)?[\\w-]+\\.(com|net|cn)$'
-                  }]} />
+                  }]}/>
                 </Col>
                 <Col span={span}>
-                  <FormItem label="注册地址" name="signIn" placeholder="请输入注册地址" component={SysField.SignIn} />
+                  <FormItem label="注册地址" name="signIn" placeholder="请输入注册地址" component={SysField.SignIn}/>
                 </Col>
               </Row>
-              <FormItem label="企业简介" name="introduction" placeholder="请输入企业简介" component={SysField.Introduction} />
+              <FormItem label="企业简介" name="introduction" placeholder="请输入企业简介"
+                        component={SysField.Introduction}/>
               <Space align="start">
                 <FormItem
                   label="附件"
@@ -515,7 +520,7 @@ const CustomerEdit = (
                   maxCount={5}
                   prompt="支持格式：jpg/png/pdf/docx，单一文件不超过10M，最多上传5份，建议上传营业执照、开户许可证、资质奖项证书等"
                   uploadTypes={['jpg', 'png', 'pdf', 'docx']}
-                  component={SysField.File} />
+                  component={SysField.File}/>
               </Space>
             </Overflow>
           </ProCard>
@@ -529,7 +534,7 @@ const CustomerEdit = (
                   extra={
                     <Button
                       type="dashed"
-                      icon={<PlusOutlined />}
+                      icon={<PlusOutlined/>}
                       style={{width: '100%', display: state.value.length >= 5 && 'none'}}
                       onClick={onAdd}>添加联系人</Button>
                   }
@@ -592,7 +597,7 @@ const CustomerEdit = (
                             <Button
                               type="link"
                               style={{float: 'right'}}
-                              icon={<DeleteOutlined />}
+                              icon={<DeleteOutlined/>}
                               onClick={() => {
                                 onRemove(index);
                               }}
@@ -615,7 +620,7 @@ const CustomerEdit = (
                   extra={
                     <Button
                       type="dashed"
-                      icon={<PlusOutlined />}
+                      icon={<PlusOutlined/>}
                       style={{width: '100%', display: state.value.length >= 5 && 'none'}}
                       onClick={onAdd}>添加地址</Button>
                   }
@@ -669,7 +674,7 @@ const CustomerEdit = (
                             <Button
                               type="link"
                               style={{float: 'right'}}
-                              icon={<DeleteOutlined />}
+                              icon={<DeleteOutlined/>}
                               onClick={() => {
                                 onRemove(index);
                               }}
@@ -692,7 +697,7 @@ const CustomerEdit = (
                   extra={
                     <Button
                       type="dashed"
-                      icon={<PlusOutlined />}
+                      icon={<PlusOutlined/>}
                       style={{width: '100%', display: state.value.length >= 5 && 'none'}}
                       onClick={onAdd}>添加开户信息</Button>
                   }
@@ -739,7 +744,7 @@ const CustomerEdit = (
                             <Button
                               type="link"
                               style={{float: 'right'}}
-                              icon={<DeleteOutlined />}
+                              icon={<DeleteOutlined/>}
                               onClick={() => {
                                 onRemove(index);
                               }}
@@ -765,7 +770,7 @@ const CustomerEdit = (
             background: '#fff',
             textAlign: 'center',
             paddingTop: 8,
-            boxShadow: '0 0 8px 0 rgb(0 0 0 / 10%)'
+            boxShadow: '0 0 8px 0 rgba(0, 0, 0 ,10%)'
           }}>
           <Space>
             <Button type="primary" onClick={() => {

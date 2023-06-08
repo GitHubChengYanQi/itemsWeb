@@ -728,7 +728,7 @@ export function MultipleContainers(
                 height: 'calc(100vh - 276px)',
                 overflow: mobile ? 'hidden' : 'auto',
                 padding: mobile ? '0' : '24px 0',
-                boxShadow: mobile ? '0 0 14px 0 rgb(0 0 0 / 10%)' : '',
+                boxShadow: mobile ? '0 0 14px 0 rgba(0, 0 ,0 , 10%)' : '',
                 background: mobile ? '#E1EBF6' : '#fff',
                 maxHeight: mobile ? 800 : 'calc(100vh - 276px)'
               }}

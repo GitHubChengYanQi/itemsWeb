@@ -18,11 +18,11 @@ import SearchValueFormat from '@/components/SearchValueFormat';
 
 export const scroll = (itemId) => {
   const partItemDom = document.getElementById(itemId);
-  const partsEditId = document.getElementById('partsEditId');
-
-  const boxScrollTop = partsEditId.scrollTop;
+  const partsEditSkusId = document.getElementById('partsEditSkusId');
+  // const partsEditId = document.getElementById('partsEditId');
+  const boxScrollTop = partsEditSkusId.scrollTop;
   // 滚动条高度+视窗高度 = 可见区域底部高度
-  const visibleBottom = boxScrollTop + document.documentElement.clientHeight;
+  const visibleBottom = boxScrollTop + document.documentElement.clientHeight - 310;
   // 可见区域顶部高度
   const visibleTop = boxScrollTop;
 
@@ -192,8 +192,8 @@ const Item = (
             openNewEdit(item.versionBomId, item.skuId);
           }}
         >
-          <SearchOutlined />
-        </Button> : <div style={{width: 16}} />}
+          <SearchOutlined/>
+        </Button> : <div style={{width: 16}}/>}
         <Button
           style={{padding: 0}}
           type="link"
@@ -212,8 +212,8 @@ const Item = (
             addSku(item);
           }}
         >
-          <DoubleRightOutlined />
-        </Button> : <div style={{width: 16}} />}
+          <DoubleRightOutlined/>
+        </Button> : <div style={{width: 16}}/>}
       </Space> : <Space>
         <Space align="center">
           数量：
@@ -250,7 +250,7 @@ const Item = (
             type="link"
             danger
           >
-            <DeleteOutlined />
+            <DeleteOutlined/>
           </Button>
         </Warning>}
         <Button
@@ -266,7 +266,7 @@ const Item = (
             openNewEdit(item.versionBomId, item.skuId);
           }}
         >
-          {item.bomNum ? <Space style={{width: 56}}><SearchOutlined />详情</Space> : '添加bom'}
+          {item.bomNum ? <Space style={{width: 56}}><SearchOutlined/>详情</Space> : '添加bom'}
         </Button>
       </Space>}
 
@@ -296,10 +296,10 @@ const Item = (
                     versionModalRef.current.close();
                   }}
                 >
-                  <Icon type="icon-a-kehuliebiao2" style={{marginRight: 16}} />
+                  <Icon type="icon-a-kehuliebiao2" style={{marginRight: 16}}/>
                   <div>
                     版本号：{item.name || '-'}
-                    <br />
+                    <br/>
                     创建时间：{item.createTime}
                   </div>
                 </div>;

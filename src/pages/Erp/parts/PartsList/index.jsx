@@ -71,7 +71,7 @@ const PartsList = (
   }, []);
 
   if (skuLoading) {
-    return <ProSkeleton type="descriptions" />;
+    return <ProSkeleton type="descriptions"/>;
   }
 
   const action = () => {
@@ -79,7 +79,7 @@ const PartsList = (
       <AddButton name="创建物料清单" onClick={() => {
         history.push('/SPU/parts/edit');
         // refAdd.current.open(false);
-      }} />
+      }}/>
     );
   };
 
@@ -91,7 +91,7 @@ const PartsList = (
           label="物料名称"
           placeholder="搜索物料"
           name="skuName"
-          component={SysField.SkuInput} />
+          component={SysField.SkuInput}/>
         <div style={{display: 'none'}}>
           <FormItem
             name="skuId"
@@ -130,7 +130,7 @@ const PartsList = (
         {value && skuData && <div>
           <Descriptions style={{margin: 24, marginBottom: 0}} column={2} contentStyle={{fontWeight: 700}}>
             <Descriptions.Item label="编号">{skuData.standard}</Descriptions.Item>
-            <Descriptions.Item label="物料"><BackSkus record={skuData} /></Descriptions.Item>
+            <Descriptions.Item label="物料"><BackSkus record={skuData}/></Descriptions.Item>
             <Descriptions.Item label="描述">
               {
                 skuData.list
@@ -166,7 +166,7 @@ const PartsList = (
           listHeader={value}
           formActions={formActionsPublic}
           headStyle={(spuId || spuSkuId) && {display: 'none'}}
-          title={value !== false && <Breadcrumb title="物料清单" />}
+          title={value !== false && <Breadcrumb title="物料清单"/>}
           actions={action()}
           searchForm={searchForm}
           ref={tableRef}
@@ -212,13 +212,13 @@ const PartsList = (
           }}
         >
           <Column title="物料" key={3} dataIndex="skuResult" render={(value) => {
-            return (<Note width={400}><SkuResultSkuJsons skuResult={value} /></Note>);
-          }} />
+            return (<Note width={400}><SkuResultSkuJsons skuResult={value}/></Note>);
+          }}/>
           <Column title="物料编码" key={2} dataIndex="skuResult" render={(value) => {
             return <Render maxWidth={200}>
               <Note maxWidth={200}>{value?.standard || '无'}</Note>
             </Render>;
-          }} />
+          }}/>
           <Column title="版本号" key={1} dataIndex="name" render={(value, record) => {
             if (!record.children) {
               return <></>;
@@ -226,21 +226,27 @@ const PartsList = (
             return <Render width={200}>
               <Tag color="processing"><Note maxWidth={200}>{value || '-'}</Note></Tag>
             </Render>;
-          }} />
+          }}/>
           <Column title="数量" key={4} dataIndex="number" align="center" render={(value) => {
             return <div style={{minWidth: 50}}>{value || null}</div>;
-          }} />
+          }}/>
           <Column title="备注" key={1} visible={spuSkuId && false} dataIndex="note" render={(value) => {
             return <Render width={100}>
               {value || '-'}
             </Render>;
-          }} />
+          }}/>
           <Column title="创建人" key={6} visible={spuSkuId && false} dataIndex="userResult" render={(value) => {
             return <>{value && value.name}</>;
-          }} />
-          <Column title="创建时间" key={7} visible={spuSkuId && false} dataIndex="createTime" render={(value, record) => {
-            return !record.partsDetailId && <>{value}</>;
-          }} />
+          }}/>
+          <Column
+            title="创建时间"
+            key={7}
+            visible={spuSkuId && false}
+            dataIndex="createTime"
+            render={(value, record) => {
+              return !record.partsDetailId && <>{value}</>;
+            }}
+          />
 
           <Column
             title="操作"
@@ -248,7 +254,7 @@ const PartsList = (
             fixed="right"
             align="center"
             dataIndex="partsId"
-            width={spuSkuId ? 70 : 200}
+            width={spuSkuId ? 70 : 250}
             render={(value, record) => {
               if (record.children) {
                 if (spuSkuId) {
@@ -260,12 +266,15 @@ const PartsList = (
                     <Button type="link" onClick={() => {
                       addRef.current.open({skuId: record.skuId, copy: true});
                     }}>拷贝</Button>
+                    <Button type="link" onClick={() => {
+                      window.open(`${baseURI}parts/excelExport?authorization=${token}&partsId=${value}`);
+                    }}>导出</Button>
                     <EditButton onClick={() => {
                       history.push({
                         pathname: '/SPU/parts/edit',
                         search: `id=${record.id || value}`
                       });
-                    }} />
+                    }}/>
                     <Button type="link" onClick={() => {
                       history.push({
                         pathname: '/SPU/parts/edit',
@@ -275,7 +284,7 @@ const PartsList = (
                   </>;
                 }
               }
-            }} />
+            }}/>
         </Table>
       </>
 
